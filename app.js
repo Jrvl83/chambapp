@@ -4,6 +4,10 @@ let tipoUsuario = '';
 // Función para mostrar el formulario de registro
 function mostrarRegistro(tipo) {
     tipoUsuario = tipo;
+    
+    // Guardar el tipo de usuario para usarlo en el dashboard
+    localStorage.setItem('tipoUsuario', tipo);
+    
     const registroSection = document.getElementById('registro');
     const camposTrabajador = document.getElementById('camposTrabajador');
     
@@ -35,12 +39,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const telefono = document.getElementById('telefono').value;
             const password = document.getElementById('password').value;
             
+            // Validaciones básicas
+            if (!nombre || !email || !telefono || !password) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
             // Datos adicionales para trabajadores
             let datosAdicionales = {};
             if (tipoUsuario === 'trabajador') {
+                const categoria = document.getElementById('categoria').value;
+                const experiencia = document.getElementById('experiencia').value;
+                
+                if (!categoria) {
+                    alert('Por favor selecciona tu especialidad');
+                    return;
+                }
+                
                 datosAdicionales = {
-                    categoria: document.getElementById('categoria').value,
-                    experiencia: document.getElementById('experiencia').value
+                    categoria: categoria,
+                    experiencia: experiencia
                 };
             }
             
@@ -50,31 +68,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 nombre: nombre,
                 email: email,
                 telefono: telefono,
-                password: password,
                 ...datosAdicionales,
                 fechaRegistro: new Date().toISOString()
             };
             
-            // Aquí normalmente enviarías los datos a un servidor
-            console.log('Usuario registrado:', usuario);
+            // Guardar usuario en localStorage (temporalmente)
+            localStorage.setItem('usuarioChambApp', JSON.stringify(usuario));
             
             // Mostrar mensaje de éxito
-            alert(`¡Registro exitoso! Bienvenido ${nombre} a ChambApp como ${tipoUsuario}.`);
+            alert(`¡Registro exitoso! Bienvenido ${nombre} a ChambApp.`);
             
-            // Limpiar formulario
-            form.reset();
-            
-            // Ocultar formulario
-            document.getElementById('registro').style.display = 'none';
-            
-            // Volver arriba
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Redirigir al dashboard después de 1 segundo
+            setTimeout(function() {
+                window.location.href = 'dashboard-v2.html';
+            }, 1000);
         });
     }
     
     // Navegación suave para los enlaces del menú
-    document.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', function(e) {
+    const navLinks = document.querySelectorAll('nav a');
+    for (let i = 0; i < navLinks.length; i++) {
+        navLinks[i].addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
@@ -83,7 +97,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetElement.scrollIntoView({ behavior: 'smooth' });
             }
         });
-    });
+    }
+    
+    // Botón de "Ingresar" - ir directo al dashboard (simulando login)
+    const loginLinks = document.querySelectorAll('a[href="#login"]');
+    for (let i = 0; i < loginLinks.length; i++) {
+        loginLinks[i].addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Simular que ya tiene cuenta
+            const tieneUsuario = localStorage.getItem('usuarioChambApp');
+            
+            if (tieneUsuario) {
+                // Si ya se registró antes, ir al dashboard
+                window.location.href = 'dashboard-v2.html';
+            } else {
+                // Si no, mostrar mensaje
+                alert('Para ingresar primero debes registrarte. Haz clic en "Busco Trabajo" o "Busco Trabajadores".');
+            }
+        });
+    }
 });
 
 // Función para validar email
