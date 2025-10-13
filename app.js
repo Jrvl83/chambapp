@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Redirigir al dashboard después de 1 segundo
             setTimeout(function() {
-                window.location.href = 'dashboard-v2.html';
+                window.location.href = 'dashboard-v3.html';
             }, 1000);
         });
     }
