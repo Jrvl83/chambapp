@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (tieneUsuario) {
                 // Si ya se registró antes, ir al dashboard
-                window.location.href = 'dashboard-v2.html';
+                window.location.href = 'dashboard-v3.html';
             } else {
                 // Si no, mostrar mensaje
                 alert('Para ingresar primero debes registrarte. Haz clic en "Busco Trabajo" o "Busco Trabajadores".');
