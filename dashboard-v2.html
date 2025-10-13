@@ -697,120 +697,164 @@
     </div>
 
     <script>
-// Actualizar dashboard según tipo de usuario
-var usuarioGuardado = localStorage.getItem('usuarioChambApp');
-var tipoUsuario = 'trabajador'; // por defecto
+// Esperar a que cargue la página
+window.addEventListener('DOMContentLoaded', function() {
+    inicializarDashboard();
+});
 
-if (usuarioGuardado) {
-    var usuario = JSON.parse(usuarioGuardado);
-    tipoUsuario = usuario.tipo || 'trabajador';
-    document.querySelector('.user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
-    
-    // Personalizar dashboard según tipo de usuario
-    personalizarDashboard(tipoUsuario);
-} else {
-    document.querySelector('.user-name').textContent = '👤 Bienvenido, Usuario';
-}
+function inicializarDashboard() {
+    // Actualizar nombre del usuario desde localStorage
+    var usuarioGuardado = localStorage.getItem('usuarioChambApp');
+    var tipoUsuario = 'trabajador'; // por defecto
 
-function personalizarDashboard(tipo) {
-    var seccionOfertas = document.querySelector('.section');
-    
-    if (tipo === 'trabajador') {
-        // Para trabajadores: enfocarse en encontrar trabajo
-        seccionOfertas.querySelector('h2').textContent = '💼 Ofertas de Trabajo para Ti';
+    if (usuarioGuardado) {
+        var usuario = JSON.parse(usuarioGuardado);
+        tipoUsuario = usuario.tipo || 'trabajador';
+        document.querySelector('.user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
         
-        // Cambiar textos de botones
-        var botones = document.querySelectorAll('.oferta-card .btn-primary');
-        for (var i = 0; i < botones.length; i++) {
-            botones[i].textContent = '👁️ Ver Oferta';
-        }
-        
-        var botonesSecundarios = document.querySelectorAll('.oferta-card .btn-secondary');
-        for (var i = 0; i < botonesSecundarios.length; i++) {
-            botonesSecundarios[i].innerHTML = '✅ Aplicar';
-        }
-        
-        // Agregar badge
-        var logo = document.querySelector('.logo');
-        logo.innerHTML = 'ChambApp <span style="font-size:0.6rem; background:#10b981; color:white; padding:0.2rem 0.5rem; border-radius:10px; margin-left:0.5rem;">Trabajador</span>';
-        
-    } else if (tipo === 'empleador') {
-        // Para empleadores: enfocarse en encontrar trabajadores
-        seccionOfertas.querySelector('h2').textContent = '👥 Trabajadores Disponibles';
-        
-        // Cambiar textos de botones
-        var botones = document.querySelectorAll('.oferta-card .btn-primary');
-        for (var i = 0; i < botones.length; i++) {
-            botones[i].textContent = '📋 Ver Perfil';
-        }
-        
-        var botonesSecundarios = document.querySelectorAll('.oferta-card .btn-secondary');
-        for (var i = 0; i < botonesSecundarios.length; i++) {
-            botonesSecundarios[i].innerHTML = '📞 Contactar';
-        }
-        
-        // Agregar badge y cambiar menú
-        var logo = document.querySelector('.logo');
-        logo.innerHTML = 'ChambApp <span style="font-size:0.6rem; background:#2563eb; color:white; padding:0.2rem 0.5rem; border-radius:10px; margin-left:0.5rem;">Empleador</span>';
-        
-        // Cambiar opción del menú
-        var menuItems = document.querySelectorAll('.nav-item');
-        menuItems[1].innerHTML = '<span class="icon">👥</span><span>Buscar Trabajadores</span>';
-        menuItems[2].innerHTML = '<span class="icon">➕</span><span>Publicar Oferta de Trabajo</span>';
+        // Personalizar dashboard según tipo de usuario
+        personalizarDashboard(tipoUsuario, usuario);
+    } else {
+        document.querySelector('.user-name').textContent = '👤 Bienvenido, Usuario';
     }
 }
 
-        // Cerrar modal
-        function cerrarModal() {
-            document.getElementById('modal-overlay').classList.remove('active');
-            document.body.style.overflow = 'auto';
+function personalizarDashboard(tipo, usuario) {
+    console.log('Personalizando dashboard para tipo:', tipo);
+    
+    var logo = document.querySelector('.logo');
+    
+    if (tipo === 'trabajador') {
+        // Badge verde para trabajadores
+        logo.innerHTML = 'ChambApp <span style="font-size:0.7rem; background:#10b981; color:white; padding:0.25rem 0.6rem; border-radius:12px; margin-left:0.5rem; font-weight:600;">👷 Trabajador</span>';
+        
+        // Cambiar título de sección
+        var tituloOfertas = document.querySelector('.section h2');
+        if (tituloOfertas) {
+            tituloOfertas.innerHTML = '💼 Ofertas de Trabajo para Ti';
         }
-
-        // Mostrar modal
-        function mostrarModal(html) {
-            document.getElementById('modal-body').innerHTML = html;
-            document.getElementById('modal-overlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
+        
+        // Cambiar botones de ofertas
+        var botonesVerDetalle = document.querySelectorAll('.oferta-card .btn-primary');
+        for (var i = 0; i < botonesVerDetalle.length; i++) {
+            botonesVerDetalle[i].innerHTML = '👁️ Ver Oferta';
         }
-
-        // Ver detalle oferta
-        function verDetalle(btn) {
-            var card = btn.closest('.oferta-card');
-            var titulo = card.querySelector('.oferta-titulo').textContent;
-            mostrarModal('<div class="modal-header"><h2>📋 ' + titulo + '</h2></div><div class="modal-text"><h3>Descripción</h3><p>Detalles completos de la oferta...</p><h3>Requisitos</h3><ul class="modal-list"><li>Experiencia mínima 2 años</li><li>Disponibilidad inmediata</li><li>Referencias verificables</li></ul></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button><button class="btn btn-primary" onclick="contactar()">💬 Contactar</button></div>');
+        
+        var botonesContactar = document.querySelectorAll('.oferta-card .btn-secondary');
+        for (var i = 0; i < botonesContactar.length; i++) {
+            botonesContactar[i].innerHTML = '✅ Aplicar';
         }
-
-        // Contactar
-        function contactar(btn) {
-            mostrarModal('<div class="modal-header"><h2>💬 Enviar Mensaje</h2></div><div class="modal-text"><form class="modal-form"><label>Tu Nombre:</label><input type="text" value="Juan Pérez"><label>Tu Teléfono:</label><input type="tel" placeholder="999 999 999"><label>Mensaje:</label><textarea rows="4" placeholder="Tu mensaje..."></textarea></form></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" onclick="enviarMensaje()">📤 Enviar</button></div>');
+        
+        // Cambiar textos del menú
+        var menuItems = document.querySelectorAll('.nav-item');
+        if (menuItems[1]) {
+            menuItems[1].innerHTML = '<span class="icon">🔍</span><span>Buscar Chambas</span>';
         }
-
-        // Ver perfil
-        function verPerfil(btn) {
-            var card = btn.closest('.trabajador-card');
-            var nombre = card.querySelector('h4').textContent;
-            mostrarModal('<div class="modal-header"><div class="perfil-avatar">👨‍🔧</div><h2>' + nombre + '</h2></div><div class="modal-text"><h3>📋 Sobre mí</h3><p>Profesional con amplia experiencia.</p><h3>🎯 Especialidades</h3><div class="tags"><span class="tag">Instalaciones</span><span class="tag">Reparaciones</span><span class="tag">Mantenimiento</span></div></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button><button class="btn btn-primary" onclick="contactar()">💬 Contactar</button></div>');
+        
+    } else if (tipo === 'empleador') {
+        // Badge azul para empleadores
+        logo.innerHTML = 'ChambApp <span style="font-size:0.7rem; background:#2563eb; color:white; padding:0.25rem 0.6rem; border-radius:12px; margin-left:0.5rem; font-weight:600;">💼 Empleador</span>';
+        
+        // Cambiar título de sección
+        var tituloOfertas = document.querySelector('.section h2');
+        if (tituloOfertas) {
+            tituloOfertas.innerHTML = '👥 Trabajadores Disponibles';
         }
-
-        // Cerrar sesión
-        function cerrarSesion() {
-            mostrarModal('<div class="modal-header"><h2>⚠️ Cerrar Sesión</h2></div><div class="modal-text"><p>¿Estás seguro?</p></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" onclick="location.href=\'index.html\'">Sí, Salir</button></div>');
+        
+        // Ocultar sección de ofertas y mostrar trabajadores primero
+        var seccionOfertas = document.querySelector('.section');
+        var seccionTrabajadores = document.querySelectorAll('.section')[1];
+        
+        if (seccionOfertas && seccionTrabajadores) {
+            // Intercambiar orden visualmente
+            seccionOfertas.style.order = '2';
+            seccionTrabajadores.style.order = '1';
         }
-
-        // Enviar mensaje
-        function enviarMensaje() {
-            mostrarModal('<div class="modal-header success"><h2>✅ ¡Mensaje Enviado!</h2></div><div class="modal-text"><p>Tu mensaje ha sido enviado exitosamente.</p></div><div class="modal-buttons"><button class="btn btn-primary" onclick="cerrarModal()">Entendido</button></div>');
+        
+        // Cambiar botones de ofertas
+        var botonesVerDetalle = document.querySelectorAll('.oferta-card .btn-primary');
+        for (var i = 0; i < botonesVerDetalle.length; i++) {
+            botonesVerDetalle[i].innerHTML = '📋 Ver Detalles';
         }
+        
+        var botonesContactar = document.querySelectorAll('.oferta-card .btn-secondary');
+        for (var i = 0; i < botonesContactar.length; i++) {
+            botonesContactar[i].innerHTML = '📞 Contactar';
+        }
+        
+        // Cambiar textos del menú
+        var menuItems = document.querySelectorAll('.nav-item');
+        if (menuItems[1]) {
+            menuItems[1].innerHTML = '<span class="icon">👥</span><span>Buscar Trabajadores</span>';
+        }
+        if (menuItems[2]) {
+            menuItems[2].innerHTML = '<span class="icon">➕</span><span>Publicar Oferta</span>';
+        }
+        
+        // Cambiar título de trabajadores destacados
+        var tituloTrabajadores = document.querySelectorAll('.section h2')[1];
+        if (tituloTrabajadores) {
+            tituloTrabajadores.innerHTML = '⭐ Trabajadores Recomendados para Ti';
+        }
+    }
+}
 
-        // Cerrar con ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') cerrarModal();
-        });
+// Cerrar modal
+function cerrarModal() {
+    document.getElementById('modal-overlay').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
 
-        // Cerrar al hacer clic fuera
-        document.getElementById('modal-overlay').addEventListener('click', function(e) {
-            if (e.target.id === 'modal-overlay') cerrarModal();
-        });
+// Mostrar modal
+function mostrarModal(html) {
+    document.getElementById('modal-body').innerHTML = html;
+    document.getElementById('modal-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Ver detalle oferta
+function verDetalle(btn) {
+    var card = btn.closest('.oferta-card');
+    var titulo = card.querySelector('.oferta-titulo').textContent;
+    mostrarModal('<div class="modal-header"><h2>📋 ' + titulo + '</h2></div><div class="modal-text"><h3>Descripción</h3><p>Detalles completos de la oferta...</p><h3>Requisitos</h3><ul class="modal-list"><li>Experiencia mínima 2 años</li><li>Disponibilidad inmediata</li><li>Referencias verificables</li></ul></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button><button class="btn btn-primary" onclick="contactar()">💬 Contactar</button></div>');
+}
+
+// Contactar
+function contactar(btn) {
+    mostrarModal('<div class="modal-header"><h2>💬 Enviar Mensaje</h2></div><div class="modal-text"><form class="modal-form"><label>Tu Nombre:</label><input type="text" value="Juan Pérez"><label>Tu Teléfono:</label><input type="tel" placeholder="999 999 999"><label>Mensaje:</label><textarea rows="4" placeholder="Tu mensaje..."></textarea></form></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" onclick="enviarMensaje()">📤 Enviar</button></div>');
+}
+
+// Ver perfil
+function verPerfil(btn) {
+    var card = btn.closest('.trabajador-card');
+    var nombre = card.querySelector('h4').textContent;
+    mostrarModal('<div class="modal-header"><div class="perfil-avatar">👨‍🔧</div><h2>' + nombre + '</h2></div><div class="modal-text"><h3>📋 Sobre mí</h3><p>Profesional con amplia experiencia.</p><h3>🎯 Especialidades</h3><div class="tags"><span class="tag">Instalaciones</span><span class="tag">Reparaciones</span><span class="tag">Mantenimiento</span></div></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button><button class="btn btn-primary" onclick="contactar()">💬 Contactar</button></div>');
+}
+
+// Cerrar sesión
+function cerrarSesion() {
+    mostrarModal('<div class="modal-header"><h2>⚠️ Cerrar Sesión</h2></div><div class="modal-text"><p>¿Estás seguro?</p></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button><button class="btn btn-primary" onclick="confirmarSalir()">Sí, Salir</button></div>');
+}
+
+function confirmarSalir() {
+    localStorage.removeItem('usuarioChambApp');
+    window.location.href = 'index.html';
+}
+
+// Enviar mensaje
+function enviarMensaje() {
+    mostrarModal('<div class="modal-header success"><h2>✅ ¡Mensaje Enviado!</h2></div><div class="modal-text"><p>Tu mensaje ha sido enviado exitosamente.</p></div><div class="modal-buttons"><button class="btn btn-primary" onclick="cerrarModal()">Entendido</button></div>');
+}
+
+// Cerrar con ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') cerrarModal();
+});
+
+// Cerrar al hacer clic fuera
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target.id === 'modal-overlay') cerrarModal();
+});
     </script>
 </body>
 </html>
