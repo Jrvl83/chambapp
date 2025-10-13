@@ -5,21 +5,35 @@ const usuarioActual = {
     email: "juan@example.com"
 };
 
-// Cargar nombre del usuario al iniciar
-document.addEventListener('DOMContentLoaded', function() {
+// Esperar a que el DOM esté completamente cargado
+window.addEventListener('DOMContentLoaded', function() {
+    inicializarDashboard();
+});
+
+function inicializarDashboard() {
+    // Actualizar nombre del usuario
     const userNameElement = document.querySelector('.user-name');
     if (userNameElement && usuarioActual.nombre) {
         userNameElement.textContent = `👤 Bienvenido, ${usuarioActual.nombre}`;
     }
     
-    animarElementos();
-    agregarEventosOfertas();
-    agregarEventosTrabajadores();
+    // Crear contenedor de modales
     crearModalContainer();
-});
+    
+    // Animar elementos
+    animarElementos();
+    
+    // Agregar eventos
+    setTimeout(() => {
+        agregarEventosOfertas();
+        agregarEventosTrabajadores();
+    }, 500);
+}
 
 // Crear contenedor para modales
 function crearModalContainer() {
+    if (document.getElementById('modal-overlay')) return;
+    
     const modalHTML = `
         <div id="modal-overlay" class="modal-overlay">
             <div class="modal-content">
@@ -29,6 +43,13 @@ function crearModalContainer() {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('modal-overlay').addEventListener('click', function(e) {
+        if (e.target.id === 'modal-overlay') {
+            cerrarModal();
+        }
+    });
 }
 
 // Función para cerrar sesión
@@ -56,6 +77,11 @@ function mostrarModal(contenido) {
     const modalBody = document.getElementById('modal-body');
     const modalOverlay = document.getElementById('modal-overlay');
     
+    if (!modalBody || !modalOverlay) {
+        console.error('Modal no encontrado');
+        return;
+    }
+    
     modalBody.innerHTML = contenido;
     modalOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -64,8 +90,10 @@ function mostrarModal(contenido) {
 // Cerrar modal
 function cerrarModal() {
     const modalOverlay = document.getElementById('modal-overlay');
-    modalOverlay.classList.remove('active');
-    document.body.style.overflow = 'auto';
+    if (modalOverlay) {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
 }
 
 // Animar elementos al cargar
@@ -86,28 +114,40 @@ function animarElementos() {
 
 // Agregar eventos a los botones de ofertas
 function agregarEventosOfertas() {
+    // Botones "Ver Detalles"
     const botonesDetalle = document.querySelectorAll('.oferta-card .btn-primary');
-    botonesDetalle.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const card = e.target.closest('.oferta-card');
-            const titulo = card.querySelector('.oferta-titulo').textContent;
-            const descripcion = card.querySelector('.oferta-descripcion').textContent;
-            const categoria = card.querySelector('.oferta-categoria').textContent;
-            const detalles = Array.from(card.querySelectorAll('.detalle')).map(d => d.textContent);
-            
-            mostrarDetalleOferta(titulo, descripcion, categoria, detalles);
+    if (botonesDetalle.length > 0) {
+        botonesDetalle.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = this.closest('.oferta-card');
+                if (!card) return;
+                
+                const titulo = card.querySelector('.oferta-titulo')?.textContent || 'Oferta';
+                const descripcion = card.querySelector('.oferta-descripcion')?.textContent || '';
+                const categoria = card.querySelector('.oferta-categoria')?.textContent || 'General';
+                const detallesElements = card.querySelectorAll('.detalle');
+                const detalles = Array.from(detallesElements).map(d => d.textContent);
+                
+                mostrarDetalleOferta(titulo, descripcion, categoria, detalles);
+            });
         });
-    });
+    }
     
+    // Botones "Contactar"
     const botonesContactar = document.querySelectorAll('.oferta-card .btn-secondary');
-    botonesContactar.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const card = e.target.closest('.oferta-card');
-            const titulo = card.querySelector('.oferta-titulo').textContent;
-            
-            mostrarFormularioContacto(titulo);
+    if (botonesContactar.length > 0) {
+        botonesContactar.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = this.closest('.oferta-card');
+                if (!card) return;
+                
+                const titulo = card.querySelector('.oferta-titulo')?.textContent || 'Oferta';
+                mostrarFormularioContacto(titulo);
+            });
         });
-    });
+    }
 }
 
 // Mostrar detalles de la oferta en modal
@@ -143,7 +183,7 @@ function mostrarDetalleOferta(titulo, descripcion, categoria, detalles) {
         </div>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-            <button class="btn btn-primary" onclick="contactarDesdeDetalle('${titulo}')">💬 Contactar Ahora</button>
+            <button class="btn btn-primary" onclick="contactarDesdeDetalle('${titulo.replace(/'/g, "\\'")}')">💬 Contactar Ahora</button>
         </div>
     `;
     
@@ -159,7 +199,7 @@ function mostrarFormularioContacto(titulo) {
         <div class="modal-text">
             <p><strong>Oferta:</strong> ${titulo}</p>
             
-            <form id="form-contacto" class="modal-form">
+            <form id="form-contacto" class="modal-form" onsubmit="return false;">
                 <label>Tu Nombre:</label>
                 <input type="text" id="nombre-contacto" value="${usuarioActual.nombre}" required>
                 
@@ -177,7 +217,7 @@ function mostrarFormularioContacto(titulo) {
         </div>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-            <button class="btn btn-primary" onclick="enviarContacto('${titulo}')">📤 Enviar Mensaje</button>
+            <button class="btn btn-primary" onclick="enviarContacto('${titulo.replace(/'/g, "\\'")}')">📤 Enviar Mensaje</button>
         </div>
     `;
     
@@ -189,16 +229,15 @@ function contactarDesdeDetalle(titulo) {
 }
 
 function enviarContacto(titulo) {
-    const nombre = document.getElementById('nombre-contacto').value;
-    const telefono = document.getElementById('telefono-contacto').value;
-    const mensaje = document.getElementById('mensaje-contacto').value;
+    const nombre = document.getElementById('nombre-contacto')?.value;
+    const telefono = document.getElementById('telefono-contacto')?.value;
+    const mensaje = document.getElementById('mensaje-contacto')?.value;
     
     if (!nombre || !telefono || !mensaje) {
         alert('Por favor completa todos los campos');
         return;
     }
     
-    // Simular envío
     const contenido = `
         <div class="modal-header success">
             <h2>✅ ¡Mensaje Enviado!</h2>
@@ -229,17 +268,22 @@ function enviarContacto(titulo) {
 function agregarEventosTrabajadores() {
     const botonesVerPerfil = document.querySelectorAll('.trabajador-card .btn-primary');
     
-    botonesVerPerfil.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            const card = e.target.closest('.trabajador-card');
-            const nombre = card.querySelector('h4').textContent;
-            const categoria = card.querySelector('.trabajador-categoria').textContent;
-            const rating = card.querySelector('.trabajador-rating').textContent;
-            const experiencia = card.querySelector('.trabajador-exp').textContent;
-            
-            mostrarPerfilTrabajador(nombre, categoria, rating, experiencia);
+    if (botonesVerPerfil.length > 0) {
+        botonesVerPerfil.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = this.closest('.trabajador-card');
+                if (!card) return;
+                
+                const nombre = card.querySelector('h4')?.textContent || 'Trabajador';
+                const categoria = card.querySelector('.trabajador-categoria')?.textContent || '';
+                const rating = card.querySelector('.trabajador-rating')?.textContent || '';
+                const experiencia = card.querySelector('.trabajador-exp')?.textContent || '';
+                
+                mostrarPerfilTrabajador(nombre, categoria, rating, experiencia);
+            });
         });
-    });
+    }
 }
 
 // Mostrar perfil del trabajador
@@ -277,7 +321,7 @@ function mostrarPerfilTrabajador(nombre, categoria, rating, experiencia) {
         </div>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-            <button class="btn btn-primary" onclick="contactarTrabajador('${nombre}')">💬 Contactar</button>
+            <button class="btn btn-primary" onclick="contactarTrabajador('${nombre.replace(/'/g, "\\'")}')">💬 Contactar</button>
         </div>
     `;
     
@@ -290,7 +334,7 @@ function contactarTrabajador(nombre) {
             <h2>💬 Contactar a ${nombre}</h2>
         </div>
         <div class="modal-text">
-            <form id="form-contacto-trabajador" class="modal-form">
+            <form id="form-contacto-trabajador" class="modal-form" onsubmit="return false;">
                 <label>Describe tu proyecto:</label>
                 <textarea id="proyecto-desc" rows="4" placeholder="Cuéntale qué necesitas..." required></textarea>
                 
@@ -306,7 +350,7 @@ function contactarTrabajador(nombre) {
         </div>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-            <button class="btn btn-primary" onclick="enviarSolicitudTrabajador('${nombre}')">📤 Enviar Solicitud</button>
+            <button class="btn btn-primary" onclick="enviarSolicitudTrabajador('${nombre.replace(/'/g, "\\'")}')">📤 Enviar Solicitud</button>
         </div>
     `;
     
@@ -314,7 +358,7 @@ function contactarTrabajador(nombre) {
 }
 
 function enviarSolicitudTrabajador(nombre) {
-    const proyecto = document.getElementById('proyecto-desc').value;
+    const proyecto = document.getElementById('proyecto-desc')?.value;
     
     if (!proyecto) {
         alert('Por favor describe tu proyecto');
@@ -343,13 +387,6 @@ function enviarSolicitudTrabajador(nombre) {
     
     mostrarModal(contenido);
 }
-
-// Cerrar modal al hacer clic fuera
-document.addEventListener('click', function(e) {
-    if (e.target.id === 'modal-overlay') {
-        cerrarModal();
-    }
-});
 
 // Cerrar modal con tecla ESC
 document.addEventListener('keydown', function(e) {
