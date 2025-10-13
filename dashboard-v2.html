@@ -697,14 +697,68 @@
     </div>
 
     <script>
-        // Actualizar nombre del usuario desde localStorage
-        var usuarioGuardado = localStorage.getItem('usuarioChambApp');
-        if (usuarioGuardado) {
-            var usuario = JSON.parse(usuarioGuardado);
-            document.querySelector('.user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
-        } else {
-            document.querySelector('.user-name').textContent = '👤 Bienvenido, Usuario';
+// Actualizar dashboard según tipo de usuario
+var usuarioGuardado = localStorage.getItem('usuarioChambApp');
+var tipoUsuario = 'trabajador'; // por defecto
+
+if (usuarioGuardado) {
+    var usuario = JSON.parse(usuarioGuardado);
+    tipoUsuario = usuario.tipo || 'trabajador';
+    document.querySelector('.user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
+    
+    // Personalizar dashboard según tipo de usuario
+    personalizarDashboard(tipoUsuario);
+} else {
+    document.querySelector('.user-name').textContent = '👤 Bienvenido, Usuario';
+}
+
+function personalizarDashboard(tipo) {
+    var seccionOfertas = document.querySelector('.section');
+    
+    if (tipo === 'trabajador') {
+        // Para trabajadores: enfocarse en encontrar trabajo
+        seccionOfertas.querySelector('h2').textContent = '💼 Ofertas de Trabajo para Ti';
+        
+        // Cambiar textos de botones
+        var botones = document.querySelectorAll('.oferta-card .btn-primary');
+        for (var i = 0; i < botones.length; i++) {
+            botones[i].textContent = '👁️ Ver Oferta';
         }
+        
+        var botonesSecundarios = document.querySelectorAll('.oferta-card .btn-secondary');
+        for (var i = 0; i < botonesSecundarios.length; i++) {
+            botonesSecundarios[i].innerHTML = '✅ Aplicar';
+        }
+        
+        // Agregar badge
+        var logo = document.querySelector('.logo');
+        logo.innerHTML = 'ChambApp <span style="font-size:0.6rem; background:#10b981; color:white; padding:0.2rem 0.5rem; border-radius:10px; margin-left:0.5rem;">Trabajador</span>';
+        
+    } else if (tipo === 'empleador') {
+        // Para empleadores: enfocarse en encontrar trabajadores
+        seccionOfertas.querySelector('h2').textContent = '👥 Trabajadores Disponibles';
+        
+        // Cambiar textos de botones
+        var botones = document.querySelectorAll('.oferta-card .btn-primary');
+        for (var i = 0; i < botones.length; i++) {
+            botones[i].textContent = '📋 Ver Perfil';
+        }
+        
+        var botonesSecundarios = document.querySelectorAll('.oferta-card .btn-secondary');
+        for (var i = 0; i < botonesSecundarios.length; i++) {
+            botonesSecundarios[i].innerHTML = '📞 Contactar';
+        }
+        
+        // Agregar badge y cambiar menú
+        var logo = document.querySelector('.logo');
+        logo.innerHTML = 'ChambApp <span style="font-size:0.6rem; background:#2563eb; color:white; padding:0.2rem 0.5rem; border-radius:10px; margin-left:0.5rem;">Empleador</span>';
+        
+        // Cambiar opción del menú
+        var menuItems = document.querySelectorAll('.nav-item');
+        menuItems[1].innerHTML = '<span class="icon">👥</span><span>Buscar Trabajadores</span>';
+        menuItems[2].innerHTML = '<span class="icon">➕</span><span>Publicar Oferta de Trabajo</span>';
+    }
+}
 
         // Cerrar modal
         function cerrarModal() {
