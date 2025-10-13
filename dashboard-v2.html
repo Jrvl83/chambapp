@@ -697,8 +697,14 @@
     </div>
 
     <script>
-        // Actualizar nombre
-        document.querySelector('.user-name').textContent = '👤 Bienvenido, Juan Pérez';
+        // Actualizar nombre del usuario desde localStorage
+        var usuarioGuardado = localStorage.getItem('usuarioChambApp');
+        if (usuarioGuardado) {
+            var usuario = JSON.parse(usuarioGuardado);
+            document.querySelector('.user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
+        } else {
+            document.querySelector('.user-name').textContent = '👤 Bienvenido, Usuario';
+        }
 
         // Cerrar modal
         function cerrarModal() {
