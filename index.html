@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChambApp - Conecta con Oportunidades Laborales</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">ChambApp</div>
+            <nav>
+                <a href="#inicio">Inicio</a>
+                <a href="#como-funciona">Cómo Funciona</a>
+                <a href="#registro">Registrarse</a>
+                <a href="#login">Ingresar</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="container">
+            <h1>Encuentra Tu Próxima Chamba</h1>
+            <p>Conectamos trabajadores con empleadores de forma rápida y confiable</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="mostrarRegistro('trabajador')">Busco Trabajo</button>
+                <button class="btn btn-secondary" onclick="mostrarRegistro('empleador')">Busco Trabajadores</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cómo Funciona -->
+    <section id="como-funciona" class="features">
+        <div class="container">
+            <h2>¿Cómo Funciona?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <h3>Regístrate</h3>
+                    <p>Crea tu perfil en minutos como trabajador o empleador</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Busca o Publica</h3>
+                    <p>Encuentra trabajos o publica lo que necesitas</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Conecta</h3>
+                    <p>Contacta directamente y acuerda los detalles</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Registro -->
+    <section id="registro" class="registro-section" style="display: none;">
+        <div class="container">
+            <h2>Registro</h2>
+            <form id="formRegistro" class="form-registro">
+                <input type="text" id="nombre" placeholder="Nombre completo" required>
+                <input type="email" id="email" placeholder="Correo electrónico" required>
+                <input type="tel" id="telefono" placeholder="Teléfono" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                
+                <div id="camposTrabajador" style="display: none;">
+                    <select id="categoria">
+                        <option value="">Selecciona tu especialidad</option>
+                        <option value="construccion">Construcción</option>
+                        <option value="limpieza">Limpieza</option>
+                        <option value="gasfiteria">Gasfitería</option>
+                        <option value="electricidad">Electricidad</option>
+                        <option value="jardineria">Jardinería</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                    <textarea id="experiencia" placeholder="Cuéntanos sobre tu experiencia"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 ChambApp - Todos los derechos reservados</p>
+            <p>Conectando talento con oportunidades en Perú</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
