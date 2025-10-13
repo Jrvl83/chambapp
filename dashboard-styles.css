@@ -1,343 +1,319 @@
-/* Reset y Variables */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* =================================
+   ESTILOS PARA MODALES
+   ================================= */
 
-:root {
-    --primary-color: #2563eb;
-    --secondary-color: #10b981;
-    --danger-color: #ef4444;
-    --dark: #1e293b;
-    --gray: #64748b;
-    --light-gray: #f1f5f9;
-    --white: #ffffff;
-    --border: #e2e8f0;
-    --construccion: #f97316;
-    --limpieza: #8b5cf6;
-    --gasfiteria: #0ea5e9;
-    --electricidad: #eab308;
-    --jardineria: #22c55e;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: var(--light-gray);
-    color: var(--dark);
-}
-
-/* Header */
-.dashboard-header {
-    background: var(--white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
     top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.user-menu {
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
 }
 
-.user-name {
-    font-weight: 500;
-    color: var(--dark);
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
-.btn-logout {
-    padding: 0.5rem 1rem;
-    background: transparent;
-    color: var(--danger-color);
-    border: 1px solid var(--danger-color);
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-
-.btn-logout:hover {
-    background: var(--danger-color);
-    color: white;
-}
-
-/* Dashboard Container */
-.dashboard-container {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-    min-height: calc(100vh - 70px);
-}
-
-/* Sidebar */
-.sidebar {
-    width: 250px;
+/* Modal Content */
+.modal-content {
     background: var(--white);
-    padding: 2rem 0;
-    box-shadow: 2px 0 4px rgba(0,0,0,0.05);
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    text-decoration: none;
-    color: var(--gray);
-    transition: all 0.3s;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     position: relative;
+    animation: modalSlideIn 0.3s ease;
 }
 
-.nav-item:hover {
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Modal Close Button */
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     background: var(--light-gray);
-    color: var(--primary-color);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 10;
+    color: var(--gray);
 }
 
-.nav-item.active {
-    background: var(--light-gray);
-    color: var(--primary-color);
-    border-right: 3px solid var(--primary-color);
-}
-
-.nav-item .icon {
-    font-size: 1.25rem;
-}
-
-.badge {
+.modal-close:hover {
     background: var(--danger-color);
     color: white;
-    padding: 0.15rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    margin-left: auto;
+    transform: rotate(90deg);
 }
 
-/* Main Content */
-.main-content {
-    flex: 1;
+/* Modal Body */
+#modal-body {
     padding: 2rem;
 }
 
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+/* Modal Header */
+.modal-header {
+    text-align: center;
     margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--light-gray);
 }
 
-.stat-card {
-    background: var(--white);
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+.modal-header.success {
+    border-bottom-color: var(--secondary-color);
 }
 
-.stat-icon {
-    font-size: 3rem;
-    background: var(--light-gray);
-    padding: 1rem;
-    border-radius: 50%;
-}
-
-.stat-info h3 {
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 0.25rem;
-}
-
-.stat-info p {
-    color: var(--gray);
-    font-size: 0.9rem;
-}
-
-/* Sections */
-.section {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.section-header h2 {
+.modal-header h2 {
+    font-size: 1.75rem;
     color: var(--dark);
-    font-size: 1.5rem;
+    margin-top: 1rem;
 }
 
-.btn-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: opacity 0.3s;
-}
-
-.btn-link:hover {
-    opacity: 0.7;
-}
-
-/* Ofertas Grid */
-.ofertas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
-}
-
-.oferta-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s;
-}
-
-.oferta-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
-}
-
-.oferta-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.modal-header .oferta-categoria {
+    display: inline-block;
     margin-bottom: 1rem;
 }
 
-.oferta-categoria {
-    padding: 0.35rem 0.75rem;
+.modal-header .trabajador-rating {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Perfil Avatar en Modal */
+.perfil-avatar {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+/* Modal Text */
+.modal-text {
+    margin-bottom: 2rem;
+}
+
+.modal-text h3 {
+    color: var(--dark);
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-text p {
+    color: var(--gray);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* Modal List */
+.modal-list {
+    list-style: none;
+    padding: 0;
+}
+
+.modal-list li {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: var(--light-gray);
+    border-radius: 8px;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-list li:before {
+    content: "✓";
+    color: var(--secondary-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Tags */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tag {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: white;
 }
 
-.oferta-categoria.construccion {
-    background: var(--construccion);
+/* Info Box */
+.info-box {
+    background: var(--light-gray);
+    border-left: 4px solid var(--primary-color);
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
 }
 
-.oferta-categoria.limpieza {
-    background: var(--limpieza);
-}
-
-.oferta-categoria.gasfiteria {
-    background: var(--gasfiteria);
-}
-
-.oferta-categoria.electricidad {
-    background: var(--electricidad);
-}
-
-.oferta-categoria.jardineria {
-    background: var(--jardineria);
-}
-
-.oferta-fecha {
-    color: var(--gray);
-    font-size: 0.85rem;
-}
-
-.oferta-titulo {
-    font-size: 1.1rem;
-    color: var(--dark);
+.info-box strong {
+    color: var(--primary-color);
+    display: block;
     margin-bottom: 0.75rem;
 }
 
-.oferta-descripcion {
-    color: var(--gray);
-    line-height: 1.6;
-    margin-bottom: 1rem;
+.info-box p {
+    margin: 0.5rem 0;
+    color: var(--dark);
 }
 
-.oferta-detalles {
+/* Modal Form */
+.modal-form {
+    margin: 1.5rem 0;
+}
+
+.modal-form label {
+    display: block;
+    color: var(--dark);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.modal-form input,
+.modal-form textarea {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
+
+.modal-form input:focus,
+.modal-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.modal-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--light-gray);
+    border-radius: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.checkbox-group label {
+    margin: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* Modal Buttons */
+.modal-buttons {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
+    justify-content: flex-end;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--light-gray);
 }
 
-.detalle {
-    color: var(--gray);
-    font-size: 0.9rem;
+.modal-buttons .btn {
+    min-width: 120px;
 }
 
-.oferta-footer {
-    display: flex;
-    gap: 0.75rem;
+/* Success State */
+.modal-header.success h2 {
+    color: var(--secondary-color);
 }
 
-/* Buttons */
-.btn {
-    padding: 0.65rem 1.25rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 0.9rem;
+/* Responsive Modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+        margin: 1rem;
+    }
+    
+    #modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-buttons .btn {
+        width: 100%;
+    }
+    
+    .perfil-avatar {
+        font-size: 4rem;
+    }
 }
 
-.btn-primary {
-    background: var(--primary-color);
-    color: white;
+/* Scrollbar personalizado para modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
 }
 
-.btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: var(--primary-color);
-    border: 1px solid var(--primary-color);
-}
-
-.btn-secondary:hover {
+.modal-content::-webkit-scrollbar-track {
     background: var(--light-gray);
 }
 
-.btn-small {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    width: 100%;
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 4px;
 }
 
-/* Trabajadores Grid */
-.trabajadores-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
 }
-
-.trabajador-card {
