@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ChambApp</title>
+    <link rel="stylesheet" href="dashboard-styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo">ChambApp</div>
+            <div class="user-menu">
+                <span class="user-name">👤 Bienvenido, Usuario</span>
+                <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <span class="icon">🏠</span>
+                    <span>Inicio</span>
+                </a>
+                <a href="buscar.html" class="nav-item">
+                    <span class="icon">🔍</span>
+                    <span>Buscar Chambas</span>
+                </a>
+                <a href="publicar.html" class="nav-item">
+                    <span class="icon">➕</span>
+                    <span>Publicar Oferta</span>
+                </a>
+                <a href="trabajadores.html" class="nav-item">
+                    <span class="icon">👥</span>
+                    <span>Trabajadores</span>
+                </a>
+                <a href="mensajes.html" class="nav-item">
+                    <span class="icon">💬</span>
+                    <span>Mensajes</span>
+                    <span class="badge">3</span>
+                </a>
+                <a href="perfil.html" class="nav-item">
+                    <span class="icon">⚙️</span>
+                    <span>Mi Perfil</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👷</div>
+                    <div class="stat-info">
+                        <h3>156</h3>
+                        <p>Trabajadores Activos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💼</div>
+                    <div class="stat-info">
+                        <h3>48</h3>
+                        <p>Ofertas Disponibles</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🤝</div>
+                    <div class="stat-info">
+                        <h3>23</h3>
+                        <p>Conexiones Hoy</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ofertas Recientes -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Ofertas Recientes</h2>
+                    <a href="buscar.html" class="btn-link">Ver todas →</a>
+                </div>
+
+                <div class="ofertas-grid">
+                    <!-- Oferta 1 -->
+                    <div class="oferta-card">
+                        <div class="oferta-header">
+                            <div class="oferta-categoria construccion">Construcción</div>
+                            <div class="oferta-fecha">Hace 2 horas</div>
+                        </div>
+                        <h3 class="oferta-titulo">Maestro de Obra - Construcción Residencial</h3>
+                        <p class="oferta-descripcion">Se necesita maestro de obra con experiencia en construcción de casas. Proyecto en San Isidro.</p>
+                        <div class="oferta-detalles">
+                            <span class="detalle">📍 San Isidro, Lima</span>
+                            <span class="detalle">💰 S/. 80-120/día</span>
+                        </div>
+                        <div class="oferta-footer">
+                            <button class="btn btn-primary">Ver Detalles</button>
+                            <button class="btn btn-secondary">Contactar</button>
+                        </div>
+                    </div>
+
+                    <!-- Oferta 2 -->
+                    <div class="oferta-card">
+                        <div class="oferta-header">
+                            <div class="oferta-categoria limpieza">Limpieza</div>
+                            <div class="oferta-fecha">Hace 5 horas</div>
+                        </div>
+                        <h3 class="oferta-titulo">Personal de Limpieza - Oficinas</h3>
+                        <p class="oferta-descripcion">Empresa busca personal para limpieza de oficinas. Turno mañana, de lunes a viernes.</p>
+                        <div class="oferta-detalles">
+                            <span class="detalle">📍 Miraflores, Lima</span>
+                            <span class="detalle">💰 S/. 1,200/mes</span>
+                        </div>
+                        <div class="oferta-footer">
+                            <button class="btn btn-primary">Ver Detalles</button>
+                            <button class="btn btn-secondary">Contactar</button>
+                        </div>
+                    </div>
+
+                    <!-- Oferta 3 -->
+                    <div class="oferta-card">
+                        <div class="oferta-header">
+                            <div class="oferta-categoria gasfiteria">Gasfitería</div>
+                            <div class="oferta-fecha">Hace 1 día</div>
+                        </div>
+                        <h3 class="oferta-titulo">Gasfitero - Reparación de Tuberías</h3>
+                        <p class="oferta-descripcion">Se requiere gasfitero para reparación urgente de tuberías en edificio residencial.</p>
+                        <div class="oferta-detalles">
+                            <span class="detalle">📍 Surco, Lima</span>
+                            <span class="detalle">💰 S/. 60-80/día</span>
+                        </div>
+                        <div class="oferta-footer">
+                            <button class="btn btn-primary">Ver Detalles</button>
+                            <button class="btn btn-secondary">Contactar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trabajadores Destacados -->
+            <section class="section">
+                <div class="section-header">
+                    <h2>Trabajadores Destacados</h2>
+                    <a href="trabajadores.html" class="btn-link">Ver todos →</a>
+                </div>
+
+                <div class="trabajadores-grid">
+                    <div class="trabajador-card">
+                        <div class="trabajador-avatar">👨‍🔧</div>
+                        <h4>Carlos Mendoza</h4>
+                        <p class="trabajador-categoria">Electricista</p>
+                        <div class="trabajador-rating">⭐⭐⭐⭐⭐ (4.9)</div>
+                        <p class="trabajador-exp">8 años de experiencia</p>
+                        <button class="btn btn-primary btn-small">Ver Perfil</button>
+                    </div>
+
+                    <div class="trabajador-card">
+                        <div class="trabajador-avatar">👨‍🎨</div>
+                        <h4>Luis García</h4>
+                        <p class="trabajador-categoria">Pintor</p>
+                        <div class="trabajador-rating">⭐⭐⭐⭐⭐ (4.8)</div>
+                        <p class="trabajador-exp">5 años de experiencia</p>
+                        <button class="btn btn-primary btn-small">Ver Perfil</button>
+                    </div>
+
+                    <div class="trabajador-card">
+                        <div class="trabajador-avatar">👷‍♀️</div>
+                        <h4>María Torres</h4>
+                        <p class="trabajador-categoria">Jardinera</p>
+                        <div class="trabajador-rating">⭐⭐⭐⭐⭐ (5.0)</div>
+                        <p class="trabajador-exp">6 años de experiencia</p>
+                        <button class="btn btn-primary btn-small">Ver Perfil</button>
+                    </div>
+
+                    <div class="trabajador-card">
+                        <div class="trabajador-avatar">🔧</div>
+                        <h4>Pedro Sánchez</h4>
+                        <p class="trabajador-categoria">Gasfitero</p>
+                        <div class="trabajador-rating">⭐⭐⭐⭐ (4.7)</div>
+                        <p class="trabajador-exp">10 años de experiencia</p>
+                        <button class="btn btn-primary btn-small">Ver Perfil</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
