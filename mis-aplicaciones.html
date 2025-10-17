@@ -351,8 +351,7 @@
                 // Obtener aplicaciones del empleador
                 const q = query(
                     collection(db, 'aplicaciones'),
-                    where('empleadorEmail', '==', usuario.email),
-                    orderBy('fechaAplicacion', 'desc')
+                    where('empleadorEmail', '==', usuario.email)
                 );
 
                 const querySnapshot = await getDocs(q);
