@@ -926,7 +926,7 @@ async function contactarOferta(id) {
             }
         }
 
-        function enviarMensajeContacto(ofertaId) {
+async function enviarMensajeContacto(ofertaId) {
             const nombre = document.getElementById('contacto-nombre').value;
             const telefono = document.getElementById('contacto-telefono').value;
             const mensaje = document.getElementById('contacto-mensaje').value;
@@ -936,21 +936,96 @@ async function contactarOferta(id) {
                 return;
             }
             
-            // Aquí se podría guardar el mensaje en Firestore
-            // Por ahora solo mostramos confirmación
-            
-            mostrarModal(`
-                <div class="modal-header success">
-                    <h2>✅ ¡Mensaje Enviado!</h2>
-                </div>
-                <div class="modal-text">
-                    <p>Tu mensaje ha sido enviado exitosamente al empleador.</p>
-                    <p style="color: #64748b;">Te contactarán pronto al número: <strong>${telefono}</strong></p>
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="cerrarModal()">Entendido</button>
-                </div>
-            `);
+            try {
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+                const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                const { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                
+                const app = initializeApp(window.firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                
+                // Obtener datos del usuario y la oferta
+                const usuarioStr = localStorage.getItem('usuarioChambApp');
+                const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+                
+                const ofertaRef = doc(db, 'ofertas', ofertaId);
+                const ofertaSnap = await getDoc(ofertaRef);
+                
+                if (!ofertaSnap.exists()) {
+                    alert('Error: No se encontró la oferta');
+                    return;
+                }
+                
+                const oferta = ofertaSnap.data();
+                
+                // Verificar si ya aplicó antes
+                const aplicacionesRef = collection(db, 'aplicaciones');
+                const q = query(
+                    aplicacionesRef, 
+                    where('ofertaId', '==', ofertaId),
+                    where('aplicanteEmail', '==', usuario.email)
+                );
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    mostrarModal(`
+                        <div class="modal-header" style="background: #fef3c7;">
+                            <h2>⚠️ Ya Aplicaste</h2>
+                        </div>
+                        <div class="modal-text">
+                            <p>Ya has aplicado anteriormente a esta oferta.</p>
+                            <p style="color: #64748b;">El empleador tiene tu información de contacto.</p>
+                        </div>
+                        <div class="modal-buttons">
+                            <button class="btn btn-primary" onclick="cerrarModal()">Entendido</button>
+                        </div>
+                    `);
+                    return;
+                }
+                
+                // Guardar aplicación en Firestore
+                const aplicacion = {
+                    ofertaId: ofertaId,
+                    ofertaTitulo: oferta.titulo,
+                    ofertaCategoria: oferta.categoria,
+                    empleadorId: oferta.empleadorId,
+                    empleadorNombre: oferta.empleadorNombre,
+                    empleadorEmail: oferta.empleadorEmail,
+                    aplicanteId: auth.currentUser?.uid || 'demo',
+                    aplicanteNombre: nombre,
+                    aplicanteTelefono: telefono,
+                    aplicanteEmail: usuario.email,
+                    aplicanteTipo: usuario.tipo,
+                    mensaje: mensaje,
+                    estado: 'pendiente',
+                    fechaAplicacion: serverTimestamp()
+                };
+                
+                await addDoc(collection(db, 'aplicaciones'), aplicacion);
+                
+                // Mostrar confirmación con teléfono del empleador
+                mostrarModal(`
+                    <div class="modal-header success">
+                        <h2>✅ ¡Aplicación Enviada!</h2>
+                    </div>
+                    <div class="modal-text">
+                        <p>Tu aplicación ha sido enviada exitosamente.</p>
+                        <p style="color: #64748b;">El empleador revisará tu perfil y te contactará pronto al número:</p>
+                        <p style="font-size: 1.5rem; font-weight: bold; color: #3b82f6; margin: 1rem 0;">${telefono}</p>
+                        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                            <p style="margin: 0; color: #0369a1;"><strong>💡 Tip:</strong> Mantén tu teléfono disponible para recibir la llamada del empleador.</p>
+                        </div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" onclick="cerrarModal()">Entendido</button>
+                    </div>
+                `);
+                
+            } catch (error) {
+                console.error('Error al enviar aplicación:', error);
+                alert('Error al enviar la aplicación: ' + error.message);
+            }
         }
 
         function cerrarModal() {
