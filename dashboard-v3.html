@@ -835,10 +835,14 @@
 async function verDetalleOferta(id) {
             try {
                 const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-                const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+                const { getFirestore, doc, getDoc, collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
                 
                 const app = initializeApp(window.firebaseConfig);
                 const db = getFirestore(app);
+                
+                // Obtener datos del usuario actual
+                const usuarioStr = localStorage.getItem('usuarioChambApp');
+                const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
                 
                 // Obtener la oferta específica
                 const docRef = doc(db, 'ofertas', id);
@@ -847,58 +851,16 @@ async function verDetalleOferta(id) {
                 if (docSnap.exists()) {
                     const oferta = docSnap.data();
                     
-                    // Crear el HTML del modal con los datos reales
-                    const modalHTML = `
-                        <div class="modal-header">
-                            <div style="text-align: center; width: 100%;">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">💼</div>
-                                <h2 style="margin: 0;">${oferta.titulo}</h2>
-                                <div style="margin-top: 0.5rem;">
-                                    <span class="badge" style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
-                                        ${oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-text">
-                            <h3>📝 Descripción</h3>
-                            <p style="line-height: 1.6; color: #64748b;">${oferta.descripcion}</p>
-                            
-                            <h3>📍 Detalles</h3>
-                            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                    <div>
-                                        <strong>📍 Ubicación:</strong><br>
-                                        ${oferta.ubicacion}
-                                    </div>
-                                    <div>
-                                        <strong>💰 Salario:</strong><br>
-                                        ${oferta.salario}
-                                    </div>
-                                    <div>
-                                        <strong>⏱️ Duración:</strong><br>
-                                        ${oferta.duracion}
-                                    </div>
-                                    <div>
-                                        <strong>🕐 Horario:</strong><br>
-                                        ${oferta.horario}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <h3>👤 Publicado por</h3>
-                            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
-                                <strong>${oferta.empleadorNombre}</strong><br>
-                                <span style="color: #64748b;">📧 ${oferta.empleadorEmail}</span>
-                            </div>
-                        </div>
-                        <div class="modal-buttons">
-                            <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-                            <button class="btn btn-primary" onclick="contactarOferta('${id}')">💬 Contactar</button>
-                        </div>
-                    `;
+                    // Verificar si el usuario es el dueño de la oferta
+                    const esEmpleadorDueño = usuario && usuario.tipo === 'empleador' && usuario.email === oferta.empleadorEmail;
                     
-                    mostrarModal(modalHTML);
+                    if (esEmpleadorDueño) {
+                        // Mostrar detalles + aplicantes para el empleador dueño
+                        mostrarDetallesParaEmpleador(oferta, id, db);
+                    } else {
+                        // Mostrar detalles normales para trabajadores u otros
+                        mostrarDetallesNormales(oferta, id);
+                    }
                 } else {
                     mostrarModal('<div class="modal-header"><h2>❌ Error</h2></div><div class="modal-text"><p>No se encontró la oferta.</p></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button></div>');
                 }
@@ -906,6 +868,150 @@ async function verDetalleOferta(id) {
                 console.error('Error al cargar detalles:', error);
                 mostrarModal('<div class="modal-header"><h2>❌ Error</h2></div><div class="modal-text"><p>Error al cargar los detalles de la oferta.</p></div><div class="modal-buttons"><button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button></div>');
             }
+        }
+
+        async function mostrarDetallesParaEmpleador(oferta, ofertaId, db) {
+            // Obtener aplicaciones a esta oferta
+            const aplicacionesQuery = query(
+                collection(db, 'aplicaciones'),
+                where('ofertaId', '==', ofertaId)
+            );
+            
+            const aplicacionesSnapshot = await getDocs(aplicacionesQuery);
+            
+            let aplicantesHTML = '';
+            
+            if (aplicacionesSnapshot.empty) {
+                aplicantesHTML = '<p style="text-align: center; color: #94a3b8; padding: 2rem;">📭 Aún no hay aplicantes para esta oferta</p>';
+            } else {
+                aplicantesHTML = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+                aplicacionesSnapshot.forEach((doc) => {
+                    const aplicacion = doc.data();
+                    aplicantesHTML += `
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                <strong style="color: #1e293b;">👤 ${aplicacion.aplicanteNombre}</strong>
+                                <span style="background: #fef3c7; color: #92400e; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem;">PENDIENTE</span>
+                            </div>
+                            <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;">
+                                📧 ${aplicacion.aplicanteEmail}<br>
+                                📱 ${aplicacion.aplicanteTelefono}
+                            </div>
+                            <div style="background: white; padding: 0.75rem; border-radius: 6px; margin-top: 0.5rem;">
+                                <strong style="font-size: 0.875rem; color: #3b82f6;">💬 Mensaje:</strong><br>
+                                <span style="color: #475569;">${aplicacion.mensaje}</span>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                                <a href="tel:${aplicacion.aplicanteTelefono}" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-size: 0.875rem; font-weight: 600;">📞 Llamar</a>
+                                <a href="mailto:${aplicacion.aplicanteEmail}" style="padding: 0.5rem 1rem; background: #10b981; color: white; text-decoration: none; border-radius: 6px; font-size: 0.875rem; font-weight: 600;">📧 Email</a>
+                            </div>
+                        </div>
+                    `;
+                });
+                aplicantesHTML += '</div>';
+            }
+            
+            const modalHTML = `
+                <div class="modal-header">
+                    <div style="text-align: center; width: 100%;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💼</div>
+                        <h2 style="margin: 0;">${oferta.titulo}</h2>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge" style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                ${oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-text">
+                    <h3>📝 Descripción</h3>
+                    <p style="line-height: 1.6; color: #64748b;">${oferta.descripcion}</p>
+                    
+                    <h3>📍 Detalles</h3>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <strong>📍 Ubicación:</strong><br>
+                                ${oferta.ubicacion}
+                            </div>
+                            <div>
+                                <strong>💰 Salario:</strong><br>
+                                ${oferta.salario}
+                            </div>
+                            <div>
+                                <strong>⏱️ Duración:</strong><br>
+                                ${oferta.duracion}
+                            </div>
+                            <div>
+                                <strong>🕐 Horario:</strong><br>
+                                ${oferta.horario}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>👥 Aplicantes (${aplicacionesSnapshot.size})</h3>
+                    ${aplicantesHTML}
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+                </div>
+            `;
+            
+            mostrarModal(modalHTML);
+        }
+
+        function mostrarDetallesNormales(oferta, id) {
+            const modalHTML = `
+                <div class="modal-header">
+                    <div style="text-align: center; width: 100%;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💼</div>
+                        <h2 style="margin: 0;">${oferta.titulo}</h2>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge" style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                ${oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-text">
+                    <h3>📝 Descripción</h3>
+                    <p style="line-height: 1.6; color: #64748b;">${oferta.descripcion}</p>
+                    
+                    <h3>📍 Detalles</h3>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <strong>📍 Ubicación:</strong><br>
+                                ${oferta.ubicacion}
+                            </div>
+                            <div>
+                                <strong>💰 Salario:</strong><br>
+                                ${oferta.salario}
+                            </div>
+                            <div>
+                                <strong>⏱️ Duración:</strong><br>
+                                ${oferta.duracion}
+                            </div>
+                            <div>
+                                <strong>🕐 Horario:</strong><br>
+                                ${oferta.horario}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>👤 Publicado por</h3>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px;">
+                        <strong>${oferta.empleadorNombre}</strong><br>
+                        <span style="color: #64748b;">📧 ${oferta.empleadorEmail}</span>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+                    <button class="btn btn-primary" onclick="contactarOferta('${id}')">💬 Contactar</button>
+                </div>
+            `;
+            
+            mostrarModal(modalHTML);
         }
 
 async function contactarOferta(id) {
