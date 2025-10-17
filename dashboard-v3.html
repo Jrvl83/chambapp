@@ -538,9 +538,10 @@
                     <span class="icon">➕</span>
                     <span id="nav-publicar-text">Publicar Oferta</span>
                 </a>
-                <div class="nav-item">
+                <a href="mis-aplicaciones.html" class="nav-item" id="nav-trabajadores">
                     <span class="icon">👥</span>
-                    <span>Trabajadores</span>
+                    <span id="nav-trabajadores-text">Trabajadores</span>
+                </a>
                 </div>
                 <div class="nav-item">
                     <span class="icon">💬</span>
@@ -736,6 +737,7 @@
                 tituloOfertas.textContent = '👥 Encuentra Trabajadores';
                 navBuscarText.textContent = 'Buscar Trabajadores';
                 navPublicarText.textContent = 'Publicar Oferta';
+                document.getElementById('nav-trabajadores-text').textContent = 'Mis Aplicaciones';
                 
                 var botonesVer = document.querySelectorAll('.btn-ver-detalle');
                 var botonesContactar = document.querySelectorAll('.btn-contactar');
