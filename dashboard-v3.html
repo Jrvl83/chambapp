@@ -1351,18 +1351,20 @@ async function enviarMensajeContacto(ofertaId) {
             const categoria = document.getElementById('filtro-categoria').value;
             const ubicacion = document.getElementById('filtro-ubicacion').value.toLowerCase();
 
-            const ofertasFiltradas = todasLasOfertas.filter(oferta => {
+            const ofertasFiltradas = todasLasOfertas.filter(item => {
+                const oferta = item.data; // Acceder a .data
+                
                 // Filtro por búsqueda (título o descripción)
                 const coincideBusqueda = !busqueda || 
-                    oferta.titulo.toLowerCase().includes(busqueda) || 
-                    oferta.descripcion.toLowerCase().includes(busqueda);
+                    (oferta.titulo && oferta.titulo.toLowerCase().includes(busqueda)) || 
+                    (oferta.descripcion && oferta.descripcion.toLowerCase().includes(busqueda));
 
                 // Filtro por categoría
                 const coincideCategoria = !categoria || oferta.categoria === categoria;
 
                 // Filtro por ubicación
                 const coincideUbicacion = !ubicacion || 
-                    oferta.ubicacion.toLowerCase().includes(ubicacion);
+                    (oferta.ubicacion && oferta.ubicacion.toLowerCase().includes(ubicacion));
 
                 return coincideBusqueda && coincideCategoria && coincideUbicacion;
             });
@@ -1370,7 +1372,6 @@ async function enviarMensajeContacto(ofertaId) {
             mostrarOfertasFiltradas(ofertasFiltradas);
             actualizarContador(ofertasFiltradas.length);
         }
-
         function mostrarOfertasFiltradas(ofertas) {
             const ofertasGrid = document.querySelector('.ofertas-grid');
             ofertasGrid.innerHTML = '';
