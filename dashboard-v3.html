@@ -907,11 +907,17 @@
                     const ofertasGrid = document.querySelector('.ofertas-grid');
                     ofertasGrid.innerHTML = ''; // Limpiar ofertas estáticas
                     
+                    // Guardar ofertas para filtrado
+                    todasLasOfertas = [];
                     querySnapshot.forEach((doc) => {
                         const oferta = doc.data();
+                        todasLasOfertas.push({ id: doc.id, data: oferta });
                         const ofertaCard = crearOfertaCard(oferta, doc.id);
                         ofertasGrid.innerHTML += ofertaCard;
                     });
+                    
+                    // Actualizar contador inicial
+                    actualizarContador(todasLasOfertas.length);
                 } else {
                     // Si no hay ofertas
                     const ofertasGrid = document.querySelector('.ofertas-grid');
@@ -1337,6 +1343,80 @@ async function enviarMensajeContacto(ofertaId) {
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') cerrarModal();
         });
+        // Variable global para almacenar todas las ofertas
+        let todasLasOfertas = [];
+
+        function aplicarFiltros() {
+            const busqueda = document.getElementById('filtro-busqueda').value.toLowerCase();
+            const categoria = document.getElementById('filtro-categoria').value;
+            const ubicacion = document.getElementById('filtro-ubicacion').value.toLowerCase();
+
+            const ofertasFiltradas = todasLasOfertas.filter(oferta => {
+                // Filtro por búsqueda (título o descripción)
+                const coincideBusqueda = !busqueda || 
+                    oferta.titulo.toLowerCase().includes(busqueda) || 
+                    oferta.descripcion.toLowerCase().includes(busqueda);
+
+                // Filtro por categoría
+                const coincideCategoria = !categoria || oferta.categoria === categoria;
+
+                // Filtro por ubicación
+                const coincideUbicacion = !ubicacion || 
+                    oferta.ubicacion.toLowerCase().includes(ubicacion);
+
+                return coincideBusqueda && coincideCategoria && coincideUbicacion;
+            });
+
+            mostrarOfertasFiltradas(ofertasFiltradas);
+            actualizarContador(ofertasFiltradas.length);
+        }
+
+        function mostrarOfertasFiltradas(ofertas) {
+            const ofertasGrid = document.querySelector('.ofertas-grid');
+            ofertasGrid.innerHTML = '';
+
+            if (ofertas.length === 0) {
+                ofertasGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 12px;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
+                        <h3 style="color: #64748b; margin-bottom: 1rem;">No se encontraron ofertas</h3>
+                        <p style="color: #94a3b8;">Intenta con otros filtros o búsqueda</p>
+                    </div>
+                `;
+                return;
+            }
+
+            ofertas.forEach(oferta => {
+                const ofertaCard = crearOfertaCard(oferta.data, oferta.id);
+                ofertasGrid.innerHTML += ofertaCard;
+            });
+        }
+
+        function actualizarContador(cantidad) {
+            const contador = document.getElementById('resultados-count');
+            if (cantidad === 0) {
+                contador.textContent = 'No se encontraron ofertas';
+                contador.style.background = '#fee2e2';
+                contador.style.color = '#991b1b';
+            } else if (cantidad === todasLasOfertas.length) {
+                contador.textContent = `Mostrando todas las ofertas (${cantidad})`;
+                contador.style.background = '#f1f5f9';
+                contador.style.color = '#64748b';
+            } else {
+                contador.textContent = `Mostrando ${cantidad} de ${todasLasOfertas.length} ofertas`;
+                contador.style.background = '#dbeafe';
+                contador.style.color = '#1e40af';
+            }
+        }
+
+        function limpiarFiltros() {
+            document.getElementById('filtro-busqueda').value = '';
+            document.getElementById('filtro-categoria').value = '';
+            document.getElementById('filtro-ubicacion').value = '';
+            
+            mostrarOfertasFiltradas(todasLasOfertas);
+            actualizarContador(todasLasOfertas.length);
+        }
     </script>
 </body>
 </html>
