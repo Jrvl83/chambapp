@@ -132,13 +132,19 @@ function configurarEventos() {
     const navLinks = document.querySelectorAll('nav a');
     for (let i = 0; i < navLinks.length; i++) {
         navLinks[i].addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
+            const href = this.getAttribute('href');
             
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
+            // Solo prevenir si es un anchor interno (#)
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
             }
+            // Si no empieza con #, dejar que el link funcione normalmente
         });
     }
     
