@@ -586,7 +586,47 @@
                 <div class="section-header">
                     <h2 id="titulo-ofertas">Ofertas Recientes</h2>
                 </div>
+            <h2 id="titulo-ofertas">💼 Ofertas de Trabajo para Ti</h2>
 
+            <!-- Panel de Filtros -->
+            <div class="filtros-container">
+                <div class="filtros-header">
+                    <h3>🔍 Buscar y Filtrar</h3>
+                    <button class="btn-limpiar" onclick="limpiarFiltros()">🔄 Limpiar</button>
+                </div>
+                
+                <div class="filtros-grid">
+                    <div class="filtro-item">
+                        <label>🔎 Buscar:</label>
+                        <input type="text" id="filtro-busqueda" placeholder="Buscar por palabra clave..." oninput="aplicarFiltros()">
+                    </div>
+                    
+                    <div class="filtro-item">
+                        <label>🏷️ Categoría:</label>
+                        <select id="filtro-categoria" onchange="aplicarFiltros()">
+                            <option value="">Todas las categorías</option>
+                            <option value="construccion">Construcción</option>
+                            <option value="electricidad">Electricidad</option>
+                            <option value="gasfiteria">Gasfitería</option>
+                            <option value="pintura">Pintura</option>
+                            <option value="carpinteria">Carpintería</option>
+                            <option value="limpieza">Limpieza</option>
+                            <option value="jardineria">Jardinería</option>
+                            <option value="mecanica">Mecánica</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filtro-item">
+                        <label>📍 Ubicación:</label>
+                        <input type="text" id="filtro-ubicacion" placeholder="Ej: San Isidro, Lima" oninput="aplicarFiltros()">
+                    </div>
+                </div>
+                
+                <div class="resultados-count" id="resultados-count">
+                    Mostrando todas las ofertas
+                </div>
+            </div>
                 <div class="ofertas-grid">
                     <div class="oferta-card">
                         <div class="oferta-header">
