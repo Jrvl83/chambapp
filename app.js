@@ -143,7 +143,7 @@ function configurarEventos() {
     }
     
     // Botón de login
-    const loginLinks = document.querySelectorAll('a[href="#login"]');
+    const loginLinks = document.querySelectorAll('a[href="#login-old"]');
     for (let i = 0; i < loginLinks.length; i++) {
         loginLinks[i].addEventListener('click', function(e) {
             e.preventDefault();
