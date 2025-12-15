@@ -10,9 +10,14 @@
 </head>
 <body>
   <!-- Header -->
-    <header class="dashboard-header">
-        <div class="header-content">
-            <div class="logo" id="logo-text">ChambApp</div>
+<header class="dashboard-header">
+    <div class="header-content">
+        <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        <div class="logo" id="logo-text">ChambApp</div>
             <div class="user-menu">
                 <span class="user-name" id="user-name">👤 Bienvenido, Usuario</span>
                 <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
@@ -22,7 +27,8 @@
 
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+<aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" id="sidebar-close" onclick="toggleMenu()">✕</button>
             <nav class="sidebar-nav">
                 <div class="nav-item active">
                     <span class="icon">🏠</span>
