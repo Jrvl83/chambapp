@@ -25,15 +25,20 @@ onAuthStateChanged(auth, async (user) => {
         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
         
         if (userDoc.exists()) {
-            const usuario = userDoc.data();
-            console.log('👤 Datos de usuario:', usuario);
-            
-            // Actualizar UI
-            document.getElementById('user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
-            personalizarPorTipo(usuario.tipo || 'trabajador');
-            
-            // Cargar ofertas
-            await cargarOfertas(usuario, user.uid);
+    const usuario = userDoc.data();
+    console.log('👤 Datos de usuario:', usuario);
+    
+    // Actualizar UI
+    document.getElementById('user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
+    personalizarPorTipo(usuario.tipo || 'trabajador');
+    
+    // Cargar ofertas
+    await cargarOfertas(usuario, user.uid);
+    
+    // Ocultar pantalla de carga y mostrar contenido real
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('dashboard-content').style.display = 'block';
+    console.log('✅ Dashboard cargado completamente');
         } else {
             console.error('❌ No se encontraron datos del usuario en Firestore');
             alert('Error al cargar perfil');
