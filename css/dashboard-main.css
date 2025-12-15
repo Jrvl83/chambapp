@@ -208,9 +208,16 @@
             color: white;
         }
 
-        .construccion { background: #f97316; }
-        .limpieza { background: #8b5cf6; }
-        .gasfiteria { background: #0ea5e9; }
+/* Estilos para todas las categorías */
+.construccion { background: #f97316; color: white; }
+.limpieza { background: #8b5cf6; color: white; }
+.gasfiteria { background: #0ea5e9; color: white; }
+.electricidad { background: #eab308; color: white; }
+.carpinteria { background: #f59e0b; color: white; }
+.jardineria { background: #22c55e; color: white; }
+.pintura { background: #6366f1; color: white; }
+.mecanica { background: #6b7280; color: white; }
+.otros { background: #94a3b8; color: white; }
 
         .oferta-fecha {
             color: var(--gray);
