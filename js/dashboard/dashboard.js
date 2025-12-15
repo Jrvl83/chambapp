@@ -885,3 +885,24 @@ window.editarOferta = editarOferta;
 window.guardarEdicionOferta = guardarEdicionOferta;
 window.eliminarOferta = eliminarOferta;
 window.confirmarEliminarOferta = confirmarEliminarOferta;
+
+// ========================================
+// FUNCIÓN PARA MENÚ HAMBURGUESA
+// ========================================
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Prevenir scroll del body cuando el menú está abierto
+    if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Exponer función al scope global
+window.toggleMenu = toggleMenu;
