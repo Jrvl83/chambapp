@@ -192,8 +192,12 @@
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     
-                    // Guardar en localStorage
-                    localStorage.setItem('usuarioChambApp', JSON.stringify(userData));
+                // Guardar en localStorage incluyendo el UID
+                const usuarioCompleto = {
+                    ...userData,
+                    uid: user.uid  // ← Agregar el UID de Firebase Auth
+                };
+                localStorage.setItem('usuarioChambApp', JSON.stringify(usuarioCompleto));
 
                     // Mostrar mensaje de éxito
                     successMessage.textContent = `¡Bienvenido de vuelta, ${userData.nombre}!`;
