@@ -622,7 +622,11 @@ async function enviarMensajeContacto(ofertaId) {
         function mostrarOfertasFiltradas(ofertas) {
             const ofertasGrid = document.querySelector('.ofertas-grid');
             ofertasGrid.innerHTML = '';
-
+            
+            // Obtener usuario actual
+            const usuarioStr = localStorage.getItem('usuarioChambApp');
+            const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+        
             if (ofertas.length === 0) {
                 ofertasGrid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 12px;">
@@ -633,9 +637,9 @@ async function enviarMensajeContacto(ofertaId) {
                 `;
                 return;
             }
-
+        
             ofertas.forEach(oferta => {
-                const ofertaCard = crearOfertaCard(oferta.data, oferta.id);
+                const ofertaCard = crearOfertaCard(oferta.data, oferta.id, usuario);
                 ofertasGrid.innerHTML += ofertaCard;
             });
         }
@@ -850,3 +854,21 @@ async function confirmarEliminarOferta(id) {
         alert('Error al eliminar la oferta: ' + error.message);
     }
 }
+
+// ========================================
+// EXPONER FUNCIONES AL SCOPE GLOBAL
+// ========================================
+window.verDetalleOferta = verDetalleOferta;
+window.contactarOferta = contactarOferta;
+window.enviarMensajeContacto = enviarMensajeContacto;
+window.cerrarModal = cerrarModal;
+window.clickFueraModal = clickFueraModal;
+window.mostrarModal = mostrarModal;
+window.cerrarSesion = cerrarSesion;
+window.confirmarSalir = confirmarSalir;
+window.aplicarFiltros = aplicarFiltros;
+window.limpiarFiltros = limpiarFiltros;
+window.editarOferta = editarOferta;
+window.guardarEdicionOferta = guardarEdicionOferta;
+window.eliminarOferta = eliminarOferta;
+window.confirmarEliminarOferta = confirmarEliminarOferta;
