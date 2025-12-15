@@ -616,3 +616,188 @@ async function enviarMensajeContacto(ofertaId) {
             mostrarOfertasFiltradas(todasLasOfertas);
             actualizarContador(todasLasOfertas.length);
         }
+// ========================================
+// FUNCIONES PARA EDITAR Y ELIMINAR OFERTAS
+// ========================================
+
+async function editarOferta(id) {
+    try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getFirestore, doc, getDoc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
+        const app = initializeApp(window.firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Obtener los datos actuales de la oferta
+        const docRef = doc(db, 'ofertas', id);
+        const docSnap = await getDoc(docRef);
+        
+        if (!docSnap.exists()) {
+            alert('Error: No se encontró la oferta');
+            return;
+        }
+        
+        const oferta = docSnap.data();
+        
+        // Mostrar modal con formulario de edición
+        const modalHTML = `
+            <div class="modal-header">
+                <h2>✏️ Editar Oferta</h2>
+            </div>
+            <div class="modal-text">
+                <form class="modal-form" id="formEditarOferta">
+                    <label>Título de la Oferta:</label>
+                    <input type="text" id="edit-titulo" value="${oferta.titulo}" required>
+                    
+                    <label>Categoría:</label>
+                    <select id="edit-categoria" required>
+                        <option value="construccion" ${oferta.categoria === 'construccion' ? 'selected' : ''}>🏗️ Construcción</option>
+                        <option value="gasfiteria" ${oferta.categoria === 'gasfiteria' ? 'selected' : ''}>🔧 Gasfitería</option>
+                        <option value="electricidad" ${oferta.categoria === 'electricidad' ? 'selected' : ''}>⚡ Electricidad</option>
+                        <option value="jardineria" ${oferta.categoria === 'jardineria' ? 'selected' : ''}>🌿 Jardinería</option>
+                        <option value="limpieza" ${oferta.categoria === 'limpieza' ? 'selected' : ''}>🧹 Limpieza</option>
+                        <option value="otros" ${oferta.categoria === 'otros' ? 'selected' : ''}>📦 Otros</option>
+                    </select>
+                    
+                    <label>Descripción:</label>
+                    <textarea id="edit-descripcion" rows="4" required>${oferta.descripcion}</textarea>
+                    
+                    <label>Ubicación:</label>
+                    <input type="text" id="edit-ubicacion" value="${oferta.ubicacion}" required>
+                    
+                    <label>Salario Ofrecido:</label>
+                    <input type="text" id="edit-salario" value="${oferta.salario}" placeholder="Ej: S/. 50/hora" required>
+                    
+                    <label>Duración Estimada:</label>
+                    <input type="text" id="edit-duracion" value="${oferta.duracion}" placeholder="Ej: 1 día, 1 semana" required>
+                    
+                    <label>Horario:</label>
+                    <input type="text" id="edit-horario" value="${oferta.horario}" placeholder="Ej: 8am - 5pm" required>
+                </form>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarEdicionOferta('${id}')">💾 Guardar Cambios</button>
+            </div>
+        `;
+        
+        mostrarModal(modalHTML);
+        
+    } catch (error) {
+        console.error('Error al cargar oferta para editar:', error);
+        alert('Error al cargar la oferta');
+    }
+}
+
+async function guardarEdicionOferta(id) {
+    const titulo = document.getElementById('edit-titulo').value.trim();
+    const categoria = document.getElementById('edit-categoria').value;
+    const descripcion = document.getElementById('edit-descripcion').value.trim();
+    const ubicacion = document.getElementById('edit-ubicacion').value.trim();
+    const salario = document.getElementById('edit-salario').value.trim();
+    const duracion = document.getElementById('edit-duracion').value.trim();
+    const horario = document.getElementById('edit-horario').value.trim();
+    
+    if (!titulo || !descripcion || !ubicacion || !salario || !duracion || !horario) {
+        alert('Por favor completa todos los campos');
+        return;
+    }
+    
+    try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getFirestore, doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
+        const app = initializeApp(window.firebaseConfig);
+        const db = getFirestore(app);
+        
+        const docRef = doc(db, 'ofertas', id);
+        
+        await updateDoc(docRef, {
+            titulo: titulo,
+            categoria: categoria,
+            descripcion: descripcion,
+            ubicacion: ubicacion,
+            salario: salario,
+            duracion: duracion,
+            horario: horario
+        });
+        
+        // Mostrar confirmación
+        mostrarModal(`
+            <div class="modal-header success">
+                <h2>✅ ¡Oferta Actualizada!</h2>
+            </div>
+            <div class="modal-text">
+                <p>Los cambios se han guardado exitosamente.</p>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="location.reload()">Aceptar</button>
+            </div>
+        `);
+        
+    } catch (error) {
+        console.error('Error al actualizar oferta:', error);
+        alert('Error al guardar los cambios: ' + error.message);
+    }
+}
+
+async function eliminarOferta(id) {
+    // Mostrar confirmación antes de eliminar
+    const modalHTML = `
+        <div class="modal-header" style="background: #fee2e2;">
+            <h2>⚠️ Eliminar Oferta</h2>
+        </div>
+        <div class="modal-text">
+            <p style="font-size: 1.1rem; color: #dc2626; font-weight: 600;">¿Estás seguro que deseas eliminar esta oferta?</p>
+            <p style="color: #64748b;">Esta acción no se puede deshacer. Todas las aplicaciones asociadas también serán eliminadas.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn btn-danger" onclick="confirmarEliminarOferta('${id}')" style="background: #dc2626;">🗑️ Sí, Eliminar</button>
+        </div>
+    `;
+    
+    mostrarModal(modalHTML);
+}
+
+async function confirmarEliminarOferta(id) {
+    try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getFirestore, doc, deleteDoc, collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        
+        const app = initializeApp(window.firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Eliminar todas las aplicaciones asociadas a esta oferta
+        const aplicacionesRef = collection(db, 'aplicaciones');
+        const q = query(aplicacionesRef, where('ofertaId', '==', id));
+        const querySnapshot = await getDocs(q);
+        
+        const deletePromises = [];
+        querySnapshot.forEach((docSnap) => {
+            deletePromises.push(deleteDoc(doc(db, 'aplicaciones', docSnap.id)));
+        });
+        
+        await Promise.all(deletePromises);
+        
+        // Eliminar la oferta
+        await deleteDoc(doc(db, 'ofertas', id));
+        
+        // Mostrar confirmación
+        mostrarModal(`
+            <div class="modal-header success">
+                <h2>✅ Oferta Eliminada</h2>
+            </div>
+            <div class="modal-text">
+                <p>La oferta ha sido eliminada exitosamente.</p>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="location.reload()">Aceptar</button>
+            </div>
+        `);
+        
+    } catch (error) {
+        console.error('Error al eliminar oferta:', error);
+        alert('Error al eliminar la oferta: ' + error.message);
+    }
+}
