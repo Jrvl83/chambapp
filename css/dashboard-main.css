@@ -586,3 +586,82 @@
             margin-bottom: 1.5rem;
             color: var(--dark);
         }
+/* ========================================
+   ESTILOS PARA BOTONES DE EDITAR/ELIMINAR
+   ======================================== */
+
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+    border: 2px solid #f59e0b;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+    border-color: #d97706;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border: 2px solid #ef4444;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Ajustar el footer de las tarjetas para 3 botones */
+.oferta-footer {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.oferta-footer .btn {
+    flex: 1;
+    min-width: 120px;
+    font-size: 0.875rem;
+}
+
+/* Modal para edición */
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.modal-form input:focus,
+.modal-form select:focus,
+.modal-form textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.modal-form label {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
