@@ -34,6 +34,9 @@ onAuthStateChanged(auth, async (user) => {
     
     // Cargar ofertas
     await cargarOfertas(usuario, user.uid);
+
+    // Cargar estadísticas personalizadas
+    await cargarEstadisticas(usuario, user.uid);        
     
     // Ocultar pantalla de carga y mostrar contenido real
     document.getElementById('loading-screen').style.display = 'none';
@@ -165,6 +168,85 @@ async function cargarOfertas(usuario, userUid) {
                 <p style="font-size: 0.875rem; margin-top: 1rem;">Código: ${error.code}</p>
             </div>
         `;
+    }
+}
+
+// ========================================
+// CARGAR ESTADÍSTICAS PERSONALIZADAS
+// ========================================
+async function cargarEstadisticas(usuario, userUid) {
+    try {
+        if (usuario.tipo === 'empleador') {
+            // ESTADÍSTICAS PARA EMPLEADOR
+            
+            // 1. Contar aplicantes a mis ofertas
+            const aplicacionesQuery = query(
+                collection(db, 'aplicaciones'),
+                where('empleadorId', '==', userUid)
+            );
+            const aplicacionesSnapshot = await getDocs(aplicacionesQuery);
+            const totalAplicantes = aplicacionesSnapshot.size;
+            
+            // 2. Contar mis ofertas activas
+            const ofertasQuery = query(
+                collection(db, 'ofertas'),
+                where('empleadorId', '==', userUid),
+                where('estado', '==', 'activa')
+            );
+            const ofertasSnapshot = await getDocs(ofertasQuery);
+            const ofertasActivas = ofertasSnapshot.size;
+            
+            // 3. Contrataciones (futuro - por ahora 0)
+            const contrataciones = 0;
+            
+            // Actualizar UI
+            document.getElementById('stat-icon-1').textContent = '👥';
+            document.getElementById('stat-number-1').textContent = totalAplicantes;
+            document.getElementById('stat-label-1').textContent = 'Aplicantes Totales';
+            
+            document.getElementById('stat-icon-2').textContent = '💼';
+            document.getElementById('stat-number-2').textContent = ofertasActivas;
+            document.getElementById('stat-label-2').textContent = 'Ofertas Activas';
+            
+            document.getElementById('stat-icon-3').textContent = '✅';
+            document.getElementById('stat-number-3').textContent = contrataciones;
+            document.getElementById('stat-label-3').textContent = 'Contrataciones';
+            
+        } else {
+            // ESTADÍSTICAS PARA TRABAJADOR
+            
+            // 1. Contar mis aplicaciones
+            const misAplicacionesQuery = query(
+                collection(db, 'aplicaciones'),
+                where('aplicanteId', '==', userUid)
+            );
+            const misAplicacionesSnapshot = await getDocs(misAplicacionesQuery);
+            const totalAplicaciones = misAplicacionesSnapshot.size;
+            
+            // 2. Aplicaciones aceptadas (futuro - por ahora 0)
+            const aceptadas = 0;
+            
+            // 3. Calificación promedio (futuro)
+            const calificacion = 'N/A';
+            
+            // Actualizar UI
+            document.getElementById('stat-icon-1').textContent = '📋';
+            document.getElementById('stat-number-1').textContent = totalAplicaciones;
+            document.getElementById('stat-label-1').textContent = 'Mis Aplicaciones';
+            
+            document.getElementById('stat-icon-2').textContent = '✅';
+            document.getElementById('stat-number-2').textContent = aceptadas;
+            document.getElementById('stat-label-2').textContent = 'Aceptadas';
+            
+            document.getElementById('stat-icon-3').textContent = '⭐';
+            document.getElementById('stat-number-3').textContent = calificacion;
+            document.getElementById('stat-label-3').textContent = 'Calificación';
+        }
+        
+        console.log('📊 Estadísticas cargadas');
+        
+    } catch (error) {
+        console.error('❌ Error al cargar estadísticas:', error);
     }
 }
 
