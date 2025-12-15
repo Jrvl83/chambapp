@@ -1,16 +1,54 @@
 // Inicializar al cargar
-        (function() {
-            var usuarioStr = localStorage.getItem('usuarioChambApp');
-            var usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+// ========================================
+// IMPORTACIONES Y CONFIGURACIÓN DE FIREBASE
+// ========================================
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const app = initializeApp(window.firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Variable global para almacenar todas las ofertas (para filtrado)
+let todasLasOfertas = [];
+
+// ========================================
+// VERIFICAR AUTENTICACIÓN AL CARGAR PÁGINA
+// ========================================
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        console.log('✅ Usuario autenticado:', user.uid);
+        console.log('📧 Email:', user.email);
+        
+        // Obtener datos del usuario desde Firestore
+        const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
+        
+        if (userDoc.exists()) {
+            const usuario = userDoc.data();
+            console.log('👤 Datos de usuario:', usuario);
             
-            if (usuario) {
-                document.getElementById('user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
-                personalizarPorTipo(usuario.tipo || 'trabajador');
-            }
+            // Actualizar UI
+            document.getElementById('user-name').textContent = '👤 Bienvenido, ' + usuario.nombre;
+            personalizarPorTipo(usuario.tipo || 'trabajador');
             
-            // Cargar ofertas de Firebase
-            cargarOfertas();
-        })();
+            // Cargar ofertas
+            await cargarOfertas(usuario, user.uid);
+        } else {
+            console.error('❌ No se encontraron datos del usuario en Firestore');
+            alert('Error al cargar perfil');
+            window.location.href = 'login.html';
+        }
+    } else {
+        console.log('❌ No hay usuario autenticado');
+        alert('Debes iniciar sesión');
+        window.location.href = 'login.html';
+    }
+});
+
+// ========================================
+// PERSONALIZAR INTERFAZ POR TIPO DE USUARIO
+// ========================================
 
         function personalizarPorTipo(tipo) {
             var logo = document.getElementById('logo-text');
@@ -52,77 +90,89 @@
             }
         }
 
-        async function cargarOfertas() {
-            try {
-                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-                const { getFirestore, collection, query, where, limit, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-                
-                const app = initializeApp(window.firebaseConfig);
-                const db = getFirestore(app);
-                
-                const usuarioStr = localStorage.getItem('usuarioChambApp');
-                const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
-                
-                let q;
-                
-                // Si es empleador, mostrar solo sus ofertas
-                if (usuario && usuario.tipo === 'empleador') {
-                    q = query(
-                        collection(db, 'ofertas'), 
-                        where('empleadorEmail', '==', usuario.email),
-                        limit(10)
-                    );
-                } else {
-                    // Si es trabajador, mostrar todas las ofertas
-                    q = query(collection(db, 'ofertas'), limit(10));
-                }
-                
-                const querySnapshot = await getDocs(q);
-                
-                if (!querySnapshot.empty) {
-                    const ofertasGrid = document.querySelector('.ofertas-grid');
-                    ofertasGrid.innerHTML = ''; // Limpiar ofertas estáticas
-                    
-                    // Guardar ofertas para filtrado
-                    todasLasOfertas = [];
-                    querySnapshot.forEach((doc) => {
-                        const oferta = doc.data();
-                        todasLasOfertas.push({ id: doc.id, data: oferta });
-                        const ofertaCard = crearOfertaCard(oferta, doc.id);
-                        ofertasGrid.innerHTML += ofertaCard;
-                    });
-                    
-                    // Actualizar contador inicial
-                    actualizarContador(todasLasOfertas.length);
-                } else {
-                    // Si no hay ofertas
-                    const ofertasGrid = document.querySelector('.ofertas-grid');
-                    if (usuario && usuario.tipo === 'empleador') {
-                        ofertasGrid.innerHTML = `
-                            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 12px;">
-                                <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
-                                <h3 style="color: #64748b; margin-bottom: 1rem;">No has publicado ofertas aún</h3>
-                                <p style="color: #94a3b8; margin-bottom: 2rem;">Comienza publicando tu primera oferta de trabajo</p>
-                                <a href="publicar-oferta.html" style="display: inline-block; padding: 0.875rem 1.5rem; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">➕ Publicar Oferta</a>
-                            </div>
-                        `;
-                    }
-                }
-            } catch (error) {
-                console.error('Error al cargar ofertas:', error);
+async function cargarOfertas(usuario, userUid) {
+    try {
+        console.log('🔄 Cargando ofertas...');
+        console.log('Usuario tipo:', usuario.tipo);
+        console.log('Usuario email:', usuario.email);
+        
+        let q;
+        
+        // Si es empleador, mostrar solo sus ofertas
+        if (usuario && usuario.tipo === 'empleador') {
+            console.log('📋 Buscando ofertas del empleador:', usuario.email);
+            q = query(
+                collection(db, 'ofertas'), 
+                where('empleadorEmail', '==', usuario.email)
+            );
+        } else {
+            // Si es trabajador, mostrar todas las ofertas
+            console.log('📋 Buscando todas las ofertas');
+            q = query(
+                collection(db, 'ofertas'),
+                limit(20)
+            );
+        }
+        
+        const querySnapshot = await getDocs(q);
+        console.log('📦 Ofertas encontradas:', querySnapshot.size);
+        
+        if (!querySnapshot.empty) {
+            const ofertasGrid = document.querySelector('.ofertas-grid');
+            ofertasGrid.innerHTML = ''; // Limpiar ofertas estáticas
+            
+            // Guardar ofertas para filtrado
+            todasLasOfertas = [];
+            querySnapshot.forEach((docSnap) => {
+                const oferta = docSnap.data();
+                console.log('Oferta:', docSnap.id, oferta.titulo, 'Empleador:', oferta.empleadorEmail);
+                todasLasOfertas.push({ id: docSnap.id, data: oferta });
+                const ofertaCard = crearOfertaCard(oferta, docSnap.id, usuario);
+                ofertasGrid.innerHTML += ofertaCard;
+            });
+            
+            // Actualizar contador inicial
+            actualizarContador(todasLasOfertas.length);
+        } else {
+            console.log('📭 No se encontraron ofertas');
+            const ofertasGrid = document.querySelector('.ofertas-grid');
+            if (usuario && usuario.tipo === 'empleador') {
+                ofertasGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 12px;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+                        <h3 style="color: #64748b; margin-bottom: 1rem;">No has publicado ofertas aún</h3>
+                        <p style="color: #94a3b8; margin-bottom: 2rem;">Comienza publicando tu primera oferta de trabajo</p>
+                        <a href="publicar-oferta.html" style="display: inline-block; padding: 0.875rem 1.5rem; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">➕ Publicar Oferta</a>
+                    </div>
+                `;
             }
         }
+    } catch (error) {
+        console.error('❌ Error al cargar ofertas:', error);
+        console.error('Código:', error.code);
+        console.error('Mensaje:', error.message);
+        
+        const ofertasGrid = document.querySelector('.ofertas-grid');
+        ofertasGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: #fee; border-radius: 12px; color: #c33;">
+                <h3>❌ Error al cargar ofertas</h3>
+                <p>${error.message}</p>
+                <p style="font-size: 0.875rem; margin-top: 1rem;">Código: ${error.code}</p>
+            </div>
+        `;
+    }
+}
 
-function crearOfertaCard(oferta, id) {
+function crearOfertaCard(oferta, id, usuario) {
     const categoriaClass = oferta.categoria || 'otros';
     const categoriaLabel = oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1);
     
     const fecha = oferta.fechaCreacion ? 'Hace unas horas' : 'Reciente';
     
     // Verificar si el usuario actual es el dueño de la oferta
-    const usuarioStr = localStorage.getItem('usuarioChambApp');
-    const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
     const esEmpleadorDueño = usuario && usuario.tipo === 'empleador' && usuario.email === oferta.empleadorEmail;
+    
+    console.log('🔍 Card para oferta:', oferta.titulo, '| Usuario:', usuario?.email, '| Empleador oferta:', oferta.empleadorEmail, '| Es dueño:', esEmpleadorDueño);
     
     // Botones diferentes para empleador dueño vs otros usuarios
     let botonesFooter = '';
@@ -541,8 +591,7 @@ async function enviarMensajeContacto(ofertaId) {
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') cerrarModal();
         });
-        // Variable global para almacenar todas las ofertas
-        let todasLasOfertas = [];
+
 
         function aplicarFiltros() {
             const busqueda = document.getElementById('filtro-busqueda').value.toLowerCase();
