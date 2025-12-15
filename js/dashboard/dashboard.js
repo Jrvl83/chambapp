@@ -169,8 +169,16 @@ async function cargarOfertas(usuario, userUid) {
 }
 
 function crearOfertaCard(oferta, id, usuario) {
+    // Asegurarse de que siempre haya una categoría
     const categoriaClass = oferta.categoria || 'otros';
-    const categoriaLabel = oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1);
+    
+    // Crear label con la primera letra mayúscula
+    let categoriaLabel = 'Otros';
+    if (oferta.categoria) {
+        categoriaLabel = oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1);
+    }
+    
+    console.log('📋 Oferta:', oferta.titulo, '| Categoría:', oferta.categoria, '| Label:', categoriaLabel);
     
     const fecha = oferta.fechaCreacion ? 'Hace unas horas' : 'Reciente';
     
