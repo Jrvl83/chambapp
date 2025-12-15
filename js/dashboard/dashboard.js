@@ -113,31 +113,53 @@
             }
         }
 
-        function crearOfertaCard(oferta, id) {
-            const categoriaClass = oferta.categoria || 'otros';
-            const categoriaLabel = oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1);
-            
-            const fecha = oferta.fechaCreacion ? 'Hace unas horas' : 'Reciente';
-            
-            return `
-                <div class="oferta-card">
-                    <div class="oferta-header">
-                        <div class="oferta-categoria ${categoriaClass}">${categoriaLabel}</div>
-                        <div class="oferta-fecha">${fecha}</div>
-                    </div>
-                    <h3 class="oferta-titulo">${oferta.titulo}</h3>
-                    <p class="oferta-descripcion">${oferta.descripcion}</p>
-                    <div class="oferta-detalles">
-                        <span class="detalle">📍 ${oferta.ubicacion}</span>
-                        <span class="detalle">💰 ${oferta.salario}</span>
-                    </div>
-                    <div class="oferta-footer">
-                        <button class="btn btn-primary btn-ver-detalle" onclick="verDetalleOferta('${id}')">Ver Detalles</button>
-                        <button class="btn btn-secondary btn-contactar" onclick="contactarOferta('${id}')">Contactar</button>
-                    </div>
-                </div>
-            `;
-        }
+function crearOfertaCard(oferta, id) {
+    const categoriaClass = oferta.categoria || 'otros';
+    const categoriaLabel = oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1);
+    
+    const fecha = oferta.fechaCreacion ? 'Hace unas horas' : 'Reciente';
+    
+    // Verificar si el usuario actual es el dueño de la oferta
+    const usuarioStr = localStorage.getItem('usuarioChambApp');
+    const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+    const esEmpleadorDueño = usuario && usuario.tipo === 'empleador' && usuario.email === oferta.empleadorEmail;
+    
+    // Botones diferentes para empleador dueño vs otros usuarios
+    let botonesFooter = '';
+    
+    if (esEmpleadorDueño) {
+        // Botones para el empleador dueño de la oferta
+        botonesFooter = `
+            <button class="btn btn-primary btn-ver-detalle" onclick="verDetalleOferta('${id}')">👁️ Ver Aplicantes</button>
+            <button class="btn btn-warning" onclick="editarOferta('${id}')" style="background: #f59e0b; border-color: #f59e0b;">✏️ Editar</button>
+            <button class="btn btn-danger" onclick="eliminarOferta('${id}')" style="background: #ef4444; border-color: #ef4444;">🗑️ Eliminar</button>
+        `;
+    } else {
+        // Botones normales para trabajadores
+        botonesFooter = `
+            <button class="btn btn-primary btn-ver-detalle" onclick="verDetalleOferta('${id}')">Ver Detalles</button>
+            <button class="btn btn-secondary btn-contactar" onclick="contactarOferta('${id}')">Contactar</button>
+        `;
+    }
+    
+    return `
+        <div class="oferta-card">
+            <div class="oferta-header">
+                <div class="oferta-categoria ${categoriaClass}">${categoriaLabel}</div>
+                <div class="oferta-fecha">${fecha}</div>
+            </div>
+            <h3 class="oferta-titulo">${oferta.titulo}</h3>
+            <p class="oferta-descripcion">${oferta.descripcion}</p>
+            <div class="oferta-detalles">
+                <span class="detalle">📍 ${oferta.ubicacion}</span>
+                <span class="detalle">💰 ${oferta.salario}</span>
+            </div>
+            <div class="oferta-footer">
+                ${botonesFooter}
+            </div>
+        </div>
+    `;
+}
 
 async function verDetalleOferta(id) {
             try {
