@@ -494,20 +494,6 @@
             min-width: 120px;
         }
 
-        @media (max-width: 768px) {
-            .dashboard-container {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-            }
-            .main-content {
-                padding: 1rem;
-            }
-            .ofertas-grid {
-                grid-template-columns: 1fr;
-            }
-        }
         /* Filtros */
         .filtros-container {
             background: var(--white);
