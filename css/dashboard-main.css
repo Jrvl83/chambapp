@@ -672,3 +672,201 @@
     color: #1e293b;
     margin-bottom: 0.5rem;
 }
+/* ========================================
+   RESPONSIVE - MENÚ HAMBURGUESA
+   ======================================== */
+
+/* Botón hamburguesa - oculto por defecto en desktop */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: var(--primary);
+    margin: 5px 0;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Botón de cerrar sidebar - oculto por defecto */
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--light);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1002;
+}
+
+.sidebar-close:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Overlay oscuro - oculto por defecto */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ========================================
+   RESPONSIVE - MEDIA QUERIES
+   ======================================== */
+
+/* Tablets y móviles grandes (hasta 768px) */
+@media (max-width: 768px) {
+    /* Mostrar botón hamburguesa */
+    .menu-toggle {
+        display: block;
+    }
+    
+    /* Sidebar fijo y oculto por defecto */
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Sidebar visible cuando está activo */
+    .sidebar.active {
+        left: 0;
+    }
+    
+    /* Mostrar botón de cerrar en sidebar */
+    .sidebar-close {
+        display: block;
+    }
+    
+    /* Dashboard container sin flex */
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    /* Main content ocupa todo el ancho */
+    .main-content {
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    /* Header más compacto */
+    .header-content {
+        padding: 1rem;
+    }
+    
+    .logo {
+        font-size: 1.25rem;
+    }
+    
+    .badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.5rem;
+    }
+    
+    /* Stats grid a una columna */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Ofertas grid a una columna */
+    .ofertas-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Cards más compactas */
+    .oferta-card {
+        padding: 1rem;
+    }
+    
+    .oferta-titulo {
+        font-size: 1rem;
+    }
+    
+    .oferta-descripcion {
+        font-size: 0.875rem;
+    }
+    
+    /* Botones más pequeños */
+    .oferta-footer .btn {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.8rem;
+    }
+    
+    /* Filtros más compactos */
+    .filtros-container {
+        padding: 1rem;
+    }
+    
+    .filtros-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    /* Modal más estrecho */
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+}
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1rem;
+    }
+    
+    .user-name {
+        display: none; /* Ocultar nombre en móviles muy pequeños */
+    }
+    
+    .oferta-footer {
+        flex-direction: column;
+    }
+    
+    .oferta-footer .btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    /* Botones del modal en columna */
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-buttons .btn {
+        width: 100%;
+    }
+}
