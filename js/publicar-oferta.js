@@ -46,7 +46,7 @@
                     salario: salario,
                     duracion: duracion || 'No especificada',
                     horario: horario || 'No especificado',
-                    empleadorId: auth.currentUser?.uid || 'demo',
+                    empleadorId: auth.currentUser?.uid || usuario.uid || 'demo',
                     empleadorNombre: usuario.nombre,
                     empleadorEmail: usuario.email,
                     estado: 'activa',
