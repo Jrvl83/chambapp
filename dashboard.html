@@ -53,6 +53,22 @@
 
         <!-- Main Content -->
         <main class="main-content">
+    
+    <!-- Pantalla de carga -->
+    <div id="loading-screen" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; flex-direction: column;">
+        <div style="font-size: 4rem; margin-bottom: 1rem; animation: spin 2s linear infinite;">🔄</div>
+        <h2 style="color: #64748b; margin-bottom: 0.5rem;">Cargando dashboard...</h2>
+        <p style="color: #94a3b8;">Espera un momento</p>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    </div>
+    
+    <!-- Contenido real del dashboard (oculto inicialmente) -->
+    <div id="dashboard-content" style="display: none;">
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -221,7 +237,9 @@
                     </div>
                 </div>
             </section>
-        </main>
+        </div> <!-- Cierre de dashboard-content -->
+</main>
+
     </div>
 
     <!-- Modal -->
