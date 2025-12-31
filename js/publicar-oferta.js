@@ -1,11 +1,11 @@
 // ============================================
 // PUBLICAR OFERTA - FORMULARIO MULTI-PASO
-// ChambApp - JavaScript con Validación
+// ChambApp - Con Sistema de Edición
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -28,6 +28,15 @@ if (usuario.tipo !== 'empleador') {
 }
 
 // ============================================
+// DETECTAR MODO: CREAR O EDITAR
+// ============================================
+const urlParams = new URLSearchParams(window.location.search);
+const ofertaId = urlParams.get('id');
+const modoEdicion = !!ofertaId;
+
+console.log(modoEdicion ? `📝 Modo Edición - ID: ${ofertaId}` : '➕ Modo Crear Nueva');
+
+// ============================================
 // VARIABLES GLOBALES
 // ============================================
 let currentStep = 1;
@@ -42,6 +51,102 @@ const btnPrevious = document.getElementById('btnPrevious');
 const btnNext = document.getElementById('btnNext');
 const btnSubmit = document.getElementById('btnSubmit');
 const formOferta = document.getElementById('formOferta');
+
+// ============================================
+// CARGAR DATOS SI ESTÁ EN MODO EDICIÓN
+// ============================================
+if (modoEdicion) {
+    cargarOfertaParaEditar(ofertaId);
+}
+
+async function cargarOfertaParaEditar(id) {
+    try {
+        // Mostrar loading
+        if (typeof toastLoading === 'function') {
+            var loadingToast = toastLoading('Cargando oferta...');
+        }
+        
+        // Obtener oferta de Firestore
+        const docRef = doc(db, 'ofertas', id);
+        const docSnap = await getDoc(docRef);
+        
+        if (!docSnap.exists()) {
+            if (loadingToast) loadingToast.remove();
+            if (typeof toastError === 'function') {
+                toastError('No se encontró la oferta');
+            }
+            setTimeout(() => window.location.href = 'dashboard.html', 2000);
+            return;
+        }
+        
+        const oferta = docSnap.data();
+        
+        // Verificar que sea el dueño de la oferta
+        if (oferta.empleadorEmail !== usuario.email) {
+            if (loadingToast) loadingToast.remove();
+            if (typeof toastError === 'function') {
+                toastError('No tienes permiso para editar esta oferta');
+            }
+            setTimeout(() => window.location.href = 'dashboard.html', 2000);
+            return;
+        }
+        
+        // Pre-llenar formulario
+        document.getElementById('titulo').value = oferta.titulo || '';
+        document.getElementById('categoria').value = oferta.categoria || '';
+        document.getElementById('descripcion').value = oferta.descripcion || '';
+        document.getElementById('ubicacion').value = oferta.ubicacion || '';
+        document.getElementById('salario').value = oferta.salario || '';
+        document.getElementById('duracion').value = oferta.duracion === 'No especificada' ? '' : oferta.duracion || '';
+        document.getElementById('horario').value = oferta.horario === 'No especificado' ? '' : oferta.horario || '';
+        
+        // Campos opcionales del paso 3
+        if (oferta.experiencia && oferta.experiencia !== 'No especificada') {
+            document.getElementById('experiencia').value = oferta.experiencia;
+        }
+        if (oferta.habilidades && oferta.habilidades !== 'No especificadas') {
+            document.getElementById('habilidades').value = oferta.habilidades;
+        }
+        if (oferta.requisitosAdicionales && oferta.requisitosAdicionales !== 'Ninguno') {
+            document.getElementById('requisitos-adicionales').value = oferta.requisitosAdicionales;
+        }
+        
+        // Checkboxes
+        if (oferta.requiereHerramientas) {
+            document.getElementById('herramientas').checked = true;
+        }
+        if (oferta.requiereTransporte) {
+            document.getElementById('transporte').checked = true;
+        }
+        if (oferta.requiereEquipos) {
+            document.getElementById('equipos').checked = true;
+        }
+        
+        // Actualizar character counters
+        document.getElementById('titulo-count').textContent = oferta.titulo?.length || 0;
+        document.getElementById('descripcion-count').textContent = oferta.descripcion?.length || 0;
+        
+        // Cambiar textos del formulario
+        document.querySelector('.step-header h2').textContent = '✏️ Editar Oferta';
+        document.querySelector('.step-header p').textContent = 'Actualiza la información de tu oferta';
+        btnSubmit.innerHTML = '💾 Guardar Cambios';
+        
+        if (loadingToast) loadingToast.remove();
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('Oferta cargada correctamente');
+        }
+        
+        console.log('✅ Oferta cargada para edición:', oferta.titulo);
+        
+    } catch (error) {
+        console.error('Error al cargar oferta:', error);
+        if (loadingToast) loadingToast.remove();
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar la oferta');
+        }
+        setTimeout(() => window.location.href = 'dashboard.html', 2000);
+    }
+}
 
 // ============================================
 // CHARACTER COUNTERS
@@ -259,18 +364,19 @@ btnPrevious.addEventListener('click', () => {
 });
 
 // ============================================
-// SUBMIT FORM
+// SUBMIT FORM - CREAR O ACTUALIZAR
 // ============================================
 formOferta.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Deshabilitar botón submit
     btnSubmit.disabled = true;
-    btnSubmit.textContent = 'Publicando...';
+    const originalText = btnSubmit.innerHTML;
+    btnSubmit.innerHTML = modoEdicion ? '💾 Guardando...' : '🚀 Publicando...';
     
     try {
         // Recopilar datos del formulario
-        const oferta = {
+        const ofertaData = {
             titulo: document.getElementById('titulo').value.trim(),
             categoria: document.getElementById('categoria').value,
             descripcion: document.getElementById('descripcion').value.trim(),
@@ -283,22 +389,43 @@ formOferta.addEventListener('submit', async (e) => {
             requisitosAdicionales: document.getElementById('requisitos-adicionales').value.trim() || 'Ninguno',
             requiereHerramientas: document.getElementById('herramientas').checked,
             requiereTransporte: document.getElementById('transporte').checked,
-            requiereEquipos: document.getElementById('equipos').checked,
-            empleadorId: auth.currentUser?.uid || usuario.uid || 'demo',
-            empleadorNombre: usuario.nombre,
-            empleadorEmail: usuario.email,
-            empleadorTelefono: usuario.telefono || '',
-            estado: 'activa',
-            fechaCreacion: serverTimestamp(),
-            aplicaciones: 0
+            requiereEquipos: document.getElementById('equipos').checked
         };
         
-        // Guardar en Firestore
-        await addDoc(collection(db, 'ofertas'), oferta);
-        
-        // Toast de éxito
-        if (typeof toastSuccess === 'function') {
-            toastSuccess('¡Oferta publicada exitosamente! 🎉');
+        if (modoEdicion) {
+            // ACTUALIZAR OFERTA EXISTENTE
+            const docRef = doc(db, 'ofertas', ofertaId);
+            await updateDoc(docRef, {
+                ...ofertaData,
+                fechaActualizacion: serverTimestamp()
+            });
+            
+            if (typeof toastSuccess === 'function') {
+                toastSuccess('¡Oferta actualizada exitosamente! 💾');
+            }
+            
+            console.log('✅ Oferta actualizada:', ofertaId);
+            
+        } else {
+            // CREAR NUEVA OFERTA
+            const nuevaOferta = {
+                ...ofertaData,
+                empleadorId: auth.currentUser?.uid || usuario.uid || 'demo',
+                empleadorNombre: usuario.nombre,
+                empleadorEmail: usuario.email,
+                empleadorTelefono: usuario.telefono || '',
+                estado: 'activa',
+                fechaCreacion: serverTimestamp(),
+                aplicaciones: 0
+            };
+            
+            await addDoc(collection(db, 'ofertas'), nuevaOferta);
+            
+            if (typeof toastSuccess === 'function') {
+                toastSuccess('¡Oferta publicada exitosamente! 🎉');
+            }
+            
+            console.log('✅ Oferta creada');
         }
         
         // Redirigir al dashboard
@@ -307,17 +434,17 @@ formOferta.addEventListener('submit', async (e) => {
         }, 1500);
         
     } catch (error) {
-        console.error('Error al publicar oferta:', error);
+        console.error('Error:', error);
         
         // Restaurar botón
         btnSubmit.disabled = false;
-        btnSubmit.textContent = '🚀 Publicar Oferta';
+        btnSubmit.innerHTML = originalText;
         
         // Toast de error
         if (typeof toastError === 'function') {
-            toastError('Error al publicar la oferta. Intenta de nuevo.');
+            toastError(modoEdicion ? 'Error al actualizar la oferta' : 'Error al publicar la oferta');
         } else {
-            alert('Error al publicar la oferta: ' + error.message);
+            alert('Error: ' + error.message);
         }
     }
 });
