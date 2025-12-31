@@ -86,11 +86,11 @@ async function cargarPerfil() {
 function cargarDatosPersonales() {
     // Header
     document.getElementById('profile-name').textContent = perfilData.nombre || 'Usuario';
-    document.getElementById('profile-email').textContent = perfilData.email || '';
+    document.getElementById('profile-email').textContent = perfilData.email || usuario.email;
     
     // Formulario
     document.getElementById('nombre').value = perfilData.nombre || '';
-    document.getElementById('email').value = perfilData.email || '';
+    document.getElementById('email').value = perfilData.email || usuario.email; // ← ARREGLADO
     document.getElementById('telefono').value = perfilData.telefono || '';
     document.getElementById('ubicacion').value = perfilData.ubicacion || '';
     document.getElementById('fechaNacimiento').value = perfilData.fechaNacimiento || '';
@@ -104,7 +104,7 @@ function cargarDatosPersonales() {
     if (perfilData.fotoPerfilURL) {
         document.getElementById('avatar-preview').src = perfilData.fotoPerfilURL;
     } else {
-        const nombre = perfilData.nombre || 'Usuario';
+        const nombre = perfilData.nombre || usuario.nombre || 'Usuario';
         document.getElementById('avatar-preview').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&size=150&background=2563eb&color=fff`;
     }
 }
@@ -240,6 +240,9 @@ async function guardarPerfil() {
         
         // Preparar datos
         const datosActualizados = {
+            // Mantener email (nunca cambiar)
+            email: perfilData.email || usuario.email,
+            
             // Datos personales
             nombre: nombre,
             telefono: telefono,
@@ -293,9 +296,14 @@ async function guardarPerfil() {
             alert('¡Perfil actualizado exitosamente!');
         }
         
-        // Recalcular completitud
+        // IMPORTANTE: Recargar perfil desde Firestore para asegurar persistencia
         perfilData = { ...perfilData, ...datosActualizados };
+        
+        // Recalcular completitud
         calcularCompletitud();
+        
+        // Recargar UI con datos actualizados
+        cargarDatosPersonales();
         
     } catch (error) {
         console.error('❌ Error al guardar perfil:', error);
