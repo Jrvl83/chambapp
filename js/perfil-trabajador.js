@@ -4,7 +4,7 @@
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, doc, getDoc, updateDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
@@ -14,34 +14,49 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Verificar autenticación
-const usuarioStr = localStorage.getItem('usuarioChambApp');
-if (!usuarioStr) {
-    alert('Debes iniciar sesión');
-    window.location.href = 'login.html';
-}
-
-const usuario = JSON.parse(usuarioStr);
-
-// Verificar que sea TRABAJADOR
-if (usuario.tipo !== 'trabajador') {
-    alert('Esta página es solo para trabajadores');
-    window.location.href = 'dashboard.html';
-}
-
 // Variables globales
 let perfilData = {};
 let experiencias = [];
 let habilidades = [];
 let fotoFile = null;
+let usuario = null;
 
 // ============================================
-// INICIALIZACIÓN
+// VERIFICAR AUTENTICACIÓN CON FIREBASE AUTH
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    cargarPerfil();
-    inicializarTabs();
-    inicializarEventos();
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // Usuario autenticado en Firebase
+        console.log('✅ Usuario autenticado:', user.uid);
+        
+        // Obtener datos del localStorage
+        const usuarioStr = localStorage.getItem('usuarioChambApp');
+        if (!usuarioStr) {
+            alert('Debes iniciar sesión');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        usuario = JSON.parse(usuarioStr);
+        
+        // Verificar que sea TRABAJADOR
+        if (usuario.tipo !== 'trabajador') {
+            alert('Esta página es solo para trabajadores');
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        // Cargar perfil
+        await cargarPerfil();
+        inicializarTabs();
+        inicializarEventos();
+        
+    } else {
+        // No hay usuario autenticado
+        console.log('❌ No hay usuario autenticado');
+        alert('Debes iniciar sesión');
+        window.location.href = 'login.html';
+    }
 });
 
 // ============================================
@@ -324,6 +339,12 @@ async function guardarPerfil() {
 // SUBIR FOTO A FIREBASE STORAGE
 // ============================================
 async function subirFoto() {
+    // DESHABILITADO TEMPORALMENTE - Requiere Storage habilitado
+    console.log('⚠️ Upload de fotos deshabilitado temporalmente');
+    return null;
+    
+    /* 
+    // Código original comentado
     try {
         if (!fotoFile) return null;
         
@@ -338,12 +359,22 @@ async function subirFoto() {
         console.error('❌ Error al subir foto:', error);
         return null;
     }
+    */
 }
 
 // ============================================
 // PREVISUALIZAR FOTO
 // ============================================
 function previsualizarFoto(event) {
+    // MENSAJE INFORMATIVO
+    if (typeof toastError === 'function') {
+        toastError('⚠️ Upload de fotos temporalmente deshabilitado');
+    } else {
+        alert('⚠️ La funcionalidad de subir fotos estará disponible próximamente.\n\nPor ahora puedes completar el resto de tu perfil.');
+    }
+    return;
+    
+    /* Código original comentado
     const file = event.target.files[0];
     if (!file) return;
     
@@ -375,6 +406,7 @@ function previsualizarFoto(event) {
         document.getElementById('avatar-preview').src = e.target.result;
     };
     reader.readAsDataURL(file);
+    */
 }
 
 // ============================================
@@ -508,12 +540,13 @@ function eliminarHabilidad(index) {
 // ============================================
 function calcularCompletitud() {
     let completitud = 0;
+    // NOTA: fotoPerfilURL removido temporalmente hasta activar Storage
     const campos = [
         perfilData.nombre,
         perfilData.telefono,
         perfilData.ubicacion,
         perfilData.bio,
-        perfilData.fotoPerfilURL,
+        // perfilData.fotoPerfilURL, // ← Deshabilitado temporalmente
         (perfilData.categorias && perfilData.categorias.length > 0),
         (perfilData.habilidades && perfilData.habilidades.length > 0),
         (perfilData.experiencia && perfilData.experiencia.length > 0),
