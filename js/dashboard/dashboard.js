@@ -62,6 +62,7 @@ onAuthStateChanged(auth, async (user) => {
             var logo = document.getElementById('logo-text');
             var tituloOfertas = document.getElementById('titulo-ofertas');
             var navBuscarText = document.getElementById('nav-buscar-text');
+            var navPublicar = document.getElementById('nav-publicar');
             var navPublicarText = document.getElementById('nav-publicar-text');
             var navTrabajadores = document.getElementById('nav-trabajadores');
             var navTrabajadoresText = document.getElementById('nav-trabajadores-text');
@@ -70,9 +71,12 @@ onAuthStateChanged(auth, async (user) => {
                 logo.innerHTML = 'ChambApp <span class="badge badge-trabajador">👷 Trabajador</span>';
                 tituloOfertas.textContent = '💼 Ofertas de Trabajo para Ti';
                 navBuscarText.textContent = 'Buscar Chambas';
-                navPublicarText.textContent = 'Mi Perfil';
                 
-                // CAMBIO IMPORTANTE: Link a Mis Aplicaciones para trabajador
+                // CAMBIO: "Publicar Oferta" → "Mi Perfil" para trabajador
+                navPublicarText.textContent = 'Mi Perfil';
+                navPublicar.href = 'perfil-trabajador.html';
+                
+                // Link a Mis Aplicaciones para trabajador
                 navTrabajadoresText.textContent = 'Mis Aplicaciones';
                 navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
                 
@@ -89,7 +93,10 @@ onAuthStateChanged(auth, async (user) => {
                 logo.innerHTML = 'ChambApp <span class="badge badge-empleador">💼 Empleador</span>';
                 tituloOfertas.textContent = '💼 Mis Ofertas Publicadas';
                 navBuscarText.textContent = 'Buscar Trabajadores';
+                
+                // "Publicar Oferta" para empleador
                 navPublicarText.textContent = 'Publicar Oferta';
+                navPublicar.href = 'publicar-oferta.html';
                 
                 // Link a Mis Aplicaciones para empleador
                 navTrabajadoresText.textContent = 'Mis Aplicaciones';
