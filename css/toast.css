@@ -1,0 +1,358 @@
+/* ============================================
+   TOAST NOTIFICATIONS SYSTEM
+   ChambApp - Sistema de Feedback Visual
+   ============================================ */
+
+/* ============================================
+   CONTENEDOR DE TOASTS
+   ============================================ */
+.toast-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    pointer-events: none;
+    max-width: 90%;
+    width: auto;
+}
+
+/* En móvil, ajustar posición */
+@media (max-width: 768px) {
+    .toast-container {
+        bottom: 1rem;
+        max-width: 95%;
+    }
+}
+
+/* ============================================
+   TOAST BASE
+   ============================================ */
+.toast {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 300px;
+    max-width: 500px;
+    pointer-events: auto;
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animación de entrada */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Animación de salida */
+.toast.toast-exit {
+    animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+}
+
+/* Barra de progreso (opcional) */
+.toast::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: currentColor;
+    width: 100%;
+    animation: progress 3s linear forwards;
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* ============================================
+   ICONOS DE TOAST
+   ============================================ */
+.toast-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+/* ============================================
+   CONTENIDO DE TOAST
+   ============================================ */
+.toast-content {
+    flex: 1;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #1e293b;
+}
+
+.toast-content strong {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+/* ============================================
+   BOTÓN DE CERRAR
+   ============================================ */
+.toast-close {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    color: #1e293b;
+}
+
+/* ============================================
+   VARIANTES DE TOAST
+   ============================================ */
+
+/* SUCCESS - Verde */
+.toast.success {
+    border-left: 4px solid #10b981;
+    color: #10b981;
+}
+
+.toast.success .toast-icon {
+    color: #10b981;
+    background: #d1fae5;
+    border-radius: 50%;
+}
+
+.toast.success::before {
+    background: #10b981;
+}
+
+/* ERROR - Rojo */
+.toast.error {
+    border-left: 4px solid #ef4444;
+    color: #ef4444;
+}
+
+.toast.error .toast-icon {
+    color: #ef4444;
+    background: #fee2e2;
+    border-radius: 50%;
+}
+
+.toast.error::before {
+    background: #ef4444;
+}
+
+/* WARNING - Amarillo */
+.toast.warning {
+    border-left: 4px solid #f59e0b;
+    color: #f59e0b;
+}
+
+.toast.warning .toast-icon {
+    color: #f59e0b;
+    background: #fef3c7;
+    border-radius: 50%;
+}
+
+.toast.warning::before {
+    background: #f59e0b;
+}
+
+/* INFO - Azul */
+.toast.info {
+    border-left: 4px solid #3b82f6;
+    color: #3b82f6;
+}
+
+.toast.info .toast-icon {
+    color: #3b82f6;
+    background: #dbeafe;
+    border-radius: 50%;
+}
+
+.toast.info::before {
+    background: #3b82f6;
+}
+
+/* ============================================
+   VARIANTE COMPACTA
+   ============================================ */
+.toast.compact {
+    min-width: 250px;
+    padding: 0.75rem 1rem;
+}
+
+.toast.compact .toast-icon {
+    font-size: 1.25rem;
+    width: 24px;
+    height: 24px;
+}
+
+.toast.compact .toast-content {
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+    .toast {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .toast-content {
+        font-size: 0.875rem;
+    }
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+
+/* Para screen readers */
+.toast[role="alert"],
+.toast[role="status"] {
+    /* role debe agregarse en HTML/JS */
+}
+
+/* Focus para cerrar con teclado */
+.toast-close:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ============================================
+   ANIMACIONES ADICIONALES (OPCIONAL)
+   ============================================ */
+
+/* Bounce al aparecer */
+.toast.bounce {
+    animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.3);
+    }
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Shake para errores importantes */
+.toast.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* ============================================
+   MODO OSCURO (OPCIONAL)
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    .toast {
+        background: #1e293b;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .toast-content {
+        color: #f8fafc;
+    }
+    
+    .toast-close {
+        color: #94a3b8;
+    }
+    
+    .toast-close:hover {
+        color: #f8fafc;
+    }
+}
+
+/* ============================================
+   NOTAS DE USO
+   ============================================ */
+
+/*
+USO CON JAVASCRIPT:
+
+// Ver js/toast.js para la implementación completa
+
+EJEMPLOS:
+showToast('Aplicación enviada exitosamente', 'success');
+showToast('Error al cargar ofertas', 'error');
+showToast('Procesando...', 'info');
+showToast('Verifica tu conexión', 'warning');
+
+ESTRUCTURA HTML GENERADA:
+<div class="toast success" role="alert">
+    <span class="toast-icon">✓</span>
+    <div class="toast-content">
+        Aplicación enviada exitosamente
+    </div>
+    <button class="toast-close" aria-label="Cerrar">×</button>
+</div>
+
+OPCIONES:
+- Duración: 3000ms por defecto
+- Auto-dismiss: sí
+- Click para cerrar: sí
+- Botón cerrar: opcional
+- Barra de progreso: incluida
+
+ACCESIBILIDAD:
+- role="alert" para toasts importantes
+- role="status" para notificaciones informativas
+- aria-live="assertive" o "polite"
+- Botón cerrar con aria-label
+*/
