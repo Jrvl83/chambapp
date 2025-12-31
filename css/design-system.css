@@ -1,0 +1,331 @@
+/* ============================================
+   DESIGN SYSTEM - CHAMBAPP
+   Variables CSS, Colores, Espaciado, Tipografía
+   ============================================ */
+
+:root {
+    /* ============================================
+       COLORES PRINCIPALES
+       ============================================ */
+    
+    /* Primary (Azul) - Acciones principales */
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #dbeafe;
+    --primary-dark: #1e40af;
+    
+    /* Secondary (Verde) - Éxito, confirmaciones */
+    --secondary: #10b981;
+    --secondary-hover: #059669;
+    --secondary-light: #d1fae5;
+    --secondary-dark: #047857;
+    
+    /* Accent (Naranja) - Destacados, premium */
+    --accent: #f59e0b;
+    --accent-hover: #d97706;
+    --accent-light: #fef3c7;
+    
+    /* Danger (Rojo) - Errores, eliminar */
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --danger-light: #fee2e2;
+    
+    /* Warning (Amarillo) - Advertencias */
+    --warning: #eab308;
+    --warning-hover: #ca8a04;
+    --warning-light: #fef9c3;
+    
+    /* Info (Azul claro) - Información */
+    --info: #3b82f6;
+    --info-hover: #2563eb;
+    --info-light: #dbeafe;
+    
+    /* ============================================
+       ESCALA DE GRISES
+       ============================================ */
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    
+    /* Aliases comunes */
+    --white: #ffffff;
+    --black: #000000;
+    --dark: var(--gray-800);
+    --gray: var(--gray-500);
+    --light: var(--gray-100);
+    --border: var(--gray-200);
+    
+    /* ============================================
+       COLORES DE CATEGORÍAS (8 colores)
+       ============================================ */
+    --cat-construccion: #f97316;
+    --cat-limpieza: #8b5cf6;
+    --cat-gasfiteria: #0ea5e9;
+    --cat-electricidad: #eab308;
+    --cat-jardineria: #22c55e;
+    --cat-carpinteria: #f59e0b;
+    --cat-pintura: #6366f1;
+    --cat-mecanica: #6b7280;
+    --cat-otros: #64748b; /* Mejorado de #94a3b8 para contraste */
+    
+    /* ============================================
+       SISTEMA DE ESPACIADO (8px grid)
+       ============================================ */
+    --space-0: 0;
+    --space-xs: 4px;    /* 0.25rem */
+    --space-sm: 8px;    /* 0.5rem */
+    --space-md: 16px;   /* 1rem */
+    --space-lg: 24px;   /* 1.5rem */
+    --space-xl: 32px;   /* 2rem */
+    --space-2xl: 48px;  /* 3rem */
+    --space-3xl: 64px;  /* 4rem */
+    --space-4xl: 96px;  /* 6rem */
+    
+    /* Aliases semánticos */
+    --gap-xs: var(--space-xs);
+    --gap-sm: var(--space-sm);
+    --gap-md: var(--space-md);
+    --gap-lg: var(--space-lg);
+    --gap-xl: var(--space-xl);
+    
+    --padding-xs: var(--space-xs);
+    --padding-sm: var(--space-sm);
+    --padding-md: var(--space-md);
+    --padding-lg: var(--space-lg);
+    --padding-xl: var(--space-xl);
+    
+    /* ============================================
+       TIPOGRAFÍA
+       ============================================ */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    
+    /* Tamaños de fuente - Mobile */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-lg: 1.125rem;   /* 18px */
+    --text-xl: 1.25rem;    /* 20px */
+    --text-2xl: 1.5rem;    /* 24px */
+    --text-3xl: 1.875rem;  /* 30px */
+    --text-4xl: 2.25rem;   /* 36px */
+    
+    /* Headings - Mobile */
+    --h1-size: 1.75rem;    /* 28px */
+    --h2-size: 1.375rem;   /* 22px */
+    --h3-size: 1.125rem;   /* 18px */
+    --h4-size: 1rem;       /* 16px */
+    --h5-size: 0.875rem;   /* 14px */
+    
+    /* Font weights */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    
+    /* Line heights */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.6;
+    --leading-loose: 1.7;
+    
+    /* ============================================
+       RADIOS DE BORDE
+       ============================================ */
+    --radius-none: 0;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-full: 9999px;
+    
+    /* ============================================
+       SOMBRAS
+       ============================================ */
+    --shadow-none: none;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Sombras específicas */
+    --shadow-card: var(--shadow-md);
+    --shadow-card-hover: var(--shadow-lg);
+    --shadow-button: var(--shadow-sm);
+    --shadow-button-hover: var(--shadow-md);
+    --shadow-modal: var(--shadow-2xl);
+    
+    /* ============================================
+       TRANSICIONES
+       ============================================ */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+    
+    /* ============================================
+       Z-INDEX SCALE
+       ============================================ */
+    --z-base: 1;
+    --z-dropdown: 10;
+    --z-sticky: 100;
+    --z-fixed: 200;
+    --z-sidebar: 500;
+    --z-modal-overlay: 999;
+    --z-modal: 1000;
+    --z-popover: 1001;
+    --z-tooltip: 1002;
+    
+    /* ============================================
+       BREAKPOINTS (Para referencia en media queries)
+       ============================================ */
+    --bp-sm: 640px;
+    --bp-md: 768px;
+    --bp-lg: 1024px;
+    --bp-xl: 1280px;
+    --bp-2xl: 1536px;
+}
+
+/* ============================================
+   TIPOGRAFÍA RESPONSIVE
+   ============================================ */
+
+/* Desktop: Tamaños más grandes */
+@media (min-width: 768px) {
+    :root {
+        --h1-size: 2.25rem;   /* 36px */
+        --h2-size: 1.75rem;   /* 28px */
+        --h3-size: 1.375rem;  /* 22px */
+        --h4-size: 1.125rem;  /* 18px */
+        --h5-size: 1rem;      /* 16px */
+    }
+}
+
+/* ============================================
+   APLICACIÓN DE TIPOGRAFÍA
+   ============================================ */
+body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--dark);
+}
+
+h1, .h1 {
+    font-size: var(--h1-size);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-md);
+}
+
+h2, .h2 {
+    font-size: var(--h2-size);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-snug);
+    margin-bottom: var(--space-md);
+}
+
+h3, .h3 {
+    font-size: var(--h3-size);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-sm);
+}
+
+h4, .h4 {
+    font-size: var(--h4-size);
+    font-weight: var(--font-medium);
+    line-height: var(--leading-normal);
+}
+
+p {
+    margin-bottom: var(--space-md);
+    line-height: var(--leading-loose);
+}
+
+.text-small, small {
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+}
+
+.text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--leading-tight);
+}
+
+/* ============================================
+   COLORES DE CATEGORÍAS - CLASSES
+   ============================================ */
+.construccion { background: var(--cat-construccion); color: white; }
+.limpieza { background: var(--cat-limpieza); color: white; }
+.gasfiteria { background: var(--cat-gasfiteria); color: white; }
+.electricidad { background: var(--cat-electricidad); color: white; }
+.carpinteria { background: var(--cat-carpinteria); color: white; }
+.jardineria { background: var(--cat-jardineria); color: white; }
+.pintura { background: var(--cat-pintura); color: white; }
+.mecanica { background: var(--cat-mecanica); color: white; }
+.otros { background: var(--cat-otros); color: white; }
+
+/* ============================================
+   UTILITIES - ESPACIADO
+   ============================================ */
+.m-0 { margin: 0; }
+.m-xs { margin: var(--space-xs); }
+.m-sm { margin: var(--space-sm); }
+.m-md { margin: var(--space-md); }
+.m-lg { margin: var(--space-lg); }
+.m-xl { margin: var(--space-xl); }
+
+.p-0 { padding: 0; }
+.p-xs { padding: var(--space-xs); }
+.p-sm { padding: var(--space-sm); }
+.p-md { padding: var(--space-md); }
+.p-lg { padding: var(--space-lg); }
+.p-xl { padding: var(--space-xl); }
+
+/* Gaps */
+.gap-xs { gap: var(--gap-xs); }
+.gap-sm { gap: var(--gap-sm); }
+.gap-md { gap: var(--gap-md); }
+.gap-lg { gap: var(--gap-lg); }
+.gap-xl { gap: var(--gap-xl); }
+
+/* ============================================
+   NOTAS DE USO
+   ============================================ */
+
+/*
+USO DE VARIABLES:
+
+En CSS:
+  background: var(--primary);
+  padding: var(--padding-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+
+En HTML (inline styles):
+  style="color: var(--primary);"
+
+CATEGORÍAS:
+  <div class="oferta-categoria construccion">Construcción</div>
+
+ESPACIADO CONSISTENTE:
+  - Cards: padding var(--padding-lg) (24px)
+  - Gaps: var(--gap-md) (16px)
+  - Margins: var(--space-xl) (32px) entre secciones
+
+TIPOGRAFÍA:
+  - Títulos: usar h1, h2, h3
+  - Texto normal: automático con body
+  - Texto pequeño: class="text-small"
+*/
