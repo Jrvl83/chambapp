@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Aplicaciones - ChambApp</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/mis-aplicaciones-trabajador.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">💼 ChambApp</div>
+            <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>📋 Mis Aplicaciones</h1>
+                <p>Revisa el estado de tus postulaciones</p>
+            </div>
+            <a href="dashboard.html" class="btn btn-primary">
+                🔍 Buscar más chambas
+            </a>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="total-aplicaciones">0</div>
+                    <div class="stat-label">Total Aplicaciones</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🟡</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="pendientes">0</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="contactados">0</div>
+                    <div class="stat-label">Contactados</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-content">
+                    <div class="stat-number" id="tasa-respuesta">0%</div>
+                    <div class="stat-label">Tasa de Respuesta</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="filtro-estado">Estado:</label>
+                <select id="filtro-estado" onchange="aplicarFiltros()">
+                    <option value="">Todos</option>
+                    <option value="pendiente">Pendientes</option>
+                    <option value="contactado">Contactados</option>
+                    <option value="cancelada">Canceladas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filtro-categoria">Categoría:</label>
+                <select id="filtro-categoria" onchange="aplicarFiltros()">
+                    <option value="">Todas</option>
+                    <option value="construccion">Construcción</option>
+                    <option value="electricidad">Electricidad</option>
+                    <option value="gasfiteria">Gasfitería</option>
+                    <option value="pintura">Pintura</option>
+                    <option value="carpinteria">Carpintería</option>
+                    <option value="limpieza">Limpieza</option>
+                    <option value="jardineria">Jardinería</option>
+                    <option value="mecanica">Mecánica</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+            <button class="btn btn-secondary" onclick="limpiarFiltros()">
+                🔄 Limpiar Filtros
+            </button>
+        </div>
+
+        <!-- Resultados Count -->
+        <div class="resultados-info" id="resultados-info">
+            Mostrando todas las aplicaciones
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-screen" class="loading-state">
+            <div class="spinner">⏳</div>
+            <p>Cargando tus aplicaciones...</p>
+        </div>
+
+        <!-- Aplicaciones Container -->
+        <div id="aplicaciones-container" class="aplicaciones-grid" style="display: none;"></div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-icon">📭</div>
+            <h2>No has aplicado a ninguna oferta aún</h2>
+            <p>Cuando apliques a una chamba, aparecerá aquí para que puedas seguir su estado.</p>
+            <a href="dashboard.html" class="btn btn-primary">
+                🔍 Buscar Chambas
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal Ver Oferta -->
+    <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Detalles de la Oferta</h2>
+                <button class="modal-close" onclick="cerrarModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+    <script type="module" src="js/mis-aplicaciones-trabajador.js"></script>
+</body>
+</html>
