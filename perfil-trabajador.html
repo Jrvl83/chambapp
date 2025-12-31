@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - ChambApp</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/perfil-trabajador.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">💼 ChambApp</div>
+            <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-header-content">
+                <div class="profile-avatar-section">
+                    <div class="avatar-wrapper">
+                        <img id="avatar-preview" src="https://ui-avatars.com/api/?name=Usuario&size=150&background=2563eb&color=fff" alt="Foto de perfil" class="profile-avatar">
+                        <button class="avatar-edit-btn" onclick="document.getElementById('foto-input').click()">
+                            📷 Cambiar Foto
+                        </button>
+                        <input type="file" id="foto-input" accept="image/*" style="display: none;" onchange="previsualizarFoto(event)">
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h1 id="profile-name">Cargando...</h1>
+                    <p class="profile-email" id="profile-email">email@ejemplo.com</p>
+                    <div class="profile-badges">
+                        <span class="badge badge-trabajador">👷 Trabajador</span>
+                        <span class="badge badge-verificado" id="badge-completado" style="display: none;">✅ Perfil Completo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn btn-primary" onclick="guardarPerfil()">
+                    💾 Guardar Cambios
+                </button>
+            </div>
+        </div>
+
+        <!-- Completeness Progress -->
+        <div class="completeness-card">
+            <div class="completeness-header">
+                <h3>🎯 Completitud del Perfil</h3>
+                <span class="completeness-percentage" id="completeness-percentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="completeness-tip" id="completeness-tip">Completa tu perfil para recibir más oportunidades</p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="datos-personales">
+                    👤 Datos Personales
+                </button>
+                <button class="tab-btn" data-tab="experiencia">
+                    💼 Experiencia
+                </button>
+                <button class="tab-btn" data-tab="habilidades">
+                    🎯 Habilidades
+                </button>
+                <button class="tab-btn" data-tab="disponibilidad">
+                    📅 Disponibilidad
+                </button>
+            </div>
+
+            <!-- Tab Content: Datos Personales -->
+            <div class="tab-content active" id="datos-personales">
+                <div class="section-card">
+                    <h2>📝 Información Personal</h2>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombre">Nombre Completo *</label>
+                            <input type="text" id="nombre" placeholder="Ej: Juan Pérez García" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" disabled>
+                            <span class="helper-text">El email no se puede modificar</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono">Teléfono *</label>
+                            <input type="tel" id="telefono" placeholder="999 999 999" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ubicacion">Ubicación *</label>
+                            <input type="text" id="ubicacion" placeholder="Ej: San Isidro, Lima" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                            <input type="date" id="fechaNacimiento">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="bio">Acerca de mí</label>
+                            <textarea id="bio" rows="4" placeholder="Cuéntanos sobre tu experiencia, especialidades y qué te hace un buen profesional..." maxlength="500"></textarea>
+                            <span class="char-count"><span id="bio-count">0</span>/500</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Experiencia -->
+            <div class="tab-content" id="experiencia">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>💼 Experiencia Laboral</h2>
+                        <button class="btn btn-secondary btn-small" onclick="agregarExperiencia()">
+                            ➕ Agregar Experiencia
+                        </button>
+                    </div>
+
+                    <div id="experiencias-container" class="experiencias-list">
+                        <!-- Las experiencias se cargarán aquí -->
+                    </div>
+
+                    <div id="experiencias-empty" class="empty-state-small">
+                        <p>📋 No has agregado experiencia laboral aún</p>
+                        <button class="btn btn-primary btn-small" onclick="agregarExperiencia()">
+                            ➕ Agregar Primera Experiencia
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Habilidades -->
+            <div class="tab-content" id="habilidades">
+                <div class="section-card">
+                    <h2>🎯 Habilidades y Especialidades</h2>
+                    
+                    <div class="habilidades-section">
+                        <h3>Categorías de Trabajo</h3>
+                        <div class="categorias-grid">
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="construccion">
+                                <span class="categoria-label">🏗️ Construcción</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="electricidad">
+                                <span class="categoria-label">⚡ Electricidad</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="gasfiteria">
+                                <span class="categoria-label">🔧 Gasfitería</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="pintura">
+                                <span class="categoria-label">🎨 Pintura</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="carpinteria">
+                                <span class="categoria-label">🪵 Carpintería</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="limpieza">
+                                <span class="categoria-label">🧹 Limpieza</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="jardineria">
+                                <span class="categoria-label">🌿 Jardinería</span>
+                            </label>
+                            <label class="categoria-checkbox">
+                                <input type="checkbox" value="mecanica">
+                                <span class="categoria-label">🔩 Mecánica</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="habilidades-section">
+                        <h3>Habilidades Específicas</h3>
+                        <div class="habilidades-input-container">
+                            <input type="text" id="nueva-habilidad" placeholder="Ej: Instalaciones eléctricas, Soldadura, etc." onkeypress="agregarHabilidadEnter(event)">
+                            <button class="btn btn-primary btn-small" onclick="agregarHabilidad()">
+                                ➕ Agregar
+                            </button>
+                        </div>
+                        <div id="habilidades-tags" class="habilidades-tags">
+                            <!-- Tags se cargarán aquí -->
+                        </div>
+                    </div>
+
+                    <div class="habilidades-section">
+                        <h3>Años de Experiencia</h3>
+                        <select id="años-experiencia" class="form-select">
+                            <option value="">Selecciona...</option>
+                            <option value="menos-1">Menos de 1 año</option>
+                            <option value="1-2">1-2 años</option>
+                            <option value="3-5">3-5 años</option>
+                            <option value="6-10">6-10 años</option>
+                            <option value="mas-10">Más de 10 años</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Disponibilidad -->
+            <div class="tab-content" id="disponibilidad">
+                <div class="section-card">
+                    <h2>📅 Disponibilidad</h2>
+
+                    <div class="disponibilidad-section">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="disponibilidad-inmediata">
+                                ✅ Disponibilidad Inmediata
+                            </label>
+                            <span class="helper-text">Marca si puedes empezar a trabajar de inmediato</span>
+                        </div>
+                    </div>
+
+                    <div class="disponibilidad-section">
+                        <h3>Días Disponibles</h3>
+                        <div class="dias-grid">
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="lunes">
+                                <span>Lunes</span>
+                            </label>
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="martes">
+                                <span>Martes</span>
+                            </label>
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="miercoles">
+                                <span>Miércoles</span>
+                            </label>
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="jueves">
+                                <span>Jueves</span>
+                            </label>
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="viernes">
+                                <span>Viernes</span>
+                            </label>
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="sabado">
+                                <span>Sábado</span>
+                            </label>
+                            <label class="dia-checkbox">
+                                <input type="checkbox" value="domingo">
+                                <span>Domingo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="disponibilidad-section">
+                        <h3>Horario Preferido</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="horario-inicio">Desde</label>
+                                <input type="time" id="horario-inicio">
+                            </div>
+                            <div class="form-group">
+                                <label for="horario-fin">Hasta</label>
+                                <input type="time" id="horario-fin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="disponibilidad-section">
+                        <h3>Zona de Trabajo Preferida</h3>
+                        <textarea id="zonas-trabajo" rows="3" placeholder="Ej: San Isidro, Miraflores, San Borja..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Save Button (Mobile) -->
+        <button class="btn-save-floating" onclick="guardarPerfil()">
+            💾 Guardar
+        </button>
+    </div>
+
+    <!-- Modal Agregar Experiencia -->
+    <div id="modal-experiencia" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>💼 Agregar Experiencia</h2>
+                <button class="modal-close" onclick="cerrarModalExperiencia()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exp-puesto">Puesto / Rol *</label>
+                    <input type="text" id="exp-puesto" placeholder="Ej: Electricista Senior">
+                </div>
+                <div class="form-group">
+                    <label for="exp-empresa">Empresa / Empleador</label>
+                    <input type="text" id="exp-empresa" placeholder="Ej: Construcciones XYZ">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="exp-inicio">Año Inicio</label>
+                        <input type="number" id="exp-inicio" placeholder="2020" min="1950" max="2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="exp-fin">Año Fin</label>
+                        <input type="number" id="exp-fin" placeholder="2023" min="1950" max="2025">
+                        <label style="font-size: 0.875rem; margin-top: 0.5rem;">
+                            <input type="checkbox" id="exp-actual"> Trabajo actual
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exp-descripcion">Descripción</label>
+                    <textarea id="exp-descripcion" rows="3" placeholder="Describe tus responsabilidades y logros..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalExperiencia()">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarExperiencia()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+    <script type="module" src="js/perfil-trabajador.js"></script>
+</body>
+</html>
