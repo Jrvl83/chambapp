@@ -1,0 +1,296 @@
+/* ============================================
+   INTRO.JS - ESTILOS PERSONALIZADOS CHAMBAPP
+   Sobrescribe estilos del CDN
+   ============================================ */
+
+/* Tooltip principal */
+.introjs-tooltip {
+    max-width: 450px !important;
+    min-width: 320px !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    padding: 0 !important;
+    background: white !important;
+    border: none !important;
+}
+
+/* Contenido del tooltip */
+.introjs-tooltiptext {
+    padding: 2rem 1.5rem !important;
+    font-size: 1rem !important;
+    line-height: 1.7 !important;
+    color: #1e293b !important;
+    min-height: 100px !important;
+}
+
+/* Headers */
+.introjs-tooltiptext h2 {
+    margin: 0 0 1rem 0 !important;
+    font-size: 1.5rem !important;
+    color: #1e293b !important;
+    font-weight: 700 !important;
+}
+
+.introjs-tooltiptext h3 {
+    margin: 0 0 0.75rem 0 !important;
+    font-size: 1.125rem !important;
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+/* Párrafos */
+.introjs-tooltiptext p {
+    margin: 0.5rem 0 !important;
+    color: #64748b !important;
+    line-height: 1.6 !important;
+}
+
+/* Listas */
+.introjs-tooltiptext ul {
+    margin: 1rem 0 !important;
+    padding-left: 1.5rem !important;
+    list-style-type: disc !important;
+}
+
+.introjs-tooltiptext ul li {
+    margin: 0.5rem 0 !important;
+    color: #475569 !important;
+    line-height: 1.6 !important;
+}
+
+/* Ocultar header */
+.introjs-tooltip-header {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: none !important;
+}
+
+/* Contenedor de botones */
+.introjs-tooltipbuttons {
+    padding: 1rem 1.5rem !important;
+    border-top: 2px solid #f1f5f9 !important;
+    display: flex !important;
+    gap: 0.75rem !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+/* Todos los botones - base */
+.introjs-button {
+    border-radius: 10px !important;
+    padding: 0.875rem 1.75rem !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    text-shadow: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: none !important;
+}
+
+/* Botón siguiente y done */
+.introjs-nextbutton,
+.introjs-donebutton {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.introjs-nextbutton:hover,
+.introjs-nextbutton:focus,
+.introjs-donebutton:hover,
+.introjs-donebutton:focus {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* Botón anterior */
+.introjs-prevbutton {
+    background: white !important;
+    color: #64748b !important;
+    border: 2px solid #e2e8f0 !important;
+}
+
+.introjs-prevbutton:hover,
+.introjs-prevbutton:focus {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #475569 !important;
+}
+
+/* Botón saltar */
+.introjs-skipbutton {
+    color: #94a3b8 !important;
+    background: transparent !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9375rem !important;
+}
+
+.introjs-skipbutton:hover,
+.introjs-skipbutton:focus {
+    color: #64748b !important;
+    background: transparent !important;
+}
+
+/* Capa de highlight */
+.introjs-helperLayer {
+    border-radius: 12px !important;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px !important;
+    border: 3px solid #2563eb !important;
+    background: transparent !important;
+}
+
+/* Ocultar número del paso */
+.introjs-helperNumberLayer {
+    display: none !important;
+}
+
+/* Flechas - todas direcciones */
+.introjs-arrow {
+    border: 10px solid transparent !important;
+}
+
+.introjs-arrow.top {
+    border-bottom-color: white !important;
+    top: -20px !important;
+}
+
+.introjs-arrow.bottom {
+    border-top-color: white !important;
+    bottom: -20px !important;
+}
+
+.introjs-arrow.left {
+    border-right-color: white !important;
+    left: -20px !important;
+}
+
+.introjs-arrow.right {
+    border-left-color: white !important;
+    right: -20px !important;
+}
+
+/* Barra de progreso */
+.introjs-progress {
+    background: #e2e8f0 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    height: 6px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.introjs-progressbar {
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%) !important;
+    border-radius: 4px !important;
+    height: 6px !important;
+}
+
+/* Ocultar bullets */
+.introjs-bullets {
+    display: none !important;
+}
+
+/* Overlay */
+.introjs-overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Disabled state */
+.introjs-disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+.introjs-disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE
+   ============================================ */
+@media (max-width: 640px) {
+    .introjs-tooltip {
+        max-width: 95vw !important;
+        min-width: 280px !important;
+    }
+    
+    .introjs-tooltiptext {
+        padding: 1.5rem 1.25rem !important;
+        font-size: 0.9375rem !important;
+    }
+    
+    .introjs-tooltiptext h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    .introjs-tooltiptext h3 {
+        font-size: 1rem !important;
+    }
+    
+    .introjs-tooltipbuttons {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+    
+    .introjs-button {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.9375rem !important;
+    }
+    
+    .introjs-skipbutton {
+        width: 100% !important;
+        text-align: center !important;
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes introjs-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.introjs-helperLayer {
+    animation: introjs-pulse 2s ease-in-out infinite !important;
+}
+
+/* ============================================
+   ACCESIBILIDAD - FOCUS STATES
+   ============================================ */
+.introjs-button:focus {
+    outline: 3px solid #93c5fd !important;
+    outline-offset: 2px !important;
+}
+
+.introjs-skipbutton:focus {
+    outline: 2px solid #cbd5e1 !important;
+    outline-offset: 2px !important;
+}
+
+/* ============================================
+   FIX PARA Z-INDEX
+   ============================================ */
+.introjs-overlay {
+    z-index: 999999 !important;
+}
+
+.introjs-helperLayer {
+    z-index: 9999998 !important;
+}
+
+.introjs-tooltipReferenceLayer {
+    z-index: 10000000 !important;
+}
+
+.introjs-tooltip {
+    z-index: 10000001 !important;
+}
