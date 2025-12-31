@@ -4,78 +4,330 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publicar Oferta - ChambApp</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/publicar-oferta.css">
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
-        <div class="logo">💼 ChambApp</div>
-        <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
+        <div class="header-content">
+            <div class="logo">💼 ChambApp</div>
+            <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
+        </div>
     </header>
 
     <div class="container">
-        <div class="form-card">
-            <h1>📝 Publicar Nueva Oferta</h1>
-            <p>Completa los datos de la chamba que estás buscando</p>
-
-            <div id="mensaje" class="mensaje"></div>
-
-            <form id="formOferta">
-                <div class="form-group">
-                    <label for="titulo">Título de la Oferta *</label>
-                    <input type="text" id="titulo" placeholder="Ej: Maestro de Obra - Construcción Residencial" required>
+        <div class="form-wrapper">
+            
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
-
-                <div class="form-group">
-                    <label for="categoria">Categoría *</label>
-                    <select id="categoria" required>
-                        <option value="">Selecciona una categoría</option>
-                        <option value="construccion">Construcción</option>
-                        <option value="electricidad">Electricidad</option>
-                        <option value="gasfiteria">Gasfitería</option>
-                        <option value="pintura">Pintura</option>
-                        <option value="carpinteria">Carpintería</option>
-                        <option value="limpieza">Limpieza</option>
-                        <option value="jardineria">Jardinería</option>
-                        <option value="mecanica">Mecánica</option>
-                        <option value="otros">Otros</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="descripcion">Descripción *</label>
-                    <textarea id="descripcion" placeholder="Describe el trabajo que necesitas..." required></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="ubicacion">Ubicación *</label>
-                        <input type="text" id="ubicacion" placeholder="Ej: San Isidro, Lima" required>
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Básico</div>
                     </div>
-
-                    <div class="form-group">
-                        <label for="salario">Salario Ofrecido *</label>
-                        <input type="text" id="salario" placeholder="Ej: S/. 80-120/día" required>
+                    <div class="step" data-step="2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Detalles</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Requisitos</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Revisar</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="duracion">Duración</label>
-                        <input type="text" id="duracion" placeholder="Ej: 2 semanas, 1 mes">
+            <!-- Form Card -->
+            <div class="form-card">
+                
+                <form id="formOferta" novalidate>
+                    
+                    <!-- PASO 1: Información Básica -->
+                    <div class="form-step active" data-step="1">
+                        <div class="step-header">
+                            <h2>📝 Información Básica</h2>
+                            <p>Cuéntanos qué trabajo necesitas</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="titulo" class="required">Título de la Oferta</label>
+                            <input 
+                                type="text" 
+                                id="titulo" 
+                                name="titulo"
+                                placeholder="Ej: Maestro de Obra - Construcción Residencial" 
+                                maxlength="100"
+                                required
+                                aria-required="true"
+                            >
+                            <span class="char-count"><span id="titulo-count">0</span>/100</span>
+                            <span class="error-message" id="titulo-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="categoria" class="required">Categoría</label>
+                            <select id="categoria" name="categoria" required aria-required="true">
+                                <option value="">Selecciona una categoría</option>
+                                <option value="construccion">🏗️ Construcción</option>
+                                <option value="electricidad">⚡ Electricidad</option>
+                                <option value="gasfiteria">🔧 Gasfitería</option>
+                                <option value="pintura">🎨 Pintura</option>
+                                <option value="carpinteria">🪵 Carpintería</option>
+                                <option value="limpieza">🧹 Limpieza</option>
+                                <option value="jardineria">🌿 Jardinería</option>
+                                <option value="mecanica">🔩 Mecánica</option>
+                                <option value="otros">📦 Otros</option>
+                            </select>
+                            <span class="error-message" id="categoria-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcion" class="required">Descripción del Trabajo</label>
+                            <textarea 
+                                id="descripcion" 
+                                name="descripcion"
+                                placeholder="Describe detalladamente el trabajo que necesitas realizar..."
+                                rows="5"
+                                maxlength="500"
+                                required
+                                aria-required="true"
+                            ></textarea>
+                            <span class="char-count"><span id="descripcion-count">0</span>/500</span>
+                            <span class="error-message" id="descripcion-error"></span>
+                            <div class="helper-text">
+                                💡 <strong>Tip:</strong> Sé específico sobre las tareas, materiales necesarios y resultados esperados
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="horario">Horario</label>
-                        <input type="text" id="horario" placeholder="Ej: 8am - 5pm">
-                    </div>
-                </div>
+                    <!-- PASO 2: Detalles del Trabajo -->
+                    <div class="form-step" data-step="2">
+                        <div class="step-header">
+                            <h2>📍 Detalles del Trabajo</h2>
+                            <p>Ubicación, pago y tiempo</p>
+                        </div>
 
-                <button type="submit" class="btn-publicar">🚀 Publicar Oferta</button>
-            </form>
+                        <div class="form-group">
+                            <label for="ubicacion" class="required">Ubicación</label>
+                            <input 
+                                type="text" 
+                                id="ubicacion" 
+                                name="ubicacion"
+                                placeholder="Ej: San Isidro, Lima" 
+                                required
+                                aria-required="true"
+                            >
+                            <span class="error-message" id="ubicacion-error"></span>
+                            <div class="helper-text">
+                                📍 Incluye distrito y/o referencia para que sea más fácil de encontrar
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="salario" class="required">Salario Ofrecido</label>
+                                <input 
+                                    type="text" 
+                                    id="salario" 
+                                    name="salario"
+                                    placeholder="Ej: S/. 80-120/día" 
+                                    required
+                                    aria-required="true"
+                                >
+                                <span class="error-message" id="salario-error"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="duracion">Duración Estimada</label>
+                                <input 
+                                    type="text" 
+                                    id="duracion" 
+                                    name="duracion"
+                                    placeholder="Ej: 2 semanas, 1 mes"
+                                >
+                                <span class="error-message" id="duracion-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="horario">Horario de Trabajo</label>
+                            <input 
+                                type="text" 
+                                id="horario" 
+                                name="horario"
+                                placeholder="Ej: Lunes a Viernes, 8am - 5pm"
+                            >
+                            <span class="error-message" id="horario-error"></span>
+                        </div>
+
+                        <div class="helper-text">
+                            💰 <strong>Sugerencia:</strong> Ofertas con salario claro reciben 3x más aplicantes
+                        </div>
+                    </div>
+
+                    <!-- PASO 3: Requisitos -->
+                    <div class="form-step" data-step="3">
+                        <div class="step-header">
+                            <h2>✅ Requisitos</h2>
+                            <p>¿Qué debe tener el trabajador ideal?</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experiencia">Experiencia Requerida</label>
+                            <select id="experiencia" name="experiencia">
+                                <option value="">Selecciona nivel de experiencia</option>
+                                <option value="sin-experiencia">Sin experiencia</option>
+                                <option value="1-2-años">1-2 años</option>
+                                <option value="3-5-años">3-5 años</option>
+                                <option value="5+-años">Más de 5 años</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="habilidades">Habilidades Específicas</label>
+                            <textarea 
+                                id="habilidades" 
+                                name="habilidades"
+                                placeholder="Ej: Conocimientos de albañilería, lectura de planos, uso de herramientas eléctricas..."
+                                rows="3"
+                            ></textarea>
+                            <div class="helper-text">
+                                Opcional pero ayuda a atraer candidatos más calificados
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>¿Qué debe traer el trabajador?</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="herramientas" name="herramientas">
+                                    <span>Herramientas propias</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="transporte" name="transporte">
+                                    <span>Transporte propio</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="equipos" name="equipos">
+                                    <span>Equipos de protección</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="requisitos-adicionales">Requisitos Adicionales</label>
+                            <textarea 
+                                id="requisitos-adicionales" 
+                                name="requisitos-adicionales"
+                                placeholder="Ej: Disponibilidad inmediata, referencias verificables, certificado de salud..."
+                                rows="3"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <!-- PASO 4: Revisión y Confirmación -->
+                    <div class="form-step" data-step="4">
+                        <div class="step-header">
+                            <h2>🔍 Revisar y Publicar</h2>
+                            <p>Verifica que todo esté correcto antes de publicar</p>
+                        </div>
+
+                        <div class="review-card">
+                            <h3>📋 Resumen de tu Oferta</h3>
+                            
+                            <div class="review-section">
+                                <h4>Información Básica</h4>
+                                <div class="review-item">
+                                    <span class="review-label">Título:</span>
+                                    <span class="review-value" id="review-titulo">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <span class="review-label">Categoría:</span>
+                                    <span class="review-value" id="review-categoria">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <span class="review-label">Descripción:</span>
+                                    <span class="review-value" id="review-descripcion">-</span>
+                                </div>
+                            </div>
+
+                            <div class="review-section">
+                                <h4>Detalles del Trabajo</h4>
+                                <div class="review-item">
+                                    <span class="review-label">Ubicación:</span>
+                                    <span class="review-value" id="review-ubicacion">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <span class="review-label">Salario:</span>
+                                    <span class="review-value" id="review-salario">-</span>
+                                </div>
+                                <div class="review-item">
+                                    <span class="review-label">Duración:</span>
+                                    <span class="review-value" id="review-duracion">No especificado</span>
+                                </div>
+                                <div class="review-item">
+                                    <span class="review-label">Horario:</span>
+                                    <span class="review-value" id="review-horario">No especificado</span>
+                                </div>
+                            </div>
+
+                            <div class="review-section">
+                                <h4>Requisitos</h4>
+                                <div class="review-item">
+                                    <span class="review-label">Experiencia:</span>
+                                    <span class="review-value" id="review-experiencia">No especificado</span>
+                                </div>
+                                <div class="review-item" id="review-habilidades-container" style="display: none;">
+                                    <span class="review-label">Habilidades:</span>
+                                    <span class="review-value" id="review-habilidades">-</span>
+                                </div>
+                            </div>
+
+                            <div class="info-box">
+                                <p>✨ Tu oferta será visible para todos los trabajadores registrados</p>
+                                <p>📧 Recibirás notificaciones cuando alguien aplique</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-secondary" id="btnPrevious">
+                            ← Atrás
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btnNext">
+                            Siguiente →
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmit" style="display: none;">
+                            🚀 Publicar Oferta
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Progress Info -->
+            <div class="progress-info">
+                <p>Paso <span id="currentStep">1</span> de 4</p>
+            </div>
+
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script type="module" src="js/publicar-oferta.js"></script>
 </body>
 </html>
