@@ -1,0 +1,1091 @@
+═══════════════════════════════════════════════════════════════════════════
+                            CHAMBAPP - ONBOARDING
+                    Marketplace de Trabajos en Perú
+═══════════════════════════════════════════════════════════════════════════
+
+Última actualización: 30 de Diciembre, 2024
+Versión: 1.0 (MVP en desarrollo)
+Creador: Joel
+Asistente técnico: Claude (Anthropic)
+
+═══════════════════════════════════════════════════════════════════════════
+📋 TABLA DE CONTENIDOS
+═══════════════════════════════════════════════════════════════════════════
+
+1. ¿QUÉ ES CHAMBAPP?
+2. PROBLEMA QUE RESUELVE
+3. MODELO DE NEGOCIO
+4. STACK TECNOLÓGICO
+5. ARQUITECTURA DEL PROYECTO
+6. FUNCIONALIDADES COMPLETADAS (44%)
+7. FUNCIONALIDADES PENDIENTES (56%)
+8. ROADMAP DE DESARROLLO
+9. PROYECCIÓN FINANCIERA
+10. CÓMO EMPEZAR A DESARROLLAR
+11. RECURSOS Y DOCUMENTACIÓN
+
+═══════════════════════════════════════════════════════════════════════════
+1. ¿QUÉ ES CHAMBAPP?
+═══════════════════════════════════════════════════════════════════════════
+
+ChambApp es un marketplace web que conecta trabajadores con empleadores en 
+Perú, enfocado en trabajos temporales, microtrabajos y servicios ("chambas").
+
+CONCEPTO SIMPLE:
+- TaskRabbit + Workana, pero para el mercado peruano
+- Enfocado en chambas (trabajos cortos/temporales)
+- Categorías: construcción, limpieza, gasfitería, electricidad, jardinería,
+  carpintería, pintura, mecánica, etc.
+
+TIPOS DE USUARIOS:
+1. TRABAJADORES: Buscan chambas, postulan a ofertas, completan trabajos
+2. EMPLEADORES: Publican ofertas, revisan postulantes, contratan trabajadores
+
+DIFERENCIADORES CLAVE:
+✓ Diseñado específicamente para el mercado peruano
+✓ Modelo freemium accesible (S/. 20/mes)
+✓ Interfaz simple y directa (no requiere experiencia técnica)
+✓ Mobile-first (optimizado para celulares)
+✓ Sistema de reputación mediante calificaciones
+
+═══════════════════════════════════════════════════════════════════════════
+2. PROBLEMA QUE RESUELVE
+═══════════════════════════════════════════════════════════════════════════
+
+PROBLEMA PARA TRABAJADORES:
+❌ Difícil encontrar trabajos temporales de forma confiable
+❌ Dependen de contactos personales o grupos de WhatsApp desorganizados
+❌ No tienen forma de mostrar su experiencia y reputación
+❌ Pierden tiempo buscando trabajo en lugar de trabajar
+
+PROBLEMA PARA EMPLEADORES:
+❌ Difícil encontrar trabajadores confiables rápidamente
+❌ No hay forma de verificar experiencia antes de contratar
+❌ Proceso de búsqueda desorganizado (WhatsApp, Facebook)
+❌ Riesgo de contratar personas no calificadas
+
+SOLUCIÓN CHAMBAPP:
+✅ Plataforma centralizada y organizada
+✅ Perfiles verificados con calificaciones
+✅ Búsqueda filtrada por categoría, ubicación, experiencia
+✅ Sistema de reputación que genera confianza
+✅ Proceso simple: publicar → postular → contratar
+
+═══════════════════════════════════════════════════════════════════════════
+3. MODELO DE NEGOCIO
+═══════════════════════════════════════════════════════════════════════════
+
+MODELO FREEMIUM PARA TRABAJADORES:
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                     TRABAJADOR FREE (S/. 0)                         │
+├─────────────────────────────────────────────────────────────────────┤
+│ ✅ Máximo 10 postulaciones ACTIVAS simultáneas                      │
+│ ✅ Máximo 5 chambas COMPLETADAS (lifetime)                          │
+│ ✅ Perfil básico                                                     │
+│ ✅ Búsqueda de ofertas                                               │
+│ ❌ Sin badge Premium                                                 │
+│ ❌ Aparece al final en búsquedas                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│              TRABAJADOR PREMIUM (S/. 20/mes - 30 días)              │
+├─────────────────────────────────────────────────────────────────────┤
+│ ✅ Postulaciones ILIMITADAS                                          │
+│ ✅ Chambas completadas ILIMITADAS                                    │
+│ ✅ Badge Premium ⭐ en perfil                                        │
+│ ✅ Aparece PRIMERO en búsquedas                                      │
+│ ✅ Perfil destacado con color especial                               │
+│ ✅ Estadísticas avanzadas                                            │
+│ ✅ Soporte prioritario                                               │
+└─────────────────────────────────────────────────────────────────────┘
+
+EMPLEADORES (GRATIS POR AHORA):
+✓ Publicar ofertas de trabajo ilimitadas
+✓ Ver postulantes y sus perfiles
+✓ Contactar trabajadores
+✓ Calificar trabajadores después de la chamba
+
+PASARELA DE PAGOS:
+- Culqi (pasarela peruana)
+- Acepta: Visa, Mastercard, American Express
+- Comisión: 3.99% + S/. 0.30 por transacción
+- Ganancia neta por suscripción: S/. 19.10
+- Activación: INMEDIATA (menos de 1 minuto)
+
+PROYECCIÓN DE INGRESOS AÑO 1:
+- Mes 1-3: S/. 300/mes
+- Mes 4-6: S/. 1,200/mes
+- Mes 7-9: S/. 2,400/mes
+- Mes 10-12: S/. 4,000/mes
+- TOTAL AÑO 1: S/. 24,000 (~$6,400 USD)
+
+FUTURAS FUENTES DE INGRESO (FASE 2):
+- Empleadores Premium: S/. 30/mes
+- Destacar ofertas: S/. 5-10 por oferta
+- Comisión por transacción: 5-10% del valor de la chamba
+
+═══════════════════════════════════════════════════════════════════════════
+4. STACK TECNOLÓGICO
+═══════════════════════════════════════════════════════════════════════════
+
+FRONTEND:
+├─ HTML5 (semántico, moderno)
+├─ CSS3 (responsive, mobile-first)
+├─ JavaScript ES6+ (módulos, imports modernos)
+└─ Vanilla JS (sin frameworks - simplicidad)
+
+BACKEND:
+├─ Firebase Authentication (manejo de usuarios)
+├─ Cloud Firestore (base de datos NoSQL)
+├─ Firebase Hosting (opcional, futuro)
+└─ Firebase Cloud Functions (webhooks de pago)
+
+HOSTING:
+├─ GitHub Pages (actual - gratuito)
+└─ Dominio: https://jrvl83.github.io/chambapp/
+
+PASARELA DE PAGOS:
+└─ Culqi (API de pagos para Perú)
+
+CONTROL DE VERSIONES:
+├─ Git
+└─ GitHub (repositorio público)
+
+ESTRUCTURA DE ARCHIVOS:
+chambapp/
+├─ index.html                  (Landing page)
+├─ login.html                  (Autenticación)
+├─ registro.html               (Registro de usuarios)
+├─ dashboard.html              (Dashboard principal)
+├─ publicar-oferta.html        (Crear ofertas - empleadores)
+├─ mis-aplicaciones.html       (Ver aplicaciones - empleadores)
+│
+├─ css/
+│   ├─ styles.css              (Estilos generales)
+│   ├─ dashboard.css           (Estilos del dashboard)
+│   └─ dashboard-main.css      (Estilos principales + responsive)
+│
+├─ js/
+│   ├─ config/
+│   │   └─ firebase-config.js  (Configuración Firebase)
+│   │
+│   ├─ auth/
+│   │   ├─ login.js            (Lógica de login)
+│   │   └─ registro.js         (Lógica de registro)
+│   │
+│   ├─ dashboard/
+│   │   └─ dashboard.js        (Lógica del dashboard)
+│   │
+│   ├─ ofertas/
+│   │   ├─ publicar.js         (Publicar ofertas)
+│   │   └─ aplicaciones.js     (Gestión de aplicaciones)
+│   │
+│   └─ utils/
+│       └─ helpers.js          (Funciones auxiliares)
+│
+└─ assets/
+    └─ images/                 (Imágenes y recursos)
+
+VERSIONES:
+- Firebase: 10.7.1
+- ES6 Modules
+- HTML5 Doctype
+- CSS3 (última versión)
+
+═══════════════════════════════════════════════════════════════════════════
+5. ARQUITECTURA DEL PROYECTO
+═══════════════════════════════════════════════════════════════════════════
+
+FIREBASE FIRESTORE - ESTRUCTURA DE DATOS:
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ COLECCIÓN: usuarios                                                 │
+├─────────────────────────────────────────────────────────────────────┤
+│ {                                                                   │
+│   uid: string (ID de Firebase Auth)                                │
+│   nombre: string                                                    │
+│   email: string                                                     │
+│   telefono: string                                                  │
+│   tipo: "trabajador" | "empleador"                                 │
+│   plan: "free" | "premium"                                         │
+│   postulacionesActivas: number (para FREE)                         │
+│   chambasCompletadas: number (para FREE)                           │
+│   fechaRegistro: timestamp                                         │
+│   fechaUpgrade: timestamp | null                                   │
+│   fechaExpiracion: timestamp | null                                │
+│ }                                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ COLECCIÓN: ofertas                                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│ {                                                                   │
+│   id: string (auto-generado)                                       │
+│   titulo: string                                                    │
+│   descripcion: string                                               │
+│   categoria: string (construccion, limpieza, etc.)                 │
+│   ubicacion: string                                                 │
+│   salario: string                                                   │
+│   duracion: string                                                  │
+│   horario: string                                                   │
+│   estado: "activa" | "cerrada"                                     │
+│   empleadorId: string                                               │
+│   empleadorNombre: string                                           │
+│   empleadorEmail: string                                            │
+│   fechaCreacion: timestamp                                          │
+│ }                                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ COLECCIÓN: aplicaciones                                             │
+├─────────────────────────────────────────────────────────────────────┤
+│ {                                                                   │
+│   id: string (auto-generado)                                       │
+│   ofertaId: string                                                  │
+│   ofertaTitulo: string                                              │
+│   aplicanteId: string                                               │
+│   aplicanteNombre: string                                           │
+│   aplicanteEmail: string                                            │
+│   aplicanteTelefono: string                                         │
+│   empleadorId: string                                               │
+│   mensaje: string                                                   │
+│   estado: "pendiente" | "aceptada" | "rechazada"                  │
+│   fechaAplicacion: timestamp                                        │
+│ }                                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ COLECCIÓN: perfiles (PENDIENTE)                                     │
+├─────────────────────────────────────────────────────────────────────┤
+│ {                                                                   │
+│   userId: string                                                    │
+│   categorias: array<string>                                         │
+│   experiencia: string                                               │
+│   habilidades: array<string>                                        │
+│   descripcion: string                                               │
+│   avatar: string (emoji)                                            │
+│   portfolio: array<{titulo, descripcion}>                          │
+│   calificacionPromedio: number                                      │
+│ }                                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ COLECCIÓN: calificaciones (PENDIENTE)                               │
+├─────────────────────────────────────────────────────────────────────┤
+│ {                                                                   │
+│   id: string                                                        │
+│   tipo: "trabajador_a_empleador" | "empleador_a_trabajador"       │
+│   chambaId: string                                                  │
+│   calificadorId: string                                             │
+│   calificadoId: string                                              │
+│   estrellas: 1-5                                                    │
+│   comentario: string                                                │
+│   fecha: timestamp                                                  │
+│ }                                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+
+FLUJO DE AUTENTICACIÓN:
+1. Usuario visita ChambApp
+2. Hace clic en "Registrarse"
+3. Elige tipo: Trabajador o Empleador
+4. Llena formulario (nombre, email, contraseña, teléfono)
+5. Firebase crea cuenta
+6. Se crea documento en Firestore (colección usuarios)
+7. Redirección a Dashboard personalizado
+
+FLUJO DE PUBLICAR OFERTA (EMPLEADOR):
+1. Empleador hace clic en "Publicar Oferta"
+2. Llena formulario (título, categoría, descripción, ubicación, etc.)
+3. Clic en "Publicar"
+4. Se crea documento en Firestore (colección ofertas)
+5. Aparece en dashboard del empleador
+6. Aparece en búsqueda de trabajadores
+
+FLUJO DE APLICAR A CHAMBA (TRABAJADOR):
+1. Trabajador busca ofertas en dashboard
+2. Aplica filtros (categoría, ubicación)
+3. Ve oferta de interés → clic en "Aplicar"
+4. Llena mensaje de presentación
+5. Se crea documento en Firestore (colección aplicaciones)
+6. Empleador recibe notificación (ve aplicación)
+7. Empleador puede contactar vía teléfono/email
+
+═══════════════════════════════════════════════════════════════════════════
+6. FUNCIONALIDADES COMPLETADAS (44% - 8/18)
+═══════════════════════════════════════════════════════════════════════════
+
+✅ 1. SISTEMA DE AUTENTICACIÓN
+   ├─ Registro de usuarios (trabajadores y empleadores)
+   ├─ Login/Logout
+   ├─ Validación de campos
+   ├─ Integración con Firebase Auth
+   ├─ Persistencia de sesión
+   └─ Recuperación de contraseña
+   
+   Archivos: login.html, registro.html, js/auth/login.js, js/auth/registro.js
+   Tiempo invertido: 2 horas
+   Estado: 100% funcional
+
+✅ 2. DASHBOARD PERSONALIZADO
+   ├─ Dashboard diferente para trabajadores vs empleadores
+   ├─ Personalización de textos e interfaz según tipo de usuario
+   ├─ Sidebar con navegación
+   ├─ Header con información del usuario
+   ├─ Sección de estadísticas
+   ├─ Sección de ofertas/trabajadores destacados
+   └─ Botón de cerrar sesión funcional
+   
+   Archivos: dashboard.html, css/dashboard.css, js/dashboard/dashboard.js
+   Tiempo invertido: 3 horas
+   Estado: 100% funcional
+
+✅ 3. PUBLICAR OFERTAS DE TRABAJO
+   ├─ Formulario completo de creación de ofertas
+   ├─ Campos: título, categoría, descripción, ubicación, salario, etc.
+   ├─ Validación de campos
+   ├─ Guardado en Firestore
+   ├─ Solo empleadores pueden publicar
+   └─ Redirección a dashboard después de publicar
+   
+   Archivos: publicar-oferta.html, js/ofertas/publicar.js
+   Tiempo invertido: 1.5 horas
+   Estado: 100% funcional
+
+✅ 4. APLICAR A OFERTAS (TRABAJADORES)
+   ├─ Trabajadores ven ofertas en dashboard
+   ├─ Botón "Aplicar" en cada oferta
+   ├─ Modal con formulario de aplicación
+   ├─ Mensaje personalizado del trabajador
+   ├─ Guardado en Firestore (colección aplicaciones)
+   ├─ Validación de aplicaciones duplicadas
+   └─ Confirmación visual al aplicar
+   
+   Archivos: dashboard.html, js/dashboard/dashboard.js
+   Tiempo invertido: 2 horas
+   Estado: 100% funcional
+
+✅ 5. GESTIÓN DE APLICANTES (EMPLEADORES)
+   ├─ Empleadores ven aplicantes a sus ofertas
+   ├─ Lista de aplicaciones con datos del trabajador
+   ├─ Modal detallado de cada aplicante
+   ├─ Información: nombre, teléfono, email, mensaje
+   ├─ Botones de contacto directo (llamar/email)
+   └─ Vista solo para dueño de la oferta
+   
+   Archivos: mis-aplicaciones.html, js/ofertas/aplicaciones.js
+   Tiempo invertido: 2 horas
+   Estado: 100% funcional
+
+✅ 6. EDITAR Y ELIMINAR OFERTAS
+   ├─ Empleadores pueden editar sus ofertas
+   ├─ Modal con formulario pre-llenado
+   ├─ Actualización en Firestore
+   ├─ Eliminación de ofertas con confirmación
+   ├─ Elimina también aplicaciones asociadas
+   ├─ Botones visibles solo para dueño de la oferta
+   └─ Validación de permisos
+   
+   Archivos: js/dashboard/dashboard.js
+   Tiempo invertido: 1.5 horas
+   Estado: 100% funcional
+
+✅ 7. DISEÑO RESPONSIVE MOBILE-FIRST
+   ├─ Menú hamburguesa para móviles (☰)
+   ├─ Sidebar deslizable desde la izquierda
+   ├─ Overlay oscuro cuando menú abierto
+   ├─ Botón de cerrar (✕) en sidebar
+   ├─ Cards optimizadas para pantallas pequeñas
+   ├─ Textos y botones tamaño apropiado
+   ├─ Media queries para tablets y móviles
+   ├─ Funciona perfecto en iPhone, Android
+   └─ Sin pérdida de funcionalidad en móvil
+   
+   Archivos: css/dashboard-main.css, js/dashboard/dashboard.js
+   Tiempo invertido: 30 minutos
+   Estado: 100% funcional
+
+✅ 8. ESTADÍSTICAS DINÁMICAS PERSONALIZADAS
+   ├─ Estadísticas diferentes para trabajadores vs empleadores
+   ├─ EMPLEADOR ve:
+   │   ├─ Total de aplicantes a sus ofertas
+   │   ├─ Número de ofertas activas
+   │   └─ Contrataciones (futuro)
+   ├─ TRABAJADOR ve:
+   │   ├─ Total de aplicaciones enviadas
+   │   ├─ Aplicaciones aceptadas (futuro)
+   │   └─ Calificación promedio (futuro)
+   ├─ Datos reales desde Firestore
+   ├─ Actualización automática al cargar dashboard
+   └─ Iconos y labels personalizados
+   
+   Archivos: dashboard.html, js/dashboard/dashboard.js
+   Tiempo invertido: 30 minutos
+   Estado: 100% funcional
+
+ADICIONALES COMPLETADOS:
+✅ Sistema de filtros de búsqueda (categoría, ubicación, palabra clave)
+✅ Pantalla de carga profesional con spinner
+✅ Badges de categorías con colores (Construcción, Limpieza, etc.)
+✅ Modales reutilizables para detalles y confirmaciones
+✅ Prevención de aplicaciones duplicadas
+✅ Contador de resultados de búsqueda
+
+TIEMPO TOTAL INVERTIDO: ~13-15 horas
+PROGRESO: 44% del proyecto completado
+
+═══════════════════════════════════════════════════════════════════════════
+7. FUNCIONALIDADES PENDIENTES (56% - 10/18)
+═══════════════════════════════════════════════════════════════════════════
+
+⏳ 9. PERFILES DE TRABAJADORES ⭐ ALTA PRIORIDAD - SIGUIENTE
+   
+   DESCRIPCIÓN:
+   Sistema completo de perfiles para trabajadores donde pueden mostrar su
+   experiencia, habilidades, categorías de trabajo, y portfolio.
+   
+   LO QUE INCLUYE:
+   ├─ Página perfil-trabajador.html (crear/editar perfil)
+   ├─ Formulario con campos:
+   │   ├─ Categorías de trabajo (múltiple selección)
+   │   ├─ Años de experiencia
+   │   ├─ Habilidades (tags)
+   │   ├─ Descripción personal
+   │   ├─ Avatar (emoji/icono)
+   │   └─ Portfolio (trabajos anteriores)
+   ├─ Página trabajadores.html (búsqueda para empleadores)
+   ├─ Lista de trabajadores con filtros
+   ├─ Vista de perfil completo en modal
+   ├─ Botón "Contactar" para empleadores
+   └─ Integración con Firestore (colección perfiles)
+   
+   ARCHIVOS A CREAR:
+   ├─ perfil-trabajador.html
+   ├─ trabajadores.html
+   ├─ js/perfil-trabajador.js
+   ├─ js/trabajadores.js
+   └─ css/perfil.css
+   
+   TIEMPO ESTIMADO: 1.5 - 2 horas
+   IMPACTO: ALTO (base para calificaciones y búsqueda avanzada)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 10. SISTEMA DE CALIFICACIONES/RATING ⭐ ALTA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Sistema bidireccional de calificaciones donde empleadores califican
+   trabajadores y viceversa, generando reputación en la plataforma.
+   
+   LO QUE INCLUYE:
+   ├─ Empleadores califican trabajadores (1-5 estrellas)
+   ├─ Trabajadores califican empleadores (1-5 estrellas)
+   ├─ Comentarios/reviews opcionales
+   ├─ Promedio de calificación visible en perfiles
+   ├─ Badge especial para usuarios 5 estrellas
+   ├─ Solo se puede calificar después de chamba completada
+   ├─ Una calificación por chamba
+   └─ Historial de calificaciones recibidas
+   
+   ESTRUCTURA DE DATOS:
+   Colección: calificaciones
+   {
+     id: auto,
+     tipo: "trabajador_a_empleador" | "empleador_a_trabajador",
+     chambaId: string,
+     calificadorId: string,
+     calificadoId: string,
+     estrellas: 1-5,
+     comentario: string (opcional),
+     fecha: timestamp
+   }
+   
+   TIEMPO ESTIMADO: 2 horas
+   IMPACTO: ALTO (genera confianza en la plataforma)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 11. SISTEMA FREEMIUM + LÍMITES ⭐ ALTA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Implementar el modelo de negocio con límites para usuarios FREE y
+   funcionalidades Premium desbloqueadas al pagar.
+   
+   LO QUE INCLUYE:
+   ├─ Contador de postulaciones activas (máx 10 para FREE)
+   ├─ Contador de chambas completadas (máx 5 para FREE)
+   ├─ Validación antes de postular
+   ├─ Modal de aviso al llegar a 3 chambas completadas
+   ├─ Bloqueo total al llegar a 5 chambas
+   ├─ Actualización de UI para mostrar límites
+   ├─ Badge "Premium ⭐" para usuarios pagos
+   └─ Vencimiento de suscripción (30 días)
+   
+   VALIDACIONES:
+   - Al postular: verificar límites
+   - Al completar chamba: incrementar contador
+   - Al llegar a límite: mostrar modal upgrade
+   - Renovación: recordatorio 3 días antes
+   
+   CAMPOS NUEVOS EN FIRESTORE:
+   usuarios {
+     plan: "free" | "premium",
+     postulacionesActivas: number,
+     chambasCompletadas: number,
+     fechaUpgrade: timestamp | null,
+     fechaExpiracion: timestamp | null
+   }
+   
+   TIEMPO ESTIMADO: 3 horas
+   IMPACTO: MUY ALTO (monetización)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 12. INTEGRACIÓN DE PAGOS (CULQI) ⭐ ALTA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Integrar pasarela de pagos Culqi para procesar suscripciones Premium
+   de S/. 20 mensuales con tarjeta de crédito/débito.
+   
+   LO QUE INCLUYE:
+   ├─ Página upgrade.html con info de Premium
+   ├─ Integración de Culqi JavaScript SDK
+   ├─ Modal de pago con formulario de tarjeta
+   ├─ Procesamiento de tokens y cargos
+   ├─ Firebase Cloud Function para crear cargo
+   ├─ Webhook para confirmar pagos
+   ├─ Actualización automática a Premium
+   ├─ Activación INMEDIATA (menos de 1 minuto)
+   ├─ Manejo de errores de pago
+   └─ Dashboard de administración de suscripción
+   
+   FLUJO DE PAGO:
+   1. Usuario bloqueado → clic "Upgrade"
+   2. Modal de Culqi con datos de tarjeta
+   3. Procesamiento (10-15 segundos)
+   4. Firebase actualiza plan a "premium"
+   5. Usuario ve confirmación + confetti 🎉
+   6. Ya puede postular ilimitadamente
+   
+   CULQI CONFIG:
+   - Cuenta: https://culqi.com
+   - Comisión: 3.99% + S/. 0.30
+   - Ganancia neta: S/. 19.10 por suscripción
+   
+   TIEMPO ESTIMADO: 4-5 horas
+   IMPACTO: MUY ALTO (habilita monetización real)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 13. SISTEMA DE MENSAJERÍA ⭐ MEDIA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Chat en tiempo real entre trabajador y empleador para coordinar
+   detalles de la chamba antes/durante/después del trabajo.
+   
+   LO QUE INCLUYE:
+   ├─ Página mensajes.html con lista de conversaciones
+   ├─ Chat individual con historial
+   ├─ Mensajes en tiempo real (Firestore realtime)
+   ├─ Notificaciones de mensajes nuevos
+   ├─ Badge con contador de no leídos
+   ├─ Búsqueda de conversaciones
+   ├─ Archivos adjuntos (opcional)
+   └─ Estado "escribiendo..." (opcional)
+   
+   ESTRUCTURA DE DATOS:
+   Colección: conversaciones
+   {
+     id: auto,
+     participantes: [uid1, uid2],
+     ultimoMensaje: string,
+     fechaUltimoMensaje: timestamp,
+     noLeidos: { uid1: 0, uid2: 3 }
+   }
+   
+   Subcolección: mensajes
+   {
+     conversacionId: string,
+     remitenteId: string,
+     mensaje: string,
+     fecha: timestamp,
+     leido: boolean
+   }
+   
+   TIEMPO ESTIMADO: 3-4 horas
+   IMPACTO: MEDIO (mejora coordinación)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 14. BADGES PREMIUM Y PRIORIDAD EN BÚSQUEDAS ⭐ MEDIA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Implementar ventajas visuales y funcionales para usuarios Premium
+   que incentiven el upgrade.
+   
+   LO QUE INCLUYE:
+   ├─ Badge "⭐ Premium" visible en perfiles
+   ├─ Color/diseño especial para usuarios Premium
+   ├─ Trabajadores Premium aparecen PRIMERO en búsquedas
+   ├─ Empleadores Premium tienen ofertas destacadas
+   ├─ Borde dorado en cards de Premium
+   ├─ Icono especial en lista de aplicantes
+   └─ Filtro "Solo Premium" en búsquedas
+   
+   QUERY EJEMPLO:
+   const q = query(
+     collection(db, 'perfiles'),
+     orderBy('plan', 'desc'), // premium primero
+     orderBy('calificacion', 'desc')
+   );
+   
+   TIEMPO ESTIMADO: 1 hora
+   IMPACTO: MEDIO (incentiva upgrades)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 15. PANEL DE ADMINISTRACIÓN 🟡 MEDIA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Dashboard de administrador para gestionar la plataforma, usuarios,
+   contenido, y transacciones.
+   
+   LO QUE INCLUYE:
+   ├─ Página admin.html (solo para admin)
+   ├─ Autenticación de admin
+   ├─ Vista de todos los usuarios
+   ├─ Vista de todas las ofertas
+   ├─ Vista de todas las transacciones
+   ├─ Estadísticas globales de la plataforma
+   ├─ Suspender/activar cuentas
+   ├─ Eliminar contenido inapropiado
+   ├─ Gestionar suscripciones manualmente
+   └─ Exportar datos (CSV)
+   
+   MÉTRICAS A MOSTRAR:
+   - Total de usuarios (trabajadores/empleadores)
+   - Total de ofertas publicadas
+   - Total de aplicaciones
+   - Total de chambas completadas
+   - Ingresos mensuales/anuales
+   - Tasa de conversión FREE → Premium
+   - Usuarios activos diarios/semanales
+   
+   TIEMPO ESTIMADO: 4-5 horas
+   IMPACTO: MEDIO (control de plataforma)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 16. NOTIFICACIONES PUSH/EMAIL 🟡 MEDIA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Sistema de notificaciones para mantener usuarios informados sobre
+   actividad relevante en la plataforma.
+   
+   LO QUE INCLUYE:
+   ├─ Email de bienvenida al registrarse
+   ├─ Notificación cuando te aceptan una chamba
+   ├─ Notificación de nuevas postulaciones (empleadores)
+   ├─ Recordatorio de suscripción por vencer (3 días antes)
+   ├─ Notificación de nuevo mensaje
+   ├─ Resumen semanal de actividad
+   └─ Push notifications (PWA)
+   
+   HERRAMIENTAS:
+   - Firebase Cloud Messaging (push)
+   - SendGrid/Mailgun (email)
+   - Plantillas HTML para emails
+   
+   TIEMPO ESTIMADO: 3 horas
+   IMPACTO: MEDIO (retención de usuarios)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 17. SISTEMA DE REPORTES/DENUNCIAS 🟡 MEDIA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Permitir a usuarios reportar contenido inapropiado, fraudes, o
+   comportamiento inadecuado para mantener calidad de la plataforma.
+   
+   LO QUE INCLUYE:
+   ├─ Botón "Reportar" en perfiles y ofertas
+   ├─ Modal con formulario de reporte
+   ├─ Motivos: spam, fraude, acoso, inapropiado, etc.
+   ├─ Descripción del problema
+   ├─ Guardado en colección "reportes"
+   ├─ Admin puede revisar reportes
+   ├─ Acciones: advertir, suspender, eliminar
+   └─ Historial de reportes por usuario
+   
+   TIEMPO ESTIMADO: 2 horas
+   IMPACTO: MEDIO (seguridad y calidad)
+
+───────────────────────────────────────────────────────────────────────────
+
+⏳ 18. CONVERTIR A PWA (PROGRESSIVE WEB APP) 🟢 BAJA PRIORIDAD
+   
+   DESCRIPCIÓN:
+   Convertir ChambApp en una PWA para que funcione como app nativa,
+   se pueda instalar, y funcione parcialmente offline.
+   
+   LO QUE INCLUYE:
+   ├─ Archivo manifest.json
+   ├─ Service Worker (service-worker.js)
+   ├─ Cacheo de recursos estáticos
+   ├─ Funcionalidad offline básica
+   ├─ Instalable desde navegador
+   ├─ Ícono en home screen del celular
+   ├─ Splash screen
+   ├─ Notificaciones push (requiere PWA)
+   └─ Se siente como app nativa
+   
+   MANIFEST EJEMPLO:
+   {
+     "name": "ChambApp",
+     "short_name": "ChambApp",
+     "start_url": "/",
+     "display": "standalone",
+     "background_color": "#ffffff",
+     "theme_color": "#2563eb",
+     "icons": [
+       {
+         "src": "icon-192.png",
+         "sizes": "192x192",
+         "type": "image/png"
+       }
+     ]
+   }
+   
+   VENTAJAS:
+   ✓ No requiere App Store / Google Play
+   ✓ Instalación directa desde web
+   ✓ Actualizaciones automáticas
+   ✓ Funciona offline (parcial)
+   ✓ Se siente como app nativa
+   
+   TIEMPO ESTIMADO: 2-3 horas
+   IMPACTO: BAJO-MEDIO (UX mejorada)
+
+───────────────────────────────────────────────────────────────────────────
+
+🔒 19. AUDITORÍA DE SEGURIDAD 🔒 CRÍTICO (Antes de lanzamiento)
+   
+   DESCRIPCIÓN:
+   Revisar y fortalecer la seguridad de la aplicación antes del
+   lanzamiento público para proteger datos de usuarios.
+   
+   LO QUE INCLUYE:
+   ├─ Actualizar reglas de Firestore (más restrictivas)
+   ├─ Validación y sanitización de inputs
+   ├─ Rate limiting (prevenir spam/ataques)
+   ├─ Content Security Policy (CSP)
+   ├─ Protección contra XSS (Cross-Site Scripting)
+   ├─ Protección contra CSRF (Cross-Site Request Forgery)
+   ├─ Encriptación de datos sensibles
+   ├─ Testing con herramientas de seguridad
+   ├─ Revisar permisos de Firebase
+   └─ Backups automáticos de Firestore
+   
+   HERRAMIENTAS GRATUITAS:
+   ├─ OWASP ZAP (escaneo de vulnerabilidades)
+   ├─ Google Lighthouse (auditoría seguridad)
+   ├─ Mozilla Observatory (test seguridad web)
+   └─ Snyk (vulnerabilidades de dependencias)
+   
+   REGLAS FIRESTORE MEJORADAS:
+   match /ofertas/{ofertaId} {
+     allow read: if request.auth != null;
+     allow create: if request.auth != null && 
+                      request.resource.data.empleadorId == request.auth.uid;
+     allow update, delete: if request.auth != null && 
+                              resource.data.empleadorId == request.auth.uid;
+   }
+   
+   TIEMPO ESTIMADO: 1-2 días
+   IMPACTO: CRÍTICO (protección de datos)
+
+═══════════════════════════════════════════════════════════════════════════
+8. ROADMAP DE DESARROLLO
+═══════════════════════════════════════════════════════════════════════════
+
+SPRINT 1 - SEMANA 1 (DIC 2024) ✅ COMPLETADO
+├─ Sistema de autenticación ✅
+├─ Dashboard personalizado ✅
+├─ Publicar ofertas ✅
+├─ Aplicar a ofertas ✅
+├─ Gestión de aplicantes ✅
+└─ Editar/Eliminar ofertas ✅
+
+SPRINT 2 - SEMANA 2 (DIC 2024) ✅ COMPLETADO
+├─ Diseño responsive mobile ✅
+├─ Estadísticas dinámicas ✅
+└─ Sistema de filtros ✅
+
+SPRINT 3 - SEMANA 3 (ENE 2025) ⏳ EN PROGRESO
+├─ ⏳ Perfiles de Trabajadores (1.5-2h)
+├─ ⏳ Sistema de Calificaciones (2h)
+└─ ⏳ Sistema Freemium + Límites (3h)
+
+SPRINT 4 - SEMANA 4 (ENE 2025) ⏳ PENDIENTE
+├─ ⏳ Integración Culqi (4-5h)
+├─ ⏳ Badges Premium (1h)
+└─ ⏳ Testing de pagos
+
+SPRINT 5 - SEMANA 5-6 (ENE-FEB 2025) ⏳ PENDIENTE
+├─ ⏳ Sistema de Mensajería (3-4h)
+├─ ⏳ Notificaciones Email (3h)
+└─ ⏳ Panel de Administración (4-5h)
+
+SPRINT 6 - SEMANA 7 (FEB 2025) ⏳ PENDIENTE
+├─ ⏳ Sistema de Reportes (2h)
+├─ 🔒 Auditoría de Seguridad (1-2 días)
+└─ 🧪 Testing exhaustivo
+
+SPRINT 7 - SEMANA 8 (FEB 2025) ⏳ OPCIONAL
+├─ ⏳ Convertir a PWA (2-3h)
+├─ 🎨 Pulir diseño final
+└─ 📝 Documentación de usuario
+
+🚀 LANZAMIENTO PÚBLICO: FINALES DE FEBRERO 2025
+
+TOTAL TIEMPO ESTIMADO:
+├─ Completado: 13-15 horas
+├─ Pendiente: 34-47 horas
+└─ TOTAL: 47-62 horas (~1.5-2 meses a medio tiempo)
+
+═══════════════════════════════════════════════════════════════════════════
+9. PROYECCIÓN FINANCIERA
+═══════════════════════════════════════════════════════════════════════════
+
+MODELO DE INGRESOS: FREEMIUM
+
+COSTO POR USUARIO:
+├─ Trabajador FREE: S/. 0
+└─ Trabajador PREMIUM: S/. 20/mes
+
+COSTOS OPERATIVOS:
+├─ Firebase (Firestore + Auth): S/. 0-50/mes (gratis hasta 50k lecturas/día)
+├─ GitHub Pages: S/. 0 (gratis)
+├─ Dominio (opcional): S/. 50/año (~S/. 4/mes)
+├─ Comisión Culqi: 3.99% + S/. 0.30 por transacción
+└─ TOTAL MENSUAL: S/. 5-60/mes (casi 100% margen)
+
+PROYECCIÓN CONSERVADORA - AÑO 1:
+
+MES 1-3 (LANZAMIENTO):
+├─ 500 trabajadores registrados
+├─ 50 completan 5 chambas (10%)
+├─ 15 hacen upgrade (30% de los que completan)
+├─ Ingresos: 15 × S/. 19.10 netos = S/. 286.50/mes
+└─ Costos: S/. 10/mes
+    └─ GANANCIA NETA: S/. 276.50/mes
+
+MES 4-6 (CRECIMIENTO):
+├─ 1,500 trabajadores totales
+├─ 200 completan 5 chambas
+├─ 60 Premium activos
+├─ Ingresos: 60 × S/. 19.10 = S/. 1,146/mes
+└─ Costos: S/. 20/mes
+    └─ GANANCIA NETA: S/. 1,126/mes
+
+MES 7-9 (EXPANSIÓN):
+├─ 3,000 trabajadores totales
+├─ 400 completan 5 chambas
+├─ 120 Premium activos
+├─ Ingresos: 120 × S/. 19.10 = S/. 2,292/mes
+└─ Costos: S/. 30/mes
+    └─ GANANCIA NETA: S/. 2,262/mes
+
+MES 10-12 (MADUREZ):
+├─ 5,000 trabajadores totales
+├─ 700 completan 5 chambas
+├─ 200 Premium activos
+├─ Ingresos: 200 × S/. 19.10 = S/. 3,820/mes
+└─ Costos: S/. 50/mes
+    └─ GANANCIA NETA: S/. 3,770/mes
+
+RESUMEN AÑO 1:
+├─ Ingresos totales: ~S/. 24,000
+├─ Costos totales: ~S/. 500
+├─ GANANCIA NETA: ~S/. 23,500 (~$6,250 USD)
+└─ Margen: 98%
+
+PROYECCIÓN OPTIMISTA - AÑO 2:
+
+Con empleadores Premium agregados:
+
+TRABAJADORES PREMIUM:
+├─ 10,000 trabajadores registrados
+├─ 1,500 completan 5 chambas
+├─ 400 Premium activos
+└─ Ingresos: 400 × S/. 19.10 = S/. 7,640/mes
+
+EMPLEADORES PREMIUM (NUEVO):
+├─ 2,000 empleadores registrados
+├─ 100 Premium activos (5%)
+└─ Ingresos: 100 × S/. 30 = S/. 3,000/mes
+
+TOTAL MES (AÑO 2):
+├─ Ingresos: S/. 10,640/mes
+├─ Costos: S/. 100/mes
+└─ GANANCIA NETA: S/. 10,540/mes × 12 = S/. 126,480/año
+
+PROYECCIÓN AÑO 2:
+└─ GANANCIA NETA ANUAL: ~S/. 126,000 (~$33,500 USD)
+
+POTENCIAL A LARGO PLAZO (AÑO 3-5):
+├─ Comisión por transacción (5-10%)
+├─ Destacar ofertas (S/. 5-10 cada una)
+├─ Anuncios (opcional)
+└─ Potencial: S/. 300,000-500,000/año si escala bien
+
+═══════════════════════════════════════════════════════════════════════════
+10. CÓMO EMPEZAR A DESARROLLAR
+═══════════════════════════════════════════════════════════════════════════
+
+OPCIÓN 1: CONTINUAR CON CLAUDE CHAT (RECOMENDADO)
+
+Ventajas:
+✓ Ya conoces el flujo
+✓ Aprendes más profundamente
+✓ Control total sobre cada cambio
+✓ Entiendes perfectamente tu código
+✓ Puedes mantenerlo tú solo después
+
+Desventajas:
+⚠ Más lento (paso a paso)
+⚠ Requiere commits manuales
+
+Proceso:
+1. Decides qué funcionalidad implementar
+2. Claude te da el código paso a paso
+3. Tú lo agregas a GitHub
+4. Esperas 2-3 min (GitHub Pages deploy)
+5. Pruebas en producción
+6. Iteramos si hay errores
+
+Tiempo promedio por funcionalidad: 1-3 horas
+
+───────────────────────────────────────────────────────────────────────────
+
+OPCIÓN 2: USAR CLAUDE CODE (MÁS RÁPIDO)
+
+Ventajas:
+✓ Desarrollo más rápido
+✓ Testing inmediato en localhost
+✓ Detecta errores antes de deploy
+✓ Ideal para funcionalidades complejas
+
+Desventajas:
+⚠ Menos aprendizaje profundo
+⚠ Requiere configuración local
+⚠ Menos control manual
+
+Proceso:
+1. Instalas Claude Code en tu terminal
+2. Clonas el repo: git clone https://github.com/Jrvl83/chambapp.git
+3. Claude Code genera código automáticamente
+4. Pruebas en localhost (sin esperar deploy)
+5. Cuando funciona → push a GitHub
+6. GitHub Pages publica
+
+Tiempo promedio por funcionalidad: 30 min - 1 hora
+
+───────────────────────────────────────────────────────────────────────────
+
+RECOMENDACIÓN:
+
+Para ChambApp, dado que:
+├─ Ya tienes 44% completado con Claude Chat
+├─ Conoces bien el código y la estructura
+├─ El flujo actual funciona perfecto
+├─ Estás aprendiendo mucho en el proceso
+└─ No tienes prisa extrema
+
+MI RECOMENDACIÓN: CONTINUAR CON CLAUDE CHAT ✅
+
+Considera Claude Code solo si:
+- Necesitas desarrollar 8+ horas seguidas
+- Tienes un deadline muy ajustado
+- Vas a empezar un proyecto NUEVO desde cero
+
+═══════════════════════════════════════════════════════════════════════════
+11. RECURSOS Y DOCUMENTACIÓN
+═══════════════════════════════════════════════════════════════════════════
+
+REPOSITORIO GITHUB:
+└─ https://github.com/Jrvl83/chambapp
+
+APLICACIÓN EN VIVO:
+└─ https://jrvl83.github.io/chambapp/
+
+DOCUMENTACIÓN FIREBASE:
+├─ Authentication: https://firebase.google.com/docs/auth
+├─ Firestore: https://firebase.google.com/docs/firestore
+└─ Cloud Functions: https://firebase.google.com/docs/functions
+
+DOCUMENTACIÓN CULQI:
+├─ Inicio: https://culqi.com
+├─ Documentación: https://docs.culqi.com
+└─ Dashboard: https://panel.culqi.com
+
+RECURSOS DE APRENDIZAJE:
+├─ MDN Web Docs: https://developer.mozilla.org
+├─ Firebase Guides: https://firebase.google.com/docs
+├─ CSS Tricks: https://css-tricks.com
+└─ JavaScript.info: https://javascript.info
+
+HERRAMIENTAS ÚTILES:
+├─ VS Code (editor de código)
+├─ Chrome DevTools (debugging)
+├─ Firebase Console (gestión de datos)
+├─ GitHub Desktop (gestión de commits)
+└─ Postman (testing de APIs)
+
+COMUNIDADES:
+├─ Stack Overflow (resolver dudas)
+├─ Firebase Community (ayuda Firebase)
+└─ GitHub Discussions (colaboración)
+
+═══════════════════════════════════════════════════════════════════════════
+                              RESUMEN EJECUTIVO
+═══════════════════════════════════════════════════════════════════════════
+
+PROYECTO: ChambApp
+TIPO: Marketplace web de trabajos temporales (Perú)
+ESTADO: MVP 44% completado
+STACK: HTML5, CSS3, JavaScript ES6+, Firebase
+HOSTING: GitHub Pages
+MONETIZACIÓN: Freemium (S/. 20/mes Premium)
+
+PROGRESO:
+├─ ✅ Funcionalidades core completadas: 8/18 (44%)
+├─ ⏳ Funcionalidades pendientes: 10/18 (56%)
+├─ ⏱️ Tiempo invertido: ~15 horas
+└─ 🎯 Tiempo restante estimado: ~35-47 horas
+
+SIGUIENTE PASO INMEDIATO:
+└─ ⭐ Implementar Perfiles de Trabajadores (1.5-2h)
+
+LANZAMIENTO ESTIMADO:
+└─ 🚀 Finales de Febrero 2025 (8 semanas)
+
+PROYECCIÓN FINANCIERA AÑO 1:
+└─ 💰 S/. 23,500 netos (~$6,250 USD) - Margen 98%
+
+CONTACTO:
+├─ Desarrollador: Joel
+├─ GitHub: https://github.com/Jrvl83
+└─ Proyecto: https://github.com/Jrvl83/chambapp
+
+═══════════════════════════════════════════════════════════════════════════
+                            FIN DEL ONBOARDING
+═══════════════════════════════════════════════════════════════════════════
+
+Última actualización: 30 de Diciembre, 2024
+Documento generado por: Claude (Anthropic)
+
+¿Preguntas? Continúa la conversación con Claude para resolver dudas,
+implementar nuevas funcionalidades, o recibir ayuda técnica.
+
+¡Éxito con ChambApp! 🚀
