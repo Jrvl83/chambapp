@@ -55,22 +55,27 @@ async function cargarPerfil() {
         if (docSnap.exists()) {
             perfilData = docSnap.data();
             console.log('✅ Perfil cargado:', perfilData);
-            
-            // Cargar datos en el formulario
-            cargarDatosPersonales();
-            cargarExperiencias();
-            cargarHabilidades();
-            cargarDisponibilidad();
-            calcularCompletitud();
         } else {
             console.log('⚠️ No existe perfil, creando uno nuevo');
+            // Crear perfil inicial
             perfilData = {
                 email: usuario.email,
                 nombre: usuario.nombre || '',
                 telefono: usuario.telefono || '',
                 tipo: 'trabajador'
             };
+            
+            // Guardar perfil inicial en Firestore
+            await setDoc(userDocRef, perfilData, { merge: true });
+            console.log('✅ Perfil inicial creado');
         }
+        
+        // Cargar datos en el formulario
+        cargarDatosPersonales();
+        cargarExperiencias();
+        cargarHabilidades();
+        cargarDisponibilidad();
+        calcularCompletitud();
         
     } catch (error) {
         console.error('❌ Error al cargar perfil:', error);
@@ -280,9 +285,9 @@ async function guardarPerfil() {
             datosActualizados.fotoPerfilURL = perfilData.fotoPerfilURL;
         }
         
-        // Guardar en Firestore
+        // Guardar en Firestore (crear si no existe, actualizar si existe)
         const userDocRef = doc(db, 'usuarios', auth.currentUser.uid);
-        await updateDoc(userDocRef, datosActualizados);
+        await setDoc(userDocRef, datosActualizados, { merge: true });
         
         // Actualizar localStorage
         const usuarioActualizado = { ...usuario, ...datosActualizados };
