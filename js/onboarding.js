@@ -1,7 +1,180 @@
 // ============================================
-// ONBOARDING FIRST-TIME USER
+// ONBOARDING FIRST-TIME USER - VERSIÓN MEJORADA
 // ChambApp - Tour Guiado con Intro.js
 // ============================================
+
+// Agregar estilos INMEDIATAMENTE
+(function agregarEstilos() {
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Intro.js - Estilos personalizados ChambApp */
+        
+        .introjs-tooltip {
+            max-width: 450px !important;
+            border-radius: 16px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+            padding: 0 !important;
+        }
+        
+        .introjs-tooltiptext {
+            padding: 1.5rem !important;
+            font-size: 1rem !important;
+            line-height: 1.7 !important;
+            color: #1e293b !important;
+        }
+        
+        .introjs-tooltiptext h2 {
+            margin: 0 0 1rem 0 !important;
+            font-size: 1.5rem !important;
+            color: #1e293b !important;
+        }
+        
+        .introjs-tooltiptext h3 {
+            margin: 0 0 0.75rem 0 !important;
+            font-size: 1.125rem !important;
+            color: #1e293b !important;
+        }
+        
+        .introjs-tooltiptext p {
+            margin: 0.5rem 0 !important;
+            color: #64748b !important;
+        }
+        
+        .introjs-tooltiptext ul {
+            margin: 0.75rem 0 !important;
+            padding-left: 1.5rem !important;
+        }
+        
+        .introjs-tooltiptext ul li {
+            margin: 0.5rem 0 !important;
+            color: #475569 !important;
+        }
+        
+        .introjs-tooltip-header {
+            padding: 0 !important;
+        }
+        
+        .introjs-tooltipbuttons {
+            padding: 1rem 1.5rem !important;
+            border-top: 2px solid #f1f5f9 !important;
+            display: flex !important;
+            gap: 0.75rem !important;
+            justify-content: space-between !important;
+        }
+        
+        .introjs-button {
+            border-radius: 8px !important;
+            padding: 0.75rem 1.5rem !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+            text-shadow: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.3s !important;
+        }
+        
+        .introjs-nextbutton,
+        .introjs-donebutton {
+            background: #2563eb !important;
+            color: white !important;
+        }
+        
+        .introjs-nextbutton:hover,
+        .introjs-donebutton:hover {
+            background: #1d4ed8 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+        }
+        
+        .introjs-prevbutton {
+            background: transparent !important;
+            color: #64748b !important;
+            border: 2px solid #e2e8f0 !important;
+        }
+        
+        .introjs-prevbutton:hover {
+            background: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+        }
+        
+        .introjs-skipbutton {
+            color: #64748b !important;
+            background: transparent !important;
+            padding: 0.75rem 1rem !important;
+        }
+        
+        .introjs-skipbutton:hover {
+            color: #475569 !important;
+        }
+        
+        .introjs-helperLayer {
+            border-radius: 12px !important;
+            box-shadow: 0 0 0 5000px rgba(0, 0, 0, 0.6) !important;
+            border: 3px solid #2563eb !important;
+        }
+        
+        .introjs-helperNumberLayer {
+            display: none !important;
+        }
+        
+        .introjs-arrow {
+            border: 8px solid transparent !important;
+        }
+        
+        .introjs-arrow.top {
+            border-bottom-color: white !important;
+        }
+        
+        .introjs-arrow.bottom {
+            border-top-color: white !important;
+        }
+        
+        .introjs-arrow.left {
+            border-right-color: white !important;
+        }
+        
+        .introjs-arrow.right {
+            border-left-color: white !important;
+        }
+        
+        .introjs-progressbar {
+            background: #2563eb !important;
+            border-radius: 4px !important;
+        }
+        
+        .introjs-progress {
+            background: #e2e8f0 !important;
+            border-radius: 4px !important;
+            overflow: hidden !important;
+            height: 6px !important;
+        }
+        
+        .introjs-bullets {
+            display: none !important;
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .introjs-tooltip {
+                max-width: 90% !important;
+            }
+            
+            .introjs-tooltiptext {
+                padding: 1.25rem !important;
+                font-size: 0.9375rem !important;
+            }
+            
+            .introjs-tooltipbuttons {
+                flex-direction: column !important;
+            }
+            
+            .introjs-button {
+                width: 100% !important;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+})();
 
 /**
  * Inicia el onboarding automáticamente para usuarios nuevos
@@ -10,17 +183,25 @@ function iniciarOnboarding() {
     // Verificar si es primera vez
     const yaVioTour = localStorage.getItem('chambapp-onboarding-completed');
     if (yaVioTour === 'true') {
-        return; // Ya vio el tour
+        console.log('✓ Usuario ya vio el onboarding');
+        return;
+    }
+    
+    // Verificar que Intro.js esté cargado
+    if (typeof introJs === 'undefined') {
+        console.error('❌ Intro.js no está cargado');
+        return;
     }
     
     // Obtener datos del usuario
     const usuarioData = localStorage.getItem('usuarioChambApp');
     if (!usuarioData) {
-        console.warn('No hay datos de usuario para onboarding');
+        console.warn('⚠️ No hay datos de usuario para onboarding');
         return;
     }
     
     const usuario = JSON.parse(usuarioData);
+    console.log('🎯 Iniciando onboarding para:', usuario.tipo);
     
     // Esperar a que el DOM esté completamente cargado
     setTimeout(() => {
@@ -29,19 +210,13 @@ function iniciarOnboarding() {
         } else if (usuario.tipo === 'empleador') {
             tourEmpleador();
         }
-    }, 1000); // Esperar 1 segundo después de cargar el dashboard
+    }, 800);
 }
 
 // ============================================
 // TOUR PARA TRABAJADORES
 // ============================================
 function tourTrabajador() {
-    // Verificar que Intro.js esté cargado
-    if (typeof introJs === 'undefined') {
-        console.error('Intro.js no está cargado. Incluye la librería desde CDN.');
-        return;
-    }
-    
     const intro = introJs();
     
     intro.setOptions({
@@ -49,10 +224,10 @@ function tourTrabajador() {
             {
                 intro: `
                     <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">👋</div>
-                        <h2 style="margin-bottom: 1rem;">¡Bienvenido a ChambApp!</h2>
-                        <p>Te mostraremos cómo funciona en 30 segundos.</p>
-                        <p style="font-size: 0.875rem; color: #64748b; margin-top: 1rem;">
+                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">👋</div>
+                        <h2>¡Bienvenido a ChambApp!</h2>
+                        <p style="margin-top: 1rem;">Te mostraremos cómo funciona en 30 segundos.</p>
+                        <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">
                             Puedes saltar el tour en cualquier momento
                         </p>
                     </div>
@@ -61,9 +236,9 @@ function tourTrabajador() {
             {
                 element: '#nav-buscar',
                 intro: `
-                    <h3 style="margin-bottom: 0.75rem;">🔍 Busca chambas aquí</h3>
+                    <h3>🔍 Busca chambas aquí</h3>
                     <p>Encuentra trabajos por categoría, ubicación y salario.</p>
-                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">
+                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
                         Usa los filtros para encontrar exactamente lo que buscas.
                     </p>
                 `,
@@ -72,9 +247,9 @@ function tourTrabajador() {
             {
                 element: '.oferta-card',
                 intro: `
-                    <h3 style="margin-bottom: 0.75rem;">💼 Ofertas de trabajo</h3>
+                    <h3>💼 Ofertas de trabajo</h3>
                     <p>Aquí verás todas las chambas disponibles.</p>
-                    <ul style="text-align: left; margin-top: 0.75rem; padding-left: 1.25rem;">
+                    <ul style="margin-top: 0.75rem;">
                         <li>Haz clic en "Ver Detalles" para más información</li>
                         <li>Presiona "Contactar" para aplicar al trabajo</li>
                     </ul>
@@ -84,9 +259,9 @@ function tourTrabajador() {
             {
                 element: '#nav-trabajadores',
                 intro: `
-                    <h3 style="margin-bottom: 0.75rem;">📋 Tus aplicaciones</h3>
+                    <h3>📋 Tus aplicaciones</h3>
                     <p>Aquí verás todas las chambas a las que has aplicado.</p>
-                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">
+                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
                         Puedes revisar el estado de tus postulaciones en cualquier momento.
                     </p>
                 `,
@@ -95,11 +270,11 @@ function tourTrabajador() {
             {
                 intro: `
                     <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
-                        <h2 style="margin-bottom: 1rem;">¡Listo para empezar!</h2>
-                        <p>Ahora puedes buscar tu próxima chamba.</p>
-                        <div style="margin-top: 1.5rem; padding: 1rem; background: #eff6ff; border-radius: 8px;">
-                            <p style="font-weight: 600; color: #2563eb; margin: 0;">
+                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div>
+                        <h2>¡Listo para empezar!</h2>
+                        <p style="margin-top: 1rem;">Ahora puedes buscar tu próxima chamba.</p>
+                        <div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;">
+                            <p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">
                                 💡 Tip: Como usuario gratis puedes completar hasta 5 chambas
                             </p>
                         </div>
@@ -114,25 +289,21 @@ function tourTrabajador() {
         nextLabel: 'Siguiente →',
         prevLabel: '← Atrás',
         skipLabel: 'Saltar',
-        hidePrev: false,
-        hideNext: false,
         scrollToElement: true,
-        scrollTo: 'tooltip',
-        tooltipClass: 'customTooltip',
-        highlightClass: 'customHighlight'
+        scrollPadding: 50
     });
     
-    // Callback al completar o salir
     intro.oncomplete(() => {
         localStorage.setItem('chambapp-onboarding-completed', 'true');
-        toastSuccess('¡Bienvenido a ChambApp! 🎉');
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('¡Bienvenido a ChambApp! 🎉');
+        }
     });
     
     intro.onexit(() => {
         localStorage.setItem('chambapp-onboarding-completed', 'true');
     });
     
-    // Iniciar el tour
     intro.start();
 }
 
@@ -140,12 +311,6 @@ function tourTrabajador() {
 // TOUR PARA EMPLEADORES
 // ============================================
 function tourEmpleador() {
-    // Verificar que Intro.js esté cargado
-    if (typeof introJs === 'undefined') {
-        console.error('Intro.js no está cargado. Incluye la librería desde CDN.');
-        return;
-    }
-    
     const intro = introJs();
     
     intro.setOptions({
@@ -153,10 +318,10 @@ function tourEmpleador() {
             {
                 intro: `
                     <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">👋</div>
-                        <h2 style="margin-bottom: 1rem;">¡Bienvenido a ChambApp!</h2>
-                        <p>Te ayudaremos a encontrar trabajadores rápidamente.</p>
-                        <p style="font-size: 0.875rem; color: #64748b; margin-top: 1rem;">
+                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">👋</div>
+                        <h2>¡Bienvenido a ChambApp!</h2>
+                        <p style="margin-top: 1rem;">Te ayudaremos a encontrar trabajadores rápidamente.</p>
+                        <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">
                             Este tour toma solo 30 segundos
                         </p>
                     </div>
@@ -165,9 +330,9 @@ function tourEmpleador() {
             {
                 element: '#nav-publicar',
                 intro: `
-                    <h3 style="margin-bottom: 0.75rem;">➕ Publica ofertas aquí</h3>
+                    <h3>➕ Publica ofertas aquí</h3>
                     <p>Crea ofertas de trabajo en menos de 2 minutos.</p>
-                    <ul style="text-align: left; margin-top: 0.75rem; padding-left: 1.25rem;">
+                    <ul style="margin-top: 0.75rem;">
                         <li>Describe el trabajo que necesitas</li>
                         <li>Especifica ubicación y salario</li>
                         <li>Publica y recibe aplicaciones</li>
@@ -178,9 +343,9 @@ function tourEmpleador() {
             {
                 element: '.stats-grid',
                 intro: `
-                    <h3 style="margin-bottom: 0.75rem;">📊 Tus estadísticas</h3>
+                    <h3>📊 Tus estadísticas</h3>
                     <p>Ve cuántos trabajadores han aplicado a tus ofertas.</p>
-                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">
+                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
                         Información actualizada en tiempo real.
                     </p>
                 `,
@@ -189,9 +354,9 @@ function tourEmpleador() {
             {
                 element: '#nav-trabajadores',
                 intro: `
-                    <h3 style="margin-bottom: 0.75rem;">👥 Tus aplicantes</h3>
+                    <h3>👥 Tus aplicantes</h3>
                     <p>Revisa quién ha aplicado a tus ofertas de trabajo.</p>
-                    <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">
+                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
                         Podrás ver perfiles, experiencia y calificaciones.
                     </p>
                 `,
@@ -200,11 +365,11 @@ function tourEmpleador() {
             {
                 intro: `
                     <div style="text-align: center;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
-                        <h2 style="margin-bottom: 1rem;">¡Todo listo!</h2>
-                        <p>Empieza publicando tu primera oferta de trabajo.</p>
-                        <div style="margin-top: 1.5rem; padding: 1rem; background: #eff6ff; border-radius: 8px;">
-                            <p style="font-weight: 600; color: #2563eb; margin: 0;">
+                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🚀</div>
+                        <h2>¡Todo listo!</h2>
+                        <p style="margin-top: 1rem;">Empieza publicando tu primera oferta de trabajo.</p>
+                        <div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;">
+                            <p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">
                                 💡 Tip: Sé específico en la descripción para atraer mejores candidatos
                             </p>
                         </div>
@@ -219,25 +384,21 @@ function tourEmpleador() {
         nextLabel: 'Siguiente →',
         prevLabel: '← Atrás',
         skipLabel: 'Saltar',
-        hidePrev: false,
-        hideNext: false,
         scrollToElement: true,
-        scrollTo: 'tooltip',
-        tooltipClass: 'customTooltip',
-        highlightClass: 'customHighlight'
+        scrollPadding: 50
     });
     
-    // Callback al completar o salir
     intro.oncomplete(() => {
         localStorage.setItem('chambapp-onboarding-completed', 'true');
-        toastSuccess('¡Bienvenido a ChambApp! 🎉');
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('¡Bienvenido a ChambApp! 🎉');
+        }
     });
     
     intro.onexit(() => {
         localStorage.setItem('chambapp-onboarding-completed', 'true');
     });
     
-    // Iniciar el tour
     intro.start();
 }
 
@@ -250,130 +411,11 @@ function reiniciarOnboarding() {
 }
 
 // ============================================
-// ESTILOS PERSONALIZADOS PARA INTRO.JS
+// EXPONER FUNCIONES GLOBALMENTE
 // ============================================
-function agregarEstilosOnboarding() {
-    const styles = `
-        <style>
-            /* Tooltip personalizado */
-            .customTooltip.introjs-tooltip {
-                max-width: 400px;
-                border-radius: 12px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            }
-            
-            .customTooltip .introjs-tooltiptext {
-                padding: 1.25rem;
-                font-size: 0.9375rem;
-                line-height: 1.6;
-            }
-            
-            .customTooltip .introjs-tooltip-header {
-                padding: 1rem 1.25rem 0;
-            }
-            
-            .customTooltip .introjs-tooltipbuttons {
-                padding: 1rem 1.25rem;
-                border-top: 1px solid #e2e8f0;
-            }
-            
-            /* Botones */
-            .customTooltip .introjs-button {
-                border-radius: 8px;
-                padding: 0.625rem 1.25rem;
-                font-weight: 600;
-                font-size: 0.9375rem;
-                text-shadow: none;
-            }
-            
-            .customTooltip .introjs-nextbutton {
-                background: #2563eb;
-                border: none;
-            }
-            
-            .customTooltip .introjs-nextbutton:hover {
-                background: #1d4ed8;
-            }
-            
-            .customTooltip .introjs-prevbutton {
-                background: transparent;
-                color: #64748b;
-                border: 1px solid #e2e8f0;
-            }
-            
-            .customTooltip .introjs-skipbutton {
-                color: #64748b;
-            }
-            
-            /* Highlight */
-            .customHighlight.introjs-helperLayer {
-                border-radius: 8px;
-                box-shadow: 0 0 0 5000px rgba(0, 0, 0, 0.5);
-            }
-            
-            /* Progress bar */
-            .introjs-progress {
-                background: #e2e8f0;
-            }
-            
-            .introjs-progressbar {
-                background: #2563eb;
-            }
-        </style>
-    `;
-    
-    document.head.insertAdjacentHTML('beforeend', styles);
-}
-
-// ============================================
-// INICIALIZACIÓN
-// ============================================
-
-// Agregar estilos personalizados
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', agregarEstilosOnboarding);
-} else {
-    agregarEstilosOnboarding();
-}
-
-// Exponer funciones globalmente
 window.iniciarOnboarding = iniciarOnboarding;
 window.tourTrabajador = tourTrabajador;
 window.tourEmpleador = tourEmpleador;
 window.reiniciarOnboarding = reiniciarOnboarding;
 
-// ============================================
-// NOTAS DE USO
-// ============================================
-
-/*
-INTEGRACIÓN EN dashboard.html:
-
-1. Agregar Intro.js desde CDN en <head>:
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
-   <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
-
-2. Agregar este archivo:
-   <script src="js/onboarding.js"></script>
-
-3. Al final del dashboard.js, llamar:
-   window.addEventListener('load', () => {
-       setTimeout(() => {
-           iniciarOnboarding();
-       }, 1500);
-   });
-
-TESTING:
-// En consola del navegador:
-reiniciarOnboarding(); // Borra localStorage y recarga
-
-PERSONALIZACIÓN:
-- Editar los steps[] para cambiar contenido
-- Cambiar posiciones: 'top', 'right', 'bottom', 'left'
-- Ajustar duraciones y efectos en setOptions()
-
-ACCESIBILIDAD:
-- Tour navegable con teclado (Enter, Esc, flechas)
-- Screen reader compatible
-- Puede saltarse en cualquier momento
-*/
+console.log('✅ Onboarding ChambApp cargado correctamente');
