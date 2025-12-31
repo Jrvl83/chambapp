@@ -63,12 +63,18 @@ onAuthStateChanged(auth, async (user) => {
             var tituloOfertas = document.getElementById('titulo-ofertas');
             var navBuscarText = document.getElementById('nav-buscar-text');
             var navPublicarText = document.getElementById('nav-publicar-text');
+            var navTrabajadores = document.getElementById('nav-trabajadores');
+            var navTrabajadoresText = document.getElementById('nav-trabajadores-text');
             
             if (tipo === 'trabajador') {
                 logo.innerHTML = 'ChambApp <span class="badge badge-trabajador">👷 Trabajador</span>';
                 tituloOfertas.textContent = '💼 Ofertas de Trabajo para Ti';
                 navBuscarText.textContent = 'Buscar Chambas';
                 navPublicarText.textContent = 'Mi Perfil';
+                
+                // CAMBIO IMPORTANTE: Link a Mis Aplicaciones para trabajador
+                navTrabajadoresText.textContent = 'Mis Aplicaciones';
+                navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
                 
                 var botonesVer = document.querySelectorAll('.btn-ver-detalle');
                 var botonesContactar = document.querySelectorAll('.btn-contactar');
@@ -84,7 +90,10 @@ onAuthStateChanged(auth, async (user) => {
                 tituloOfertas.textContent = '💼 Mis Ofertas Publicadas';
                 navBuscarText.textContent = 'Buscar Trabajadores';
                 navPublicarText.textContent = 'Publicar Oferta';
-                document.getElementById('nav-trabajadores-text').textContent = 'Mis Aplicaciones';
+                
+                // Link a Mis Aplicaciones para empleador
+                navTrabajadoresText.textContent = 'Mis Aplicaciones';
+                navTrabajadores.href = 'mis-aplicaciones.html';
                 
                 var botonesVer = document.querySelectorAll('.btn-ver-detalle');
                 var botonesContactar = document.querySelectorAll('.btn-contactar');
