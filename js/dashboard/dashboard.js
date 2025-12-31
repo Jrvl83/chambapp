@@ -111,13 +111,15 @@ async function cargarOfertas(usuario, userUid) {
             console.log('📋 Buscando ofertas del empleador:', usuario.email);
             q = query(
                 collection(db, 'ofertas'), 
-                where('empleadorEmail', '==', usuario.email)
+                where('empleadorEmail', '==', usuario.email),
+                orderBy('fechaCreacion', 'desc')
             );
         } else {
             // Si es trabajador, mostrar todas las ofertas
             console.log('📋 Buscando todas las ofertas');
             q = query(
                 collection(db, 'ofertas'),
+                orderBy('fechaCreacion', 'desc'),
                 limit(20)
             );
         }
@@ -250,6 +252,36 @@ async function cargarEstadisticas(usuario, userUid) {
     }
 }
 
+// ========================================
+// FUNCIÓN PARA FORMATEAR FECHA
+// ========================================
+function formatearFecha(timestamp) {
+    if (!timestamp) return 'Reciente';
+    
+    try {
+        // Si es un Timestamp de Firestore
+        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        
+        // Opciones para formatear en español
+        const opciones = {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        };
+        
+        // Formatear fecha
+        const fechaFormateada = fecha.toLocaleDateString('es-PE', opciones);
+        
+        return fechaFormateada;
+    } catch (error) {
+        console.error('Error al formatear fecha:', error);
+        return 'Reciente';
+    }
+}
+
 function crearOfertaCard(oferta, id, usuario) {
     // Asegurarse de que siempre haya una categoría
     const categoriaClass = oferta.categoria || 'otros';
@@ -262,7 +294,10 @@ function crearOfertaCard(oferta, id, usuario) {
     
     console.log('📋 Oferta:', oferta.titulo, '| Categoría:', oferta.categoria, '| Label:', categoriaLabel);
     
-    const fecha = oferta.fechaCreacion ? 'Hace unas horas' : 'Reciente';
+    // Formatear fecha de creación o actualización
+    const fecha = oferta.fechaActualizacion 
+        ? formatearFecha(oferta.fechaActualizacion) 
+        : formatearFecha(oferta.fechaCreacion);
     
     // Verificar si el usuario actual es el dueño de la oferta
     const esEmpleadorDueño = usuario && usuario.tipo === 'empleador' && usuario.email === oferta.empleadorEmail;
@@ -768,125 +803,12 @@ async function enviarMensajeContacto(ofertaId) {
 // FUNCIONES PARA EDITAR Y ELIMINAR OFERTAS
 // ========================================
 
+// FUNCIÓN EDITADA - Redirige al formulario multi-paso
 async function editarOferta(id) {
-    try {
-        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-        const { getFirestore, doc, getDoc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        
-        const app = initializeApp(window.firebaseConfig);
-        const db = getFirestore(app);
-        
-        // Obtener los datos actuales de la oferta
-        const docRef = doc(db, 'ofertas', id);
-        const docSnap = await getDoc(docRef);
-        
-        if (!docSnap.exists()) {
-            alert('Error: No se encontró la oferta');
-            return;
-        }
-        
-        const oferta = docSnap.data();
-        
-        // Mostrar modal con formulario de edición
-        const modalHTML = `
-            <div class="modal-header">
-                <h2>✏️ Editar Oferta</h2>
-            </div>
-            <div class="modal-text">
-                <form class="modal-form" id="formEditarOferta">
-                    <label>Título de la Oferta:</label>
-                    <input type="text" id="edit-titulo" value="${oferta.titulo}" required>
-                    
-                    <label>Categoría:</label>
-                    <select id="edit-categoria" required>
-                        <option value="construccion" ${oferta.categoria === 'construccion' ? 'selected' : ''}>🏗️ Construcción</option>
-                        <option value="gasfiteria" ${oferta.categoria === 'gasfiteria' ? 'selected' : ''}>🔧 Gasfitería</option>
-                        <option value="electricidad" ${oferta.categoria === 'electricidad' ? 'selected' : ''}>⚡ Electricidad</option>
-                        <option value="jardineria" ${oferta.categoria === 'jardineria' ? 'selected' : ''}>🌿 Jardinería</option>
-                        <option value="limpieza" ${oferta.categoria === 'limpieza' ? 'selected' : ''}>🧹 Limpieza</option>
-                        <option value="otros" ${oferta.categoria === 'otros' ? 'selected' : ''}>📦 Otros</option>
-                    </select>
-                    
-                    <label>Descripción:</label>
-                    <textarea id="edit-descripcion" rows="4" required>${oferta.descripcion}</textarea>
-                    
-                    <label>Ubicación:</label>
-                    <input type="text" id="edit-ubicacion" value="${oferta.ubicacion}" required>
-                    
-                    <label>Salario Ofrecido:</label>
-                    <input type="text" id="edit-salario" value="${oferta.salario}" placeholder="Ej: S/. 50/hora" required>
-                    
-                    <label>Duración Estimada:</label>
-                    <input type="text" id="edit-duracion" value="${oferta.duracion}" placeholder="Ej: 1 día, 1 semana" required>
-                    
-                    <label>Horario:</label>
-                    <input type="text" id="edit-horario" value="${oferta.horario}" placeholder="Ej: 8am - 5pm" required>
-                </form>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="guardarEdicionOferta('${id}')">💾 Guardar Cambios</button>
-            </div>
-        `;
-        
-        mostrarModal(modalHTML);
-        
-    } catch (error) {
-        console.error('Error al cargar oferta para editar:', error);
-        alert('Error al cargar la oferta');
-    }
-}
-
-async function guardarEdicionOferta(id) {
-    const titulo = document.getElementById('edit-titulo').value.trim();
-    const categoria = document.getElementById('edit-categoria').value;
-    const descripcion = document.getElementById('edit-descripcion').value.trim();
-    const ubicacion = document.getElementById('edit-ubicacion').value.trim();
-    const salario = document.getElementById('edit-salario').value.trim();
-    const duracion = document.getElementById('edit-duracion').value.trim();
-    const horario = document.getElementById('edit-horario').value.trim();
-    
-    if (!titulo || !descripcion || !ubicacion || !salario || !duracion || !horario) {
-        alert('Por favor completa todos los campos');
-        return;
-    }
-    
-    try {
-        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
-        const { getFirestore, doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
-        
-        const app = initializeApp(window.firebaseConfig);
-        const db = getFirestore(app);
-        
-        const docRef = doc(db, 'ofertas', id);
-        
-        await updateDoc(docRef, {
-            titulo: titulo,
-            categoria: categoria,
-            descripcion: descripcion,
-            ubicacion: ubicacion,
-            salario: salario,
-            duracion: duracion,
-            horario: horario
-        });
-        
-        // Mostrar confirmación
-        mostrarModal(`
-            <div class="modal-header success">
-                <h2>✅ ¡Oferta Actualizada!</h2>
-            </div>
-            <div class="modal-text">
-                <p>Los cambios se han guardado exitosamente.</p>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn btn-primary" onclick="location.reload()">Aceptar</button>
-            </div>
-        `);
-        
-    } catch (error) {
-        console.error('Error al actualizar oferta:', error);
-        alert('Error al guardar los cambios: ' + error.message);
-    }
+    // Redirigir al formulario multi-paso con el ID de la oferta
+    // El formulario detectará automáticamente el modo edición
+    // y cargará los datos de la oferta
+    window.location.href = `publicar-oferta.html?id=${id}`;
 }
 
 async function eliminarOferta(id) {
@@ -964,7 +886,6 @@ window.confirmarSalir = confirmarSalir;
 window.aplicarFiltros = aplicarFiltros;
 window.limpiarFiltros = limpiarFiltros;
 window.editarOferta = editarOferta;
-window.guardarEdicionOferta = guardarEdicionOferta;
 window.eliminarOferta = eliminarOferta;
 window.confirmarEliminarOferta = confirmarEliminarOferta;
 
