@@ -3,96 +3,481 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChambApp - Conecta con Oportunidades Laborales</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <meta name="description" content="ChambApp - Encuentra trabajo o trabajadores en Perú en minutos. La forma más rápida de conseguir chambas.">
+    <title>ChambApp - Encuentra tu próxima chamba en minutos</title>
+    
+    <style>
+        /* ============================================
+           RESET Y BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #ffffff;
+        }
+        
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 4rem 1.5rem;
+            text-align: center;
+            min-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .hero-emoji {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hero h1 {
+            font-size: 2.25rem;
+            margin-bottom: 1.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        
+        /* ============================================
+           BOTONES CTA
+           ============================================ */
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 450px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .btn {
+            padding: 1.125rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 56px;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* ============================================
+           BENEFICIOS
+           ============================================ */
+        .beneficios {
+            padding: 5rem 1.5rem;
+            background: #f8fafc;
+        }
+        
+        .beneficios h2 {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            font-size: 2rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .beneficios-grid {
+            display: grid;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .beneficio-item {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .beneficio-item:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-8px);
+        }
+        
+        .beneficio-item .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.25rem;
+            display: block;
+        }
+        
+        .beneficio-item h3 {
+            font-size: 1.375rem;
+            margin-bottom: 0.875rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .beneficio-item p {
+            color: #64748b;
+            font-size: 1.0625rem;
+            line-height: 1.7;
+        }
+        
+        /* ============================================
+           COMO FUNCIONA
+           ============================================ */
+        .como-funciona {
+            padding: 5rem 1.5rem;
+            background: white;
+        }
+        
+        .como-funciona h2 {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            font-size: 2rem;
+            color: #1e293b;
+            font-weight: 700;
+        }
+        
+        .pasos-grid {
+            display: grid;
+            gap: 2.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .paso-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .paso-item:hover {
+            background: #eff6ff;
+            transform: translateX(10px);
+        }
+        
+        .paso-numero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .paso-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .paso-content p {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        /* ============================================
+           CTA FINAL
+           ============================================ */
+        .cta-final {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 5rem 1.5rem;
+            text-align: center;
+        }
+        
+        .cta-final h2 {
+            font-size: 2rem;
+            margin-bottom: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .cta-final p {
+            font-size: 1.125rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+        }
+        
+        footer p {
+            margin: 0.5rem 0;
+            opacity: 0.85;
+            font-size: 0.9375rem;
+        }
+        
+        .footer-links {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        /* ============================================
+           BADGE DE SEGURIDAD
+           ============================================ */
+        .security-badge {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .security-badge p {
+            color: white;
+            font-size: 0.9375rem;
+            margin: 0;
+            opacity: 0.95;
+        }
+        
+        /* ============================================
+           RESPONSIVE - DESKTOP
+           ============================================ */
+        @media (min-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero p {
+                font-size: 1.375rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: row;
+                max-width: none;
+                justify-content: center;
+            }
+            
+            .cta-buttons .btn {
+                min-width: 220px;
+            }
+            
+            .beneficios-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .beneficios h2,
+            .como-funciona h2,
+            .cta-final h2 {
+                font-size: 2.5rem;
+            }
+            
+            .paso-item {
+                padding: 2.5rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .hero {
+                padding: 6rem 1.5rem;
+            }
+            
+            .beneficios,
+            .como-funciona,
+            .cta-final {
+                padding: 6rem 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="logo">ChambApp</div>
-            <nav>
-                <a href="#inicio">Inicio</a>
-                <a href="#como-funciona">Cómo Funciona</a>
-                <a href="#registro">Registrarse</a>
-                <a href="login.html" style="pointer-events: auto;">Ingresar</a>
-            </nav>
-        </div>
-    </header>
-
+    
     <!-- Hero Section -->
-    <section id="inicio" class="hero">
-        <div class="container">
-            <h1>Encuentra Tu Próxima Chamba</h1>
-            <p>Conectamos trabajadores con empleadores de forma rápida y confiable</p>
-            <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="mostrarRegistro('trabajador')">Busco Trabajo</button>
-                <button class="btn btn-secondary" onclick="mostrarRegistro('empleador')">Busco Trabajadores</button>
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-emoji" role="img" aria-label="Trabajador">🚀</span>
+            <h1>Encuentra tu próxima chamba en 5 minutos</h1>
+            <p>La forma más rápida de conectar trabajadores con empleadores en Perú</p>
+            
+            <div class="cta-buttons">
+                <a href="login.html" class="btn btn-primary">
+                    <span role="img" aria-label="Trabajador">👷</span>
+                    Busco Trabajo
+                </a>
+                <a href="login.html" class="btn btn-secondary">
+                    <span role="img" aria-label="Empleador">💼</span>
+                    Busco Trabajadores
+                </a>
+            </div>
+            
+            <div class="security-badge">
+                <p>🔒 Tus datos están seguros y encriptados</p>
             </div>
         </div>
     </section>
-
+    
+    <!-- Beneficios -->
+    <section class="beneficios">
+        <h2>¿Por qué ChambApp?</h2>
+        
+        <div class="beneficios-grid">
+            <div class="beneficio-item">
+                <span class="icon" role="img" aria-label="Rápido">⚡</span>
+                <h3>Rápido y fácil</h3>
+                <p>Publica o aplica a trabajos en menos de 2 minutos. Sin complicaciones ni papeleos.</p>
+            </div>
+            
+            <div class="beneficio-item">
+                <span class="icon" role="img" aria-label="Seguro">🔒</span>
+                <h3>Seguro y confiable</h3>
+                <p>Sistema de calificaciones y perfiles verificados. Trabaja con confianza y transparencia.</p>
+            </div>
+            
+            <div class="beneficio-item">
+                <span class="icon" role="img" aria-label="Gratis">💯</span>
+                <h3>Gratis para empezar</h3>
+                <p>Regístrate gratis y completa hasta 5 chambas sin costo alguno. Actualiza cuando quieras.</p>
+            </div>
+        </div>
+    </section>
+    
     <!-- Cómo Funciona -->
-    <section id="como-funciona" class="features">
-        <div class="container">
-            <h2>¿Cómo Funciona?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">👤</div>
-                    <h3>Regístrate</h3>
-                    <p>Crea tu perfil en minutos como trabajador o empleador</p>
+    <section class="como-funciona">
+        <h2>¿Cómo funciona?</h2>
+        
+        <div class="pasos-grid">
+            <div class="paso-item">
+                <div class="paso-numero">1</div>
+                <div class="paso-content">
+                    <h3>Regístrate gratis</h3>
+                    <p>Crea tu cuenta en menos de 1 minuto. Solo necesitas tu email y teléfono.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Busca o Publica</h3>
-                    <p>Encuentra trabajos o publica lo que necesitas</p>
+            </div>
+            
+            <div class="paso-item">
+                <div class="paso-numero">2</div>
+                <div class="paso-content">
+                    <h3>Busca o publica chambas</h3>
+                    <p>Encuentra el trabajo perfecto o publica lo que necesitas en segundos.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
-                    <h3>Conecta</h3>
-                    <p>Contacta directamente y acuerda los detalles</p>
+            </div>
+            
+            <div class="paso-item">
+                <div class="paso-numero">3</div>
+                <div class="paso-content">
+                    <h3>Conecta y trabaja</h3>
+                    <p>Contacta directamente, acuerda los detalles y comienza a trabajar hoy mismo.</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Formulario de Registro -->
-    <section id="registro" class="registro-section" style="display: none;">
-        <div class="container">
-            <h2>Registro</h2>
-            <form id="formRegistro" class="form-registro">
-                <input type="text" id="nombre" placeholder="Nombre completo" required>
-                <input type="email" id="email" placeholder="Correo electrónico" required>
-                <input type="tel" id="telefono" placeholder="Teléfono" required>
-                <input type="password" id="password" placeholder="Contraseña" required>
-                
-                <div id="camposTrabajador" style="display: none;">
-                    <select id="categoria">
-                        <option value="">Selecciona tu especialidad</option>
-                        <option value="construccion">Construcción</option>
-                        <option value="limpieza">Limpieza</option>
-                        <option value="gasfiteria">Gasfitería</option>
-                        <option value="electricidad">Electricidad</option>
-                        <option value="jardineria">Jardinería</option>
-                        <option value="otros">Otros</option>
-                    </select>
-                    <textarea id="experiencia" placeholder="Cuéntanos sobre tu experiencia"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Registrarse</button>
-            </form>
+    
+    <!-- CTA Final -->
+    <section class="cta-final">
+        <h2>Comienza ahora, es gratis</h2>
+        <p>Únete a miles de trabajadores y empleadores que ya confían en ChambApp</p>
+        
+        <div class="cta-buttons">
+            <a href="login.html" class="btn btn-primary">
+                Registrarse gratis
+            </a>
         </div>
     </section>
-
+    
     <!-- Footer -->
     <footer>
-        <div class="container">
-            <p>&copy; 2025 ChambApp - Todos los derechos reservados</p>
-            <p>Conectando talento con oportunidades en Perú</p>
+        <p>&copy; 2025 ChambApp - Todos los derechos reservados</p>
+        <p>Conectando talento con oportunidades en Perú</p>
+        
+        <div class="footer-links">
+            <a href="login.html">Iniciar Sesión</a>
+            <a href="login.html">Registrarse</a>
         </div>
     </footer>
-
-    <script src="js/config/firebase-config.js"></script>
-    <script src="js/auth/register.js"></script>
+    
 </body>
 </html>
