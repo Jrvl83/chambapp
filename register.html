@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="theme-color" content="#0066FF">
     <title>Registro - ChambApp</title>
     
@@ -11,245 +11,152 @@
     <link rel="stylesheet" href="css/toast.css">
     
     <style>
-        /* ============================================
-           VARIABLES & RESET
-           ============================================ */
-        :root {
-            --primary: #0066FF;
-            --primary-dark: #0052CC;
-            --primary-light: #E6F2FF;
-            --accent: #FF6B00;
-            --success: #00C48C;
-            --error: #EF4444;
-            --dark: #0F1419;
-            --gray-700: #4A5568;
-            --gray-500: #718096;
-            --gray-300: #CBD5E0;
-            --gray-100: #F7FAFC;
-            --white: #FFFFFF;
-            
-            --font-display: 'Poppins', -apple-system, sans-serif;
-            --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-full: 9999px;
-            
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            font-family: var(--font-body);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            padding-top: calc(1rem + env(safe-area-inset-top));
-            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+            padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
         }
 
-        /* ============================================
-           CONTAINER
-           ============================================ */
         .register-container {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            max-width: 480px;
-            width: 100%;
+            background: white;
+            max-width: 600px;
+            margin: 1rem auto;
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
-        /* Header */
+        /* Header Compacto */
         .register-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(135deg, #0066FF, #0052CC);
+            color: white;
+            padding: 1.5rem 1rem;
             text-align: center;
         }
 
-        .logo-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
         .register-header h1 {
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
 
         .register-header p {
-            font-size: 0.9375rem;
+            font-size: 0.9rem;
             opacity: 0.9;
         }
 
-        /* Progress Bar */
-        .progress-bar {
-            background: var(--gray-100);
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--gray-300);
-        }
-
-        .progress-steps {
+        /* Progress Simple */
+        .progress {
+            background: #f5f5f5;
+            padding: 1rem;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
+            justify-content: center;
+            gap: 1rem;
+            border-bottom: 1px solid #e0e0e0;
         }
 
-        .progress-steps::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--gray-300);
-            z-index: 0;
-        }
-
-        .progress-line {
-            position: absolute;
-            top: 15px;
-            left: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s ease;
-            z-index: 1;
-        }
-
-        .step {
-            width: 32px;
-            height: 32px;
-            background: var(--white);
-            border: 2px solid var(--gray-300);
+        .step-dot {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #e0e0e0;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 0.875rem;
-            color: var(--gray-500);
-            position: relative;
-            z-index: 2;
-            transition: all 0.3s;
+            font-weight: bold;
+            color: #999;
         }
 
-        .step.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: var(--white);
+        .step-dot.active {
+            background: #0066FF;
+            color: white;
+            border-color: #0066FF;
         }
 
-        .step.completed {
-            background: var(--success);
-            border-color: var(--success);
-            color: var(--white);
-        }
-
-        .step.completed::before {
-            content: '✓';
+        .step-dot.completed {
+            background: #00C48C;
+            border-color: #00C48C;
+            color: white;
         }
 
         /* Form Container */
-        .form-container {
+        .form-content {
             padding: 2rem 1.5rem;
+            min-height: 400px;
         }
 
         .form-step {
             display: none;
-            animation: fadeIn 0.4s ease;
         }
 
         .form-step.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .step-title {
             font-size: 1.25rem;
             font-weight: 700;
-            color: var(--dark);
             margin-bottom: 0.5rem;
         }
 
-        .step-description {
-            font-size: 0.9375rem;
-            color: var(--gray-700);
+        .step-subtitle {
+            color: #666;
             margin-bottom: 1.5rem;
         }
 
-        /* User Type Selection */
-        .user-type-grid {
-            display: grid;
+        /* User Type Cards - MÁS GRANDES Y VISIBLES */
+        .user-type-cards {
+            display: flex;
+            flex-direction: column;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .user-type-card {
-            border: 2px solid var(--gray-300);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
+        .user-card {
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            background: var(--white);
+            background: white;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .user-type-card:active {
+        .user-card:active {
             transform: scale(0.98);
         }
 
-        .user-type-card.selected {
-            border-color: var(--primary);
-            background: var(--primary-light);
+        .user-card.selected {
+            border-color: #0066FF;
+            background: #E6F2FF;
         }
 
-        .user-type-icon {
-            font-size: 3rem;
-            margin-bottom: 0.75rem;
-            display: block;
+        .user-card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
         }
 
-        .user-type-title {
-            font-size: 1.125rem;
+        .user-card-title {
+            font-size: 1.25rem;
             font-weight: 700;
-            color: var(--dark);
             margin-bottom: 0.5rem;
         }
 
-        .user-type-description {
-            font-size: 0.875rem;
-            color: var(--gray-700);
+        .user-card-desc {
+            font-size: 0.9rem;
+            color: #666;
         }
 
         /* Form Groups */
@@ -260,46 +167,30 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--dark);
             font-weight: 600;
-            font-size: 0.9375rem;
         }
 
-        .form-group label.required::after {
-            content: " *";
-            color: var(--error);
-        }
-
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
-            min-height: 48px;
-            padding: 0.875rem;
-            border: 2px solid var(--gray-300);
-            border-radius: var(--radius-md);
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 1rem;
-            font-family: var(--font-body);
-            transition: border 0.3s;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: #0066FF;
         }
 
-        .form-group input.error {
-            border-color: var(--error);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 0.8125rem;
+        .error-msg {
+            color: #EF4444;
+            font-size: 0.875rem;
             margin-top: 0.25rem;
             display: none;
         }
 
-        .error-message.show {
+        .error-msg.show {
             display: block;
         }
 
@@ -308,105 +199,43 @@
             position: relative;
         }
 
-        .password-toggle {
+        .toggle-password {
             position: absolute;
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
+            font-size: 1.5rem;
             cursor: pointer;
-            font-size: 1.25rem;
             padding: 0.5rem;
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Password Strength */
-        .password-strength {
-            margin-top: 0.5rem;
-        }
-
-        .strength-bar {
-            height: 4px;
-            background: var(--gray-300);
-            border-radius: var(--radius-full);
-            overflow: hidden;
-        }
-
-        .strength-fill {
-            height: 100%;
-            width: 0%;
-            transition: all 0.3s;
-            border-radius: var(--radius-full);
-        }
-
-        .strength-fill.weak {
-            width: 33%;
-            background: var(--error);
-        }
-
-        .strength-fill.medium {
-            width: 66%;
-            background: var(--accent);
-        }
-
-        .strength-fill.strong {
-            width: 100%;
-            background: var(--success);
-        }
-
-        .strength-text {
-            font-size: 0.8125rem;
-            margin-top: 0.25rem;
-            font-weight: 500;
-        }
-
-        .strength-text.weak {
-            color: var(--error);
-        }
-
-        .strength-text.medium {
-            color: var(--accent);
-        }
-
-        .strength-text.strong {
-            color: var(--success);
         }
 
         /* Checkbox */
-        .checkbox-group {
+        .checkbox-wrapper {
             display: flex;
-            align-items: flex-start;
             gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            margin: 1.5rem 0;
         }
 
-        .checkbox-group input[type="checkbox"] {
+        .checkbox-wrapper input {
             width: 20px;
             height: 20px;
-            margin-top: 0.125rem;
             cursor: pointer;
-            flex-shrink: 0;
         }
 
-        .checkbox-group label {
+        .checkbox-wrapper label {
             font-size: 0.875rem;
-            color: var(--gray-700);
-            cursor: pointer;
+            color: #666;
         }
 
-        .checkbox-group a {
-            color: var(--primary);
+        .checkbox-wrapper a {
+            color: #0066FF;
             text-decoration: none;
-            font-weight: 600;
         }
 
         /* Buttons */
-        .button-group {
+        .buttons {
             display: flex;
             gap: 0.75rem;
             margin-top: 2rem;
@@ -414,105 +243,57 @@
 
         .btn {
             flex: 1;
-            min-height: 48px;
-            padding: 0.875rem 1.5rem;
-            border-radius: var(--radius-md);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
+            padding: 1rem;
             border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 52px;
         }
 
-        .btn:active:not(:disabled) {
+        .btn-back {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #0066FF, #0052CC);
+            color: white;
+        }
+
+        .btn:active {
             transform: scale(0.98);
         }
 
         .btn:disabled {
             opacity: 0.5;
-            cursor: not-allowed;
         }
 
-        .btn-back {
-            background: var(--gray-100);
-            color: var(--gray-700);
-            border: 2px solid var(--gray-300);
-        }
-
-        .btn-next,
-        .btn-submit {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            box-shadow: 0 4px 12px rgba(0,102,255,0.3);
-        }
-
-        .btn-submit.loading::after {
-            content: "";
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--white);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spinner 0.6s linear infinite;
-            margin-left: 0.5rem;
-        }
-
-        @keyframes spinner {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Footer Link */
+        /* Footer */
         .register-footer {
             text-align: center;
             padding: 1.5rem;
-            border-top: 1px solid var(--gray-300);
-            background: var(--gray-100);
-        }
-
-        .register-footer p {
-            font-size: 0.9375rem;
-            color: var(--gray-700);
+            background: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
         }
 
         .register-footer a {
-            color: var(--primary);
+            color: #0066FF;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .register-footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            body {
-                padding: 0.5rem;
+        @media (max-width: 640px) {
+            .register-container {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
             }
 
-            .register-header {
-                padding: 1.5rem 1rem 1rem;
-            }
-
-            .form-container {
+            .form-content {
                 padding: 1.5rem 1rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn-back {
-                order: 2;
-            }
-
-            .btn-next,
-            .btn-submit {
-                order: 1;
             }
         }
     </style>
@@ -521,170 +302,102 @@
     <div class="register-container">
         <!-- Header -->
         <div class="register-header">
-            <span class="logo-icon">🚀</span>
-            <h1>Únete a ChambApp</h1>
+            <h1>🚀 Únete a ChambApp</h1>
             <p>Comienza a encontrar chambas hoy</p>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-            <div class="progress-steps">
-                <div class="progress-line" id="progressLine"></div>
-                <div class="step active" data-step="1">1</div>
-                <div class="step" data-step="2">2</div>
-                <div class="step" data-step="3">3</div>
-            </div>
+        <!-- Progress -->
+        <div class="progress">
+            <div class="step-dot active" id="dot1">1</div>
+            <div class="step-dot" id="dot2">2</div>
+            <div class="step-dot" id="dot3">3</div>
         </div>
 
-        <!-- Form Container -->
-        <div class="form-container">
+        <!-- Form -->
+        <div class="form-content">
             <form id="registerForm">
-                <!-- STEP 1: Tipo de Usuario -->
-                <div class="form-step active" data-step="1">
+                <!-- PASO 1: Tipo -->
+                <div class="form-step active" id="step1">
                     <h2 class="step-title">¿Qué estás buscando?</h2>
-                    <p class="step-description">Selecciona la opción que mejor te describe</p>
+                    <p class="step-subtitle">Selecciona una opción</p>
 
-                    <div class="user-type-grid">
-                        <div class="user-type-card" data-type="trabajador">
-                            <span class="user-type-icon">👷</span>
-                            <h3 class="user-type-title">Busco Trabajo</h3>
-                            <p class="user-type-description">Encuentra chambas cerca de ti</p>
+                    <div class="user-type-cards">
+                        <div class="user-card" data-type="trabajador">
+                            <div class="user-card-icon">👷</div>
+                            <div class="user-card-title">Busco Trabajo</div>
+                            <div class="user-card-desc">Encuentra chambas cerca de ti</div>
                         </div>
 
-                        <div class="user-type-card" data-type="empleador">
-                            <span class="user-type-icon">💼</span>
-                            <h3 class="user-type-title">Busco Trabajadores</h3>
-                            <p class="user-type-description">Encuentra profesionales calificados</p>
+                        <div class="user-card" data-type="empleador">
+                            <div class="user-card-icon">💼</div>
+                            <div class="user-card-title">Busco Trabajadores</div>
+                            <div class="user-card-desc">Encuentra profesionales</div>
                         </div>
                     </div>
 
-                    <input type="hidden" id="tipoUsuario" name="tipo" required>
-                    <div class="error-message" id="tipoError">Por favor selecciona una opción</div>
+                    <input type="hidden" id="tipoUsuario">
+                    <div class="error-msg" id="tipoError">Selecciona una opción</div>
                 </div>
 
-                <!-- STEP 2: Datos Personales -->
-                <div class="form-step" data-step="2">
+                <!-- PASO 2: Datos -->
+                <div class="form-step" id="step2">
                     <h2 class="step-title">Tus datos</h2>
-                    <p class="step-description">Necesitamos algunos datos básicos</p>
+                    <p class="step-subtitle">Información básica</p>
 
                     <div class="form-group">
-                        <label for="nombre" class="required">Nombre Completo</label>
-                        <input 
-                            type="text" 
-                            id="nombre" 
-                            name="nombre"
-                            placeholder="Ej: Juan Pérez"
-                            required
-                            autocomplete="name"
-                        >
-                        <div class="error-message" id="nombreError"></div>
+                        <label>Nombre Completo *</label>
+                        <input type="text" id="nombre" placeholder="Juan Pérez">
+                        <div class="error-msg" id="nombreError"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="email" class="required">Correo Electrónico</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email"
-                            placeholder="tu@email.com"
-                            required
-                            autocomplete="email"
-                        >
-                        <div class="error-message" id="emailError"></div>
+                        <label>Email *</label>
+                        <input type="email" id="email" placeholder="tu@email.com">
+                        <div class="error-msg" id="emailError"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="telefono" class="required">Teléfono / WhatsApp</label>
-                        <input 
-                            type="tel" 
-                            id="telefono" 
-                            name="telefono"
-                            placeholder="999 888 777"
-                            required
-                            autocomplete="tel"
-                        >
-                        <div class="error-message" id="telefonoError"></div>
+                        <label>Teléfono / WhatsApp *</label>
+                        <input type="tel" id="telefono" placeholder="999 888 777">
+                        <div class="error-msg" id="telefonoError"></div>
                     </div>
                 </div>
 
-                <!-- STEP 3: Contraseña y Confirmación -->
-                <div class="form-step" data-step="3">
+                <!-- PASO 3: Contraseña -->
+                <div class="form-step" id="step3">
                     <h2 class="step-title">Crea tu contraseña</h2>
-                    <p class="step-description">Elige una contraseña segura</p>
+                    <p class="step-subtitle">Mínimo 6 caracteres</p>
 
                     <div class="form-group">
-                        <label for="password" class="required">Contraseña</label>
+                        <label>Contraseña *</label>
                         <div class="password-wrapper">
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password"
-                                placeholder="Mínimo 6 caracteres"
-                                required
-                                autocomplete="new-password"
-                            >
-                            <button 
-                                type="button" 
-                                class="password-toggle"
-                                onclick="togglePassword('password', this)"
-                                aria-label="Mostrar contraseña"
-                            >
-                                👁️
-                            </button>
+                            <input type="password" id="password" placeholder="••••••">
+                            <button type="button" class="toggle-password" onclick="togglePwd('password', this)">👁️</button>
                         </div>
-                        <div class="password-strength">
-                            <div class="strength-bar">
-                                <div class="strength-fill" id="strengthFill"></div>
-                            </div>
-                            <div class="strength-text" id="strengthText"></div>
-                        </div>
-                        <div class="error-message" id="passwordError"></div>
+                        <div class="error-msg" id="passwordError"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="confirmPassword" class="required">Confirmar Contraseña</label>
+                        <label>Confirmar Contraseña *</label>
                         <div class="password-wrapper">
-                            <input 
-                                type="password" 
-                                id="confirmPassword" 
-                                name="confirmPassword"
-                                placeholder="Repite tu contraseña"
-                                required
-                                autocomplete="new-password"
-                            >
-                            <button 
-                                type="button" 
-                                class="password-toggle"
-                                onclick="togglePassword('confirmPassword', this)"
-                                aria-label="Mostrar contraseña"
-                            >
-                                👁️
-                            </button>
+                            <input type="password" id="confirmPassword" placeholder="••••••">
+                            <button type="button" class="toggle-password" onclick="togglePwd('confirmPassword', this)">👁️</button>
                         </div>
-                        <div class="error-message" id="confirmPasswordError"></div>
+                        <div class="error-msg" id="confirmError"></div>
                     </div>
 
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">
-                            Acepto los <a href="#" onclick="alert('Próximamente')">Términos y Condiciones</a> 
-                            y la <a href="#" onclick="alert('Próximamente')">Política de Privacidad</a>
-                        </label>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="terms">
+                        <label for="terms">Acepto los <a href="#">Términos y Condiciones</a></label>
                     </div>
-                    <div class="error-message" id="termsError">Debes aceptar los términos</div>
+                    <div class="error-msg" id="termsError">Debes aceptar los términos</div>
                 </div>
 
-                <!-- Buttons -->
-                <div class="button-group">
-                    <button type="button" class="btn btn-back" id="btnBack" style="display: none;">
-                        ← Atrás
-                    </button>
-                    <button type="button" class="btn btn-next" id="btnNext">
-                        Siguiente →
-                    </button>
-                    <button type="submit" class="btn btn-submit" id="btnSubmit" style="display: none;">
-                        Crear Cuenta
-                    </button>
+                <!-- Botones -->
+                <div class="buttons">
+                    <button type="button" class="btn btn-back" id="btnBack" style="display: none;">← Atrás</button>
+                    <button type="button" class="btn btn-next" id="btnNext">Siguiente →</button>
+                    <button type="submit" class="btn btn-submit" id="btnSubmit" style="display: none;">Crear Cuenta</button>
                 </div>
             </form>
         </div>
@@ -695,213 +408,127 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="js/toast.js"></script>
     <script src="js/config/firebase-config.js"></script>
-    
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Inicializar Firebase
         const app = initializeApp(window.firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Estado del wizard
         let currentStep = 1;
-        const totalSteps = 3;
-        let selectedUserType = null;
+        let selectedType = null;
 
-        // Elementos
-        const userTypeCards = document.querySelectorAll('.user-type-card');
-        const formSteps = document.querySelectorAll('.form-step');
-        const progressSteps = document.querySelectorAll('.step');
-        const progressLine = document.getElementById('progressLine');
-        const btnBack = document.getElementById('btnBack');
-        const btnNext = document.getElementById('btnNext');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const registerForm = document.getElementById('registerForm');
-
-        // Selección de tipo de usuario
-        userTypeCards.forEach(card => {
+        // Selección tipo
+        document.querySelectorAll('.user-card').forEach(card => {
             card.addEventListener('click', () => {
-                userTypeCards.forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('.user-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
-                selectedUserType = card.dataset.type;
-                document.getElementById('tipoUsuario').value = selectedUserType;
+                selectedType = card.dataset.type;
+                document.getElementById('tipoUsuario').value = selectedType;
                 document.getElementById('tipoError').classList.remove('show');
             });
         });
 
-        // Toggle password visibility
-        window.togglePassword = function(inputId, button) {
-            const input = document.getElementById(inputId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                button.textContent = '🙈';
-            } else {
-                input.type = 'password';
-                button.textContent = '👁️';
-            }
+        // Toggle password
+        window.togglePwd = function(id, btn) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
         };
-
-        // Password strength
-        const passwordInput = document.getElementById('password');
-        const strengthFill = document.getElementById('strengthFill');
-        const strengthText = document.getElementById('strengthText');
-
-        passwordInput.addEventListener('input', () => {
-            const password = passwordInput.value;
-            let strength = 0;
-            
-            if (password.length >= 6) strength++;
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-
-            strengthFill.className = 'strength-fill';
-            strengthText.className = 'strength-text';
-
-            if (strength <= 2) {
-                strengthFill.classList.add('weak');
-                strengthText.classList.add('weak');
-                strengthText.textContent = 'Débil';
-            } else if (strength <= 3) {
-                strengthFill.classList.add('medium');
-                strengthText.classList.add('medium');
-                strengthText.textContent = 'Media';
-            } else {
-                strengthFill.classList.add('strong');
-                strengthText.classList.add('strong');
-                strengthText.textContent = 'Fuerte';
-            }
-        });
 
         // Navegación
         function updateStep() {
-            // Ocultar todos los pasos
-            formSteps.forEach(step => step.classList.remove('active'));
-            
-            // Mostrar paso actual
-            document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
-            
-            // Actualizar progress bar
-            progressSteps.forEach((step, index) => {
-                const stepNum = index + 1;
-                step.classList.remove('active', 'completed');
-                
-                if (stepNum < currentStep) {
-                    step.classList.add('completed');
-                } else if (stepNum === currentStep) {
-                    step.classList.add('active');
-                }
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            document.querySelectorAll('.step-dot').forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i + 1 < currentStep) dot.classList.add('completed');
+                if (i + 1 === currentStep) dot.classList.add('active');
             });
-            
-            // Actualizar progress line
-            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
-            progressLine.style.width = `${progress}%`;
-            
-            // Mostrar/ocultar botones
-            btnBack.style.display = currentStep > 1 ? 'flex' : 'none';
-            btnNext.style.display = currentStep < totalSteps ? 'flex' : 'none';
-            btnSubmit.style.display = currentStep === totalSteps ? 'flex' : 'none';
+
+            document.getElementById('btnBack').style.display = currentStep > 1 ? 'flex' : 'none';
+            document.getElementById('btnNext').style.display = currentStep < 3 ? 'flex' : 'none';
+            document.getElementById('btnSubmit').style.display = currentStep === 3 ? 'flex' : 'none';
         }
 
-        // Validación por paso
-        function validateStep(step) {
-            if (step === 1) {
-                if (!selectedUserType) {
-                    document.getElementById('tipoError').classList.add('show');
-                    return false;
-                }
-                return true;
+        // Validación
+        function validate() {
+            if (currentStep === 1 && !selectedType) {
+                document.getElementById('tipoError').classList.add('show');
+                return false;
             }
-            
-            if (step === 2) {
+
+            if (currentStep === 2) {
+                let valid = true;
                 const nombre = document.getElementById('nombre').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const telefono = document.getElementById('telefono').value.trim();
-                
-                let isValid = true;
-                
-                if (!nombre || nombre.length < 3) {
-                    document.getElementById('nombreError').textContent = 'Ingresa tu nombre completo';
+
+                if (nombre.length < 3) {
+                    document.getElementById('nombreError').textContent = 'Nombre muy corto';
                     document.getElementById('nombreError').classList.add('show');
-                    isValid = false;
-                } else {
-                    document.getElementById('nombreError').classList.remove('show');
+                    valid = false;
                 }
-                
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    document.getElementById('emailError').textContent = 'Ingresa un email válido';
+
+                if (!/^\S+@\S+\.\S+$/.test(email)) {
+                    document.getElementById('emailError').textContent = 'Email inválido';
                     document.getElementById('emailError').classList.add('show');
-                    isValid = false;
-                } else {
-                    document.getElementById('emailError').classList.remove('show');
+                    valid = false;
                 }
-                
-                if (!telefono || telefono.length < 9) {
-                    document.getElementById('telefonoError').textContent = 'Ingresa un teléfono válido';
+
+                if (telefono.length < 9) {
+                    document.getElementById('telefonoError').textContent = 'Teléfono inválido';
                     document.getElementById('telefonoError').classList.add('show');
-                    isValid = false;
-                } else {
-                    document.getElementById('telefonoError').classList.remove('show');
+                    valid = false;
                 }
-                
-                return isValid;
+
+                return valid;
             }
-            
-            if (step === 3) {
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (currentStep === 3) {
+                let valid = true;
+                const pwd = document.getElementById('password').value;
+                const confirm = document.getElementById('confirmPassword').value;
                 const terms = document.getElementById('terms').checked;
-                
-                let isValid = true;
-                
-                if (password.length < 6) {
+
+                if (pwd.length < 6) {
                     document.getElementById('passwordError').textContent = 'Mínimo 6 caracteres';
                     document.getElementById('passwordError').classList.add('show');
-                    isValid = false;
-                } else {
-                    document.getElementById('passwordError').classList.remove('show');
+                    valid = false;
                 }
-                
-                if (password !== confirmPassword) {
-                    document.getElementById('confirmPasswordError').textContent = 'Las contraseñas no coinciden';
-                    document.getElementById('confirmPasswordError').classList.add('show');
-                    isValid = false;
-                } else {
-                    document.getElementById('confirmPasswordError').classList.remove('show');
+
+                if (pwd !== confirm) {
+                    document.getElementById('confirmError').textContent = 'No coinciden';
+                    document.getElementById('confirmError').classList.add('show');
+                    valid = false;
                 }
-                
+
                 if (!terms) {
                     document.getElementById('termsError').classList.add('show');
-                    isValid = false;
-                } else {
-                    document.getElementById('termsError').classList.remove('show');
+                    valid = false;
                 }
-                
-                return isValid;
+
+                return valid;
             }
-            
+
             return true;
         }
 
         // Eventos
-        btnNext.addEventListener('click', () => {
-            if (validateStep(currentStep)) {
-                if (currentStep < totalSteps) {
-                    currentStep++;
-                    updateStep();
-                }
+        document.getElementById('btnNext').addEventListener('click', () => {
+            if (validate() && currentStep < 3) {
+                currentStep++;
+                updateStep();
             }
         });
 
-        btnBack.addEventListener('click', () => {
+        document.getElementById('btnBack').addEventListener('click', () => {
             if (currentStep > 1) {
                 currentStep--;
                 updateStep();
@@ -909,103 +536,55 @@
         });
 
         // Submit
-        registerForm.addEventListener('submit', async (e) => {
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if (!validateStep(3)) {
-                return;
-            }
-            
-            // Datos del formulario
-            const formData = {
-                tipo: selectedUserType,
-                nombre: document.getElementById('nombre').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                telefono: document.getElementById('telefono').value.trim(),
-                password: document.getElementById('password').value
-            };
-            
-            // Loading
-            btnSubmit.disabled = true;
-            btnSubmit.classList.add('loading');
-            btnSubmit.textContent = 'Creando cuenta...';
-            
+            if (!validate()) return;
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.textContent = 'Creando...';
+
             try {
-                // Crear usuario en Firebase Auth
-                const userCredential = await createUserWithEmailAndPassword(
-                    auth, 
-                    formData.email, 
-                    formData.password
+                const user = await createUserWithEmailAndPassword(
+                    auth,
+                    document.getElementById('email').value.trim(),
+                    document.getElementById('password').value
                 );
-                
-                const user = userCredential.user;
-                
-                // Guardar datos en Firestore
-                await setDoc(doc(db, 'usuarios', user.uid), {
-                    uid: user.uid,
-                    nombre: formData.nombre,
-                    email: formData.email,
-                    telefono: formData.telefono,
-                    tipo: formData.tipo,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
+
+                await setDoc(doc(db, 'usuarios', user.user.uid), {
+                    uid: user.user.uid,
+                    nombre: document.getElementById('nombre').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    telefono: document.getElementById('telefono').value.trim(),
+                    tipo: selectedType,
+                    createdAt: serverTimestamp()
                 });
-                
-                // Guardar en localStorage
-                const usuarioCompleto = {
-                    uid: user.uid,
-                    nombre: formData.nombre,
-                    email: formData.email,
-                    telefono: formData.telefono,
-                    tipo: formData.tipo
-                };
-                localStorage.setItem('usuarioChambApp', JSON.stringify(usuarioCompleto));
-                
-                // Éxito
-                toastSuccess(`¡Bienvenido a ChambApp, ${formData.nombre}!`);
-                
-                // Redirigir
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-                
+
+                localStorage.setItem('usuarioChambApp', JSON.stringify({
+                    uid: user.user.uid,
+                    nombre: document.getElementById('nombre').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    telefono: document.getElementById('telefono').value.trim(),
+                    tipo: selectedType
+                }));
+
+                toastSuccess('¡Cuenta creada!');
+                setTimeout(() => window.location.href = 'dashboard.html', 1000);
+
             } catch (error) {
-                console.error('Error al registrar:', error);
-                
-                // Restaurar botón
-                btnSubmit.disabled = false;
-                btnSubmit.classList.remove('loading');
-                btnSubmit.textContent = 'Crear Cuenta';
-                
-                // Mensajes de error
-                let mensaje = 'Error al crear la cuenta. Intenta de nuevo.';
-                
-                switch(error.code) {
-                    case 'auth/email-already-in-use':
-                        mensaje = 'Este email ya está registrado. Inicia sesión o usa otro email.';
-                        currentStep = 2;
-                        updateStep();
-                        document.getElementById('emailError').textContent = 'Email ya registrado';
-                        document.getElementById('emailError').classList.add('show');
-                        break;
-                    case 'auth/invalid-email':
-                        mensaje = 'El email ingresado no es válido.';
-                        currentStep = 2;
-                        updateStep();
-                        break;
-                    case 'auth/weak-password':
-                        mensaje = 'La contraseña es muy débil. Usa al menos 6 caracteres.';
-                        break;
-                    case 'auth/network-request-failed':
-                        mensaje = 'Sin conexión a internet. Verifica tu conexión.';
-                        break;
+                btn.disabled = false;
+                btn.textContent = 'Crear Cuenta';
+
+                if (error.code === 'auth/email-already-in-use') {
+                    toastError('Email ya registrado');
+                    currentStep = 2;
+                    updateStep();
+                } else {
+                    toastError('Error al crear cuenta');
                 }
-                
-                toastError(mensaje);
             }
         });
 
-        // Inicializar
         updateStep();
     </script>
 </body>
