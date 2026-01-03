@@ -1,6 +1,6 @@
 /* ============================================
    INTRO.JS - ESTILOS PERSONALIZADOS CHAMBAPP
-   Sobrescribe estilos del CDN
+   VERSIÓN OPTIMIZADA con micro-interacciones
    ============================================ */
 
 /* Tooltip principal */
@@ -12,6 +12,18 @@
     padding: 0 !important;
     background: white !important;
     border: none !important;
+    animation: tooltipFadeIn 0.3s ease-out !important;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 /* Contenido del tooltip */
@@ -84,8 +96,29 @@
     text-shadow: none !important;
     border: none !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     box-shadow: none !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* 🔴 MEJORA: Efecto ripple en botones */
+.introjs-button::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.6s, height 0.6s !important;
+}
+
+.introjs-button:active::before {
+    width: 300px !important;
+    height: 300px !important;
 }
 
 /* Botón siguiente y done */
@@ -103,6 +136,11 @@
     background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+}
+
+.introjs-nextbutton:active,
+.introjs-donebutton:active {
+    transform: translateY(0) !important;
 }
 
 /* Botón anterior */
@@ -130,15 +168,31 @@
 .introjs-skipbutton:hover,
 .introjs-skipbutton:focus {
     color: #64748b !important;
-    background: transparent !important;
+    background: rgba(148, 163, 184, 0.1) !important;
 }
 
-/* Capa de highlight */
+/* 🔴 MEJORA: Capa de highlight con animación suave */
 .introjs-helperLayer {
     border-radius: 12px !important;
     box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px !important;
     border: 3px solid #2563eb !important;
     background: transparent !important;
+    animation: pulseHighlight 2s ease-in-out infinite !important;
+}
+
+@keyframes pulseHighlight {
+    0%, 100% {
+        border-color: #2563eb;
+        box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, 
+                    rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px,
+                    0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    50% {
+        border-color: #3b82f6;
+        box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, 
+                    rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px,
+                    0 0 0 8px rgba(37, 99, 235, 0.2);
+    }
 }
 
 /* Ocultar número del paso */
@@ -171,7 +225,7 @@
     right: -20px !important;
 }
 
-/* Barra de progreso */
+/* 🔴 MEJORA: Barra de progreso animada */
 .introjs-progress {
     background: #e2e8f0 !important;
     border-radius: 4px !important;
@@ -185,6 +239,31 @@
     background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%) !important;
     border-radius: 4px !important;
     height: 6px !important;
+    transition: width 0.3s ease-out !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Efecto shimmer en progreso */
+.introjs-progressbar::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    ) !important;
+    animation: shimmer 2s infinite !important;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
 }
 
 /* Ocultar bullets */
@@ -192,9 +271,15 @@
     display: none !important;
 }
 
-/* Overlay */
+/* Overlay mejorado */
 .introjs-overlay {
     background: rgba(0, 0, 0, 0.6) !important;
+    animation: overlayFadeIn 0.3s ease-out !important;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Disabled state */
@@ -244,23 +329,8 @@
         width: 100% !important;
         text-align: center !important;
         margin-bottom: 0.5rem !important;
+        order: -1 !important;
     }
-}
-
-/* ============================================
-   ANIMACIONES
-   ============================================ */
-@keyframes introjs-pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-.introjs-helperLayer {
-    animation: introjs-pulse 2s ease-in-out infinite !important;
 }
 
 /* ============================================
@@ -274,6 +344,23 @@
 .introjs-skipbutton:focus {
     outline: 2px solid #cbd5e1 !important;
     outline-offset: 2px !important;
+}
+
+/* Reducir animaciones para usuarios que lo prefieran */
+@media (prefers-reduced-motion: reduce) {
+    .introjs-tooltip,
+    .introjs-overlay,
+    .introjs-helperLayer,
+    .introjs-progressbar,
+    .introjs-progressbar::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .introjs-button:hover,
+    .introjs-button:focus {
+        transform: none !important;
+    }
 }
 
 /* ============================================
@@ -293,4 +380,57 @@
 
 .introjs-tooltip {
     z-index: 10000001 !important;
+}
+
+/* ============================================
+   🔴 MEJORA: MODO OSCURO (OPCIONAL)
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+    .introjs-tooltip {
+        background: #1e293b !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+    }
+    
+    .introjs-tooltiptext {
+        color: #e2e8f0 !important;
+    }
+    
+    .introjs-tooltiptext h2,
+    .introjs-tooltiptext h3 {
+        color: #f8fafc !important;
+    }
+    
+    .introjs-tooltiptext p {
+        color: #cbd5e1 !important;
+    }
+    
+    .introjs-tooltiptext ul li {
+        color: #cbd5e1 !important;
+    }
+    
+    .introjs-tooltipbuttons {
+        border-top-color: #334155 !important;
+    }
+    
+    .introjs-prevbutton {
+        background: #334155 !important;
+        color: #cbd5e1 !important;
+        border-color: #475569 !important;
+    }
+    
+    .introjs-arrow.top {
+        border-bottom-color: #1e293b !important;
+    }
+    
+    .introjs-arrow.bottom {
+        border-top-color: #1e293b !important;
+    }
+    
+    .introjs-arrow.left {
+        border-right-color: #1e293b !important;
+    }
+    
+    .introjs-arrow.right {
+        border-left-color: #1e293b !important;
+    }
 }
