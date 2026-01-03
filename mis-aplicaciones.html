@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Aplicaciones - ChambApp</title>
     <link rel="stylesheet" href="css/mis-aplicaciones.css">
+    <!-- Intro.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
+    <link rel="stylesheet" href="css/introjs-custom.css">
 </head>
 <body>
     <header class="header">
@@ -47,21 +50,21 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script type="module" src="js/mis-aplicaciones.js"></script>
-    <!-- Antes del </body> -->
-<script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
-<link rel="stylesheet" href="css/introjs-custom.css">
-<script src="js/onboarding-aplicaciones-empleador.js"></script>
-<script>
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            if (typeof iniciarOnboardingAplicaciones === 'function') {
-                iniciarOnboardingAplicaciones();
-            }
-        }, 1500);
-    });
-</script>
+    
+    <!-- Onboarding -->
+    <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
+    <script src="js/onboarding-aplicaciones-empleador.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (typeof iniciarOnboardingAplicaciones === 'function') {
+                    iniciarOnboardingAplicaciones();
+                }
+            }, 1500);
+        });
+    </script>
 </body>
 </html>
