@@ -1243,10 +1243,10 @@
     <!-- Firebase Config -->
     <script src="js/config/firebase-config.js"></script>
     
-    <!-- 🔴 CAMBIO #2: JavaScript para Stats Dinámicos -->
+    <!-- 🔴 FIX: JavaScript para Stats Dinámicos - SIN getCountFromServer -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, query, where, getDocs, getCountFromServer } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const app = initializeApp(window.firebaseConfig);
         const db = getFirestore(app);
@@ -1254,10 +1254,10 @@
         // Cargar stats reales
         async function loadStats() {
             try {
-                // Contar usuarios
+                // 🔴 FIX: Usar getDocs en lugar de getCountFromServer
                 const usuariosQuery = query(collection(db, 'usuarios'));
-                const usuariosSnapshot = await getCountFromServer(usuariosQuery);
-                const totalUsuarios = usuariosSnapshot.data().count;
+                const usuariosSnapshot = await getDocs(usuariosQuery);
+                const totalUsuarios = usuariosSnapshot.size;
                 
                 // Contar ofertas activas
                 const ofertasQuery = query(
@@ -1269,16 +1269,16 @@
                 
                 // Actualizar UI
                 if (totalUsuarios > 0) {
-                    document.getElementById('statUsuarios').textContent = totalUsuarios;
+                    document.getElementById('statUsuarios').textContent = totalUsuarios + '+';
                 } else {
-                    document.getElementById('statUsuarios').textContent = '10+';
+                    document.getElementById('statUsuarios').textContent = '50+';
                 }
                 
                 if (totalOfertas > 0) {
-                    document.getElementById('statChambas').textContent = totalOfertas;
+                    document.getElementById('statChambas').textContent = totalOfertas + '+';
                     document.getElementById('badgeText').textContent = `${totalOfertas} chambas activas ahora`;
                 } else {
-                    document.getElementById('statChambas').textContent = '20+';
+                    document.getElementById('statChambas').textContent = '100+';
                     document.getElementById('badgeText').textContent = 'Nuevas chambas cada día';
                 }
                 
