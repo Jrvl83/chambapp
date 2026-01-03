@@ -4,21 +4,21 @@
 // ============================================
 
 /**
- * 馃敶 MEJORAS IMPLEMENTADAS:
- * - Detecci贸n m贸vil/desktop con tours adaptados
- * - Apertura autom谩tica de men煤 en m贸vil
+ * MEJORAS IMPLEMENTADAS:
+ * - Deteccion movil/desktop con tours adaptados
+ * - Apertura automatica de menu en movil
  * - Tours secuenciales para mejor UX
- * - Validaci贸n robusta de elementos
- * - Sistema "Ver despu茅s" (24 horas)
- * - M谩s pasos interactivos (71% vs 40%)
+ * - Validacion robusta de elementos
+ * - Sistema "Ver despues" (24 horas)
+ * - Mas pasos interactivos (71% vs 40%)
  * - Timing optimizado (400ms vs 800ms)
  */
 
 // ============================================
-// CONFIGURACI脫N
+// CONFIGURACION
 // ============================================
 const ONBOARDING_CONFIG = {
-    delayInicial: 400, // Reducido de 800ms
+    delayInicial: 400,
     delayEntreSecuencias: 350,
     recordatorioHoras: 24,
     storageKeys: {
@@ -31,14 +31,14 @@ const ONBOARDING_CONFIG = {
 // INICIAR ONBOARDING
 // ============================================
 function iniciarOnboarding() {
-    // Verificar si ya complet贸 el tour
+    // Verificar si ya completo el tour
     const yaCompleto = localStorage.getItem(ONBOARDING_CONFIG.storageKeys.completed);
     if (yaCompleto === 'true') {
-        console.log('鉁?Usuario ya complet贸 el onboarding');
+        console.log('Usuario ya completo el onboarding');
         return;
     }
     
-    // Verificar "recordar despu茅s"
+    // Verificar "recordar despues"
     const remindLater = localStorage.getItem(ONBOARDING_CONFIG.storageKeys.remindLater);
     if (remindLater) {
         const timestampRecordatorio = parseInt(remindLater);
@@ -46,40 +46,39 @@ function iniciarOnboarding() {
         const horasPasadas = (ahora - timestampRecordatorio) / (1000 * 60 * 60);
         
         if (horasPasadas < ONBOARDING_CONFIG.recordatorioHoras) {
-            console.log(`鈴?Recordatorio en ${Math.round(ONBOARDING_CONFIG.recordatorioHoras - horasPasadas)}h`);
+            console.log('Recordatorio en ' + Math.round(ONBOARDING_CONFIG.recordatorioHoras - horasPasadas) + 'h');
             return;
         } else {
-            // Ya pasaron 24h, limpiar y mostrar
             localStorage.removeItem(ONBOARDING_CONFIG.storageKeys.remindLater);
         }
     }
     
-    // Verificar que Intro.js est茅 cargado
+    // Verificar que Intro.js este cargado
     if (typeof introJs === 'undefined') {
-        console.error('鉂?Intro.js no est谩 cargado');
+        console.error('Intro.js no esta cargado');
         return;
     }
     
     // Obtener datos del usuario
     const usuarioData = localStorage.getItem('usuarioChambApp');
     if (!usuarioData) {
-        console.warn('鈿狅笍 No hay datos de usuario para onboarding');
+        console.warn('No hay datos de usuario para onboarding');
         return;
     }
     
     const usuario = JSON.parse(usuarioData);
-    console.log('馃幆 Iniciando onboarding para:', usuario.tipo);
+    console.log('Iniciando onboarding para:', usuario.tipo);
     
-    // 馃敶 MEJORA: Detectar si usuario ya interactu贸
+    // Verificar si usuario ya interactuo
     const yaInteractuo = sessionStorage.getItem('usuario-ya-interactuo');
     if (yaInteractuo) {
-        console.log('鈿狅笍 Usuario ya interactu贸, skip onboarding');
+        console.log('Usuario ya interactuo, skip onboarding');
         marcarComoCompletado();
         return;
     }
     
-    // Esperar a que el contenido est茅 cargado
-    setTimeout(() => {
+    // Esperar a que el contenido este cargado
+    setTimeout(function() {
         if (usuario.tipo === 'trabajador') {
             iniciarTourTrabajador();
         } else if (usuario.tipo === 'empleador') {
@@ -89,7 +88,7 @@ function iniciarOnboarding() {
 }
 
 // ============================================
-// 馃敶 TOUR TRABAJADOR - MEJORADO
+// TOUR TRABAJADOR - MEJORADO
 // ============================================
 function iniciarTourTrabajador() {
     const isMobile = window.innerWidth < 768;
@@ -98,25 +97,16 @@ function iniciarTourTrabajador() {
     const introBienvenida = introJs();
     introBienvenida.setOptions({
         steps: [{
-            intro: `
-                <div style="text-align: center;">
-                    <div style="font-size: 3.5rem; margin-bottom: 1rem;">馃憢</div>
-                    <h2>隆Bienvenido a ChambApp!</h2>
-                    <p style="margin-top: 1rem;">Te mostraremos c贸mo encontrar tu pr贸xima chamba en 30 segundos.</p>
-                    <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">
-                        ${isMobile ? 'Optimizado para m贸vil' : 'Tour interactivo'}
-                    </p>
-                </div>
-            `
+            intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">👋</div><h2>¡Bienvenido a ChambApp!</h2><p style="margin-top: 1rem;">Te mostraremos como encontrar tu proxima chamba en 30 segundos.</p><p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">' + (isMobile ? 'Optimizado para movil' : 'Tour interactivo') + '</p></div>'
         }],
         showProgress: false,
         showBullets: false,
         exitOnOverlayClick: false,
-        doneLabel: 'Comenzar 馃殌',
-        skipLabel: 'Ver despu茅s'
+        doneLabel: 'Comenzar 🚀',
+        skipLabel: 'Ver despues'
     });
     
-    introBienvenida.oncomplete(() => {
+    introBienvenida.oncomplete(function() {
         if (isMobile) {
             tourTrabajadorMobile();
         } else {
@@ -124,16 +114,15 @@ function iniciarTourTrabajador() {
         }
     });
     
-    introBienvenida.onexit(() => {
+    introBienvenida.onexit(function() {
         recordarMasTarde();
     });
     
     introBienvenida.start();
 }
 
-// Tour para M脫VIL - Con men煤
+// Tour para MOVIL - Con menu
 function tourTrabajadorMobile() {
-    // Abrir men煤 primero
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
     
@@ -143,46 +132,27 @@ function tourTrabajadorMobile() {
         document.body.style.overflow = 'hidden';
     }
     
-    setTimeout(() => {
+    setTimeout(function() {
         const introMenu = introJs();
         
         const steps = [
             {
                 element: '#menu-toggle',
-                intro: `
-                    <h3>鈽?Men煤 Principal</h3>
-                    <p>Desde este bot贸n accedes a todas las funciones.</p>
-                    <p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">
-                        Ya lo abrimos para mostrarte...
-                    </p>
-                `,
+                intro: '<h3>☰ Menu Principal</h3><p>Desde este boton accedes a todas las funciones.</p><p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">Ya lo abrimos para mostrarte...</p>',
                 position: 'bottom'
             },
             {
                 element: '#nav-buscar',
-                intro: `
-                    <h3>馃攳 Buscar Chambas</h3>
-                    <p>Encuentra trabajos por categor铆a, ubicaci贸n y salario.</p>
-                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
-                        Miles de ofertas nuevas cada semana.
-                    </p>
-                `,
+                intro: '<h3>🔍 Buscar Chambas</h3><p>Encuentra trabajos por categoria, ubicacion y salario.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Miles de ofertas nuevas cada semana.</p>',
                 position: 'right'
             },
             {
                 element: '#nav-trabajadores',
-                intro: `
-                    <h3>馃搵 Mis Aplicaciones</h3>
-                    <p>Revisa el estado de tus postulaciones aqu铆.</p>
-                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
-                        Recibe notificaciones cuando te respondan.
-                    </p>
-                `,
+                intro: '<h3>📋 Mis Aplicaciones</h3><p>Revisa el estado de tus postulaciones aqui.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Recibe notificaciones cuando te respondan.</p>',
                 position: 'right'
             }
         ];
         
-        // Validar elementos
         const stepsValidos = validarPasos(steps);
         
         introMenu.setOptions({
@@ -190,26 +160,25 @@ function tourTrabajadorMobile() {
             showProgress: true,
             showBullets: false,
             exitOnOverlayClick: false,
-            doneLabel: 'Siguiente 鈫?,
-            nextLabel: 'Siguiente 鈫?,
-            prevLabel: '鈫?Atr谩s',
+            doneLabel: 'Siguiente →',
+            nextLabel: 'Siguiente →',
+            prevLabel: '← Atras',
             skipLabel: 'Saltar'
         });
         
-        introMenu.oncomplete(() => {
-            // Cerrar men煤
+        introMenu.oncomplete(function() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
             
-            setTimeout(() => {
+            setTimeout(function() {
                 tourTrabajadorDashboard();
             }, ONBOARDING_CONFIG.delayEntreSecuencias);
         });
         
-        introMenu.onexit(() => {
+        introMenu.onexit(function() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
@@ -229,32 +198,17 @@ function tourTrabajadorDesktop() {
     const steps = [
         {
             element: '#nav-buscar',
-            intro: `
-                <h3>馃攳 Buscar Chambas</h3>
-                <p>Encuentra trabajos por categor铆a, ubicaci贸n y salario.</p>
-                <p style="font-size: 0.875rem; margin-top: 0.75rem;">
-                    Usa los filtros para encontrar exactamente lo que buscas.
-                </p>
-            `,
+            intro: '<h3>🔍 Buscar Chambas</h3><p>Encuentra trabajos por categoria, ubicacion y salario.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Usa los filtros para encontrar exactamente lo que buscas.</p>',
             position: 'right'
         },
         {
             element: '.stats-grid',
-            intro: `
-                <h3>馃搳 Tus Estad铆sticas</h3>
-                <p>Aqu铆 ver谩s cu谩ntas chambas has aplicado y cu谩ntas fueron aceptadas.</p>
-                <p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">
-                    Se actualiza en tiempo real.
-                </p>
-            `,
+            intro: '<h3>📊 Tus Estadisticas</h3><p>Aqui veras cuantas chambas has aplicado y cuantas fueron aceptadas.</p><p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">Se actualiza en tiempo real.</p>',
             position: 'bottom'
         },
         {
             element: '#nav-trabajadores',
-            intro: `
-                <h3>馃搵 Mis Aplicaciones</h3>
-                <p>Revisa todas tus postulaciones y su estado.</p>
-            `,
+            intro: '<h3>📋 Mis Aplicaciones</h3><p>Revisa todas tus postulaciones y su estado.</p>',
             position: 'right'
         }
     ];
@@ -266,82 +220,52 @@ function tourTrabajadorDesktop() {
         showProgress: true,
         showBullets: false,
         exitOnOverlayClick: false,
-        doneLabel: 'Siguiente 鈫?,
-        nextLabel: 'Siguiente 鈫?,
-        prevLabel: '鈫?Atr谩s',
+        doneLabel: 'Siguiente →',
+        nextLabel: 'Siguiente →',
+        prevLabel: '← Atras',
         skipLabel: 'Saltar'
     });
     
-    intro.oncomplete(() => {
+    intro.oncomplete(function() {
         tourTrabajadorDashboard();
     });
     
-    intro.onexit(() => {
+    intro.onexit(function() {
         recordarMasTarde();
     });
     
     intro.start();
 }
 
-// Tour del Dashboard (com煤n m贸vil/desktop)
+// Tour del Dashboard (comun movil/desktop)
 function tourTrabajadorDashboard() {
     const intro = introJs();
     
     const steps = [];
     
-    // 馃敶 MEJORA: Solo mostrar si HAY ofertas
     const ofertaCard = document.querySelector('.oferta-card');
     if (ofertaCard) {
         steps.push({
             element: '.oferta-card',
-            intro: `
-                <h3>馃捈 Ofertas Disponibles</h3>
-                <p>Estas son las chambas activas.</p>
-                <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                    <li>Haz clic en <strong>"Ver Detalles"</strong> para m谩s info</li>
-                    <li>Presiona <strong>"Contactar"</strong> para aplicar</li>
-                </ul>
-            `,
+            intro: '<h3>📄 Ofertas Disponibles</h3><p>Estas son las chambas activas.</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Haz clic en <strong>"Ver Detalles"</strong> para mas info</li><li>Presiona <strong>"Contactar"</strong> para aplicar</li></ul>',
             position: 'top'
         });
     }
     
-    // Filtros
     const filtros = document.querySelector('.filtros-container');
     if (filtros) {
         steps.push({
             element: '.filtros-container',
-            intro: `
-                <h3>馃攷 Filtros Inteligentes</h3>
-                <p>Encuentra la chamba perfecta filtrando por:</p>
-                <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                    <li>Categor铆a (electricidad, construcci贸n, etc.)</li>
-                    <li>Ubicaci贸n (cerca de ti)</li>
-                    <li>Palabras clave</li>
-                </ul>
-            `,
+            intro: '<h3>🔎 Filtros Inteligentes</h3><p>Encuentra la chamba perfecta filtrando por:</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Categoria (electricidad, construccion, etc.)</li><li>Ubicacion (cerca de ti)</li><li>Palabras clave</li></ul>',
             position: 'bottom'
         });
     }
     
-    // Final
     steps.push({
-        intro: `
-            <div style="text-align: center;">
-                <div style="font-size: 3.5rem; margin-bottom: 1rem;">馃帀</div>
-                <h2>隆Listo para empezar!</h2>
-                <p style="margin-top: 1rem;">Ahora puedes buscar tu pr贸xima chamba.</p>
-                <div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;">
-                    <p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">
-                        馃挕 Tip: Como usuario gratis puedes aplicar a 5 chambas por mes
-                    </p>
-                </div>
-            </div>
-        `
+        intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div><h2>¡Listo para empezar!</h2><p style="margin-top: 1rem;">Ahora puedes buscar tu proxima chamba.</p><div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;"><p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">💡 Tip: Como usuario gratis puedes aplicar a 5 chambas por mes</p></div></div>'
     });
     
     if (steps.length === 0) {
-        // No hay pasos, completar directamente
         finalizarOnboarding();
         return;
     }
@@ -351,17 +275,17 @@ function tourTrabajadorDashboard() {
         showProgress: true,
         showBullets: false,
         exitOnOverlayClick: false,
-        doneLabel: 'Empezar 馃殌',
-        nextLabel: 'Siguiente 鈫?,
-        prevLabel: '鈫?Atr谩s',
+        doneLabel: 'Empezar 🚀',
+        nextLabel: 'Siguiente →',
+        prevLabel: '← Atras',
         skipLabel: 'Saltar'
     });
     
-    intro.oncomplete(() => {
+    intro.oncomplete(function() {
         finalizarOnboarding();
     });
     
-    intro.onexit(() => {
+    intro.onexit(function() {
         recordarMasTarde();
     });
     
@@ -369,7 +293,7 @@ function tourTrabajadorDashboard() {
 }
 
 // ============================================
-// 馃敶 TOUR EMPLEADOR - MEJORADO
+// TOUR EMPLEADOR - MEJORADO
 // ============================================
 function iniciarTourEmpleador() {
     const isMobile = window.innerWidth < 768;
@@ -377,25 +301,16 @@ function iniciarTourEmpleador() {
     const introBienvenida = introJs();
     introBienvenida.setOptions({
         steps: [{
-            intro: `
-                <div style="text-align: center;">
-                    <div style="font-size: 3.5rem; margin-bottom: 1rem;">馃憢</div>
-                    <h2>隆Bienvenido a ChambApp!</h2>
-                    <p style="margin-top: 1rem;">Te ayudaremos a encontrar trabajadores r谩pidamente.</p>
-                    <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">
-                        Este tour toma solo 30 segundos
-                    </p>
-                </div>
-            `
+            intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">👋</div><h2>¡Bienvenido a ChambApp!</h2><p style="margin-top: 1rem;">Te ayudaremos a encontrar trabajadores rapidamente.</p><p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">Este tour toma solo 30 segundos</p></div>'
         }],
         showProgress: false,
         showBullets: false,
         exitOnOverlayClick: false,
-        doneLabel: 'Comenzar 馃殌',
-        skipLabel: 'Ver despu茅s'
+        doneLabel: 'Comenzar 🚀',
+        skipLabel: 'Ver despues'
     });
     
-    introBienvenida.oncomplete(() => {
+    introBienvenida.oncomplete(function() {
         if (isMobile) {
             tourEmpleadorMobile();
         } else {
@@ -403,16 +318,15 @@ function iniciarTourEmpleador() {
         }
     });
     
-    introBienvenida.onexit(() => {
+    introBienvenida.onexit(function() {
         recordarMasTarde();
     });
     
     introBienvenida.start();
 }
 
-// Tour EMPLEADOR para M脫VIL
+// Tour EMPLEADOR para MOVIL
 function tourEmpleadorMobile() {
-    // 馃敶 FIX: Abrir men煤 autom谩ticamente
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
     
@@ -422,40 +336,23 @@ function tourEmpleadorMobile() {
         document.body.style.overflow = 'hidden';
     }
     
-    setTimeout(() => {
+    setTimeout(function() {
         const introMenu = introJs();
         
         const steps = [
             {
                 element: '#menu-toggle',
-                intro: `
-                    <h3>鈽?Men煤 Principal</h3>
-                    <p>Accede a todas las funciones desde aqu铆.</p>
-                `,
+                intro: '<h3>☰ Menu Principal</h3><p>Accede a todas las funciones desde aqui.</p>',
                 position: 'bottom'
             },
             {
                 element: '#nav-publicar',
-                intro: `
-                    <h3>鉃?Publicar Oferta</h3>
-                    <p>Crea ofertas de trabajo en menos de 2 minutos.</p>
-                    <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                        <li>Describe el trabajo</li>
-                        <li>Especifica ubicaci贸n y pago</li>
-                        <li>Recibe aplicaciones inmediatas</li>
-                    </ul>
-                `,
+                intro: '<h3>➕ Publicar Oferta</h3><p>Crea ofertas de trabajo en menos de 2 minutos.</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Describe el trabajo</li><li>Especifica ubicacion y pago</li><li>Recibe aplicaciones inmediatas</li></ul>',
                 position: 'right'
             },
             {
                 element: '#nav-trabajadores',
-                intro: `
-                    <h3>馃懃 Ver Aplicantes</h3>
-                    <p>Aqu铆 revisas qui茅n aplic贸 a tus ofertas.</p>
-                    <p style="font-size: 0.875rem; margin-top: 0.75rem;">
-                        Ver谩s perfiles, experiencia y contacto directo.
-                    </p>
-                `,
+                intro: '<h3>👥 Ver Aplicantes</h3><p>Aqui revisas quien aplico a tus ofertas.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Veras perfiles, experiencia y contacto directo.</p>',
                 position: 'right'
             }
         ];
@@ -467,26 +364,25 @@ function tourEmpleadorMobile() {
             showProgress: true,
             showBullets: false,
             exitOnOverlayClick: false,
-            doneLabel: 'Siguiente 鈫?,
-            nextLabel: 'Siguiente 鈫?,
-            prevLabel: '鈫?Atr谩s',
+            doneLabel: 'Siguiente →',
+            nextLabel: 'Siguiente →',
+            prevLabel: '← Atras',
             skipLabel: 'Saltar'
         });
         
-        introMenu.oncomplete(() => {
-            // Cerrar men煤
+        introMenu.oncomplete(function() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
             
-            setTimeout(() => {
+            setTimeout(function() {
                 tourEmpleadorDashboard();
             }, ONBOARDING_CONFIG.delayEntreSecuencias);
         });
         
-        introMenu.onexit(() => {
+        introMenu.onexit(function() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
@@ -506,34 +402,17 @@ function tourEmpleadorDesktop() {
     const steps = [
         {
             element: '#nav-publicar',
-            intro: `
-                <h3>鉃?Publicar Oferta</h3>
-                <p>Crea ofertas de trabajo r谩pidamente.</p>
-                <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                    <li>Formulario simple de 4 pasos</li>
-                    <li>Publicaci贸n instant谩nea</li>
-                    <li>Visible para miles de trabajadores</li>
-                </ul>
-            `,
+            intro: '<h3>➕ Publicar Oferta</h3><p>Crea ofertas de trabajo rapidamente.</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Formulario simple de 4 pasos</li><li>Publicacion instantanea</li><li>Visible para miles de trabajadores</li></ul>',
             position: 'right'
         },
         {
             element: '.stats-grid',
-            intro: `
-                <h3>馃搳 Tus Estad铆sticas</h3>
-                <p>Ve cu谩ntos trabajadores han aplicado a tus ofertas.</p>
-                <p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">
-                    Informaci贸n actualizada en tiempo real.
-                </p>
-            `,
+            intro: '<h3>📊 Tus Estadisticas</h3><p>Ve cuantos trabajadores han aplicado a tus ofertas.</p><p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">Informacion actualizada en tiempo real.</p>',
             position: 'bottom'
         },
         {
             element: '#nav-trabajadores',
-            intro: `
-                <h3>馃懃 Tus Aplicantes</h3>
-                <p>Revisa perfiles y contacta trabajadores directamente.</p>
-            `,
+            intro: '<h3>👥 Tus Aplicantes</h3><p>Revisa perfiles y contacta trabajadores directamente.</p>',
             position: 'right'
         }
     ];
@@ -545,17 +424,17 @@ function tourEmpleadorDesktop() {
         showProgress: true,
         showBullets: false,
         exitOnOverlayClick: false,
-        doneLabel: 'Siguiente 鈫?,
-        nextLabel: 'Siguiente 鈫?,
-        prevLabel: '鈫?Atr谩s',
+        doneLabel: 'Siguiente →',
+        nextLabel: 'Siguiente →',
+        prevLabel: '← Atras',
         skipLabel: 'Saltar'
     });
     
-    intro.oncomplete(() => {
+    intro.oncomplete(function() {
         tourEmpleadorDashboard();
     });
     
-    intro.onexit(() => {
+    intro.onexit(function() {
         recordarMasTarde();
     });
     
@@ -568,36 +447,17 @@ function tourEmpleadorDashboard() {
     
     const steps = [];
     
-    // 馃敶 MEJORA: Mostrar tour de ofertas solo si tiene ofertas
     const ofertaCard = document.querySelector('.oferta-card');
     if (ofertaCard) {
         steps.push({
             element: '.oferta-card',
-            intro: `
-                <h3>馃捈 Tus Ofertas</h3>
-                <p>Estas son las chambas que has publicado.</p>
-                <p style="font-size: 0.875rem; margin-top: 0.75rem;">
-                    Haz clic en <strong>"Ver Aplicantes"</strong> para revisar qui茅n aplic贸.
-                </p>
-            `,
+            intro: '<h3>📄 Tus Ofertas</h3><p>Estas son las chambas que has publicado.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Haz clic en <strong>"Ver Aplicantes"</strong> para revisar quien aplico.</p>',
             position: 'top'
         });
     }
     
-    // Final
     steps.push({
-        intro: `
-            <div style="text-align: center;">
-                <div style="font-size: 3.5rem; margin-bottom: 1rem;">馃殌</div>
-                <h2>隆Todo listo!</h2>
-                <p style="margin-top: 1rem;">Empieza publicando tu primera oferta de trabajo.</p>
-                <div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;">
-                    <p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">
-                        馃挕 Tip: Ofertas con salario claro reciben 3x m谩s aplicantes
-                    </p>
-                </div>
-            </div>
-        `
+        intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">🚀</div><h2>¡Todo listo!</h2><p style="margin-top: 1rem;">Empieza publicando tu primera oferta de trabajo.</p><div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;"><p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">💡 Tip: Ofertas con salario claro reciben 3x mas aplicantes</p></div></div>'
     });
     
     if (steps.length === 0) {
@@ -610,17 +470,17 @@ function tourEmpleadorDashboard() {
         showProgress: true,
         showBullets: false,
         exitOnOverlayClick: false,
-        doneLabel: 'Comenzar 馃殌',
-        nextLabel: 'Siguiente 鈫?,
-        prevLabel: '鈫?Atr谩s',
+        doneLabel: 'Comenzar 🚀',
+        nextLabel: 'Siguiente →',
+        prevLabel: '← Atras',
         skipLabel: 'Saltar'
     });
     
-    intro.oncomplete(() => {
+    intro.oncomplete(function() {
         finalizarOnboarding();
     });
     
-    intro.onexit(() => {
+    intro.onexit(function() {
         recordarMasTarde();
     });
     
@@ -628,22 +488,19 @@ function tourEmpleadorDashboard() {
 }
 
 // ============================================
-// 馃敶 VALIDACI脫N ROBUSTA DE PASOS
+// VALIDACION ROBUSTA DE PASOS
 // ============================================
 function validarPasos(steps) {
-    return steps.filter(step => {
-        // Pasos sin elemento (modales) siempre v谩lidos
+    return steps.filter(function(step) {
         if (!step.element) return true;
         
         const elemento = document.querySelector(step.element);
         
-        // Verificar que exista
         if (!elemento) {
-            console.warn(`鈿狅笍 Elemento no encontrado: ${step.element}`);
+            console.warn('Elemento no encontrado: ' + step.element);
             return false;
         }
         
-        // Verificar que sea visible
         const esVisible = !!(
             elemento.offsetWidth || 
             elemento.offsetHeight || 
@@ -651,7 +508,7 @@ function validarPasos(steps) {
         );
         
         if (!esVisible) {
-            console.warn(`鈿狅笍 Elemento no visible: ${step.element}`);
+            console.warn('Elemento no visible: ' + step.element);
             return false;
         }
         
@@ -660,17 +517,16 @@ function validarPasos(steps) {
 }
 
 // ============================================
-// FINALIZACI脫N Y RECORDATORIOS
+// FINALIZACION Y RECORDATORIOS
 // ============================================
 function finalizarOnboarding() {
     marcarComoCompletado();
     
-    // 馃敶 MEJORA: Celebraci贸n con confetti (opcional)
     if (typeof toastSuccess === 'function') {
-        toastSuccess('隆Bienvenido a ChambApp! 馃帀');
+        toastSuccess('¡Bienvenido a ChambApp! 🎉');
     }
     
-    console.log('鉁?Onboarding completado exitosamente');
+    console.log('Onboarding completado exitosamente');
 }
 
 function marcarComoCompletado() {
@@ -681,7 +537,7 @@ function marcarComoCompletado() {
 function recordarMasTarde() {
     const ahora = Date.now();
     localStorage.setItem(ONBOARDING_CONFIG.storageKeys.remindLater, ahora.toString());
-    console.log(`鈴?Recordatorio configurado para ${ONBOARDING_CONFIG.recordatorioHoras}h`);
+    console.log('Recordatorio configurado para ' + ONBOARDING_CONFIG.recordatorioHoras + 'h');
 }
 
 // ============================================
@@ -694,8 +550,8 @@ function reiniciarOnboarding() {
     location.reload();
 }
 
-// Detectar si usuario interact煤a (para skip autom谩tico)
-let interaccionDetectada = false;
+// Detectar si usuario interactuo (para skip automatico)
+var interaccionDetectada = false;
 function detectarInteraccion() {
     if (!interaccionDetectada) {
         interaccionDetectada = true;
@@ -703,8 +559,8 @@ function detectarInteraccion() {
     }
 }
 
-// Listeners de interacci贸n (ejecutar solo una vez)
-['click', 'scroll', 'keydown'].forEach(evento => {
+// Listeners de interaccion (ejecutar solo una vez)
+['click', 'scroll', 'keydown'].forEach(function(evento) {
     document.addEventListener(evento, detectarInteraccion, { once: true });
 });
 
@@ -716,4 +572,4 @@ window.tourTrabajador = iniciarTourTrabajador;
 window.tourEmpleador = iniciarTourEmpleador;
 window.reiniciarOnboarding = reiniciarOnboarding;
 
-console.log('鉁?Onboarding ChambApp OPTIMIZADO cargado correctamente');
+console.log('Onboarding ChambApp OPTIMIZADO cargado correctamente');
