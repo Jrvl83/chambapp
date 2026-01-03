@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ChambApp</title>
     
-    <!-- CSS Principal -->
-    <link rel="stylesheet" href="css/dashboard.css">
+    <!-- 🔴 MEJORA #1: SOLO UN CSS -->
     <link rel="stylesheet" href="css/dashboard-main.css">
     
     <!-- CSS Nuevos - UX Mejorado -->
@@ -14,14 +13,14 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     
-    <!-- Intro.js para Onboarding -->
+    <!-- Intro.js Onboarding -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
     <link rel="stylesheet" href="css/introjs-custom.css">
     <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
 </head>
 <body>
     
-    <!-- Skip to Main Content (Accesibilidad) -->
+    <!-- Skip to Main Content -->
     <a href="#main-content" class="skip-to-main">
         Saltar al contenido principal
     </a>
@@ -29,14 +28,14 @@
     <!-- Header -->
     <header class="dashboard-header">
         <div class="header-content">
-            <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menú de navegación">
+            <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menú">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
             </button>
             <div class="logo" id="logo-text">ChambApp</div>
             <div class="user-menu">
-                <span class="user-name" id="user-name">👤 Bienvenido, Usuario</span>
+                <span class="user-name" id="user-name">👤 Bienvenido</span>
                 <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
             </div>
         </div>
@@ -44,31 +43,31 @@
 
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar" aria-label="Menú de navegación principal">
+        <aside class="sidebar" id="sidebar" aria-label="Menú principal">
             <button class="sidebar-close" id="sidebar-close" onclick="toggleMenu()" aria-label="Cerrar menú">✕</button>
             <nav class="sidebar-nav">
                 <div class="nav-item active" tabindex="0">
-                    <span class="icon" aria-hidden="true">🏠</span>
+                    <span class="icon">🏠</span>
                     <span>Inicio</span>
                 </div>
                 <div class="nav-item" id="nav-buscar" tabindex="0">
-                    <span class="icon" aria-hidden="true">🔍</span>
+                    <span class="icon">🔍</span>
                     <span id="nav-buscar-text">Buscar Chambas</span>
                 </div>
                 <a href="publicar-oferta.html" class="nav-item" id="nav-publicar">
-                    <span class="icon" aria-hidden="true">➕</span>
+                    <span class="icon">➕</span>
                     <span id="nav-publicar-text">Publicar Oferta</span>
                 </a>
                 <a href="mis-aplicaciones.html" class="nav-item" id="nav-trabajadores">
-                    <span class="icon" aria-hidden="true">👥</span>
+                    <span class="icon">👥</span>
                     <span id="nav-trabajadores-text">Trabajadores</span>
                 </a>
                 <div class="nav-item" tabindex="0">
-                    <span class="icon" aria-hidden="true">💬</span>
+                    <span class="icon">💬</span>
                     <span>Mensajes</span>
                 </div>
                 <div class="nav-item" tabindex="0">
-                    <span class="icon" aria-hidden="true">⚙️</span>
+                    <span class="icon">⚙️</span>
                     <span>Mi Perfil</span>
                 </div>
             </nav>
@@ -77,40 +76,44 @@
         <!-- Main Content -->
         <main class="main-content" id="main-content">
     
-            <!-- Pantalla de carga -->
-            <div id="loading-screen" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; flex-direction: column;">
-                <div style="font-size: 4rem; margin-bottom: 1rem; animation: spin 2s linear infinite;" aria-hidden="true">🔄</div>
-                <h2 style="color: #64748b; margin-bottom: 0.5rem;">Cargando dashboard...</h2>
-                <p style="color: #94a3b8;">Espera un momento</p>
-                <style>
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                </style>
+            <!-- 🔴 MEJORA #2: SKELETON LOADING -->
+            <div id="loading-screen">
+                <div class="stats-grid">
+                    <div class="skeleton skeleton-stat"></div>
+                    <div class="skeleton skeleton-stat"></div>
+                    <div class="skeleton skeleton-stat"></div>
+                </div>
+                <div class="section">
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                    <div style="margin-top: 2rem;">
+                        <div class="skeleton skeleton-card"></div>
+                        <div class="skeleton skeleton-card"></div>
+                    </div>
+                </div>
             </div>
     
-            <!-- Contenido real del dashboard (oculto inicialmente) -->
+            <!-- Contenido real -->
             <div id="dashboard-content" style="display: none;">
                 
                 <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card" tabindex="0">
-                        <div class="stat-icon" id="stat-icon-1" aria-hidden="true">👷</div>
+                        <div class="stat-icon" id="stat-icon-1">👷</div>
                         <div class="stat-info">
                             <h3 id="stat-number-1">0</h3>
                             <p id="stat-label-1">Cargando...</p>
                         </div>
                     </div>
                     <div class="stat-card" tabindex="0">
-                        <div class="stat-icon" id="stat-icon-2" aria-hidden="true">💼</div>
+                        <div class="stat-icon" id="stat-icon-2">💼</div>
                         <div class="stat-info">
                             <h3 id="stat-number-2">0</h3>
                             <p id="stat-label-2">Cargando...</p>
                         </div>
                     </div>
                     <div class="stat-card" tabindex="0">
-                        <div class="stat-icon" id="stat-icon-3" aria-hidden="true">🤝</div>
+                        <div class="stat-icon" id="stat-icon-3">🤝</div>
                         <div class="stat-info">
                             <h3 id="stat-number-3">0</h3>
                             <p id="stat-label-3">Cargando...</p>
@@ -131,22 +134,23 @@
                             <button class="btn-limpiar" onclick="limpiarFiltros()">🔄 Limpiar</button>
                         </div>
                 
+                        <!-- 🔴 MEJORA #4: DEBOUNCE EN FILTROS -->
                         <div class="filtros-grid">
                             <div class="filtro-item">
                                 <label for="filtro-busqueda">🔎 Buscar:</label>
                                 <input 
                                     type="text" 
                                     id="filtro-busqueda" 
-                                    placeholder="Buscar por palabra clave..." 
+                                    placeholder="Buscar..." 
                                     oninput="aplicarFiltros()"
-                                    aria-label="Buscar ofertas por palabra clave"
+                                    aria-label="Buscar ofertas"
                                 >
                             </div>
                     
                             <div class="filtro-item">
                                 <label for="filtro-categoria">🏷️ Categoría:</label>
-                                <select id="filtro-categoria" onchange="aplicarFiltros()" aria-label="Filtrar por categoría">
-                                    <option value="">Todas las categorías</option>
+                                <select id="filtro-categoria" onchange="aplicarFiltros()">
+                                    <option value="">Todas</option>
                                     <option value="construccion">Construcción</option>
                                     <option value="electricidad">Electricidad</option>
                                     <option value="gasfiteria">Gasfitería</option>
@@ -164,9 +168,8 @@
                                 <input 
                                     type="text" 
                                     id="filtro-ubicacion" 
-                                    placeholder="Ej: San Isidro, Lima" 
+                                    placeholder="Ej: San Isidro" 
                                     oninput="aplicarFiltros()"
-                                    aria-label="Filtrar por ubicación"
                                 >
                             </div>
                         </div>
@@ -177,7 +180,7 @@
                     </div>
                     
                     <div class="ofertas-grid">
-                        <!-- Las ofertas se cargarán dinámicamente aquí -->
+                        <!-- Ofertas se cargan dinámicamente -->
                     </div>
                 </section>
 
@@ -189,77 +192,72 @@
 
                     <div class="trabajadores-grid">
                         <div class="trabajador-card">
-                            <div class="trabajador-avatar" aria-hidden="true">👨‍🔧</div>
+                            <div class="trabajador-avatar">👨‍🔧</div>
                             <h4>Carlos Mendoza</h4>
                             <p class="trabajador-categoria">Electricista</p>
-                            <div class="trabajador-rating" aria-label="Calificación: 4.9 de 5 estrellas">⭐⭐⭐⭐⭐ (4.9)</div>
+                            <div class="trabajador-rating">⭐⭐⭐⭐⭐ (4.9)</div>
                             <p class="trabajador-exp">8 años de experiencia</p>
-                            <button class="btn btn-primary btn-small" onclick="verPerfil(this)">Ver Perfil</button>
+                            <button class="btn btn-primary btn-small">Ver Perfil</button>
                         </div>
 
                         <div class="trabajador-card">
-                            <div class="trabajador-avatar" aria-hidden="true">👨‍🎨</div>
+                            <div class="trabajador-avatar">👨‍🎨</div>
                             <h4>Luis García</h4>
                             <p class="trabajador-categoria">Pintor</p>
-                            <div class="trabajador-rating" aria-label="Calificación: 4.8 de 5 estrellas">⭐⭐⭐⭐⭐ (4.8)</div>
+                            <div class="trabajador-rating">⭐⭐⭐⭐⭐ (4.8)</div>
                             <p class="trabajador-exp">5 años de experiencia</p>
-                            <button class="btn btn-primary btn-small" onclick="verPerfil(this)">Ver Perfil</button>
+                            <button class="btn btn-primary btn-small">Ver Perfil</button>
                         </div>
 
                         <div class="trabajador-card">
-                            <div class="trabajador-avatar" aria-hidden="true">👷‍♀️</div>
+                            <div class="trabajador-avatar">👷‍♀️</div>
                             <h4>María Torres</h4>
                             <p class="trabajador-categoria">Jardinera</p>
-                            <div class="trabajador-rating" aria-label="Calificación: 5 de 5 estrellas">⭐⭐⭐⭐⭐ (5.0)</div>
+                            <div class="trabajador-rating">⭐⭐⭐⭐⭐ (5.0)</div>
                             <p class="trabajador-exp">6 años de experiencia</p>
-                            <button class="btn btn-primary btn-small" onclick="verPerfil(this)">Ver Perfil</button>
+                            <button class="btn btn-primary btn-small">Ver Perfil</button>
                         </div>
 
                         <div class="trabajador-card">
-                            <div class="trabajador-avatar" aria-hidden="true">🔧</div>
+                            <div class="trabajador-avatar">🔧</div>
                             <h4>Pedro Sánchez</h4>
                             <p class="trabajador-categoria">Gasfitero</p>
-                            <div class="trabajador-rating" aria-label="Calificación: 4.7 de 5 estrellas">⭐⭐⭐⭐ (4.7)</div>
+                            <div class="trabajador-rating">⭐⭐⭐⭐ (4.7)</div>
                             <p class="trabajador-exp">10 años de experiencia</p>
-                            <button class="btn btn-primary btn-small" onclick="verPerfil(this)">Ver Perfil</button>
+                            <button class="btn btn-primary btn-small">Ver Perfil</button>
                         </div>
                     </div>
                 </section>
-            </div> <!-- Cierre de dashboard-content -->
+            </div>
         </main>
     </div>
 
-    <!-- Overlay para cerrar sidebar en móvil -->
+    <!-- Overlay sidebar móvil -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
 
     <!-- Modal -->
-    <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)" aria-hidden="true" role="dialog" aria-modal="true">
+    <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)" role="dialog" aria-modal="true">
         <div class="modal-content">
-            <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar modal">&times;</button>
+            <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">&times;</button>
             <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
     
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
-    
-    <!-- Scripts nuevos - UX -->
     <script src="js/toast.js"></script>
     <script src="js/onboarding.js"></script>
     
-    <!-- Script principal del dashboard -->
+    <!-- 🔴 MEJORA: Dashboard JS optimizado -->
     <script type="module" src="js/dashboard/dashboard.js"></script>
     
-    <!-- Iniciar onboarding después de cargar -->
+    <!-- Onboarding -->
     <script>
         window.addEventListener('load', () => {
-            // Esperar a que el dashboard se cargue completamente
-            const checkDashboardLoaded = setInterval(() => {
-                const dashboardContent = document.getElementById('dashboard-content');
-                if (dashboardContent && dashboardContent.style.display !== 'none') {
-                    clearInterval(checkDashboardLoaded);
-                    
-                    // Iniciar onboarding después de 1.5 segundos
+            const checkLoaded = setInterval(() => {
+                const content = document.getElementById('dashboard-content');
+                if (content && content.style.display !== 'none') {
+                    clearInterval(checkLoaded);
                     setTimeout(() => {
                         if (typeof iniciarOnboarding === 'function') {
                             iniciarOnboarding();
