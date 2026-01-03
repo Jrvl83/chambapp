@@ -329,5 +329,19 @@
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
     <script type="module" src="js/publicar-oferta.js"></script>
+    <!-- Antes del </body> -->
+<script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
+<link rel="stylesheet" href="css/introjs-custom.css">
+<script src="js/onboarding-publicar.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (typeof iniciarOnboardingPublicar === 'function') {
+                iniciarOnboardingPublicar();
+            }
+        }, 1000);
+    });
+</script>
 </body>
 </html>
