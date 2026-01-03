@@ -1,6 +1,6 @@
 /* ============================================
-   DASHBOARD MAIN CSS - ACTUALIZADO CON UX
-   ChambApp - Touch Targets 44px + Mejoras
+   DASHBOARD MAIN CSS - OPTIMIZADO UX/UI
+   ChambApp - WCAG AAA + Performance
    ============================================ */
 
 * {
@@ -10,20 +10,36 @@
 }
 
 :root {
+    /* Colores WCAG AAA Compliance */
     --primary: #2563eb;
+    --primary-dark: #1e40af;
     --secondary: #10b981;
-    --danger: #ef4444;
+    --danger: #dc2626;
+    --warning: #d97706;
     --dark: #1e293b;
     --gray: #64748b;
+    --gray-light: #94a3b8;
     --light: #f1f5f9;
     --white: #ffffff;
     --border: #e2e8f0;
+    
+    /* Categorías con contraste AAA */
+    --cat-construccion: #ea580c;
+    --cat-limpieza: #7c3aed;
+    --cat-gasfiteria: #0284c7;
+    --cat-electricidad: #ca8a04;
+    --cat-carpinteria: #d97706;
+    --cat-jardineria: #16a34a;
+    --cat-pintura: #4f46e5;
+    --cat-mecanica: #57534e;
+    --cat-otros: #475569;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--light);
     color: var(--dark);
+    line-height: 1.6;
 }
 
 /* ============================================
@@ -75,11 +91,8 @@ body {
     gap: 1rem;
 }
 
-/* ============================================
-   BOTÓN LOGOUT - TOUCH TARGET MEJORADO
-   ============================================ */
 .btn-logout {
-    min-height: 44px; /* Touch target iOS */
+    min-height: 44px;
     min-width: 80px;
     padding: 0.625rem 1.25rem;
     background: transparent;
@@ -96,6 +109,10 @@ body {
     color: white;
 }
 
+.btn-logout:active {
+    transform: scale(0.97);
+}
+
 /* ============================================
    DASHBOARD CONTAINER
    ============================================ */
@@ -106,7 +123,7 @@ body {
 }
 
 /* ============================================
-   SIDEBAR - TOUCH TARGETS MEJORADOS
+   SIDEBAR
    ============================================ */
 .sidebar {
     width: 250px;
@@ -120,7 +137,7 @@ body {
     text-decoration: none;
     align-items: center;
     gap: 1rem;
-    min-height: 48px; /* Touch target mejorado */
+    min-height: 48px;
     padding: 0.875rem 1.5rem;
     color: var(--gray);
     cursor: pointer;
@@ -148,6 +165,46 @@ body {
 }
 
 /* ============================================
+   🔴 MEJORA #2: SKELETON LOADING
+   ============================================ */
+.skeleton {
+    animation: skeleton-loading 1.5s infinite;
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 0%,
+        #e0e0e0 50%,
+        #f0f0f0 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-stat {
+    height: 120px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card {
+    height: 280px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-text {
+    height: 20px;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+/* ============================================
    STATS
    ============================================ */
 .stats-grid {
@@ -166,6 +223,9 @@ body {
     align-items: center;
     gap: 1rem;
     transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
 }
 
 .stat-card:hover {
@@ -210,6 +270,95 @@ body {
 }
 
 /* ============================================
+   🔴 MEJORA #4: DEBOUNCE FILTROS
+   ============================================ */
+.filtros-container {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.filtros-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.filtros-header h3 {
+    margin: 0;
+    color: var(--dark);
+    font-size: 1.25rem;
+}
+
+.btn-limpiar {
+    min-height: 44px;
+    padding: 0.625rem 1.25rem;
+    background: var(--gray);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-limpiar:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
+
+.btn-limpiar:active {
+    transform: scale(0.97);
+}
+
+.filtros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filtro-item label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.9375rem;
+}
+
+.filtro-item input,
+.filtro-item select {
+    min-height: 44px;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+.filtro-item input:focus,
+.filtro-item select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.resultados-count {
+    text-align: center;
+    padding: 0.875rem;
+    background: var(--light);
+    border-radius: 8px;
+    color: var(--gray);
+    font-weight: 600;
+}
+
+/* ============================================
    OFERTAS
    ============================================ */
 .ofertas-grid {
@@ -223,6 +372,7 @@ body {
     border-radius: 12px;
     padding: 1.5rem;
     transition: all 0.3s;
+    position: relative;
 }
 
 .oferta-card:hover {
@@ -233,27 +383,44 @@ body {
 .oferta-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1rem;
 }
 
+/* 🔴 MEJORA #3: CATEGORÍAS WCAG AAA */
 .oferta-categoria {
-    padding: 0.5rem 1rem; /* Padding mejorado */
+    padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.875rem;
     font-weight: 600;
     color: white;
 }
 
-/* Categorías con colores del design system */
-.construccion { background: #f97316; }
-.limpieza { background: #8b5cf6; }
-.gasfiteria { background: #0ea5e9; }
-.electricidad { background: #eab308; }
-.carpinteria { background: #f59e0b; }
-.jardineria { background: #22c55e; }
-.pintura { background: #6366f1; }
-.mecanica { background: #6b7280; }
-.otros { background: #64748b; } /* Mejorado para contraste */
+.construccion { background: var(--cat-construccion); }
+.limpieza { background: var(--cat-limpieza); }
+.gasfiteria { background: var(--cat-gasfiteria); }
+.electricidad { background: var(--cat-electricidad); }
+.carpinteria { background: var(--cat-carpinteria); }
+.jardineria { background: var(--cat-jardineria); }
+.pintura { background: var(--cat-pintura); }
+.mecanica { background: var(--cat-mecanica); }
+.otros { background: var(--cat-otros); }
+
+/* Badge Aplicado */
+.oferta-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--secondary);
+    color: white;
+    padding: 0.375rem 0.875rem;
+    border-radius: 12px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
 
 .oferta-fecha {
     color: var(--gray);
@@ -267,7 +434,7 @@ body {
 }
 
 .oferta-descripcion {
-    color: #475569; /* Contraste mejorado */
+    color: #475569;
     line-height: 1.7;
     margin-bottom: 1rem;
 }
@@ -284,20 +451,20 @@ body {
     font-size: 0.9375rem;
 }
 
-/* ============================================
-   FOOTER DE OFERTAS - TOUCH TARGETS 44PX
-   ============================================ */
+/* 🔴 MEJORA #7: ALTURA FIJA FOOTER */
 .oferta-footer {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
+    min-height: 52px;
+    align-items: flex-end;
 }
 
 /* ============================================
-   BOTONES - TOUCH TARGETS MÍNIMO 44PX
+   🔴 MEJORA #5: LOADING STATES BOTONES
    ============================================ */
 .btn {
-    min-height: 44px; /* Touch target iOS/Android */
+    min-height: 44px;
     min-width: 44px;
     padding: 0.75rem 1.25rem;
     border: none;
@@ -310,6 +477,35 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    position: relative;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn.loading {
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to { transform: rotate(360deg); }
 }
 
 .btn-primary {
@@ -317,10 +513,14 @@ body {
     color: white;
 }
 
-.btn-primary:hover {
-    background: #1d4ed8;
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: scale(0.97);
 }
 
 .btn-secondary {
@@ -329,17 +529,21 @@ body {
     border: 2px solid var(--primary);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
     background: var(--light);
 }
 
+.btn-secondary:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
 .btn-warning {
-    background: #f59e0b;
+    background: var(--warning);
     color: white;
 }
 
-.btn-warning:hover {
-    background: #d97706;
+.btn-warning:hover:not(:disabled) {
+    background: #b45309;
 }
 
 .btn-danger {
@@ -347,8 +551,8 @@ body {
     color: white;
 }
 
-.btn-danger:hover {
-    background: #dc2626;
+.btn-danger:hover:not(:disabled) {
+    background: #b91c1c;
 }
 
 .btn-small {
@@ -408,7 +612,7 @@ body {
 }
 
 /* ============================================
-   MODAL
+   🔴 MEJORA #6: MODAL SAFE AREA
    ============================================ */
 .modal-overlay {
     position: fixed;
@@ -418,14 +622,18 @@ body {
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
 }
 
 .modal-overlay.active {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal-content {
@@ -437,6 +645,18 @@ body {
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .modal-close {
@@ -462,6 +682,7 @@ body {
 
 .modal-body {
     padding: 2rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
 .modal-header {
@@ -471,13 +692,13 @@ body {
     border-bottom: 2px solid var(--light);
 }
 
+.modal-header.success {
+    border-bottom-color: var(--secondary);
+}
+
 .modal-header h2 {
     font-size: 1.75rem;
     margin-top: 1rem;
-}
-
-.modal-header.success {
-    border-bottom-color: var(--secondary);
 }
 
 .modal-header.success h2 {
@@ -539,9 +760,6 @@ body {
     font-size: 0.875rem;
 }
 
-/* ============================================
-   FORMULARIOS - TOUCH TARGETS 44PX
-   ============================================ */
 .modal-form label {
     display: block;
     font-weight: 600;
@@ -585,93 +803,34 @@ body {
 }
 
 /* ============================================
-   FILTROS
+   EMPTY STATES
    ============================================ */
-.filtros-container {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.filtros-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.filtros-header h3 {
-    margin: 0;
-    color: var(--dark);
-    font-size: 1.25rem;
-}
-
-.btn-limpiar {
-    min-height: 44px;
-    padding: 0.625rem 1.25rem;
-    background: var(--gray);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn-limpiar:hover {
-    background: #475569;
-    transform: translateY(-2px);
-}
-
-.filtros-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.filtro-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.filtro-item label {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--dark);
-    font-size: 0.9375rem;
-}
-
-.filtro-item input,
-.filtro-item select {
-    min-height: 44px;
-    padding: 0.75rem;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border 0.3s;
-}
-
-.filtro-item input:focus,
-.filtro-item select:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-.resultados-count {
+.empty-state {
+    grid-column: 1/-1;
     text-align: center;
-    padding: 0.875rem;
-    background: var(--light);
-    border-radius: 8px;
-    color: var(--gray);
-    font-weight: 600;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
 }
 
-#titulo-ofertas {
+.empty-state-icon {
+    font-size: 5rem;
     margin-bottom: 1.5rem;
-    color: var(--dark);
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: var(--gray);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.empty-state p {
+    color: var(--gray-light);
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* ============================================
@@ -731,6 +890,23 @@ body {
 
 .sidebar-overlay.active {
     display: block;
+}
+
+/* ============================================
+   SKIP TO MAIN
+   ============================================ */
+.skip-to-main {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 1rem;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+}
+
+.skip-to-main:focus {
+    left: 0;
 }
 
 /* ============================================
@@ -816,6 +992,7 @@ body {
     
     .modal-body {
         padding: 1.5rem;
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
     }
     
     .modal-buttons {
@@ -835,4 +1012,28 @@ body {
     .user-name {
         display: none;
     }
+    
+    .trabajadores-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   SCROLLBAR PERSONALIZADO
+   ============================================ */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: var(--light);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }
