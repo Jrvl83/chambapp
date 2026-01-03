@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/mis-aplicaciones-trabajador.css">
+    
+    <!-- Intro.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
+    <link rel="stylesheet" href="css/introjs-custom.css">
 </head>
 <body>
     <!-- Header -->
@@ -135,18 +139,18 @@
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
     <script type="module" src="js/mis-aplicaciones-trabajador.js"></script>
+    
+    <!-- Onboarding -->
     <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
-<link rel="stylesheet" href="css/introjs-custom.css">
-<script src="js/onboarding-aplicaciones-trabajador.js"></script>
-<script>
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            if (typeof iniciarOnboardingAplicacionesTrabajador === 'function') {
-                iniciarOnboardingAplicacionesTrabajador();
-            }
-        }, 1500);
-    });
-</script>
+    <script src="js/onboarding-aplicaciones-trabajador.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (typeof iniciarOnboardingAplicacionesTrabajador === 'function') {
+                    iniciarOnboardingAplicacionesTrabajador();
+                }
+            }, 1500);
+        });
+    </script>
 </body>
 </html>
