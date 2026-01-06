@@ -12,6 +12,7 @@
  * - Sistema "Ver despues" (24 horas)
  * - Mas pasos interactivos (71% vs 40%)
  * - Timing optimizado (400ms vs 800ms)
+ * - FIX: Espera activa para elementos que cargan tarde
  */
 
 // ============================================
@@ -21,6 +22,7 @@ const ONBOARDING_CONFIG = {
     delayInicial: 400,
     delayEntreSecuencias: 350,
     recordatorioHoras: 24,
+    maxEsperaElementos: 5000, // 5 segundos máximo
     storageKeys: {
         completed: 'chambapp-onboarding-completed',
         remindLater: 'chambapp-onboarding-remind-later'
@@ -77,14 +79,46 @@ function iniciarOnboarding() {
         return;
     }
     
-    // Esperar a que el contenido este cargado
+    // FIX: Esperar a que el dashboard este completamente cargado
     setTimeout(function() {
-        if (usuario.tipo === 'trabajador') {
-            iniciarTourTrabajador();
-        } else if (usuario.tipo === 'empleador') {
-            iniciarTourEmpleador();
-        }
+        esperarDashboardCargado(function() {
+            if (usuario.tipo === 'trabajador') {
+                iniciarTourTrabajador();
+            } else if (usuario.tipo === 'empleador') {
+                iniciarTourEmpleador();
+            }
+        });
     }, ONBOARDING_CONFIG.delayInicial);
+}
+
+// ============================================
+// FIX: ESPERAR A QUE DASHBOARD ESTE LISTO
+// ============================================
+function esperarDashboardCargado(callback) {
+    let intentos = 0;
+    const maxIntentos = ONBOARDING_CONFIG.maxEsperaElementos / 100; // 50 intentos = 5 segundos
+    
+    const verificarCarga = setInterval(function() {
+        intentos++;
+        
+        const dashboardContent = document.getElementById('dashboard-content');
+        const statsGrid = document.querySelector('.stats-grid');
+        
+        // Verificar que el dashboard este visible
+        const dashboardVisible = dashboardContent && dashboardContent.style.display !== 'none';
+        
+        if (dashboardVisible || intentos >= maxIntentos) {
+            clearInterval(verificarCarga);
+            
+            if (dashboardVisible) {
+                console.log('Dashboard cargado, iniciando onboarding');
+            } else {
+                console.warn('Timeout esperando dashboard, iniciando onboarding de todas formas');
+            }
+            
+            callback();
+        }
+    }, 100);
 }
 
 // ============================================
@@ -155,6 +189,17 @@ function tourTrabajadorMobile() {
         
         const stepsValidos = validarPasos(steps);
         
+        if (stepsValidos.length === 0) {
+            console.warn('No hay pasos validos en menu mobile, saltando al dashboard');
+            if (sidebar && overlay) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            tourTrabajadorDashboard();
+            return;
+        }
+        
         introMenu.setOptions({
             steps: stepsValidos,
             showProgress: true,
@@ -214,6 +259,12 @@ function tourTrabajadorDesktop() {
     ];
     
     const stepsValidos = validarPasos(steps);
+    
+    if (stepsValidos.length === 0) {
+        console.warn('No hay pasos validos en desktop, saltando al dashboard');
+        tourTrabajadorDashboard();
+        return;
+    }
     
     intro.setOptions({
         steps: stepsValidos,
@@ -359,6 +410,17 @@ function tourEmpleadorMobile() {
         
         const stepsValidos = validarPasos(steps);
         
+        if (stepsValidos.length === 0) {
+            console.warn('No hay pasos validos en menu mobile empleador, saltando al dashboard');
+            if (sidebar && overlay) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            tourEmpleadorDashboard();
+            return;
+        }
+        
         introMenu.setOptions({
             steps: stepsValidos,
             showProgress: true,
@@ -418,6 +480,12 @@ function tourEmpleadorDesktop() {
     ];
     
     const stepsValidos = validarPasos(steps);
+    
+    if (stepsValidos.length === 0) {
+        console.warn('No hay pasos validos en desktop empleador, saltando al dashboard');
+        tourEmpleadorDashboard();
+        return;
+    }
     
     intro.setOptions({
         steps: stepsValidos,
@@ -488,10 +556,10 @@ function tourEmpleadorDashboard() {
 }
 
 // ============================================
-// VALIDACION ROBUSTA DE PASOS
+// VALIDACION ROBUSTA DE PASOS (MEJORADA)
 // ============================================
 function validarPasos(steps) {
-    return steps.filter(function(step) {
+    const stepsValidos = steps.filter(function(step) {
         if (!step.element) return true;
         
         const elemento = document.querySelector(step.element);
@@ -514,6 +582,11 @@ function validarPasos(steps) {
         
         return true;
     });
+    
+    // FIX: Log de pasos validos
+    console.log('Pasos validos: ' + stepsValidos.length + ' de ' + steps.length);
+    
+    return stepsValidos;
 }
 
 // ============================================
