@@ -229,8 +229,6 @@
 
 /* Stat Card (para stats en dashboard) */
 .stat-card {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    color: var(--white);
     border-radius: var(--radius-lg);
     padding: var(--padding-lg);
     box-shadow: var(--shadow-card);
