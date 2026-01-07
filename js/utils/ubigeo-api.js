@@ -41,29 +41,35 @@ async function cargarDatosUbigeo() {
         
         // Procesar y optimizar datos
         datosUbigeo = {
-            departamentos: depts.map(d => ({
-                id: d.inei.substring(0, 2),
-                name: capitalizarTexto(d.departamento),
-                latitude: d.latitude,
-                longitude: d.longitude
-            })),
+            departamentos: depts
+                .filter(d => d.inei) // Filtrar elementos sin código INEI
+                .map(d => ({
+                    id: d.inei.substring(0, 2),
+                    name: capitalizarTexto(d.departamento),
+                    latitude: d.latitude,
+                    longitude: d.longitude
+                })),
             
-            provincias: provs.map(p => ({
-                id: p.inei.substring(2, 4),
-                name: capitalizarTexto(p.provincia),
-                dept_id: p.inei.substring(0, 2),
-                latitude: p.latitude,
-                longitude: p.longitude
-            })),
+            provincias: provs
+                .filter(p => p.inei && p.inei.length >= 4)
+                .map(p => ({
+                    id: p.inei.substring(2, 4),
+                    name: capitalizarTexto(p.provincia),
+                    dept_id: p.inei.substring(0, 2),
+                    latitude: p.latitude,
+                    longitude: p.longitude
+                })),
             
-            distritos: dists.map(d => ({
-                id: d.inei.substring(4, 6),
-                name: capitalizarTexto(d.distrito),
-                prov_id: d.inei.substring(2, 4),
-                dept_id: d.inei.substring(0, 2),
-                latitude: d.latitude,
-                longitude: d.longitude
-            }))
+            distritos: dists
+                .filter(d => d.inei && d.inei.length >= 6)
+                .map(d => ({
+                    id: d.inei.substring(4, 6),
+                    name: capitalizarTexto(d.distrito),
+                    prov_id: d.inei.substring(2, 4),
+                    dept_id: d.inei.substring(0, 2),
+                    latitude: d.latitude,
+                    longitude: d.longitude
+                }))
         };
         
         console.log('✅ Datos UBIGEO cargados:');
