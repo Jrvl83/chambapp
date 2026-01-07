@@ -48,20 +48,27 @@
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: rgba(239, 68, 68, 0.9);
+            background: rgba(239, 68, 68, 0.95);
             color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
+            border: 2px solid white;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
             opacity: 0;
             transition: all 0.3s;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         
+        /* Desktop: aparecer al hover */
         .portfolio-item:hover .btn-eliminar-portfolio {
             opacity: 1;
         }
@@ -69,6 +76,23 @@
         .btn-eliminar-portfolio:hover {
             background: rgba(220, 38, 38, 1);
             transform: scale(1.1);
+        }
+        
+        /* Mobile: SIEMPRE VISIBLE */
+        @media (max-width: 768px) {
+            .btn-eliminar-portfolio {
+                opacity: 1 !important;
+                width: 44px !important;
+                height: 44px !important;
+                top: 0.25rem;
+                right: 0.25rem;
+                font-size: 1.5rem;
+            }
+            
+            .btn-eliminar-portfolio:active {
+                background: rgba(220, 38, 38, 1) !important;
+                transform: scale(0.9);
+            }
         }
         
         /* Portfolio Preview (antes de subir) */
