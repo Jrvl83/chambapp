@@ -1,21 +1,22 @@
 // ============================================
 // PUBLICAR OFERTA - FORMULARIO MULTI-PASO
-// ChambApp - Con Sistema de Edición
+// ChambApp - Con Sistema de Edici贸n + Ubicaci贸n RENIEC
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { obtenerDepartamentos, obtenerProvincias, obtenerDistritos, obtenerCoordenadasDistrito } from './utils/ubigeo-api.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Verificar autenticación
+// Verificar autenticaci贸n
 const usuarioStr = localStorage.getItem('usuarioChambApp');
 if (!usuarioStr) {
-    alert('Debes iniciar sesión para publicar ofertas');
+    alert('Debes iniciar sesi贸n para publicar ofertas');
     window.location.href = 'login.html';
 }
 
@@ -34,7 +35,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const ofertaId = urlParams.get('id');
 const modoEdicion = !!ofertaId;
 
-console.log(modoEdicion ? `📝 Modo Edición - ID: ${ofertaId}` : '➕ Modo Crear Nueva');
+console.log(modoEdicion ? `馃摑 Modo Edici贸n - ID: ${ofertaId}` : '鉃?Modo Crear Nueva');
 
 // ============================================
 // VARIABLES GLOBALES
@@ -52,8 +53,207 @@ const btnNext = document.getElementById('btnNext');
 const btnSubmit = document.getElementById('btnSubmit');
 const formOferta = document.getElementById('formOferta');
 
+// Variables para el sistema de ubicaci贸n
+let departamentoSeleccionado = null;
+let provinciaSeleccionada = null;
+let distritoSeleccionado = null;
+
 // ============================================
-// CARGAR DATOS SI ESTÁ EN MODO EDICIÓN
+// INICIALIZAR SISTEMA DE UBICACI脫N
+// ============================================
+async function inicializarUbicacion() {
+    try {
+        const selectDepartamento = document.getElementById('departamento');
+        selectDepartamento.innerHTML = '<option value="">Cargando departamentos...</option>';
+        
+        // Obtener departamentos desde API RENIEC
+        const departamentos = await obtenerDepartamentos();
+        
+        // Llenar combo de departamentos
+        selectDepartamento.innerHTML = '<option value="">Seleccionar departamento</option>';
+        
+        departamentos.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept.id;
+            option.textContent = dept.name;
+            option.dataset.name = dept.name;
+            selectDepartamento.appendChild(option);
+        });
+        
+        console.log('鉁?Departamentos cargados:', departamentos.length);
+        
+    } catch (error) {
+        console.error('鉂?Error al cargar departamentos:', error);
+        const selectDepartamento = document.getElementById('departamento');
+        selectDepartamento.innerHTML = '<option value="">Error al cargar - Reintentar</option>';
+        
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar ubicaciones. Por favor recarga la p谩gina.');
+        }
+    }
+}
+
+// ============================================
+// CARGAR PROVINCIAS AL SELECCIONAR DEPARTAMENTO
+// ============================================
+window.cargarProvincias = async function() {
+    const selectDepartamento = document.getElementById('departamento');
+    const selectProvincia = document.getElementById('provincia');
+    const selectDistrito = document.getElementById('distrito');
+    
+    const departmentId = selectDepartamento.value;
+    
+    // Limpiar provincias y distritos
+    selectProvincia.innerHTML = '<option value="">Seleccionar provincia</option>';
+    selectDistrito.innerHTML = '<option value="">Seleccionar distrito</option>';
+    
+    // Resetear variables
+    departamentoSeleccionado = null;
+    provinciaSeleccionada = null;
+    distritoSeleccionado = null;
+    
+    if (!departmentId) return;
+    
+    try {
+        // Guardar informaci贸n del departamento
+        const selectedOption = selectDepartamento.options[selectDepartamento.selectedIndex];
+        departamentoSeleccionado = {
+            id: departmentId,
+            nombre: selectedOption.dataset.name || selectedOption.textContent
+        };
+        
+        // Mostrar loading
+        selectProvincia.innerHTML = '<option value="">Cargando provincias...</option>';
+        
+        // Obtener provincias desde API
+        const provincias = await obtenerProvincias(departmentId);
+        
+        // Llenar combo de provincias
+        selectProvincia.innerHTML = '<option value="">Seleccionar provincia</option>';
+        
+        provincias.forEach(prov => {
+            const option = document.createElement('option');
+            option.value = prov.id;
+            option.textContent = prov.name;
+            option.dataset.name = prov.name;
+            selectProvincia.appendChild(option);
+        });
+        
+        console.log('鉁?Provincias cargadas:', provincias.length);
+        
+    } catch (error) {
+        console.error('鉂?Error al cargar provincias:', error);
+        selectProvincia.innerHTML = '<option value="">Error al cargar</option>';
+        
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar provincias');
+        }
+    }
+};
+
+// ============================================
+// CARGAR DISTRITOS AL SELECCIONAR PROVINCIA
+// ============================================
+window.cargarDistritos = async function() {
+    const selectProvincia = document.getElementById('provincia');
+    const selectDistrito = document.getElementById('distrito');
+    
+    const provinceId = selectProvincia.value;
+    
+    // Limpiar distritos
+    selectDistrito.innerHTML = '<option value="">Seleccionar distrito</option>';
+    
+    // Resetear variables
+    provinciaSeleccionada = null;
+    distritoSeleccionado = null;
+    
+    if (!provinceId || !departamentoSeleccionado) return;
+    
+    try {
+        // Guardar informaci贸n de la provincia
+        const selectedOption = selectProvincia.options[selectProvincia.selectedIndex];
+        provinciaSeleccionada = {
+            id: provinceId,
+            nombre: selectedOption.dataset.name || selectedOption.textContent
+        };
+        
+        // Mostrar loading
+        selectDistrito.innerHTML = '<option value="">Cargando distritos...</option>';
+        
+        // Obtener distritos desde API
+        const distritos = await obtenerDistritos(departamentoSeleccionado.id, provinceId);
+        
+        // Llenar combo de distritos
+        selectDistrito.innerHTML = '<option value="">Seleccionar distrito</option>';
+        
+        distritos.forEach(dist => {
+            const option = document.createElement('option');
+            option.value = dist.id;
+            option.textContent = dist.name;
+            option.dataset.name = dist.name;
+            selectDistrito.appendChild(option);
+        });
+        
+        console.log('鉁?Distritos cargados:', distritos.length);
+        
+    } catch (error) {
+        console.error('鉂?Error al cargar distritos:', error);
+        selectDistrito.innerHTML = '<option value="">Error al cargar</option>';
+        
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar distritos');
+        }
+    }
+};
+
+// ============================================
+// SELECCIONAR DISTRITO
+// ============================================
+window.seleccionarDistrito = function() {
+    const selectDistrito = document.getElementById('distrito');
+    const districtId = selectDistrito.value;
+    
+    if (!districtId) {
+        distritoSeleccionado = null;
+        return;
+    }
+    
+    const selectedOption = selectDistrito.options[selectDistrito.selectedIndex];
+    distritoSeleccionado = {
+        id: districtId,
+        nombre: selectedOption.dataset.name || selectedOption.textContent
+    };
+    
+    console.log('鉁?Distrito seleccionado:', distritoSeleccionado.nombre);
+};
+
+// ============================================
+// OBTENER UBICACI脫N COMPLETA
+// ============================================
+function obtenerUbicacionCompleta() {
+    if (!departamentoSeleccionado || !provinciaSeleccionada || !distritoSeleccionado) {
+        return null;
+    }
+    
+    // Obtener coordenadas del distrito
+    const coordenadas = obtenerCoordenadasDistrito(distritoSeleccionado.nombre);
+    
+    // Obtener referencia (opcional)
+    const referencia = document.getElementById('referencia')?.value || '';
+    
+    return {
+        departamento: departamentoSeleccionado.nombre,
+        provincia: provinciaSeleccionada.nombre,
+        distrito: distritoSeleccionado.nombre,
+        referencia: referencia.trim(),
+        coordenadas: coordenadas,
+        // Texto completo para b煤squedas y filtros
+        texto_completo: `${distritoSeleccionado.nombre}, ${provinciaSeleccionada.nombre}, ${departamentoSeleccionado.nombre}`
+    };
+}
+
+// ============================================
+// CARGAR DATOS SI EST脕 EN MODO EDICI脫N
 // ============================================
 if (modoEdicion) {
     cargarOfertaParaEditar(ofertaId);
@@ -73,7 +273,7 @@ async function cargarOfertaParaEditar(id) {
         if (!docSnap.exists()) {
             if (loadingToast) loadingToast.remove();
             if (typeof toastError === 'function') {
-                toastError('No se encontró la oferta');
+                toastError('No se encontr贸 la oferta');
             }
             setTimeout(() => window.location.href = 'dashboard.html', 2000);
             return;
@@ -81,7 +281,7 @@ async function cargarOfertaParaEditar(id) {
         
         const oferta = docSnap.data();
         
-        // Verificar que sea el dueño de la oferta
+        // Verificar que sea el due帽o de la oferta
         if (oferta.empleadorEmail !== usuario.email) {
             if (loadingToast) loadingToast.remove();
             if (typeof toastError === 'function') {
@@ -95,7 +295,20 @@ async function cargarOfertaParaEditar(id) {
         document.getElementById('titulo').value = oferta.titulo || '';
         document.getElementById('categoria').value = oferta.categoria || '';
         document.getElementById('descripcion').value = oferta.descripcion || '';
-        document.getElementById('ubicacion').value = oferta.ubicacion || '';
+        
+        // Ubicaci贸n - Si es formato antiguo (string), usar campo de texto
+        // Si es formato nuevo (objeto), usar combos
+        if (typeof oferta.ubicacion === 'string') {
+            // Formato antiguo - mostrar en campo de referencia
+            document.getElementById('referencia').value = oferta.ubicacion;
+        } else if (oferta.ubicacion && typeof oferta.ubicacion === 'object') {
+            // Formato nuevo - cargar en combos (requiere esperar a que carguen)
+            // Por ahora usar texto_completo como referencia
+            if (oferta.ubicacion.referencia) {
+                document.getElementById('referencia').value = oferta.ubicacion.referencia;
+            }
+        }
+        
         document.getElementById('salario').value = oferta.salario || '';
         document.getElementById('duracion').value = oferta.duracion === 'No especificada' ? '' : oferta.duracion || '';
         document.getElementById('horario').value = oferta.horario === 'No especificado' ? '' : oferta.horario || '';
@@ -127,16 +340,16 @@ async function cargarOfertaParaEditar(id) {
         document.getElementById('descripcion-count').textContent = oferta.descripcion?.length || 0;
         
         // Cambiar textos del formulario
-        document.querySelector('.step-header h2').textContent = '✏️ Editar Oferta';
-        document.querySelector('.step-header p').textContent = 'Actualiza la información de tu oferta';
-        btnSubmit.innerHTML = '💾 Guardar Cambios';
+        document.querySelector('.step-header h2').textContent = '鉁忥笍 Editar Oferta';
+        document.querySelector('.step-header p').textContent = 'Actualiza la informaci贸n de tu oferta';
+        btnSubmit.innerHTML = '馃捑 Guardar Cambios';
         
         if (loadingToast) loadingToast.remove();
         if (typeof toastSuccess === 'function') {
             toastSuccess('Oferta cargada correctamente');
         }
         
-        console.log('✅ Oferta cargada para edición:', oferta.titulo);
+        console.log('鉁?Oferta cargada para edici贸n:', oferta.titulo);
         
     } catch (error) {
         console.error('Error al cargar oferta:', error);
@@ -163,7 +376,7 @@ descripcion.addEventListener('input', () => {
 });
 
 // ============================================
-// NAVEGACIÓN ENTRE PASOS
+// NAVEGACI脫N ENTRE PASOS
 // ============================================
 function showStep(step) {
     // Ocultar todos los pasos
@@ -212,40 +425,40 @@ function showStep(step) {
 }
 
 // ============================================
-// VALIDACIÓN POR PASO
+// VALIDACI脫N POR PASO
 // ============================================
 function validateStep(step) {
     let isValid = true;
     
     if (step === 1) {
-        // Validar título
+        // Validar t铆tulo
         const titulo = document.getElementById('titulo');
         if (!titulo.value.trim()) {
-            showError('titulo', 'El título es obligatorio');
+            showError('titulo', 'El t铆tulo es obligatorio');
             isValid = false;
         } else if (titulo.value.trim().length < 10) {
-            showError('titulo', 'El título debe tener al menos 10 caracteres');
+            showError('titulo', 'El t铆tulo debe tener al menos 10 caracteres');
             isValid = false;
         } else {
             hideError('titulo');
         }
         
-        // Validar categoría
+        // Validar categor铆a
         const categoria = document.getElementById('categoria');
         if (!categoria.value) {
-            showError('categoria', 'Selecciona una categoría');
+            showError('categoria', 'Selecciona una categor铆a');
             isValid = false;
         } else {
             hideError('categoria');
         }
         
-        // Validar descripción
+        // Validar descripci贸n
         const descripcion = document.getElementById('descripcion');
         if (!descripcion.value.trim()) {
-            showError('descripcion', 'La descripción es obligatoria');
+            showError('descripcion', 'La descripci贸n es obligatoria');
             isValid = false;
         } else if (descripcion.value.trim().length < 50) {
-            showError('descripcion', 'La descripción debe tener al menos 50 caracteres');
+            showError('descripcion', 'La descripci贸n debe tener al menos 50 caracteres');
             isValid = false;
         } else {
             hideError('descripcion');
@@ -253,13 +466,31 @@ function validateStep(step) {
     }
     
     if (step === 2) {
-        // Validar ubicación
-        const ubicacion = document.getElementById('ubicacion');
-        if (!ubicacion.value.trim()) {
-            showError('ubicacion', 'La ubicación es obligatoria');
+        // Validar departamento
+        const departamento = document.getElementById('departamento');
+        if (!departamento.value) {
+            showError('departamento', 'Selecciona un departamento');
             isValid = false;
         } else {
-            hideError('ubicacion');
+            hideError('departamento');
+        }
+        
+        // Validar provincia
+        const provincia = document.getElementById('provincia');
+        if (!provincia.value) {
+            showError('provincia', 'Selecciona una provincia');
+            isValid = false;
+        } else {
+            hideError('provincia');
+        }
+        
+        // Validar distrito
+        const distrito = document.getElementById('distrito');
+        if (!distrito.value) {
+            showError('distrito', 'Selecciona un distrito');
+            isValid = false;
+        } else {
+            hideError('distrito');
         }
         
         // Validar salario
@@ -299,10 +530,10 @@ function hideError(fieldId) {
 }
 
 // ============================================
-// ACTUALIZAR SECCIÓN DE REVISIÓN
+// ACTUALIZAR SECCI脫N DE REVISI脫N
 // ============================================
 function updateReviewSection() {
-    // Información Básica
+    // Informaci贸n B谩sica
     document.getElementById('review-titulo').textContent = 
         document.getElementById('titulo').value || '-';
     
@@ -313,9 +544,22 @@ function updateReviewSection() {
     document.getElementById('review-descripcion').textContent = 
         document.getElementById('descripcion').value || '-';
     
-    // Detalles del Trabajo
-    document.getElementById('review-ubicacion').textContent = 
-        document.getElementById('ubicacion').value || '-';
+    // Detalles del Trabajo - Ubicaci贸n
+    const ubicacion = obtenerUbicacionCompleta();
+    if (ubicacion) {
+        document.getElementById('review-ubicacion').textContent = ubicacion.texto_completo;
+        
+        // Mostrar referencia si existe
+        const referenciaContainer = document.getElementById('review-referencia-container');
+        if (ubicacion.referencia) {
+            referenciaContainer.style.display = 'flex';
+            document.getElementById('review-referencia').textContent = ubicacion.referencia;
+        } else {
+            referenciaContainer.style.display = 'none';
+        }
+    } else {
+        document.getElementById('review-ubicacion').textContent = '-';
+    }
     
     document.getElementById('review-salario').textContent = 
         document.getElementById('salario').value || '-';
@@ -345,7 +589,7 @@ function updateReviewSection() {
 }
 
 // ============================================
-// EVENT LISTENERS - NAVEGACIÓN
+// EVENT LISTENERS - NAVEGACI脫N
 // ============================================
 btnNext.addEventListener('click', () => {
     if (validateStep(currentStep)) {
@@ -369,10 +613,21 @@ btnPrevious.addEventListener('click', () => {
 formOferta.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Deshabilitar botón submit
+    // Validar ubicaci贸n
+    const ubicacion = obtenerUbicacionCompleta();
+    if (!ubicacion) {
+        if (typeof toastError === 'function') {
+            toastError('Por favor selecciona la ubicaci贸n completa');
+        }
+        currentStep = 2;
+        showStep(currentStep);
+        return;
+    }
+    
+    // Deshabilitar bot贸n submit
     btnSubmit.disabled = true;
     const originalText = btnSubmit.innerHTML;
-    btnSubmit.innerHTML = modoEdicion ? '💾 Guardando...' : '🚀 Publicando...';
+    btnSubmit.innerHTML = modoEdicion ? '馃捑 Guardando...' : '馃殌 Publicando...';
     
     try {
         // Recopilar datos del formulario
@@ -380,7 +635,7 @@ formOferta.addEventListener('submit', async (e) => {
             titulo: document.getElementById('titulo').value.trim(),
             categoria: document.getElementById('categoria').value,
             descripcion: document.getElementById('descripcion').value.trim(),
-            ubicacion: document.getElementById('ubicacion').value.trim(),
+            ubicacion: ubicacion, // Objeto estructurado con coordenadas
             salario: document.getElementById('salario').value.trim(),
             duracion: document.getElementById('duracion').value.trim() || 'No especificada',
             horario: document.getElementById('horario').value.trim() || 'No especificado',
@@ -401,10 +656,10 @@ formOferta.addEventListener('submit', async (e) => {
             });
             
             if (typeof toastSuccess === 'function') {
-                toastSuccess('¡Oferta actualizada exitosamente! 💾');
+                toastSuccess('隆Oferta actualizada exitosamente! 馃捑');
             }
             
-            console.log('✅ Oferta actualizada:', ofertaId);
+            console.log('鉁?Oferta actualizada:', ofertaId);
             
         } else {
             // CREAR NUEVA OFERTA
@@ -422,10 +677,10 @@ formOferta.addEventListener('submit', async (e) => {
             await addDoc(collection(db, 'ofertas'), nuevaOferta);
             
             if (typeof toastSuccess === 'function') {
-                toastSuccess('¡Oferta publicada exitosamente! 🎉');
+                toastSuccess('隆Oferta publicada exitosamente! 馃帀');
             }
             
-            console.log('✅ Oferta creada');
+            console.log('鉁?Oferta creada');
         }
         
         // Redirigir al dashboard
@@ -436,7 +691,7 @@ formOferta.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error('Error:', error);
         
-        // Restaurar botón
+        // Restaurar bot贸n
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = originalText;
         
@@ -450,8 +705,9 @@ formOferta.addEventListener('submit', async (e) => {
 });
 
 // ============================================
-// INICIALIZACIÓN
+// INICIALIZACI脫N
 // ============================================
 showStep(currentStep);
+inicializarUbicacion();
 
-console.log('✅ Formulario multi-paso cargado correctamente');
+console.log('鉁?Formulario multi-paso con UBIGEO cargado correctamente');
