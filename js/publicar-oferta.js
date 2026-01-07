@@ -236,7 +236,7 @@ function obtenerUbicacionCompleta() {
     }
     
     // Obtener coordenadas del distrito
-    const coordenadas = obtenerCoordenadasDistrito(distritoSeleccionado.nombre);
+    const coordenadas = await obtenerCoordenadasDistrito(distritoSeleccionado.nombre);
     
     // Obtener referencia (opcional)
     const referencia = document.getElementById('referencia')?.value || '';
@@ -414,7 +414,7 @@ function showStep(step) {
     if (step === totalSteps) {
         btnNext.style.display = 'none';
         btnSubmit.style.display = 'inline-flex';
-        updateReviewSection();
+        await updateReviewSection();
     } else {
         btnNext.style.display = 'inline-flex';
         btnSubmit.style.display = 'none';
@@ -545,7 +545,7 @@ function updateReviewSection() {
         document.getElementById('descripcion').value || '-';
     
     // Detalles del Trabajo - Ubicaci贸n
-    const ubicacion = obtenerUbicacionCompleta();
+    const ubicacion = await obtenerUbicacionCompleta();
     if (ubicacion) {
         document.getElementById('review-ubicacion').textContent = ubicacion.texto_completo;
         
@@ -614,7 +614,7 @@ formOferta.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Validar ubicaci贸n
-    const ubicacion = obtenerUbicacionCompleta();
+    const ubicacion = await obtenerUbicacionCompleta();
     if (!ubicacion) {
         if (typeof toastError === 'function') {
             toastError('Por favor selecciona la ubicaci贸n completa');
