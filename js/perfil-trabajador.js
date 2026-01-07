@@ -1,12 +1,12 @@
 // ============================================
-// PERFIL TRABAJADOR - EDITABLE
-// ChambApp - JavaScript con Firestore
+// PERFIL TRABAJADOR - EDITABLE CON STORAGE
+// ChambApp - JavaScript con Firestore + Storage
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, getDoc, updateDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -19,17 +19,18 @@ let perfilData = {};
 let experiencias = [];
 let habilidades = [];
 let fotoFile = null;
+let portfolioFiles = [];
 let usuario = null;
+let uploadingFoto = false;
+let uploadingPortfolio = false;
 
 // ============================================
 // VERIFICAR AUTENTICACIÓN CON FIREBASE AUTH
 // ============================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // Usuario autenticado en Firebase
         console.log('✅ Usuario autenticado:', user.uid);
         
-        // Obtener datos del localStorage
         const usuarioStr = localStorage.getItem('usuarioChambApp');
         if (!usuarioStr) {
             alert('Debes iniciar sesión');
@@ -39,20 +40,17 @@ onAuthStateChanged(auth, async (user) => {
         
         usuario = JSON.parse(usuarioStr);
         
-        // Verificar que sea TRABAJADOR
         if (usuario.tipo !== 'trabajador') {
             alert('Esta página es solo para trabajadores');
             window.location.href = 'dashboard.html';
             return;
         }
         
-        // Cargar perfil
         await cargarPerfil();
         inicializarTabs();
         inicializarEventos();
         
     } else {
-        // No hay usuario autenticado
         console.log('❌ No hay usuario autenticado');
         alert('Debes iniciar sesión');
         window.location.href = 'login.html';
@@ -72,7 +70,6 @@ async function cargarPerfil() {
             console.log('✅ Perfil cargado:', perfilData);
         } else {
             console.log('⚠️ No existe perfil, creando uno nuevo');
-            // Crear perfil inicial
             perfilData = {
                 email: usuario.email,
                 nombre: usuario.nombre || '',
@@ -80,16 +77,15 @@ async function cargarPerfil() {
                 tipo: 'trabajador'
             };
             
-            // Guardar perfil inicial en Firestore
             await setDoc(userDocRef, perfilData, { merge: true });
             console.log('✅ Perfil inicial creado');
         }
         
-        // Cargar datos en el formulario
         cargarDatosPersonales();
         cargarExperiencias();
         cargarHabilidades();
         cargarDisponibilidad();
+        cargarPortfolio();
         calcularCompletitud();
         
     } catch (error) {
@@ -104,29 +100,56 @@ async function cargarPerfil() {
 // CARGAR DATOS PERSONALES
 // ============================================
 function cargarDatosPersonales() {
-    // Header
     document.getElementById('profile-name').textContent = perfilData.nombre || 'Usuario';
     document.getElementById('profile-email').textContent = perfilData.email || usuario.email;
     
-    // Formulario
     document.getElementById('nombre').value = perfilData.nombre || '';
-    document.getElementById('email').value = perfilData.email || usuario.email; // ← ARREGLADO
+    document.getElementById('email').value = perfilData.email || usuario.email;
     document.getElementById('telefono').value = perfilData.telefono || '';
     document.getElementById('ubicacion').value = perfilData.ubicacion || '';
     document.getElementById('fechaNacimiento').value = perfilData.fechaNacimiento || '';
     document.getElementById('bio').value = perfilData.bio || '';
     
-    // Actualizar contador de bio
     const bioCount = (perfilData.bio || '').length;
     document.getElementById('bio-count').textContent = bioCount;
     
-    // Avatar
     if (perfilData.fotoPerfilURL) {
         document.getElementById('avatar-preview').src = perfilData.fotoPerfilURL;
     } else {
         const nombre = perfilData.nombre || usuario.nombre || 'Usuario';
         document.getElementById('avatar-preview').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&size=150&background=2563eb&color=fff`;
     }
+}
+
+// ============================================
+// CARGAR PORTFOLIO
+// ============================================
+function cargarPortfolio() {
+    const portfolioURLs = perfilData.portfolioURLs || [];
+    const container = document.getElementById('portfolio-grid');
+    const emptyState = document.getElementById('portfolio-empty');
+    
+    if (portfolioURLs.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'grid';
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
+    
+    portfolioURLs.forEach((url, index) => {
+        const card = document.createElement('div');
+        card.className = 'portfolio-item';
+        card.innerHTML = `
+            <img src="${url}" alt="Trabajo ${index + 1}" onclick="abrirLightbox(${index})">
+            <button class="btn-eliminar-portfolio" onclick="eliminarFotoPortfolio(${index})">
+                🗑️
+            </button>
+        `;
+        container.appendChild(card);
+    });
 }
 
 // ============================================
@@ -175,18 +198,15 @@ function mostrarExperiencias() {
 // CARGAR HABILIDADES
 // ============================================
 function cargarHabilidades() {
-    // Categorías
     const categorias = perfilData.categorias || [];
     const checkboxes = document.querySelectorAll('.categoria-checkbox input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.checked = categorias.includes(checkbox.value);
     });
     
-    // Habilidades específicas
     habilidades = perfilData.habilidades || [];
     mostrarHabilidades();
     
-    // Años de experiencia
     if (perfilData.añosExperiencia) {
         document.getElementById('años-experiencia').value = perfilData.añosExperiencia;
     }
@@ -213,19 +233,16 @@ function mostrarHabilidades() {
 function cargarDisponibilidad() {
     const disponibilidad = perfilData.disponibilidad || {};
     
-    // Disponibilidad inmediata
     if (disponibilidad.disponibilidadInmediata !== undefined) {
         document.getElementById('disponibilidad-inmediata').checked = disponibilidad.disponibilidadInmediata;
     }
     
-    // Días disponibles
     const diasDisponibles = disponibilidad.diasDisponibles || [];
     const diasCheckboxes = document.querySelectorAll('.dia-checkbox input[type="checkbox"]');
     diasCheckboxes.forEach(checkbox => {
         checkbox.checked = diasDisponibles.includes(checkbox.value);
     });
     
-    // Horario
     if (disponibilidad.horarioInicio) {
         document.getElementById('horario-inicio').value = disponibilidad.horarioInicio;
     }
@@ -233,7 +250,6 @@ function cargarDisponibilidad() {
         document.getElementById('horario-fin').value = disponibilidad.horarioFin;
     }
     
-    // Zonas de trabajo
     if (disponibilidad.zonasTrabajoPreferidas) {
         document.getElementById('zonas-trabajo').value = disponibilidad.zonasTrabajoPreferidas;
     }
@@ -244,7 +260,6 @@ function cargarDisponibilidad() {
 // ============================================
 async function guardarPerfil() {
     try {
-        // Validar campos requeridos
         const nombre = document.getElementById('nombre').value.trim();
         const telefono = document.getElementById('telefono').value.trim();
         const ubicacion = document.getElementById('ubicacion').value.trim();
@@ -258,29 +273,17 @@ async function guardarPerfil() {
             return;
         }
         
-        // Preparar datos
         const datosActualizados = {
-            // Mantener email (nunca cambiar)
             email: perfilData.email || usuario.email,
-            
-            // Datos personales
             nombre: nombre,
             telefono: telefono,
             ubicacion: ubicacion,
             fechaNacimiento: document.getElementById('fechaNacimiento').value || '',
             bio: document.getElementById('bio').value.trim(),
-            
-            // Categorías
             categorias: obtenerCategorias(),
-            
-            // Habilidades
             habilidades: habilidades,
             añosExperiencia: document.getElementById('años-experiencia').value,
-            
-            // Experiencia
             experiencia: experiencias,
-            
-            // Disponibilidad
             disponibilidad: {
                 disponibilidadInmediata: document.getElementById('disponibilidad-inmediata').checked,
                 diasDisponibles: obtenerDiasDisponibles(),
@@ -300,11 +303,14 @@ async function guardarPerfil() {
             datosActualizados.fotoPerfilURL = perfilData.fotoPerfilURL;
         }
         
-        // Guardar en Firestore (crear si no existe, actualizar si existe)
+        // Mantener portfolioURLs si existen
+        if (perfilData.portfolioURLs) {
+            datosActualizados.portfolioURLs = perfilData.portfolioURLs;
+        }
+        
         const userDocRef = doc(db, 'usuarios', auth.currentUser.uid);
         await setDoc(userDocRef, datosActualizados, { merge: true });
         
-        // Actualizar localStorage
         const usuarioActualizado = { ...usuario, ...datosActualizados };
         localStorage.setItem('usuarioChambApp', JSON.stringify(usuarioActualizado));
         
@@ -316,13 +322,8 @@ async function guardarPerfil() {
             alert('¡Perfil actualizado exitosamente!');
         }
         
-        // IMPORTANTE: Recargar perfil desde Firestore para asegurar persistencia
         perfilData = { ...perfilData, ...datosActualizados };
-        
-        // Recalcular completitud
         calcularCompletitud();
-        
-        // Recargar UI con datos actualizados
         cargarDatosPersonales();
         
     } catch (error) {
@@ -336,49 +337,179 @@ async function guardarPerfil() {
 }
 
 // ============================================
-// SUBIR FOTO A FIREBASE STORAGE
+// SUBIR FOTO DE PERFIL A FIREBASE STORAGE
 // ============================================
 async function subirFoto() {
-    // DESHABILITADO TEMPORALMENTE - Requiere Storage habilitado
-    console.log('⚠️ Upload de fotos deshabilitado temporalmente');
-    return null;
-    
-    /* 
-    // Código original comentado
     try {
-        if (!fotoFile) return null;
+        if (!fotoFile || uploadingFoto) return null;
         
-        const storageRef = ref(storage, `perfiles/${auth.currentUser.uid}/foto-perfil.jpg`);
+        uploadingFoto = true;
+        console.log('📤 Subiendo foto de perfil...');
+        
+        // Crear referencia con timestamp para evitar cache
+        const timestamp = Date.now();
+        const storageRef = ref(storage, `perfiles/${auth.currentUser.uid}/foto-perfil-${timestamp}.jpg`);
+        
+        // Subir archivo
         await uploadBytes(storageRef, fotoFile);
+        
+        // Obtener URL de descarga
         const downloadURL = await getDownloadURL(storageRef);
         
-        console.log('✅ Foto subida:', downloadURL);
+        console.log('✅ Foto subida exitosamente:', downloadURL);
+        
+        // Limpiar foto anterior si existe
+        if (perfilData.fotoPerfilURL && perfilData.fotoPerfilURL.includes('firebasestorage')) {
+            try {
+                const oldRef = ref(storage, perfilData.fotoPerfilURL);
+                await deleteObject(oldRef);
+                console.log('🗑️ Foto anterior eliminada');
+            } catch (error) {
+                console.log('⚠️ No se pudo eliminar foto anterior:', error);
+            }
+        }
+        
+        uploadingFoto = false;
+        fotoFile = null;
+        
         return downloadURL;
         
     } catch (error) {
         console.error('❌ Error al subir foto:', error);
+        uploadingFoto = false;
+        
+        if (typeof toastError === 'function') {
+            toastError('Error al subir la foto');
+        }
+        
         return null;
     }
-    */
 }
 
 // ============================================
-// PREVISUALIZAR FOTO
+// SUBIR FOTOS DE PORTFOLIO
+// ============================================
+async function subirFotosPortfolio() {
+    try {
+        if (portfolioFiles.length === 0) {
+            if (typeof toastError === 'function') {
+                toastError('Selecciona al menos una imagen');
+            }
+            return;
+        }
+        
+        if (uploadingPortfolio) return;
+        
+        const portfolioActual = perfilData.portfolioURLs || [];
+        
+        // Límite de 10 fotos totales en portfolio
+        if (portfolioActual.length + portfolioFiles.length > 10) {
+            if (typeof toastError === 'function') {
+                toastError('Máximo 10 fotos en portfolio');
+            }
+            return;
+        }
+        
+        uploadingPortfolio = true;
+        
+        if (typeof toastInfo === 'function') {
+            toastInfo(`Subiendo ${portfolioFiles.length} foto(s)...`);
+        }
+        
+        const uploadPromises = portfolioFiles.map(async (file, index) => {
+            const timestamp = Date.now();
+            const storageRef = ref(storage, `portfolios/${auth.currentUser.uid}/trabajo-${timestamp}-${index}.jpg`);
+            await uploadBytes(storageRef, file);
+            return await getDownloadURL(storageRef);
+        });
+        
+        const urls = await Promise.all(uploadPromises);
+        
+        // Actualizar Firestore
+        const portfolioURLs = [...portfolioActual, ...urls];
+        const userDocRef = doc(db, 'usuarios', auth.currentUser.uid);
+        await setDoc(userDocRef, { portfolioURLs }, { merge: true });
+        
+        // Actualizar estado local
+        perfilData.portfolioURLs = portfolioURLs;
+        
+        console.log('✅ Portfolio actualizado:', portfolioURLs);
+        
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('¡Fotos agregadas al portfolio! 🎉');
+        }
+        
+        portfolioFiles = [];
+        document.getElementById('portfolio-input').value = '';
+        document.getElementById('portfolio-preview').innerHTML = '';
+        
+        cargarPortfolio();
+        calcularCompletitud();
+        
+        uploadingPortfolio = false;
+        
+    } catch (error) {
+        console.error('❌ Error al subir portfolio:', error);
+        uploadingPortfolio = false;
+        
+        if (typeof toastError === 'function') {
+            toastError('Error al subir las fotos');
+        }
+    }
+}
+
+// ============================================
+// ELIMINAR FOTO DE PORTFOLIO
+// ============================================
+async function eliminarFotoPortfolio(index) {
+    try {
+        if (!confirm('¿Eliminar esta foto del portfolio?')) return;
+        
+        const portfolioURLs = perfilData.portfolioURLs || [];
+        const urlToDelete = portfolioURLs[index];
+        
+        // Eliminar de Storage
+        if (urlToDelete.includes('firebasestorage')) {
+            try {
+                const storageRef = ref(storage, urlToDelete);
+                await deleteObject(storageRef);
+                console.log('🗑️ Foto eliminada de Storage');
+            } catch (error) {
+                console.log('⚠️ No se pudo eliminar de Storage:', error);
+            }
+        }
+        
+        // Eliminar de array
+        portfolioURLs.splice(index, 1);
+        
+        // Actualizar Firestore
+        const userDocRef = doc(db, 'usuarios', auth.currentUser.uid);
+        await setDoc(userDocRef, { portfolioURLs }, { merge: true });
+        
+        perfilData.portfolioURLs = portfolioURLs;
+        
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('Foto eliminada del portfolio');
+        }
+        
+        cargarPortfolio();
+        calcularCompletitud();
+        
+    } catch (error) {
+        console.error('❌ Error al eliminar foto:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al eliminar la foto');
+        }
+    }
+}
+
+// ============================================
+// PREVISUALIZAR FOTO DE PERFIL
 // ============================================
 function previsualizarFoto(event) {
-    // MENSAJE INFORMATIVO
-    if (typeof toastError === 'function') {
-        toastError('⚠️ Upload de fotos temporalmente deshabilitado');
-    } else {
-        alert('⚠️ La funcionalidad de subir fotos estará disponible próximamente.\n\nPor ahora puedes completar el resto de tu perfil.');
-    }
-    return;
-    
-    /* Código original comentado
     const file = event.target.files[0];
     if (!file) return;
     
-    // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
         if (typeof toastError === 'function') {
             toastError('Por favor selecciona una imagen válida');
@@ -400,13 +531,125 @@ function previsualizarFoto(event) {
     
     fotoFile = file;
     
-    // Preview
     const reader = new FileReader();
     reader.onload = (e) => {
         document.getElementById('avatar-preview').src = e.target.result;
+        
+        if (typeof toastInfo === 'function') {
+            toastInfo('Foto seleccionada. Guarda el perfil para subirla.');
+        }
     };
     reader.readAsDataURL(file);
-    */
+}
+
+// ============================================
+// PREVISUALIZAR FOTOS DE PORTFOLIO
+// ============================================
+function previsualizarPortfolio(event) {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+    
+    // Validar tipos
+    const invalidFiles = files.filter(f => !f.type.startsWith('image/'));
+    if (invalidFiles.length > 0) {
+        if (typeof toastError === 'function') {
+            toastError('Solo se permiten imágenes');
+        }
+        return;
+    }
+    
+    // Validar tamaños
+    const largeFiles = files.filter(f => f.size > 5 * 1024 * 1024);
+    if (largeFiles.length > 0) {
+        if (typeof toastError === 'function') {
+            toastError('Una o más imágenes son muy grandes (máx. 5MB cada una)');
+        }
+        return;
+    }
+    
+    portfolioFiles = files;
+    
+    const previewContainer = document.getElementById('portfolio-preview');
+    previewContainer.innerHTML = '';
+    
+    files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const preview = document.createElement('div');
+            preview.className = 'portfolio-preview-item';
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview ${index + 1}">
+                <button type="button" onclick="removerPreviewPortfolio(${index})">×</button>
+            `;
+            previewContainer.appendChild(preview);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ============================================
+// REMOVER PREVIEW DE PORTFOLIO
+// ============================================
+function removerPreviewPortfolio(index) {
+    portfolioFiles.splice(index, 1);
+    
+    if (portfolioFiles.length === 0) {
+        document.getElementById('portfolio-input').value = '';
+        document.getElementById('portfolio-preview').innerHTML = '';
+    } else {
+        // Re-renderizar previews
+        const previewContainer = document.getElementById('portfolio-preview');
+        previewContainer.innerHTML = '';
+        
+        portfolioFiles.forEach((file, i) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.createElement('div');
+                preview.className = 'portfolio-preview-item';
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${i + 1}">
+                    <button type="button" onclick="removerPreviewPortfolio(${i})">×</button>
+                `;
+                previewContainer.appendChild(preview);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+// ============================================
+// LIGHTBOX PARA PORTFOLIO
+// ============================================
+function abrirLightbox(index) {
+    const portfolioURLs = perfilData.portfolioURLs || [];
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+    
+    lightboxImg.src = portfolioURLs[index];
+    lightboxCounter.textContent = `${index + 1} / ${portfolioURLs.length}`;
+    lightbox.classList.add('active');
+    
+    // Guardar index actual
+    lightbox.dataset.currentIndex = index;
+}
+
+function cerrarLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+}
+
+function navegarLightbox(direction) {
+    const portfolioURLs = perfilData.portfolioURLs || [];
+    const lightbox = document.getElementById('lightbox');
+    let currentIndex = parseInt(lightbox.dataset.currentIndex);
+    
+    if (direction === 'prev') {
+        currentIndex = currentIndex > 0 ? currentIndex - 1 : portfolioURLs.length - 1;
+    } else {
+        currentIndex = currentIndex < portfolioURLs.length - 1 ? currentIndex + 1 : 0;
+    }
+    
+    abrirLightbox(currentIndex);
 }
 
 // ============================================
@@ -437,7 +680,6 @@ function agregarExperiencia() {
     document.getElementById('modal-experiencia').classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Limpiar formulario
     document.getElementById('exp-puesto').value = '';
     document.getElementById('exp-empresa').value = '';
     document.getElementById('exp-inicio').value = '';
@@ -540,24 +782,23 @@ function eliminarHabilidad(index) {
 // ============================================
 function calcularCompletitud() {
     let completitud = 0;
-    // NOTA: fotoPerfilURL removido temporalmente hasta activar Storage
     const campos = [
         perfilData.nombre,
         perfilData.telefono,
         perfilData.ubicacion,
         perfilData.bio,
-        // perfilData.fotoPerfilURL, // ← Deshabilitado temporalmente
+        perfilData.fotoPerfilURL,
         (perfilData.categorias && perfilData.categorias.length > 0),
         (perfilData.habilidades && perfilData.habilidades.length > 0),
         (perfilData.experiencia && perfilData.experiencia.length > 0),
         (perfilData.disponibilidad && perfilData.disponibilidad.diasDisponibles && perfilData.disponibilidad.diasDisponibles.length > 0),
-        perfilData.añosExperiencia
+        perfilData.añosExperiencia,
+        (perfilData.portfolioURLs && perfilData.portfolioURLs.length > 0)
     ];
     
     const camposCompletos = campos.filter(campo => campo).length;
     completitud = Math.round((camposCompletos / campos.length) * 100);
     
-    // Actualizar UI
     document.getElementById('completeness-percentage').textContent = `${completitud}%`;
     document.getElementById('progress-fill').style.width = `${completitud}%`;
     
@@ -581,11 +822,9 @@ function inicializarTabs() {
     
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Remover active de todos
             tabBtns.forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            // Agregar active al seleccionado
             btn.classList.add('active');
             const tabId = btn.getAttribute('data-tab');
             document.getElementById(tabId).classList.add('active');
@@ -597,13 +836,11 @@ function inicializarTabs() {
 // EVENTOS
 // ============================================
 function inicializarEventos() {
-    // Character counter para bio
     const bioTextarea = document.getElementById('bio');
     bioTextarea.addEventListener('input', (e) => {
         document.getElementById('bio-count').textContent = e.target.value.length;
     });
     
-    // Checkbox "Trabajo actual"
     const checkboxActual = document.getElementById('exp-actual');
     const inputFin = document.getElementById('exp-fin');
     
@@ -615,6 +852,13 @@ function inicializarEventos() {
             inputFin.disabled = false;
         }
     });
+    
+    // Cerrar lightbox con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cerrarLightbox();
+        }
+    });
 }
 
 // ============================================
@@ -622,6 +866,13 @@ function inicializarEventos() {
 // ============================================
 window.guardarPerfil = guardarPerfil;
 window.previsualizarFoto = previsualizarFoto;
+window.previsualizarPortfolio = previsualizarPortfolio;
+window.subirFotosPortfolio = subirFotosPortfolio;
+window.eliminarFotoPortfolio = eliminarFotoPortfolio;
+window.removerPreviewPortfolio = removerPreviewPortfolio;
+window.abrirLightbox = abrirLightbox;
+window.cerrarLightbox = cerrarLightbox;
+window.navegarLightbox = navegarLightbox;
 window.agregarExperiencia = agregarExperiencia;
 window.cerrarModalExperiencia = cerrarModalExperiencia;
 window.guardarExperiencia = guardarExperiencia;
@@ -630,4 +881,4 @@ window.agregarHabilidad = agregarHabilidad;
 window.agregarHabilidadEnter = agregarHabilidadEnter;
 window.eliminarHabilidad = eliminarHabilidad;
 
-console.log('✅ Perfil Trabajador cargado correctamente');
+console.log('✅ Perfil Trabajador con Storage cargado correctamente');
