@@ -11,6 +11,243 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/perfil-trabajador.css">
+    
+    <style>
+        /* Estilos adicionales para Portfolio y Lightbox */
+        
+        /* Portfolio Grid */
+        #portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .portfolio-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .btn-eliminar-portfolio {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .portfolio-item:hover .btn-eliminar-portfolio {
+            opacity: 1;
+        }
+        
+        .btn-eliminar-portfolio:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: scale(1.1);
+        }
+        
+        /* Portfolio Preview (antes de subir) */
+        #portfolio-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .portfolio-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+        }
+        
+        .portfolio-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .portfolio-preview-item button {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: white;
+            color: var(--dark);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .lightbox-nav:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .lightbox-nav.prev {
+            left: -70px;
+        }
+        
+        .lightbox-nav.next {
+            right: -70px;
+        }
+        
+        .lightbox-counter {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        /* Portfolio Upload Area */
+        .portfolio-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: var(--light);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .portfolio-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+        
+        .portfolio-upload-area input[type="file"] {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-hint {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        
+        @media (max-width: 768px) {
+            #portfolio-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .lightbox-nav.prev {
+                left: 10px;
+            }
+            
+            .lightbox-nav.next {
+                right: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -68,6 +305,9 @@
                 <button class="tab-btn active" data-tab="datos-personales">
                     👤 Datos Personales
                 </button>
+                <button class="tab-btn" data-tab="portfolio">
+                    📸 Portfolio
+                </button>
                 <button class="tab-btn" data-tab="experiencia">
                     💼 Experiencia
                 </button>
@@ -116,6 +356,47 @@
                             <textarea id="bio" rows="4" placeholder="Cuéntanos sobre tu experiencia, especialidades y qué te hace un buen profesional..." maxlength="500"></textarea>
                             <span class="char-count"><span id="bio-count">0</span>/500</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Portfolio -->
+            <div class="tab-content" id="portfolio">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>📸 Portfolio de Trabajos</h2>
+                    </div>
+
+                    <p style="color: var(--gray); margin-bottom: 1.5rem;">
+                        Muestra tus mejores trabajos. Las fotos ayudan a los empleadores a ver la calidad de tu trabajo. (Máximo 10 fotos)
+                    </p>
+
+                    <!-- Upload Area -->
+                    <div class="portfolio-upload-area" onclick="document.getElementById('portfolio-input').click()">
+                        <div class="upload-icon">📸</div>
+                        <div class="upload-text">Click para seleccionar fotos</div>
+                        <div class="upload-hint">Puedes seleccionar múltiples imágenes (JPG, PNG - máx. 5MB cada una)</div>
+                        <input type="file" id="portfolio-input" accept="image/*" multiple onchange="previsualizarPortfolio(event)">
+                    </div>
+
+                    <!-- Preview antes de subir -->
+                    <div id="portfolio-preview"></div>
+
+                    <!-- Botón para subir después del preview -->
+                    <div style="margin-top: 1rem; text-align: center;" id="upload-button-container">
+                        <button class="btn btn-primary" onclick="subirFotosPortfolio()" style="display: none;" id="btn-subir-portfolio">
+                            ⬆️ Subir Fotos al Portfolio
+                        </button>
+                    </div>
+
+                    <!-- Portfolio actual -->
+                    <div id="portfolio-grid"></div>
+
+                    <div id="portfolio-empty" class="empty-state-small" style="display: none;">
+                        <p>📋 No has agregado fotos a tu portfolio aún</p>
+                        <button class="btn btn-primary btn-small" onclick="document.getElementById('portfolio-input').click()">
+                            📸 Agregar Primera Foto
+                        </button>
                     </div>
                 </div>
             </div>
@@ -309,11 +590,11 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="exp-inicio">Año Inicio</label>
-                        <input type="number" id="exp-inicio" placeholder="2020" min="1950" max="2025">
+                        <input type="number" id="exp-inicio" placeholder="2020" min="1950" max="2026">
                     </div>
                     <div class="form-group">
                         <label for="exp-fin">Año Fin</label>
-                        <input type="number" id="exp-fin" placeholder="2023" min="1950" max="2025">
+                        <input type="number" id="exp-fin" placeholder="2023" min="1950" max="2026">
                         <label style="font-size: 0.875rem; margin-top: 0.5rem;">
                             <input type="checkbox" id="exp-actual"> Trabajo actual
                         </label>
@@ -331,9 +612,30 @@
         </div>
     </div>
 
+    <!-- Lightbox para Portfolio -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="cerrarLightbox()">✕</button>
+            <button class="lightbox-nav prev" onclick="navegarLightbox('prev')">◀</button>
+            <img id="lightbox-img" class="lightbox-img" src="" alt="Portfolio">
+            <button class="lightbox-nav next" onclick="navegarLightbox('next')">▶</button>
+            <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
     <script type="module" src="js/perfil-trabajador.js"></script>
+    
+    <script>
+        // Mostrar botón de subir portfolio cuando hay previews
+        document.getElementById('portfolio-input').addEventListener('change', function() {
+            const btn = document.getElementById('btn-subir-portfolio');
+            if (this.files.length > 0) {
+                btn.style.display = 'inline-flex';
+            }
+        });
+    </script>
 </body>
 </html>
