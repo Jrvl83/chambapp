@@ -4,7 +4,7 @@
 // Sistema de ubicaciones del Perú
 // ============================================
 
-const UBIGEO_API_BASE = 'https://apis.net.pe/api-ubigeo';
+const UBIGEO_API_BASE = 'https://ubigeo-api.vercel.app/api';
 
 /**
  * Obtener todos los departamentos del Perú
@@ -24,15 +24,36 @@ export async function obtenerDepartamentos() {
         return departamentos.sort((a, b) => a.name.localeCompare(b.name));
         
     } catch (error) {
-        console.error('❌ Error en obtenerDepartamentos:', error);
+        console.warn('⚠️ API RENIEC no disponible, usando datos locales');
+        console.error('Error:', error.message);
         
-        // Fallback: Retornar lista básica si API falla
+        // Fallback completo: Los 25 departamentos del Perú
         return [
-            { id: '15', name: 'Lima' },
+            { id: '01', name: 'Amazonas' },
+            { id: '02', name: 'Áncash' },
+            { id: '03', name: 'Apurímac' },
             { id: '04', name: 'Arequipa' },
+            { id: '05', name: 'Ayacucho' },
+            { id: '06', name: 'Cajamarca' },
+            { id: '07', name: 'Callao' },
             { id: '08', name: 'Cusco' },
+            { id: '09', name: 'Huancavelica' },
+            { id: '10', name: 'Huánuco' },
+            { id: '11', name: 'Ica' },
+            { id: '12', name: 'Junín' },
             { id: '13', name: 'La Libertad' },
-            { id: '14', name: 'Lambayeque' }
+            { id: '14', name: 'Lambayeque' },
+            { id: '15', name: 'Lima' },
+            { id: '16', name: 'Loreto' },
+            { id: '17', name: 'Madre de Dios' },
+            { id: '18', name: 'Moquegua' },
+            { id: '19', name: 'Pasco' },
+            { id: '20', name: 'Piura' },
+            { id: '21', name: 'Puno' },
+            { id: '22', name: 'San Martín' },
+            { id: '23', name: 'Tacna' },
+            { id: '24', name: 'Tumbes' },
+            { id: '25', name: 'Ucayali' }
         ];
     }
 }
@@ -48,7 +69,7 @@ export async function obtenerProvincias(departmentId) {
             return [];
         }
         
-        const response = await fetch(`${UBIGEO_API_BASE}/provinces?department_id=${departmentId}`);
+        const response = await fetch(`${UBIGEO_API_BASE}/provinces/${departmentId}`);
         
         if (!response.ok) {
             throw new Error('Error al obtener provincias');
@@ -78,7 +99,7 @@ export async function obtenerDistritos(departmentId, provinceId) {
         }
         
         const response = await fetch(
-            `${UBIGEO_API_BASE}/districts?department_id=${departmentId}&province_id=${provinceId}`
+            `${UBIGEO_API_BASE}/districts/${departmentId}/${provinceId}`
         );
         
         if (!response.ok) {
