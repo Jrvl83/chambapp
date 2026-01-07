@@ -1,13 +1,110 @@
 // ============================================
-// UBIGEO LOCAL - Sistema de ubicaciones del Perú
-// Datos locales sin dependencia de APIs externas
-// Optimizado para PWA y funcionamiento offline
+// UBIGEO PERÚ COMPLETO
+// Carga datos desde archivos JSON externos
+// 1,874 distritos completos del Perú
 // ============================================
 
 /**
- * Los 25 departamentos del Perú
+ * Cache de datos cargados
  */
-const DEPARTAMENTOS = [
+let datosUbigeo = null;
+let cargando = false;
+
+/**
+ * Cargar datos UBIGEO desde archivos JSON
+ * @returns {Promise<Object>}
+ */
+async function cargarDatosUbigeo() {
+    if (datosUbigeo) {
+        return datosUbigeo;
+    }
+    
+    if (cargando) {
+        // Esperar a que termine la carga actual
+        while (cargando) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        return datosUbigeo;
+    }
+    
+    cargando = true;
+    
+    try {
+        console.log('📥 Cargando datos UBIGEO del Perú...');
+        
+        // Cargar los 3 archivos en paralelo
+        const [depts, provs, dists] = await Promise.all([
+            fetch('/data/ubigeo_departamento.json').then(r => r.json()),
+            fetch('/data/ubigeo_provincia.json').then(r => r.json()),
+            fetch('/data/ubigeo_distrito.json').then(r => r.json())
+        ]);
+        
+        // Procesar y optimizar datos
+        datosUbigeo = {
+            departamentos: depts.map(d => ({
+                id: d.inei.substring(0, 2),
+                name: capitalizarTexto(d.departamento),
+                latitude: d.latitude,
+                longitude: d.longitude
+            })),
+            
+            provincias: provs.map(p => ({
+                id: p.inei.substring(2, 4),
+                name: capitalizarTexto(p.provincia),
+                dept_id: p.inei.substring(0, 2),
+                latitude: p.latitude,
+                longitude: p.longitude
+            })),
+            
+            distritos: dists.map(d => ({
+                id: d.inei.substring(4, 6),
+                name: capitalizarTexto(d.distrito),
+                prov_id: d.inei.substring(2, 4),
+                dept_id: d.inei.substring(0, 2),
+                latitude: d.latitude,
+                longitude: d.longitude
+            }))
+        };
+        
+        console.log('✅ Datos UBIGEO cargados:');
+        console.log(`   - ${datosUbigeo.departamentos.length} departamentos`);
+        console.log(`   - ${datosUbigeo.provincias.length} provincias`);
+        console.log(`   - ${datosUbigeo.distritos.length} distritos`);
+        
+        cargando = false;
+        return datosUbigeo;
+        
+    } catch (error) {
+        console.error('❌ Error al cargar datos UBIGEO:', error);
+        cargando = false;
+        
+        // Retornar datos mínimos de fallback
+        datosUbigeo = {
+            departamentos: DEPARTAMENTOS_FALLBACK,
+            provincias: [],
+            distritos: []
+        };
+        
+        return datosUbigeo;
+    }
+}
+
+/**
+ * Capitalizar texto (LIMA → Lima)
+ */
+function capitalizarTexto(texto) {
+    if (!texto) return '';
+    return texto
+        .toLowerCase()
+        .split(' ')
+        .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+        .join(' ');
+}
+
+/**
+ * Fallback: Departamentos básicos si falla la carga
+ */
+const DEPARTAMENTOS_FALLBACK = [
     { id: '01', name: 'Amazonas' },
     { id: '02', name: 'Áncash' },
     { id: '03', name: 'Apurímac' },
@@ -36,104 +133,12 @@ const DEPARTAMENTOS = [
 ];
 
 /**
- * Provincias por departamento (principales)
- */
-const PROVINCIAS = {
-    '15': [ // Lima
-        { id: '01', name: 'Lima', department_id: '15' },
-        { id: '02', name: 'Barranca', department_id: '15' },
-        { id: '03', name: 'Cajatambo', department_id: '15' },
-        { id: '04', name: 'Canta', department_id: '15' },
-        { id: '05', name: 'Cañete', department_id: '15' },
-        { id: '06', name: 'Huaral', department_id: '15' },
-        { id: '07', name: 'Huarochirí', department_id: '15' },
-        { id: '08', name: 'Huaura', department_id: '15' },
-        { id: '09', name: 'Oyón', department_id: '15' },
-        { id: '10', name: 'Yauyos', department_id: '15' }
-    ],
-    '04': [ // Arequipa
-        { id: '01', name: 'Arequipa', department_id: '04' },
-        { id: '02', name: 'Camaná', department_id: '04' },
-        { id: '03', name: 'Caravelí', department_id: '04' },
-        { id: '04', name: 'Castilla', department_id: '04' },
-        { id: '05', name: 'Caylloma', department_id: '04' },
-        { id: '06', name: 'Condesuyos', department_id: '04' },
-        { id: '07', name: 'Islay', department_id: '04' },
-        { id: '08', name: 'La Unión', department_id: '04' }
-    ],
-    '08': [ // Cusco
-        { id: '01', name: 'Cusco', department_id: '08' },
-        { id: '02', name: 'Acomayo', department_id: '08' },
-        { id: '03', name: 'Anta', department_id: '08' },
-        { id: '04', name: 'Calca', department_id: '08' },
-        { id: '05', name: 'Canas', department_id: '08' },
-        { id: '06', name: 'Canchis', department_id: '08' },
-        { id: '07', name: 'Chumbivilcas', department_id: '08' },
-        { id: '08', name: 'Espinar', department_id: '08' },
-        { id: '09', name: 'La Convención', department_id: '08' },
-        { id: '10', name: 'Paruro', department_id: '08' },
-        { id: '11', name: 'Paucartambo', department_id: '08' },
-        { id: '12', name: 'Quispicanchi', department_id: '08' },
-        { id: '13', name: 'Urubamba', department_id: '08' }
-    ]
-};
-
-/**
- * Distritos de Lima Metropolitana (Provincia 01)
- */
-const DISTRITOS_LIMA = [
-    { id: '01', name: 'Lima', province_id: '01', department_id: '15' },
-    { id: '02', name: 'Ancón', province_id: '01', department_id: '15' },
-    { id: '03', name: 'Ate', province_id: '01', department_id: '15' },
-    { id: '04', name: 'Barranco', province_id: '01', department_id: '15' },
-    { id: '05', name: 'Breña', province_id: '01', department_id: '15' },
-    { id: '06', name: 'Carabayllo', province_id: '01', department_id: '15' },
-    { id: '07', name: 'Chaclacayo', province_id: '01', department_id: '15' },
-    { id: '08', name: 'Chorrillos', province_id: '01', department_id: '15' },
-    { id: '09', name: 'Cieneguilla', province_id: '01', department_id: '15' },
-    { id: '10', name: 'Comas', province_id: '01', department_id: '15' },
-    { id: '11', name: 'El Agustino', province_id: '01', department_id: '15' },
-    { id: '12', name: 'Independencia', province_id: '01', department_id: '15' },
-    { id: '13', name: 'Jesús María', province_id: '01', department_id: '15' },
-    { id: '14', name: 'La Molina', province_id: '01', department_id: '15' },
-    { id: '15', name: 'La Victoria', province_id: '01', department_id: '15' },
-    { id: '16', name: 'Lince', province_id: '01', department_id: '15' },
-    { id: '17', name: 'Los Olivos', province_id: '01', department_id: '15' },
-    { id: '18', name: 'Lurigancho', province_id: '01', department_id: '15' },
-    { id: '19', name: 'Lurín', province_id: '01', department_id: '15' },
-    { id: '20', name: 'Magdalena del Mar', province_id: '01', department_id: '15' },
-    { id: '21', name: 'Miraflores', province_id: '01', department_id: '15' },
-    { id: '22', name: 'Pachacámac', province_id: '01', department_id: '15' },
-    { id: '23', name: 'Pucusana', province_id: '01', department_id: '15' },
-    { id: '24', name: 'Pueblo Libre', province_id: '01', department_id: '15' },
-    { id: '25', name: 'Puente Piedra', province_id: '01', department_id: '15' },
-    { id: '26', name: 'Punta Hermosa', province_id: '01', department_id: '15' },
-    { id: '27', name: 'Punta Negra', province_id: '01', department_id: '15' },
-    { id: '28', name: 'Rímac', province_id: '01', department_id: '15' },
-    { id: '29', name: 'San Bartolo', province_id: '01', department_id: '15' },
-    { id: '30', name: 'San Borja', province_id: '01', department_id: '15' },
-    { id: '31', name: 'San Isidro', province_id: '01', department_id: '15' },
-    { id: '32', name: 'San Juan de Lurigancho', province_id: '01', department_id: '15' },
-    { id: '33', name: 'San Juan de Miraflores', province_id: '01', department_id: '15' },
-    { id: '34', name: 'San Luis', province_id: '01', department_id: '15' },
-    { id: '35', name: 'San Martín de Porres', province_id: '01', department_id: '15' },
-    { id: '36', name: 'San Miguel', province_id: '01', department_id: '15' },
-    { id: '37', name: 'Santa Anita', province_id: '01', department_id: '15' },
-    { id: '38', name: 'Santa María del Mar', province_id: '01', department_id: '15' },
-    { id: '39', name: 'Santa Rosa', province_id: '01', department_id: '15' },
-    { id: '40', name: 'Santiago de Surco', province_id: '01', department_id: '15' },
-    { id: '41', name: 'Surquillo', province_id: '01', department_id: '15' },
-    { id: '42', name: 'Villa El Salvador', province_id: '01', department_id: '15' },
-    { id: '43', name: 'Villa María del Triunfo', province_id: '01', department_id: '15' }
-];
-
-/**
  * Obtener todos los departamentos
  * @returns {Promise<Array>}
  */
 export async function obtenerDepartamentos() {
-    console.log('✅ Cargando 25 departamentos desde datos locales');
-    return Promise.resolve(DEPARTAMENTOS);
+    const datos = await cargarDatosUbigeo();
+    return datos.departamentos.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
@@ -142,17 +147,13 @@ export async function obtenerDepartamentos() {
  * @returns {Promise<Array>}
  */
 export async function obtenerProvincias(departmentId) {
-    if (!departmentId) return Promise.resolve([]);
+    if (!departmentId) return [];
     
-    const provincias = PROVINCIAS[departmentId] || [];
+    const datos = await cargarDatosUbigeo();
+    const provincias = datos.provincias.filter(p => p.dept_id === departmentId);
     
-    if (provincias.length > 0) {
-        console.log(`✅ Provincias cargadas para departamento ${departmentId}:`, provincias.length);
-    } else {
-        console.warn(`⚠️ No hay provincias pre-cargadas para departamento ${departmentId}`);
-    }
-    
-    return Promise.resolve(provincias);
+    console.log(`✅ ${provincias.length} provincias para departamento ${departmentId}`);
+    return provincias.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
@@ -162,103 +163,68 @@ export async function obtenerProvincias(departmentId) {
  * @returns {Promise<Array>}
  */
 export async function obtenerDistritos(departmentId, provinceId) {
-    if (!departmentId || !provinceId) return Promise.resolve([]);
+    if (!departmentId || !provinceId) return [];
     
-    // Solo Lima Metropolitana tiene distritos pre-cargados
-    if (departmentId === '15' && provinceId === '01') {
-        console.log('✅ Distritos de Lima Metropolitana:', DISTRITOS_LIMA.length);
-        return Promise.resolve(DISTRITOS_LIMA);
-    }
+    const datos = await cargarDatosUbigeo();
+    const distritos = datos.distritos.filter(
+        d => d.dept_id === departmentId && d.prov_id === provinceId
+    );
     
-    console.warn(`⚠️ No hay distritos pre-cargados para ${departmentId}-${provinceId}`);
-    return Promise.resolve([]);
+    console.log(`✅ ${distritos.length} distritos para ${departmentId}-${provinceId}`);
+    return distritos.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
- * Coordenadas de distritos de Lima Metropolitana
- */
-const COORDENADAS_LIMA = {
-    'Lima': { lat: -12.046373, lng: -77.042754 },
-    'Ancón': { lat: -11.755556, lng: -77.176667 },
-    'Ate': { lat: -12.030833, lng: -76.905000 },
-    'Barranco': { lat: -12.147222, lng: -77.021389 },
-    'Breña': { lat: -12.060000, lng: -77.051389 },
-    'Carabayllo': { lat: -11.866667, lng: -77.033333 },
-    'Chaclacayo': { lat: -12.018611, lng: -76.765833 },
-    'Chorrillos': { lat: -12.166667, lng: -77.016667 },
-    'Cieneguilla': { lat: -12.042778, lng: -76.808056 },
-    'Comas': { lat: -11.945278, lng: -77.048889 },
-    'El Agustino': { lat: -12.050278, lng: -76.993333 },
-    'Independencia': { lat: -11.985833, lng: -77.053333 },
-    'Jesús María': { lat: -12.082500, lng: -77.046111 },
-    'La Molina': { lat: -12.081944, lng: -76.936111 },
-    'La Victoria': { lat: -12.067500, lng: -77.021111 },
-    'Lince': { lat: -12.085000, lng: -77.036389 },
-    'Los Olivos': { lat: -11.970556, lng: -77.068333 },
-    'Lurigancho': { lat: -11.948333, lng: -76.798889 },
-    'Lurín': { lat: -12.275000, lng: -76.875000 },
-    'Magdalena del Mar': { lat: -12.094444, lng: -77.066667 },
-    'Miraflores': { lat: -12.119870, lng: -77.030460 },
-    'Pachacámac': { lat: -12.233333, lng: -76.866667 },
-    'Pucusana': { lat: -12.480556, lng: -76.800833 },
-    'Pueblo Libre': { lat: -12.078611, lng: -77.066667 },
-    'Puente Piedra': { lat: -11.866667, lng: -77.083333 },
-    'Punta Hermosa': { lat: -12.333333, lng: -76.833333 },
-    'Punta Negra': { lat: -12.366667, lng: -76.800000 },
-    'Rímac': { lat: -12.038333, lng: -77.050000 },
-    'San Bartolo': { lat: -12.391667, lng: -76.778889 },
-    'San Borja': { lat: -12.094167, lng: -76.996389 },
-    'San Isidro': { lat: -12.098333, lng: -77.036111 },
-    'San Juan de Lurigancho': { lat: -11.983333, lng: -76.983333 },
-    'San Juan de Miraflores': { lat: -12.155556, lng: -76.973333 },
-    'San Luis': { lat: -12.083333, lng: -77.000000 },
-    'San Martín de Porres': { lat: -12.008611, lng: -77.073333 },
-    'San Miguel': { lat: -12.085556, lng: -77.086111 },
-    'Santa Anita': { lat: -12.045556, lng: -76.963889 },
-    'Santa María del Mar': { lat: -12.390278, lng: -76.776111 },
-    'Santa Rosa': { lat: -11.799167, lng: -77.176944 },
-    'Santiago de Surco': { lat: -12.149722, lng: -77.008889 },
-    'Surquillo': { lat: -12.111667, lng: -77.008333 },
-    'Villa El Salvador': { lat: -12.211111, lng: -76.938889 },
-    'Villa María del Triunfo': { lat: -12.166667, lng: -76.933333 }
-};
-
-/**
  * Obtener coordenadas de un distrito
- * @param {string} distrito 
- * @returns {Object}
+ * @param {string} distrito - Nombre del distrito
+ * @returns {Object} Coordenadas {lat, lng}
  */
-export function obtenerCoordenadasDistrito(distrito) {
+export async function obtenerCoordenadasDistrito(distrito) {
+    const datos = await cargarDatosUbigeo();
+    
+    if (!datos || !datos.distritos) {
+        console.warn('⚠️ Datos no cargados, usando coordenadas de Lima');
+        return { lat: -12.046373, lng: -77.042754 };
+    }
+    
+    // Normalizar nombre para búsqueda
     const distritoNormalizado = distrito
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
         .trim();
     
-    for (const [key, coords] of Object.entries(COORDENADAS_LIMA)) {
-        const keyNormalizado = key
+    // Buscar distrito
+    const dist = datos.distritos.find(d => {
+        const nombreNormalizado = d.name
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-        
-        if (keyNormalizado.toLowerCase() === distritoNormalizado.toLowerCase()) {
-            return coords;
-        }
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+        return nombreNormalizado === distritoNormalizado;
+    });
+    
+    if (dist && dist.latitude && dist.longitude) {
+        return {
+            lat: dist.latitude,
+            lng: dist.longitude
+        };
     }
     
-    // Coordenadas genéricas del centro de Lima
+    // Fallback: Centro de Lima
     console.log(`⚠️ Coordenadas no encontradas para "${distrito}", usando centro de Lima`);
     return { lat: -12.046373, lng: -77.042754 };
 }
 
 /**
- * Calcular distancia entre dos puntos (Haversine)
+ * Calcular distancia entre dos puntos (Fórmula de Haversine)
  * @param {number} lat1 
  * @param {number} lng1 
  * @param {number} lat2 
  * @param {number} lng2 
- * @returns {number}
+ * @returns {number} Distancia en kilómetros
  */
 export function calcularDistancia(lat1, lng1, lat2, lng2) {
-    const R = 6371;
+    const R = 6371; // Radio de la Tierra en km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLng = (lng2 - lng1) * Math.PI / 180;
     const a = 
@@ -270,7 +236,7 @@ export function calcularDistancia(lat1, lng1, lat2, lng2) {
 }
 
 /**
- * Formatear distancia
+ * Formatear distancia para mostrar
  * @param {number} km 
  * @returns {string}
  */
@@ -281,4 +247,4 @@ export function formatearDistancia(km) {
     return `${km} km`;
 }
 
-console.log('✅ Módulo UBIGEO con datos locales cargado (25 departamentos, Lima completo)');
+console.log('✅ Módulo UBIGEO cargado - Listo para cargar datos completos del Perú');
