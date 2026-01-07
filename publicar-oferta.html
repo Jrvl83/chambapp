@@ -123,19 +123,69 @@
                             <p>Ubicación, pago y tiempo</p>
                         </div>
 
+                        <!-- Sistema de Ubicación con Combo Boxes -->
                         <div class="form-group">
-                            <label for="ubicacion" class="required">Ubicación</label>
+                            <label class="required">Ubicación del Trabajo</label>
+                            <div class="helper-text" style="margin-bottom: 1rem;">
+                                📍 Selecciona la ubicación exacta donde se realizará el trabajo
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="departamento" class="required">Departamento</label>
+                                <select 
+                                    id="departamento" 
+                                    name="departamento" 
+                                    required 
+                                    aria-required="true"
+                                    onchange="cargarProvincias()"
+                                >
+                                    <option value="">Cargando...</option>
+                                </select>
+                                <span class="error-message" id="departamento-error"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="provincia" class="required">Provincia</label>
+                                <select 
+                                    id="provincia" 
+                                    name="provincia" 
+                                    required 
+                                    aria-required="true"
+                                    onchange="cargarDistritos()"
+                                >
+                                    <option value="">Seleccionar departamento primero</option>
+                                </select>
+                                <span class="error-message" id="provincia-error"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="distrito" class="required">Distrito</label>
+                                <select 
+                                    id="distrito" 
+                                    name="distrito" 
+                                    required 
+                                    aria-required="true"
+                                    onchange="seleccionarDistrito()"
+                                >
+                                    <option value="">Seleccionar provincia primero</option>
+                                </select>
+                                <span class="error-message" id="distrito-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="referencia">Referencia Adicional (Opcional)</label>
                             <input 
                                 type="text" 
-                                id="ubicacion" 
-                                name="ubicacion"
-                                placeholder="Ej: San Isidro, Lima" 
-                                required
-                                aria-required="true"
+                                id="referencia" 
+                                name="referencia"
+                                placeholder="Ej: Cerca del Parque Kennedy, frente al Centro Comercial..." 
+                                maxlength="200"
                             >
-                            <span class="error-message" id="ubicacion-error"></span>
                             <div class="helper-text">
-                                📍 Incluye distrito y/o referencia para que sea más fácil de encontrar
+                                Ayuda al trabajador a ubicar mejor el lugar del trabajo
                             </div>
                         </div>
 
@@ -272,6 +322,10 @@
                                 <div class="review-item">
                                     <span class="review-label">Ubicación:</span>
                                     <span class="review-value" id="review-ubicacion">-</span>
+                                </div>
+                                <div class="review-item" id="review-referencia-container" style="display: none;">
+                                    <span class="review-label">Referencia:</span>
+                                    <span class="review-value" id="review-referencia">-</span>
                                 </div>
                                 <div class="review-item">
                                     <span class="review-label">Salario:</span>
