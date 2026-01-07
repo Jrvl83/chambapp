@@ -504,93 +504,225 @@ async function eliminarFotoPortfolio(index) {
 }
 
 // ============================================
+// OPTIMIZACIÓN DE IMÁGENES
+// ============================================
+
+/**
+ * Optimizar imagen antes de subir
+ * Redimensiona y comprime automáticamente
+ * @param {File} file - Archivo de imagen original
+ * @param {number} maxWidth - Ancho máximo en píxeles
+ * @param {number} maxHeight - Alto máximo en píxeles
+ * @param {number} quality - Calidad JPEG (0-1)
+ * @returns {Promise<Blob>} - Imagen optimizada
+ */
+async function optimizarImagen(file, maxWidth = 1920, maxHeight = 1920, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            const img = new Image();
+            
+            img.onload = () => {
+                // Calcular dimensiones manteniendo aspect ratio
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+                
+                // Crear canvas para redimensionar
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Aplicar suavizado para mejor calidad
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                // Dibujar imagen redimensionada
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Convertir a blob JPEG
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            console.log(`📐 Optimización: ${Math.round(file.size / 1024)}KB → ${Math.round(blob.size / 1024)}KB`);
+                            resolve(blob);
+                        } else {
+                            reject(new Error('Error al convertir imagen'));
+                        }
+                    },
+                    'image/jpeg',
+                    quality
+                );
+            };
+            
+            img.onerror = () => reject(new Error('Error al cargar imagen'));
+            img.src = e.target.result;
+        };
+        
+        reader.onerror = () => reject(new Error('Error al leer archivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
+ * Validar y preparar archivo de imagen
+ * @param {File} file - Archivo a validar
+ * @returns {Object} - {valid, error, file}
+ */
+function validarArchivo(file) {
+    // Validar que sea imagen
+    if (!file.type.startsWith('image/')) {
+        return {
+            valid: false,
+            error: 'Por favor selecciona una imagen válida'
+        };
+    }
+    
+    // Límite aumentado a 15MB para archivo original
+    const MAX_SIZE = 15 * 1024 * 1024; // 15MB
+    if (file.size > MAX_SIZE) {
+        return {
+            valid: false,
+            error: 'La imagen es muy grande (máx. 15MB)'
+        };
+    }
+    
+    return { valid: true, file };
+}
+
+// ============================================
 // PREVISUALIZAR FOTO DE PERFIL
 // ============================================
-function previsualizarFoto(event) {
+async function previsualizarFoto(event) {
     const file = event.target.files[0];
     if (!file) return;
     
-    if (!file.type.startsWith('image/')) {
+    // Validar archivo
+    const validation = validarArchivo(file);
+    if (!validation.valid) {
         if (typeof toastError === 'function') {
-            toastError('Por favor selecciona una imagen válida');
+            toastError(validation.error);
         } else {
-            alert('Por favor selecciona una imagen válida');
+            alert(validation.error);
         }
+        event.target.value = '';
         return;
     }
     
-    // Validar tamaño (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        if (typeof toastError === 'function') {
-            toastError('La imagen es muy grande (máx. 5MB)');
-        } else {
-            alert('La imagen es muy grande (máx. 5MB)');
-        }
-        return;
-    }
-    
-    fotoFile = file;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        document.getElementById('avatar-preview').src = e.target.result;
-        
+    try {
+        // Mostrar mensaje de procesamiento
         if (typeof toastInfo === 'function') {
-            toastInfo('Foto seleccionada. Guarda el perfil para subirla.');
+            toastInfo('📸 Optimizando imagen...');
         }
-    };
-    reader.readAsDataURL(file);
+        
+        // Optimizar imagen
+        const optimizedBlob = await optimizarImagen(file, 800, 800, 0.85);
+        
+        // Crear File desde Blob para mantener compatibilidad
+        fotoFile = new File([optimizedBlob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+        });
+        
+        // Preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('avatar-preview').src = e.target.result;
+            
+            if (typeof toastSuccess === 'function') {
+                toastSuccess('✅ Foto optimizada. Guarda el perfil para subirla.');
+            }
+        };
+        reader.readAsDataURL(optimizedBlob);
+        
+    } catch (error) {
+        console.error('❌ Error al procesar imagen:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al procesar la imagen');
+        }
+        event.target.value = '';
+    }
 }
 
 // ============================================
 // PREVISUALIZAR FOTOS DE PORTFOLIO
 // ============================================
-function previsualizarPortfolio(event) {
+async function previsualizarPortfolio(event) {
     const files = Array.from(event.target.files);
     if (files.length === 0) return;
     
-    // Validar tipos
-    const invalidFiles = files.filter(f => !f.type.startsWith('image/'));
-    if (invalidFiles.length > 0) {
+    // Validar archivos
+    const validaciones = files.map(f => validarArchivo(f));
+    const errores = validaciones.filter(v => !v.valid);
+    
+    if (errores.length > 0) {
         if (typeof toastError === 'function') {
-            toastError('Solo se permiten imágenes');
+            toastError(errores[0].error);
         }
+        event.target.value = '';
         return;
     }
     
-    // Validar tamaños
-    const largeFiles = files.filter(f => f.size > 5 * 1024 * 1024);
-    if (largeFiles.length > 0) {
-        if (typeof toastError === 'function') {
-            toastError('Una o más imágenes son muy grandes (máx. 5MB cada una)');
+    try {
+        // Mostrar progreso
+        if (typeof toastInfo === 'function') {
+            toastInfo(`📸 Optimizando ${files.length} imagen(es)...`);
         }
-        return;
+        
+        // Optimizar todas las imágenes
+        const optimizacionesPromises = files.map(file => 
+            optimizarImagen(file, 1920, 1920, 0.85)
+                .then(blob => new File([blob], file.name, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                }))
+        );
+        
+        portfolioFiles = await Promise.all(optimizacionesPromises);
+        
+        // Mostrar previews
+        const previewContainer = document.getElementById('portfolio-preview');
+        previewContainer.innerHTML = '';
+        
+        portfolioFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.createElement('div');
+                preview.className = 'portfolio-preview-item';
+                preview.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}">
+                    <button type="button" onclick="removerPreviewPortfolio(${index})">×</button>
+                `;
+                previewContainer.appendChild(preview);
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('✅ Imágenes optimizadas y listas para subir');
+        }
+        
+    } catch (error) {
+        console.error('❌ Error al procesar imágenes:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al procesar las imágenes');
+        }
+        event.target.value = '';
     }
-    
-    portfolioFiles = files;
-    
-    const previewContainer = document.getElementById('portfolio-preview');
-    previewContainer.innerHTML = '';
-    
-    files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const preview = document.createElement('div');
-            preview.className = 'portfolio-preview-item';
-            preview.innerHTML = `
-                <img src="${e.target.result}" alt="Preview ${index + 1}">
-                <button type="button" onclick="removerPreviewPortfolio(${index})">×</button>
-            `;
-            previewContainer.appendChild(preview);
-        };
-        reader.readAsDataURL(file);
-    });
 }
 
 // ============================================
 // REMOVER PREVIEW DE PORTFOLIO
 // ============================================
-function removerPreviewPortfolio(index) {
+async function removerPreviewPortfolio(index) {
     portfolioFiles.splice(index, 1);
     
     if (portfolioFiles.length === 0) {
