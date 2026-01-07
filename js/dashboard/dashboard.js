@@ -82,7 +82,7 @@ async function cargarAplicacionesUsuario(userId) {
 }
 
 // ========================================
-// PERSONALIZAR POR TIPO
+// 🔴 FIX: PERSONALIZAR POR TIPO (CON LINK PERFIL DINÁMICO)
 // ========================================
 function personalizarPorTipo(tipo) {
     const logo = document.getElementById('logo-text');
@@ -93,6 +93,9 @@ function personalizarPorTipo(tipo) {
     const navTrabajadores = document.getElementById('nav-trabajadores');
     const navTrabajadoresText = document.getElementById('nav-trabajadores-text');
     
+    // 🔴 FIX: Link dinámico a perfil según tipo de usuario
+    const navPerfil = document.getElementById('nav-perfil');
+    
     if (tipo === 'trabajador') {
         logo.innerHTML = 'ChambApp <span class="badge badge-trabajador">👷 Trabajador</span>';
         tituloOfertas.textContent = '💼 Ofertas de Trabajo para Ti';
@@ -101,6 +104,10 @@ function personalizarPorTipo(tipo) {
         navPublicar.href = 'perfil-trabajador.html';
         navTrabajadoresText.textContent = 'Mis Aplicaciones';
         navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
+        
+        // 🔴 Link a perfil trabajador
+        navPerfil.href = 'perfil-trabajador.html';
+        
     } else {
         logo.innerHTML = 'ChambApp <span class="badge badge-empleador">💼 Empleador</span>';
         tituloOfertas.textContent = '💼 Mis Ofertas Publicadas';
@@ -109,6 +116,9 @@ function personalizarPorTipo(tipo) {
         navPublicar.href = 'publicar-oferta.html';
         navTrabajadoresText.textContent = 'Mis Aplicaciones';
         navTrabajadores.href = 'mis-aplicaciones.html';
+        
+        // 🔴 Link a perfil empleador
+        navPerfil.href = 'perfil-empleador.html';
     }
 }
 
