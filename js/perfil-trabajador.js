@@ -578,12 +578,24 @@ async function optimizarImagen(file, maxWidth = 1920, maxHeight = 1920, quality 
  * @returns {Object} - {valid, error, file}
  */
 function validarArchivo(file) {
-    // Validar que sea imagen
-    if (!file.type.startsWith('image/')) {
+    // Extensiones válidas
+    const extensionesValidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
+    const nombreArchivo = file.name.toLowerCase();
+    const tieneExtensionValida = extensionesValidas.some(ext => nombreArchivo.endsWith(ext));
+    
+    // Validar que sea imagen por tipo MIME o por extensión
+    const esTipoImagen = file.type.startsWith('image/') || file.type === '';
+    
+    if (!esTipoImagen && !tieneExtensionValida) {
         return {
             valid: false,
-            error: 'Por favor selecciona una imagen válida'
+            error: 'Por favor selecciona una imagen válida (JPG, PNG, HEIC)'
         };
+    }
+    
+    // Si tiene extensión válida pero tipo vacío (caso HEIC en desktop), es válido
+    if (file.type === '' && tieneExtensionValida) {
+        console.log('✅ Archivo con extensión válida detectado:', nombreArchivo);
     }
     
     // Límite aumentado a 15MB para archivo original
