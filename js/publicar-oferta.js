@@ -230,7 +230,7 @@ window.seleccionarDistrito = function() {
 // ============================================
 // OBTENER UBICACI脫N COMPLETA
 // ============================================
-function obtenerUbicacionCompleta() {
+async function obtenerUbicacionCompleta() {
     if (!departamentoSeleccionado || !provinciaSeleccionada || !distritoSeleccionado) {
         return null;
     }
@@ -378,7 +378,7 @@ descripcion.addEventListener('input', () => {
 // ============================================
 // NAVEGACI脫N ENTRE PASOS
 // ============================================
-function showStep(step) {
+async function showStep(step) {
     // Ocultar todos los pasos
     formSteps.forEach(s => s.classList.remove('active'));
     
@@ -532,7 +532,7 @@ function hideError(fieldId) {
 // ============================================
 // ACTUALIZAR SECCI脫N DE REVISI脫N
 // ============================================
-function updateReviewSection() {
+async function updateReviewSection() {
     // Informaci贸n B谩sica
     document.getElementById('review-titulo').textContent = 
         document.getElementById('titulo').value || '-';
