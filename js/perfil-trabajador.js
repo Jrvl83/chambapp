@@ -575,13 +575,16 @@ async function optimizarImagen(file, maxWidth = 1920, maxHeight = 1920, quality 
 /**
  * Validar y preparar archivo de imagen
  * @param {File} file - Archivo a validar
- * @returns {Object} - {valid, error, file}
+ * @returns {Object} - {valid, error, file, isHEIC}
  */
 function validarArchivo(file) {
     // Extensiones válidas
     const extensionesValidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
     const nombreArchivo = file.name.toLowerCase();
     const tieneExtensionValida = extensionesValidas.some(ext => nombreArchivo.endsWith(ext));
+    
+    // Detectar si es HEIC
+    const isHEIC = nombreArchivo.endsWith('.heic') || nombreArchivo.endsWith('.heif');
     
     // Validar que sea imagen por tipo MIME o por extensión
     const esTipoImagen = file.type.startsWith('image/') || file.type === '';
@@ -593,8 +596,17 @@ function validarArchivo(file) {
         };
     }
     
-    // Si tiene extensión válida pero tipo vacío (caso HEIC en desktop), es válido
-    if (file.type === '' && tieneExtensionValida) {
+    // Si es HEIC en desktop, mostrar mensaje informativo
+    if (isHEIC && file.type === '') {
+        console.log('⚠️ Archivo HEIC detectado en desktop');
+        return {
+            valid: false,
+            error: 'Archivos HEIC (iPhone) no soportados en desktop. Por favor:\n• Usa tu iPhone para subir, o\n• Convierte a JPG primero, o\n• Envíate la foto por WhatsApp/email (convierte automáticamente)'
+        };
+    }
+    
+    // Si tiene extensión válida pero tipo vacío (otros casos), es válido
+    if (file.type === '' && tieneExtensionValida && !isHEIC) {
         console.log('✅ Archivo con extensión válida detectado:', nombreArchivo);
     }
     
@@ -607,7 +619,7 @@ function validarArchivo(file) {
         };
     }
     
-    return { valid: true, file };
+    return { valid: true, file, isHEIC };
 }
 
 // ============================================
