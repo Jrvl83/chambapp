@@ -34,9 +34,9 @@ async function cargarDatosUbigeo() {
         
         // Cargar los 3 archivos en paralelo
         const [depts, provs, dists] = await Promise.all([
-            fetch('/data/ubigeo_departamento.json').then(r => r.json()),
-            fetch('/data/ubigeo_provincia.json').then(r => r.json()),
-            fetch('/data/ubigeo_distrito.json').then(r => r.json())
+            fetch('/chambapp/data/ubigeo_departamento.json').then(r => r.json()),
+            fetch('/chambapp/data/ubigeo_provincia.json').then(r => r.json()),
+            fetch('/chambapp/data/ubigeo_distrito.json').then(r => r.json())
         ]);
         
         // Procesar y optimizar datos
