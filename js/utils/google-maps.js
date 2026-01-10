@@ -4,7 +4,7 @@
 // ============================================
 
 // ⚠️ IMPORTANTE: Reemplaza con tu API Key real
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBxopsd9CEAU2CSV91z8YAw_upxochO6YE';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE';
 
 // Estado de carga de la API
 let mapsAPILoaded = false;
