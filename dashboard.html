@@ -35,6 +35,10 @@
                 <span class="hamburger-line"></span>
             </button>
             <div class="logo" id="logo-text">ChambApp</div>
+            
+            <!-- 🆕 BADGE DE UBICACIÓN (se crea dinámicamente por JS) -->
+            <!-- El badge aparece aquí automáticamente cuando el usuario tiene ubicación -->
+            
             <div class="user-menu">
                 <span class="user-name" id="user-name">👤 Bienvenido</span>
                 <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
@@ -269,49 +273,50 @@
             }, 500);
         });
     </script>
+    
     <!-- Modal Solicitar Ubicación -->
-<div id="modal-ubicacion" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-ubicacion-titulo">
-    <div class="modal-content" style="max-width: 500px;">
-        <button class="modal-close" onclick="cerrarModalUbicacion()" aria-label="Cerrar">&times;</button>
-        
-        <div class="modal-body">
-            <div class="modal-header" style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: var(--space-md);">📍</div>
-                <h2 id="modal-ubicacion-titulo">¿Permitir ubicación?</h2>
-                <p style="color: var(--gray); font-size: var(--text-base); margin-top: var(--space-sm);">
-                    Te ayudará a encontrar trabajos cerca de ti
-                </p>
-            </div>
+    <div id="modal-ubicacion" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-ubicacion-titulo">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" onclick="cerrarModalUbicacion()" aria-label="Cerrar">&times;</button>
+            
+            <div class="modal-body">
+                <div class="modal-header" style="text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-md);">📍</div>
+                    <h2 id="modal-ubicacion-titulo">¿Permitir ubicación?</h2>
+                    <p style="color: var(--gray); font-size: var(--text-base); margin-top: var(--space-sm);">
+                        Te ayudará a encontrar trabajos cerca de ti
+                    </p>
+                </div>
 
-            <div class="alert alert-info" style="margin-top: var(--space-lg);">
-                <div class="alert-icon">ℹ️</div>
-                <div class="alert-content">
-                    <div class="alert-title">¿Por qué necesitamos tu ubicación?</div>
-                    <div class="alert-message">
-                        <ul style="margin: var(--space-sm) 0; padding-left: var(--space-lg); line-height: var(--leading-relaxed);">
-                            <li>Ver ofertas cerca de ti</li>
-                            <li>Ordenar por distancia</li>
-                            <li>Ahorrarte tiempo de viaje</li>
-                            <li>Más oportunidades locales</li>
-                        </ul>
+                <div class="alert alert-info" style="margin-top: var(--space-lg);">
+                    <div class="alert-icon">ℹ️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">¿Por qué necesitamos tu ubicación?</div>
+                        <div class="alert-message">
+                            <ul style="margin: var(--space-sm) 0; padding-left: var(--space-lg); line-height: var(--leading-relaxed);">
+                                <li>Ver ofertas cerca de ti</li>
+                                <li>Ordenar por distancia</li>
+                                <li>Ahorrarte tiempo de viaje</li>
+                                <li>Más oportunidades locales</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="modal-footer" style="margin-top: var(--space-xl); gap: var(--gap-sm); display: flex; flex-direction: column;">
-                <button class="btn btn-primary btn-block" onclick="solicitarUbicacion()">
-                    📍 Permitir Ubicación
-                </button>
-                <button class="btn btn-ghost btn-block" onclick="cerrarModalUbicacion()">
-                    Después
-                </button>
-            </div>
+                <div class="modal-footer" style="margin-top: var(--space-xl); gap: var(--gap-sm); display: flex; flex-direction: column;">
+                    <button class="btn btn-primary btn-block" onclick="solicitarUbicacion()">
+                        📍 Permitir Ubicación
+                    </button>
+                    <button class="btn btn-ghost btn-block" onclick="cerrarModalUbicacion()">
+                        Después
+                    </button>
+                </div>
 
-            <p style="font-size: var(--text-xs); color: var(--gray); text-align: center; margin-top: var(--space-md);">
-                Tu ubicación se guarda de forma segura y solo tú puedes verla.
-            </p>
+                <p style="font-size: var(--text-xs); color: var(--gray); text-align: center; margin-top: var(--space-md);">
+                    Tu ubicación se guarda de forma segura y solo tú puedes verla.
+                </p>
+            </div>
         </div>
     </div>
-</div>
 </body>
 </html>
