@@ -1,396 +1,243 @@
 // ============================================
-// GEOLOCATION MODULE - ChambApp
-// Sistema completo de gestión de ubicación
-// ============================================
-
-import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-
-const auth = getAuth();
-const db = getFirestore();
-
-// Google Maps API Key (debe coincidir con google-maps.js)
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE';
-
-// ============================================
-// VERIFICAR SOPORTE DE GEOLOCALIZACIÓN
+// GEOLOCATION.JS - ChambApp
+// Gestión de ubicación del usuario
+// Task 9: Geolocalización completa
 // ============================================
 
 /**
- * Verificar si el navegador soporta geolocalización
- * @returns {boolean} True si soporta geolocalización
+ * Solicitar coordenadas GPS del navegador
+ * @returns {Promise<{lat: number, lng: number}>}
  */
-export function soportaGeolocalizacion() {
-    const soporta = 'geolocation' in navigator;
-    
-    if (!soporta) {
-        console.warn('⚠️ Este navegador no soporta geolocalización');
-    }
-    
-    return soporta;
-}
-
-// ============================================
-// VERIFICAR ESTADO DEL PERMISO
-// ============================================
-
-/**
- * Verificar el estado actual del permiso de ubicación
- * @returns {Promise<string>} Estado: 'granted', 'denied', 'prompt'
- */
-export async function verificarEstadoPermiso() {
-    try {
-        if (!navigator.permissions) {
-            console.warn('⚠️ API de permisos no disponible');
-            return 'prompt';
-        }
-
-        const resultado = await navigator.permissions.query({ name: 'geolocation' });
-        console.log(`📍 Estado permiso ubicación: ${resultado.state}`);
-        
-        return resultado.state; // 'granted', 'denied', 'prompt'
-        
-    } catch (error) {
-        console.error('❌ Error al verificar permiso:', error);
-        return 'prompt';
-    }
-}
-
-// ============================================
-// SOLICITAR UBICACIÓN DEL USUARIO
-// ============================================
-
-/**
- * Solicitar ubicación actual del usuario
- * @param {Object} opciones - Opciones de geolocalización
- * @returns {Promise<{lat, lng, accuracy}>} Coordenadas del usuario
- */
-export function obtenerUbicacionActual(opciones = {}) {
+export async function obtenerCoordenadas() {
     return new Promise((resolve, reject) => {
-        if (!soportaGeolocalizacion()) {
-            reject(new Error('Geolocalización no soportada'));
+        if (!navigator.geolocation) {
+            reject(new Error('Geolocalización no disponible en este navegador'));
             return;
         }
 
-        console.log('📍 Solicitando ubicación del usuario...');
-
-        const opcionesPorDefecto = {
-            enableHighAccuracy: true,  // Usar GPS si está disponible
-            timeout: 10000,            // 10 segundos máximo
-            maximumAge: 0              // No usar caché
-        };
-
-        const opcionesFinales = { ...opcionesPorDefecto, ...opciones };
-
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                const ubicacion = {
+                resolve({
                     lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                    accuracy: position.coords.accuracy, // Precisión en metros
-                    timestamp: position.timestamp
-                };
-
-                console.log('✅ Ubicación obtenida:', ubicacion);
-                resolve(ubicacion);
+                    lng: position.coords.longitude
+                });
             },
             (error) => {
-                console.error('❌ Error al obtener ubicación:', error);
+                let mensaje = 'Error al obtener ubicación';
                 
-                // Traducir errores a mensajes amigables
-                let mensaje = 'No se pudo obtener tu ubicación';
-                
-                switch (error.code) {
+                switch(error.code) {
                     case error.PERMISSION_DENIED:
-                        mensaje = 'Permiso de ubicación denegado. Por favor, actívalo en la configuración de tu navegador.';
+                        mensaje = 'Permiso de ubicación denegado';
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        mensaje = 'Ubicación no disponible. Verifica tu conexión GPS.';
+                        mensaje = 'Ubicación no disponible';
                         break;
                     case error.TIMEOUT:
-                        mensaje = 'Tiempo de espera agotado. Intenta de nuevo.';
+                        mensaje = 'Tiempo de espera agotado';
                         break;
                 }
                 
                 reject(new Error(mensaje));
             },
-            opcionesFinales
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
         );
     });
 }
 
-// ============================================
-// REVERSE GEOCODING (Coordenadas → Dirección)
-// ============================================
-
 /**
- * Convertir coordenadas a dirección legible usando Google Geocoding API
- * @param {number} lat - Latitud
- * @param {number} lng - Longitud
- * @returns {Promise<Object>} Información de ubicación
+ * Convertir coordenadas a dirección legible (Geocoding)
+ * Usa Google Geocoding API
+ * @param {object} coords - {lat, lng}
+ * @returns {Promise<object>} Información de ubicación
  */
-export async function obtenerDireccionDesdeCoords(lat, lng) {
+export async function geocodificar(coords) {
+    const { lat, lng } = coords;
+    
+    // Google Geocoding API
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBxUb73baTPSq_nvX5vCjGN_d_ctEC8ySs&language=es`;
+    
     try {
-        console.log(`📍 Obteniendo dirección para: ${lat}, ${lng}`);
-
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}&language=es`;
-        
         const response = await fetch(url);
         const data = await response.json();
-
-        if (data.status !== 'OK') {
-            throw new Error(`Error Geocoding: ${data.status}`);
-        }
-
-        if (data.results.length === 0) {
-            throw new Error('No se encontró información de ubicación');
-        }
-
-        // Extraer información del primer resultado
-        const resultado = data.results[0];
         
-        // Extraer componentes de dirección
-        const componentes = {};
-        resultado.address_components.forEach(comp => {
-            if (comp.types.includes('locality')) {
-                componentes.distrito = comp.long_name;
+        if (data.status !== 'OK' || !data.results || data.results.length === 0) {
+            throw new Error('No se pudo determinar la dirección');
+        }
+        
+        // Extraer información del resultado
+        const resultado = data.results[0];
+        let distrito = '';
+        let ciudad = '';
+        let departamento = '';
+        
+        // Buscar componentes de dirección
+        resultado.address_components.forEach(component => {
+            if (component.types.includes('locality') || 
+                component.types.includes('sublocality') ||
+                component.types.includes('administrative_area_level_3')) {
+                distrito = distrito || component.long_name;
             }
-            if (comp.types.includes('administrative_area_level_2')) {
-                componentes.provincia = comp.long_name;
+            if (component.types.includes('administrative_area_level_2')) {
+                ciudad = component.long_name;
             }
-            if (comp.types.includes('administrative_area_level_1')) {
-                componentes.region = comp.long_name;
-            }
-            if (comp.types.includes('country')) {
-                componentes.pais = comp.long_name;
+            if (component.types.includes('administrative_area_level_1')) {
+                departamento = component.long_name;
             }
         });
-
-        const ubicacionInfo = {
-            direccionCompleta: resultado.formatted_address,
-            distrito: componentes.distrito || 'Lima',
-            provincia: componentes.provincia || 'Lima',
-            region: componentes.region || 'Lima',
-            pais: componentes.pais || 'Perú',
-            lat: lat,
-            lng: lng
-        };
-
-        console.log('✅ Dirección obtenida:', ubicacionInfo);
-        return ubicacionInfo;
-
-    } catch (error) {
-        console.error('❌ Error en reverse geocoding:', error);
         
-        // Fallback: retornar coordenadas sin dirección
         return {
+            distrito: distrito || 'Desconocido',
+            ciudad: ciudad || 'Lima',
+            departamento: departamento || 'Lima',
+            direccionCompleta: resultado.formatted_address,
+            coords: { lat, lng }
+        };
+        
+    } catch (error) {
+        console.error('❌ Error en geocodificación:', error);
+        
+        // Fallback: guardar solo coordenadas
+        return {
+            distrito: 'Ubicación detectada',
+            ciudad: 'Lima',
+            departamento: 'Lima',
             direccionCompleta: `${lat}, ${lng}`,
-            distrito: 'Lima',
-            provincia: 'Lima',
-            region: 'Lima',
-            pais: 'Perú',
-            lat: lat,
-            lng: lng,
-            error: error.message
+            coords: { lat, lng }
         };
     }
 }
 
-// ============================================
-// GUARDAR UBICACIÓN EN FIRESTORE
-// ============================================
-
 /**
- * Guardar ubicación del usuario en Firestore
- * @param {number} lat - Latitud
- * @param {number} lng - Longitud
- * @param {string} metodo - Método de obtención: 'gps' o 'manual'
+ * Guardar ubicación en Firestore
+ * @param {string} uid - ID del usuario
+ * @param {object} ubicacion - Datos de ubicación
  * @returns {Promise<void>}
  */
-export async function guardarUbicacionUsuario(lat, lng, metodo = 'gps') {
+export async function guardarUbicacion(uid, ubicacion) {
     try {
-        const user = auth.currentUser;
+        const { db } = await import('../config/firebase-config.js');
+        const { doc, setDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
         
-        if (!user) {
-            throw new Error('Usuario no autenticado');
-        }
-
-        console.log(`💾 Guardando ubicación usuario: ${user.uid}`);
-
-        // Obtener información de dirección
-        const direccionInfo = await obtenerDireccionDesdeCoords(lat, lng);
-
-        // Actualizar documento del usuario
-        const userRef = doc(db, 'usuarios', user.uid);
-        
-        await updateDoc(userRef, {
-            ubicacion: {
-                lat: lat,
-                lng: lng,
-                distrito: direccionInfo.distrito,
-                provincia: direccionInfo.provincia,
-                direccionCompleta: direccionInfo.direccionCompleta,
-                metodo: metodo, // 'gps' o 'manual'
-                timestamp: serverTimestamp()
+        const ubicacionData = {
+            distrito: ubicacion.distrito,
+            ciudad: ubicacion.ciudad,
+            departamento: ubicacion.departamento,
+            direccionCompleta: ubicacion.direccionCompleta,
+            coords: {
+                lat: ubicacion.coords.lat,
+                lng: ubicacion.coords.lng
             },
-            ubicacionActualizada: serverTimestamp()
-        });
-
-        console.log('✅ Ubicación guardada en Firestore');
+            metodo: 'gps',
+            timestamp: serverTimestamp()
+        };
         
-        return direccionInfo;
-
+        await setDoc(doc(db, 'usuarios', uid, 'ubicacion', 'actual'), ubicacionData);
+        
+        console.log('✅ Ubicación guardada en Firestore:', ubicacionData);
+        
+        return ubicacionData;
+        
     } catch (error) {
         console.error('❌ Error al guardar ubicación:', error);
         throw error;
     }
 }
 
-// ============================================
-// OBTENER UBICACIÓN GUARDADA
-// ============================================
-
 /**
- * Obtener la ubicación guardada del usuario desde Firestore
- * @returns {Promise<Object|null>} Ubicación guardada o null
+ * Obtener ubicación guardada de Firestore
+ * @param {string} uid - ID del usuario
+ * @returns {Promise<object|null>} Ubicación guardada o null
  */
-export async function obtenerUbicacionGuardada() {
+export async function obtenerUbicacionGuardada(uid) {
     try {
-        const user = auth.currentUser;
+        const { db } = await import('../config/firebase-config.js');
+        const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
         
-        if (!user) {
-            throw new Error('Usuario no autenticado');
-        }
-
-        const userRef = doc(db, 'usuarios', user.uid);
-        const userDoc = await getDoc(userRef);
-
-        if (!userDoc.exists()) {
-            console.warn('⚠️ Documento de usuario no encontrado');
-            return null;
-        }
-
-        const data = userDoc.data();
+        const ubicacionRef = doc(db, 'usuarios', uid, 'ubicacion', 'actual');
+        const ubicacionSnap = await getDoc(ubicacionRef);
         
-        if (!data.ubicacion) {
-            console.log('ℹ️ Usuario no tiene ubicación guardada');
-            return null;
+        if (ubicacionSnap.exists()) {
+            const data = ubicacionSnap.data();
+            console.log('📍 Ubicación guardada encontrada:', data);
+            return data;
         }
-
-        console.log('✅ Ubicación guardada obtenida:', data.ubicacion);
-        return data.ubicacion;
-
+        
+        return null;
+        
     } catch (error) {
         console.error('❌ Error al obtener ubicación guardada:', error);
         return null;
     }
 }
 
-// ============================================
-// SOLICITAR Y GUARDAR UBICACIÓN (TODO EN UNO)
-// ============================================
-
 /**
- * Solicitar ubicación del usuario, hacer reverse geocoding y guardar en Firestore
- * @returns {Promise<Object>} Información de ubicación completa
+ * 🆕 ACTUALIZAR UBICACIÓN SILENCIOSAMENTE (SIN MODAL)
+ * Se ejecuta automáticamente en background
+ * No muestra UI, solo actualiza datos
+ * @param {string} uid - ID del usuario
+ * @returns {Promise<object|null>} Nueva ubicación o null si falla
  */
-export async function solicitarYGuardarUbicacion() {
+export async function actualizarUbicacionSilenciosa(uid) {
     try {
-        console.log('🚀 Iniciando proceso completo de ubicación...');
-
-        // 1. Obtener ubicación GPS
-        const coords = await obtenerUbicacionActual();
+        console.log('🔄 Actualizando ubicación en background...');
         
-        // 2. Guardar en Firestore (incluye reverse geocoding)
-        const ubicacionInfo = await guardarUbicacionUsuario(coords.lat, coords.lng, 'gps');
-
-        console.log('✅ Proceso completo exitoso');
+        // 1. Obtener coordenadas GPS (sin mostrar UI)
+        const coords = await obtenerCoordenadas();
         
-        return {
-            success: true,
-            ...ubicacionInfo,
-            accuracy: coords.accuracy
-        };
-
+        // 2. Geocodificar (convertir a dirección)
+        const ubicacion = await geocodificar(coords);
+        
+        // 3. Guardar en Firestore
+        await guardarUbicacion(uid, ubicacion);
+        
+        console.log('✅ Ubicación actualizada silenciosamente:', ubicacion);
+        
+        return ubicacion;
+        
     } catch (error) {
-        console.error('❌ Error en proceso de ubicación:', error);
-        
-        return {
-            success: false,
-            error: error.message
-        };
+        console.warn('⚠️ No se pudo actualizar ubicación en background:', error.message);
+        // No mostramos error al usuario - fallo silencioso
+        return null;
     }
 }
 
-// ============================================
-// VERIFICAR SI USUARIO TIENE UBICACIÓN
-// ============================================
-
 /**
- * Verificar si el usuario tiene ubicación guardada
- * @returns {Promise<boolean>} True si tiene ubicación
+ * Calcular distancia entre dos puntos (fórmula Haversine)
+ * @param {object} coords1 - {lat, lng}
+ * @param {object} coords2 - {lat, lng}
+ * @returns {number} Distancia en kilómetros
  */
-export async function tieneUbicacionGuardada() {
-    const ubicacion = await obtenerUbicacionGuardada();
-    return ubicacion !== null;
-}
-
-// ============================================
-// FORMATEAR UBICACIÓN PARA MOSTRAR
-// ============================================
-
-/**
- * Formatear ubicación para mostrar en UI
- * @param {Object} ubicacion - Objeto ubicación desde Firestore
- * @returns {string} Ubicación formateada
- */
-export function formatearUbicacion(ubicacion) {
-    if (!ubicacion) {
-        return 'Ubicación no disponible';
-    }
-
-    if (ubicacion.distrito && ubicacion.provincia) {
-        return `${ubicacion.distrito}, ${ubicacion.provincia}`;
-    }
-
-    if (ubicacion.direccionCompleta) {
-        return ubicacion.direccionCompleta;
-    }
-
-    return `${ubicacion.lat.toFixed(4)}, ${ubicacion.lng.toFixed(4)}`;
-}
-
-// ============================================
-// UTILIDADES
-// ============================================
-
-/**
- * Calcular precisión de la ubicación
- * @param {number} accuracy - Precisión en metros
- * @returns {string} Descripción de precisión
- */
-export function obtenerNivelPrecision(accuracy) {
-    if (accuracy < 10) return 'Excelente';
-    if (accuracy < 50) return 'Buena';
-    if (accuracy < 100) return 'Aceptable';
-    return 'Baja';
-}
-
-/**
- * Verificar si las coordenadas están en Perú (aproximado)
- * @param {number} lat - Latitud
- * @param {number} lng - Longitud
- * @returns {boolean} True si está en Perú
- */
-export function estaEnPeru(lat, lng) {
-    // Límites aproximados de Perú
-    // Lat: -18.5 a -0.5
-    // Lng: -81.5 a -68.5
+export function calcularDistancia(coords1, coords2) {
+    const R = 6371; // Radio de la Tierra en km
     
-    const dentroLat = lat >= -18.5 && lat <= -0.5;
-    const dentroLng = lng >= -81.5 && lng <= -68.5;
+    const lat1 = coords1.lat * Math.PI / 180;
+    const lat2 = coords2.lat * Math.PI / 180;
+    const deltaLat = (coords2.lat - coords1.lat) * Math.PI / 180;
+    const deltaLng = (coords2.lng - coords1.lng) * Math.PI / 180;
     
-    return dentroLat && dentroLng;
+    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+              Math.cos(lat1) * Math.cos(lat2) *
+              Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+    
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    
+    const distancia = R * c;
+    
+    return Math.round(distancia * 10) / 10; // Redondear a 1 decimal
 }
 
-console.log('✅ Módulo geolocation.js cargado correctamente');
+/**
+ * Formatear distancia para mostrar
+ * @param {number} km - Distancia en kilómetros
+ * @returns {string} Texto formateado
+ */
+export function formatearDistancia(km) {
+    if (km < 1) {
+        return `${Math.round(km * 1000)} m`;
+    }
+    return `${km} km`;
+}
