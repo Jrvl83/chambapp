@@ -103,9 +103,10 @@ async function geocodificar(coords) {
                 direccionCompleta: result.formatted_address,
                 timestamp: new Date().toISOString()
             };
-        } else if (data.status === 'OVER_QUERY_LIMIT') {
-            // ⚠️ Rate limiting de Google - usar fallback
-            console.warn('Google Geocoding: Límite de requests excedido, usando fallback');
+        } else {
+            console.error('Geocoding fallo con status:', data.status);
+            
+            // Fallback: Guardar coordenadas sin error
             return {
                 lat: coords.lat,
                 lng: coords.lng,
@@ -115,13 +116,20 @@ async function geocodificar(coords) {
                 direccionCompleta: `${coords.lat}, ${coords.lng}`,
                 timestamp: new Date().toISOString()
             };
-        } else {
-            console.error('Geocoding fallo con status:', data.status);
-            throw new Error(`No se pudo geocodificar la ubicacion (${data.status})`);
         }
     } catch (error) {
         console.error('Error en geocodificacion:', error);
-        throw error;
+        
+        // Fallback en caso de error de red
+        return {
+            lat: coords.lat,
+            lng: coords.lng,
+            distrito: 'Ubicacion detectada',
+            provincia: '',
+            departamento: '',
+            direccionCompleta: `${coords.lat}, ${coords.lng}`,
+            timestamp: new Date().toISOString()
+        };
     }
 }
 
