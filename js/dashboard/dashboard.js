@@ -116,14 +116,14 @@ function mostrarBadgeUbicacion(ubicacion) {
     }
     
     badge.innerHTML = `
-        <span class="ubicacion-texto" title="${ubicacion.direccionCompleta || ubicacion.distrito}">
+        <span class='ubicacion-texto' title='${ubicacion.direccionCompleta || ubicacion.distrito}'>
             📍 ${ubicacion.distrito}
         </span>
         <button 
-            class="ubicacion-actualizar" 
-            onclick="actualizarUbicacionManual()"
-            title="Actualizar ubicacion"
-            aria-label="Actualizar ubicacion"
+            class='ubicacion-actualizar' 
+            onclick='actualizarUbicacionManual()'
+            title='Actualizar ubicacion'
+            aria-label='Actualizar ubicacion'
         >
             🔄
         </button>
@@ -198,14 +198,14 @@ window.solicitarUbicacion = async function() {
         alertaError.className = 'alert alert-danger';
         alertaError.style.marginTop = 'var(--space-md)';
         alertaError.innerHTML = `
-            <div class="alert-icon">⚠️</div>
-            <div class="alert-content">
-                <div class="alert-title">No se pudo obtener ubicacion</div>
-                <div class="alert-message">
+            <div class='alert-icon'>⚠️</div>
+            <div class='alert-content'>
+                <div class='alert-title'>No se pudo obtener ubicacion</div>
+                <div class='alert-message'>
                     ${error.message}
                     <br><br>
                     <strong>Para activar tu ubicacion:</strong>
-                    <ul style="margin-top: var(--space-xs); padding-left: var(--space-lg);">
+                    <ul style='margin-top: var(--space-xs); padding-left: var(--space-lg);'>
                         <li>Ve a la configuracion de tu navegador</li>
                         <li>Busca "Permisos" o "Ubicacion"</li>
                         <li>Permite el acceso a la ubicacion para este sitio</li>
@@ -226,8 +226,8 @@ function actualizarHeaderUsuario(userData) {
     
     if (userName) {
         const badge = userData.tipo === 'trabajador' 
-            ? '<span class="badge badge-trabajador">Trabajador</span>'
-            : '<span class="badge badge-empleador">Empleador</span>';
+            ? '<span class=\'badge badge-trabajador\'>Trabajador</span>'
+            : '<span class=\'badge badge-empleador\'>Empleador</span>';
             
         userName.innerHTML = `
             👤 ${userData.nombre || 'Usuario'}
@@ -358,8 +358,8 @@ function mostrarOfertas(ofertas) {
     
     if (ofertas.length === 0) {
         ofertasGrid.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
+            <div class='empty-state'>
+                <div class='empty-state-icon'>📭</div>
                 <h3>No hay ofertas disponibles</h3>
                 <p>Pronto habra nuevas oportunidades</p>
             </div>
@@ -368,27 +368,27 @@ function mostrarOfertas(ofertas) {
     }
     
     ofertasGrid.innerHTML = ofertas.map(oferta => `
-        <div class="oferta-card">
-            <div class="oferta-header">
-                <span class="oferta-categoria ${oferta.categoria}">
+        <div class='oferta-card'>
+            <div class='oferta-header'>
+                <span class='oferta-categoria ${oferta.categoria}'>
                     ${oferta.categoria}
                 </span>
-                <span class="oferta-fecha">
+                <span class='oferta-fecha'>
                     ${formatearFecha(oferta.fechaPublicacion)}
                 </span>
             </div>
             
-            <h3 class="oferta-titulo">${oferta.titulo}</h3>
-            <p class="oferta-descripcion">${oferta.descripcion}</p>
+            <h3 class='oferta-titulo'>${oferta.titulo}</h3>
+            <p class='oferta-descripcion'>${oferta.descripcion}</p>
             
-            <div class="oferta-detalles">
-                <span class="detalle">💰 ${oferta.salario}</span>
-                <span class="detalle">📍 ${oferta.ubicacion}</span>
-                <span class="detalle">📅 ${oferta.tipoTrabajo}</span>
+            <div class='oferta-detalles'>
+                <span class='detalle'>💰 ${oferta.salario}</span>
+                <span class='detalle'>📍 ${oferta.ubicacion}</span>
+                <span class='detalle'>📅 ${oferta.tipoTrabajo}</span>
             </div>
             
-            <div class="oferta-footer">
-                <button class="btn btn-primary" onclick="verDetalleOferta('${oferta.id}')">
+            <div class='oferta-footer'>
+                <button class='btn btn-primary' onclick='verDetalleOferta("${oferta.id}")'>
                     Ver Detalles
                 </button>
             </div>
@@ -403,17 +403,17 @@ window.verDetalleOferta = async function(ofertaId) {
     const modalBody = document.getElementById('modal-body');
     
     modalBody.innerHTML = `
-        <div class="modal-header">
-            <span class="oferta-categoria ${oferta.categoria}">${oferta.categoria}</span>
+        <div class='modal-header'>
+            <span class='oferta-categoria ${oferta.categoria}'>${oferta.categoria}</span>
             <h2>${oferta.titulo}</h2>
         </div>
         
-        <div class="modal-text">
+        <div class='modal-text'>
             <h3>Descripcion:</h3>
             <p>${oferta.descripcion}</p>
             
             <h3>Detalles:</h3>
-            <ul class="modal-list">
+            <ul class='modal-list'>
                 <li>💰 Salario: ${oferta.salario}</li>
                 <li>📍 Ubicacion: ${oferta.ubicacion}</li>
                 <li>📅 Tipo: ${oferta.tipoTrabajo}</li>
@@ -427,9 +427,9 @@ window.verDetalleOferta = async function(ofertaId) {
             ` : ''}
         </div>
         
-        <div class="modal-buttons">
-            <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-            <button class="btn btn-primary" onclick="aplicarOferta('${oferta.id}')">
+        <div class='modal-buttons'>
+            <button class='btn btn-secondary' onclick='cerrarModal()'>Cerrar</button>
+            <button class='btn btn-primary' onclick='aplicarOferta("${oferta.id}")'>
                 Aplicar
             </button>
         </div>
