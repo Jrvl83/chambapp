@@ -63,7 +63,7 @@ async function obtenerCoordenadas() {
 async function geocodificar(coords) {
     try {
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lng}&key=AIzaSyAk6JHjR8VSSEfzPPC-2LMK_Gt9HnTbE1k&language=es`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lng}&key=AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE&language=es`
         );
         
         const data = await response.json();
