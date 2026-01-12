@@ -38,6 +38,8 @@ onAuthStateChanged(auth, async (user) => {
             
             // 🔴 MEJORA #2: Ocultar loading, mostrar contenido
             ocultarLoading();
+            // Verificar ubicación
+            await verificarUbicacion();
         } else {
             alert('Error al cargar perfil');
             window.location.href = 'login.html';
