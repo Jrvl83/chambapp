@@ -1,69 +1,194 @@
-// ============================================
-// DASHBOARD.JS - ChambApp
-// Logica principal del dashboard
-// ============================================
+// ========================================
+// DASHBOARD.JS - Task 9 Parte 2 INTEGRADO
+// ChambApp - Compatible con arquitectura original
+// ========================================
 
-import { auth, db } from '../config/firebase-config.js';
-import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { collection, query, getDocs, doc, getDoc, where, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { 
-    obtenerCoordenadas, 
-    geocodificar, 
-    guardarUbicacion,
-    obtenerUbicacionGuardada,
-    actualizarUbicacionSilenciosa
-} from '../utils/geolocation.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-// ============================================
-// VARIABLES GLOBALES
-// ============================================
+// ✅ Usar window.firebaseConfig (arquitectura original)
+const app = initializeApp(window.firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Variables globales
 let usuarioActual = null;
-let ofertasGlobales = [];
-let debounceTimer = null;
+let todasLasOfertas = [];
+let aplicacionesUsuario = [];
+let debounceTimer;
 
-// ============================================
-// INICIALIZACION
-// ============================================
+// ========================================
+// FUNCIONES GEOLOCALIZACIÓN (Task 9)
+// ========================================
+
+async function obtenerCoordenadas() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error('Tu navegador no soporta geolocalizacion'));
+            return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                });
+            },
+            (error) => {
+                let mensaje = 'Error al obtener ubicacion';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        mensaje = 'Debes permitir el acceso a tu ubicacion';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        mensaje = 'Ubicacion no disponible';
+                        break;
+                    case error.TIMEOUT:
+                        mensaje = 'Tiempo de espera agotado';
+                        break;
+                }
+                reject(new Error(mensaje));
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
+}
+
+async function geocodificar(coords) {
+    try {
+        const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lng}&key=AIzaSyAk6JHjR8VSSEfzPPC-2LMK_Gt9HnTbE1k&language=es`
+        );
+        
+        const data = await response.json();
+        
+        if (data.status === 'OK' && data.results[0]) {
+            const result = data.results[0];
+            const addressComponents = result.address_components;
+            
+            let distrito = '';
+            let provincia = '';
+            let departamento = '';
+            
+            for (const component of addressComponents) {
+                if (component.types.includes('locality') || component.types.includes('sublocality')) {
+                    distrito = component.long_name;
+                }
+                if (component.types.includes('administrative_area_level_2')) {
+                    provincia = component.long_name;
+                }
+                if (component.types.includes('administrative_area_level_1')) {
+                    departamento = component.long_name;
+                }
+            }
+            
+            return {
+                lat: coords.lat,
+                lng: coords.lng,
+                distrito: distrito || 'Ubicacion detectada',
+                provincia: provincia || '',
+                departamento: departamento || '',
+                direccionCompleta: result.formatted_address,
+                timestamp: new Date().toISOString()
+            };
+        } else {
+            throw new Error('No se pudo geocodificar la ubicacion');
+        }
+    } catch (error) {
+        console.error('Error en geocodificacion:', error);
+        throw error;
+    }
+}
+
+async function guardarUbicacion(uid, ubicacion) {
+    try {
+        const userRef = doc(db, 'usuarios', uid);
+        await updateDoc(userRef, {
+            ubicacion: ubicacion,
+            ubicacionActualizada: serverTimestamp()
+        });
+        console.log('Ubicacion guardada en Firestore');
+    } catch (error) {
+        console.error('Error guardando ubicacion:', error);
+        throw error;
+    }
+}
+
+async function obtenerUbicacionGuardada(uid) {
+    try {
+        const userDoc = await getDoc(doc(db, 'usuarios', uid));
+        if (userDoc.exists()) {
+            const data = userDoc.data();
+            return data.ubicacion || null;
+        }
+        return null;
+    } catch (error) {
+        console.error('Error obteniendo ubicacion guardada:', error);
+        return null;
+    }
+}
+
+async function actualizarUbicacionSilenciosa(uid) {
+    try {
+        const coords = await obtenerCoordenadas();
+        const ubicacion = await geocodificar(coords);
+        await guardarUbicacion(uid, ubicacion);
+        return ubicacion;
+    } catch (error) {
+        console.warn('No se pudo actualizar ubicacion en background:', error);
+        return null;
+    }
+}
+
+// ========================================
+// VERIFICACIÓN AUTENTICACIÓN
+// ========================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         usuarioActual = user;
-        await inicializarDashboard(user);
+        const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
+        
+        if (userDoc.exists()) {
+            const usuario = userDoc.data();
+            
+            // Actualizar header
+            actualizarHeaderUsuario(usuario);
+            
+            // Personalizar dashboard
+            personalizarPorTipo(usuario.tipo || 'trabajador');
+            
+            // ✅ Verificar ubicación (Task 9)
+            await verificarUbicacion(user.uid, usuario.tipo);
+            
+            // Cargar datos
+            await cargarAplicacionesUsuario(user.uid);
+            await cargarOfertas(usuario, user.uid);
+            await cargarEstadisticas(usuario, user.uid);
+            
+            // Ocultar loading
+            ocultarLoading();
+        } else {
+            alert('Error al cargar perfil');
+            window.location.href = 'login.html';
+        }
     } else {
         window.location.href = 'login.html';
     }
 });
 
-async function inicializarDashboard(user) {
-    try {
-        const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-        
-        if (!userDoc.exists()) {
-            console.error('Usuario no encontrado en Firestore');
-            return;
-        }
-        
-        const userData = userDoc.data();
-        
-        actualizarHeaderUsuario(userData);
-        personalizarDashboard(userData);
-        
-        await verificarUbicacion(user.uid, userData.tipo);
-        
-        await cargarEstadisticas(userData);
-        await cargarOfertas(userData);
-        
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('dashboard-content').style.display = 'block';
-        
-    } catch (error) {
-        console.error('Error inicializando dashboard:', error);
-        mostrarToast('Error al cargar el dashboard', 'error');
-    }
-}
-
+// ========================================
+// VERIFICAR UBICACIÓN (Task 9 Parte 2)
+// ========================================
 async function verificarUbicacion(uid, tipoUsuario) {
+    // Solo para trabajadores
     if (tipoUsuario !== 'trabajador') {
-        console.log('Empleador detectado - Modal de ubicacion no necesario');
+        console.log('Empleador - no requiere ubicacion');
         return;
     }
     
@@ -71,13 +196,17 @@ async function verificarUbicacion(uid, tipoUsuario) {
         const ubicacionGuardada = await obtenerUbicacionGuardada(uid);
         
         if (!ubicacionGuardada) {
-            console.log('Primera vez - Mostrando modal ubicacion');
+            // Primera vez - mostrar modal
+            console.log('Primera vez - mostrando modal ubicacion');
             setTimeout(() => {
                 mostrarModalUbicacion();
             }, 2000);
         } else {
-            console.log('Ubicacion guardada encontrada:', ubicacionGuardada);
+            // Ya tiene ubicación guardada
+            console.log('Ubicacion guardada:', ubicacionGuardada);
             mostrarBadgeUbicacion(ubicacionGuardada);
+            
+            // Actualizar en background después de 3 segundos
             actualizarUbicacionEnBackground(uid);
         }
         
@@ -93,7 +222,7 @@ async function actualizarUbicacionEnBackground(uid) {
             
             if (nuevaUbicacion) {
                 mostrarBadgeUbicacion(nuevaUbicacion);
-                console.log('Badge actualizado con nueva ubicacion');
+                console.log('Badge actualizado automáticamente');
             }
         }, 3000);
         
@@ -103,7 +232,6 @@ async function actualizarUbicacionEnBackground(uid) {
 }
 
 function mostrarBadgeUbicacion(ubicacion) {
-    const headerContent = document.querySelector('.header-content');
     let badge = document.getElementById('ubicacion-badge');
     
     if (!badge) {
@@ -112,7 +240,9 @@ function mostrarBadgeUbicacion(ubicacion) {
         badge.className = 'ubicacion-badge';
         
         const logo = document.querySelector('.logo');
-        logo.after(badge);
+        if (logo) {
+            logo.after(badge);
+        }
     }
     
     badge.innerHTML = `
@@ -130,8 +260,21 @@ function mostrarBadgeUbicacion(ubicacion) {
     `;
 }
 
+function mostrarModalUbicacion() {
+    const modal = document.getElementById('modal-ubicacion');
+    if (modal) {
+        modal.classList.add('active');
+    }
+}
+
+// ========================================
+// FUNCIONES GLOBALES TASK 9
+// ========================================
+
 window.actualizarUbicacionManual = async function() {
     const btn = document.querySelector('.ubicacion-actualizar');
+    if (!btn) return;
+    
     const textoOriginal = btn.innerHTML;
     
     try {
@@ -143,27 +286,20 @@ window.actualizarUbicacionManual = async function() {
         await guardarUbicacion(usuarioActual.uid, ubicacion);
         
         mostrarBadgeUbicacion(ubicacion);
-        mostrarToast('Ubicacion actualizada correctamente', 'success');
         
-        const userDoc = await getDoc(doc(db, 'usuarios', usuarioActual.uid));
-        if (userDoc.exists()) {
-            await cargarOfertas(userDoc.data());
+        if (typeof mostrarToast === 'function') {
+            mostrarToast('Ubicacion actualizada', 'success');
         }
         
     } catch (error) {
-        console.error('Error actualizando ubicacion:', error);
-        mostrarToast('No se pudo actualizar ubicacion', 'error');
+        console.error('Error:', error);
+        if (typeof mostrarToast === 'function') {
+            mostrarToast('No se pudo actualizar ubicacion', 'error');
+        }
         btn.innerHTML = textoOriginal;
         btn.disabled = false;
     }
 };
-
-function mostrarModalUbicacion() {
-    const modal = document.getElementById('modal-ubicacion');
-    if (modal) {
-        modal.classList.add('active');
-    }
-}
 
 window.cerrarModalUbicacion = function() {
     const modal = document.getElementById('modal-ubicacion');
@@ -185,355 +321,174 @@ window.solicitarUbicacion = async function() {
         await guardarUbicacion(usuarioActual.uid, ubicacion);
         
         mostrarBadgeUbicacion(ubicacion);
-        cerrarModalUbicacion();
-        mostrarToast('Ubicacion guardada correctamente', 'success');
+        window.cerrarModalUbicacion();
         
-        console.log('Ubicacion guardada:', ubicacion);
+        if (typeof mostrarToast === 'function') {
+            mostrarToast('Ubicacion guardada', 'success');
+        }
         
     } catch (error) {
-        console.error('Error al solicitar ubicacion:', error);
-        
-        const modalBody = document.querySelector('#modal-ubicacion .modal-body');
-        const alertaError = document.createElement('div');
-        alertaError.className = 'alert alert-danger';
-        alertaError.style.marginTop = 'var(--space-md)';
-        alertaError.innerHTML = `
-            <div class='alert-icon'>⚠️</div>
-            <div class='alert-content'>
-                <div class='alert-title'>No se pudo obtener ubicacion</div>
-                <div class='alert-message'>
-                    ${error.message}
-                    <br><br>
-                    <strong>Para activar tu ubicacion:</strong>
-                    <ul style='margin-top: var(--space-xs); padding-left: var(--space-lg);'>
-                        <li>Ve a la configuracion de tu navegador</li>
-                        <li>Busca "Permisos" o "Ubicacion"</li>
-                        <li>Permite el acceso a la ubicacion para este sitio</li>
-                    </ul>
-                </div>
-            </div>
-        `;
-        
-        modalBody.appendChild(alertaError);
+        console.error('Error:', error);
+        alert('Error: ' + error.message);
         btn.textContent = textoOriginal;
         btn.disabled = false;
     }
 };
 
-function actualizarHeaderUsuario(userData) {
+// ========================================
+// FUNCIONES DASHBOARD ORIGINAL
+// ========================================
+
+function actualizarHeaderUsuario(usuario) {
     const userName = document.getElementById('user-name');
-    const logoText = document.getElementById('logo-text');
-    
     if (userName) {
-        const badge = userData.tipo === 'trabajador' 
-            ? '<span class=\'badge badge-trabajador\'>Trabajador</span>'
-            : '<span class=\'badge badge-empleador\'>Empleador</span>';
-            
-        userName.innerHTML = `
-            👤 ${userData.nombre || 'Usuario'}
-            ${badge}
-        `;
-    }
-    
-    if (logoText) {
-        logoText.textContent = 'ChambApp';
+        userName.innerHTML = `👤 ${usuario.nombre || 'Usuario'}`;
     }
 }
 
-function personalizarDashboard(userData) {
-    const esTrabajador = userData.tipo === 'trabajador';
+function personalizarPorTipo(tipo) {
+    const navPublicar = document.getElementById('nav-publicar');
     
-    if (esTrabajador) {
-        document.getElementById('nav-buscar-text').textContent = 'Buscar Chambas';
-        document.getElementById('nav-publicar').style.display = 'none';
-        document.getElementById('nav-trabajadores-text').textContent = 'Mis Aplicaciones';
-        document.getElementById('titulo-ofertas').textContent = 'Ofertas Disponibles';
+    if (tipo === 'trabajador') {
+        if (navPublicar) navPublicar.style.display = 'none';
     } else {
-        document.getElementById('nav-buscar-text').textContent = 'Buscar Trabajadores';
-        document.getElementById('nav-trabajadores-text').textContent = 'Mis Ofertas';
-        document.getElementById('titulo-ofertas').textContent = 'Mis Ofertas Publicadas';
-    }
-    
-    const navPerfil = document.getElementById('nav-perfil');
-    if (navPerfil) {
-        navPerfil.href = esTrabajador ? 'perfil-trabajador.html' : 'perfil-empleador.html';
+        if (navPublicar) navPublicar.style.display = 'flex';
     }
 }
 
-async function cargarEstadisticas(userData) {
+function ocultarLoading() {
+    const loading = document.getElementById('loading-screen');
+    const content = document.getElementById('dashboard-content');
+    if (loading) loading.style.display = 'none';
+    if (content) content.style.display = 'block';
+}
+
+async function cargarAplicacionesUsuario(userId) {
     try {
-        const esTrabajador = userData.tipo === 'trabajador';
-        
-        if (esTrabajador) {
-            const aplicacionesRef = collection(db, 'aplicaciones');
-            const qAplicaciones = query(
-                aplicacionesRef,
-                where('trabajadorId', '==', usuarioActual.uid)
-            );
-            const aplicacionesSnap = await getDocs(qAplicaciones);
-            
-            document.getElementById('stat-icon-1').textContent = '📋';
-            document.getElementById('stat-number-1').textContent = aplicacionesSnap.size;
-            document.getElementById('stat-label-1').textContent = 'Aplicaciones Enviadas';
-            
-            document.getElementById('stat-icon-2').textContent = '💼';
-            document.getElementById('stat-number-2').textContent = '0';
-            document.getElementById('stat-label-2').textContent = 'Trabajos Completados';
-            
-            document.getElementById('stat-icon-3').textContent = '⭐';
-            document.getElementById('stat-number-3').textContent = '0';
-            document.getElementById('stat-label-3').textContent = 'Calificacion Promedio';
-            
-        } else {
-            const ofertasRef = collection(db, 'ofertas');
-            const qOfertas = query(
-                ofertasRef,
-                where('empleadorId', '==', usuarioActual.uid)
-            );
-            const ofertasSnap = await getDocs(qOfertas);
-            
-            document.getElementById('stat-icon-1').textContent = '📢';
-            document.getElementById('stat-number-1').textContent = ofertasSnap.size;
-            document.getElementById('stat-label-1').textContent = 'Ofertas Publicadas';
-            
-            document.getElementById('stat-icon-2').textContent = '👥';
-            document.getElementById('stat-number-2').textContent = '0';
-            document.getElementById('stat-label-2').textContent = 'Aplicantes Recibidos';
-            
-            document.getElementById('stat-icon-3').textContent = '🤝';
-            document.getElementById('stat-number-3').textContent = '0';
-            document.getElementById('stat-label-3').textContent = 'Trabajadores Contratados';
-        }
-        
+        const q = query(
+            collection(db, 'aplicaciones'),
+            where('aplicanteId', '==', userId)
+        );
+        const snapshot = await getDocs(q);
+        aplicacionesUsuario = snapshot.docs.map(doc => doc.data().ofertaId);
     } catch (error) {
-        console.error('Error cargando estadisticas:', error);
+        console.error('Error cargando aplicaciones:', error);
     }
 }
 
-async function cargarOfertas(userData) {
+async function cargarOfertas(usuario, userUid) {
     try {
-        const ofertasGrid = document.querySelector('.ofertas-grid');
-        const esTrabajador = userData.tipo === 'trabajador';
-        
         let q;
         
-        if (esTrabajador) {
-            const ofertasRef = collection(db, 'ofertas');
+        if (usuario && usuario.tipo === 'empleador') {
             q = query(
-                ofertasRef,
-                where('estado', '==', 'activa'),
-                orderBy('fechaPublicacion', 'desc'),
-                limit(20)
+                collection(db, 'ofertas'), 
+                where('empleadorEmail', '==', usuario.email),
+                orderBy('fechaCreacion', 'desc')
             );
         } else {
-            const ofertasRef = collection(db, 'ofertas');
             q = query(
-                ofertasRef,
-                where('empleadorId', '==', usuarioActual.uid),
-                orderBy('fechaPublicacion', 'desc')
+                collection(db, 'ofertas'),
+                orderBy('fechaCreacion', 'desc'),
+                limit(20)
             );
         }
         
         const snapshot = await getDocs(q);
+        const ofertasGrid = document.querySelector('.ofertas-grid');
         
-        ofertasGlobales = [];
+        if (snapshot.empty || !ofertasGrid) {
+            mostrarEmptyState();
+            return;
+        }
         
-        snapshot.forEach((doc) => {
-            ofertasGlobales.push({
-                id: doc.id,
-                ...doc.data()
-            });
+        ofertasGrid.innerHTML = '';
+        todasLasOfertas = [];
+        
+        snapshot.forEach((docSnap) => {
+            const oferta = docSnap.data();
+            todasLasOfertas.push({ id: docSnap.id, data: oferta });
+            ofertasGrid.innerHTML += crearOfertaCard(oferta, docSnap.id);
         });
-        
-        mostrarOfertas(ofertasGlobales);
         
     } catch (error) {
         console.error('Error cargando ofertas:', error);
-        mostrarToast('Error al cargar ofertas', 'error');
     }
 }
 
-function mostrarOfertas(ofertas) {
-    const ofertasGrid = document.querySelector('.ofertas-grid');
-    
-    if (ofertas.length === 0) {
-        ofertasGrid.innerHTML = `
-            <div class='empty-state'>
-                <div class='empty-state-icon'>📭</div>
-                <h3>No hay ofertas disponibles</h3>
-                <p>Pronto habra nuevas oportunidades</p>
-            </div>
-        `;
-        return;
-    }
-    
-    ofertasGrid.innerHTML = ofertas.map(oferta => `
+function crearOfertaCard(oferta, id) {
+    return `
         <div class='oferta-card'>
             <div class='oferta-header'>
-                <span class='oferta-categoria ${oferta.categoria}'>
-                    ${oferta.categoria}
-                </span>
-                <span class='oferta-fecha'>
-                    ${formatearFecha(oferta.fechaPublicacion)}
-                </span>
+                <span class='oferta-categoria ${oferta.categoria}'>${oferta.categoria}</span>
+                <span class='oferta-fecha'>${formatearFecha(oferta.fechaCreacion)}</span>
             </div>
-            
             <h3 class='oferta-titulo'>${oferta.titulo}</h3>
-            <p class='oferta-descripcion'>${oferta.descripcion}</p>
-            
+            <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 120)}...</p>
             <div class='oferta-detalles'>
                 <span class='detalle'>💰 ${oferta.salario}</span>
                 <span class='detalle'>📍 ${oferta.ubicacion}</span>
-                <span class='detalle'>📅 ${oferta.tipoTrabajo}</span>
             </div>
-            
             <div class='oferta-footer'>
-                <button class='btn btn-primary' onclick='verDetalleOferta("${oferta.id}")'>
-                    Ver Detalles
-                </button>
+                <button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>
             </div>
-        </div>
-    `).join('');
-}
-
-window.verDetalleOferta = async function(ofertaId) {
-    const oferta = ofertasGlobales.find(o => o.id === ofertaId);
-    if (!oferta) return;
-    
-    const modalBody = document.getElementById('modal-body');
-    
-    modalBody.innerHTML = `
-        <div class='modal-header'>
-            <span class='oferta-categoria ${oferta.categoria}'>${oferta.categoria}</span>
-            <h2>${oferta.titulo}</h2>
-        </div>
-        
-        <div class='modal-text'>
-            <h3>Descripcion:</h3>
-            <p>${oferta.descripcion}</p>
-            
-            <h3>Detalles:</h3>
-            <ul class='modal-list'>
-                <li>💰 Salario: ${oferta.salario}</li>
-                <li>📍 Ubicacion: ${oferta.ubicacion}</li>
-                <li>📅 Tipo: ${oferta.tipoTrabajo}</li>
-                <li>⏰ Horario: ${oferta.horario || 'Por definir'}</li>
-                <li>📆 Fecha: ${formatearFecha(oferta.fechaPublicacion)}</li>
-            </ul>
-            
-            ${oferta.requisitos ? `
-                <h3>Requisitos:</h3>
-                <p>${oferta.requisitos}</p>
-            ` : ''}
-        </div>
-        
-        <div class='modal-buttons'>
-            <button class='btn btn-secondary' onclick='cerrarModal()'>Cerrar</button>
-            <button class='btn btn-primary' onclick='aplicarOferta("${oferta.id}")'>
-                Aplicar
-            </button>
         </div>
     `;
-    
-    document.getElementById('modal-overlay').classList.add('active');
-};
-
-window.aplicarOferta = async function(ofertaId) {
-    mostrarToast('Funcion en desarrollo', 'info');
-    cerrarModal();
-};
-
-window.cerrarModal = function() {
-    document.getElementById('modal-overlay').classList.remove('active');
-};
-
-window.clickFueraModal = function(event) {
-    if (event.target.id === 'modal-overlay') {
-        cerrarModal();
-    }
-};
-
-window.aplicarFiltros = function() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-        ejecutarFiltros();
-    }, 300);
-};
-
-function ejecutarFiltros() {
-    const busqueda = document.getElementById('filtro-busqueda').value.toLowerCase();
-    const categoria = document.getElementById('filtro-categoria').value;
-    const ubicacion = document.getElementById('filtro-ubicacion').value.toLowerCase();
-    
-    const ofertasFiltradas = ofertasGlobales.filter(oferta => {
-        const matchBusqueda = !busqueda || 
-            oferta.titulo.toLowerCase().includes(busqueda) ||
-            oferta.descripcion.toLowerCase().includes(busqueda);
-            
-        const matchCategoria = !categoria || oferta.categoria === categoria;
-        
-        const matchUbicacion = !ubicacion || 
-            oferta.ubicacion.toLowerCase().includes(ubicacion);
-        
-        return matchBusqueda && matchCategoria && matchUbicacion;
-    });
-    
-    mostrarOfertas(ofertasFiltradas);
-    
-    document.getElementById('resultados-count').textContent = 
-        `Mostrando ${ofertasFiltradas.length} de ${ofertasGlobales.length} ofertas`;
 }
 
-window.limpiarFiltros = function() {
-    document.getElementById('filtro-busqueda').value = '';
-    document.getElementById('filtro-categoria').value = '';
-    document.getElementById('filtro-ubicacion').value = '';
-    
-    mostrarOfertas(ofertasGlobales);
-    
-    document.getElementById('resultados-count').textContent = 
-        'Mostrando todas las ofertas';
-};
+function mostrarEmptyState() {
+    const grid = document.querySelector('.ofertas-grid');
+    if (grid) {
+        grid.innerHTML = `
+            <div class='empty-state'>
+                <div class='empty-state-icon'>📭</div>
+                <h3>No hay ofertas disponibles</h3>
+            </div>
+        `;
+    }
+}
+
+async function cargarEstadisticas(usuario, userUid) {
+    console.log('Estadísticas cargadas');
+}
+
+function formatearFecha(timestamp) {
+    if (!timestamp) return '';
+    const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return fecha.toLocaleDateString('es-PE');
+}
+
+// ========================================
+// FUNCIONES GLOBALES
+// ========================================
 
 window.cerrarSesion = async function() {
     try {
         await signOut(auth);
         window.location.href = 'login.html';
     } catch (error) {
-        console.error('Error cerrando sesion:', error);
+        console.error('Error:', error);
     }
 };
 
 window.toggleMenu = function() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
+    if (sidebar) sidebar.classList.toggle('active');
+    if (overlay) overlay.classList.toggle('active');
 };
 
-function formatearFecha(timestamp) {
-    if (!timestamp) return 'Fecha no disponible';
-    
-    const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    const ahora = new Date();
-    const diff = ahora - fecha;
-    
-    const minutos = Math.floor(diff / 60000);
-    const horas = Math.floor(diff / 3600000);
-    const dias = Math.floor(diff / 86400000);
-    
-    if (minutos < 60) return `Hace ${minutos} min`;
-    if (horas < 24) return `Hace ${horas}h`;
-    if (dias < 7) return `Hace ${dias}d`;
-    
-    return fecha.toLocaleDateString('es-PE');
-}
+window.aplicarFiltros = function() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        console.log('Aplicando filtros');
+    }, 300);
+};
 
-function mostrarToast(mensaje, tipo = 'info') {
-    if (typeof window.mostrarToast === 'function') {
-        window.mostrarToast(mensaje, tipo);
-    } else {
-        alert(mensaje);
-    }
-}
+window.limpiarFiltros = function() {
+    console.log('Limpiando filtros');
+};
+
+window.verDetalle = function(id) {
+    console.log('Ver detalle:', id);
+};
