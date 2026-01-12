@@ -834,3 +834,141 @@ window.toggleMenu = toggleMenu;
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') cerrarModal();
 });
+// ========================================
+// SISTEMA DE UBICACIÓN
+// ========================================
+import { 
+    tieneUbicacionGuardada, 
+    solicitarYGuardarUbicacion,
+    formatearUbicacion,
+    obtenerUbicacionGuardada
+} from '../utils/geolocation.js';
+
+// Verificar ubicación al cargar dashboard
+async function verificarUbicacion() {
+    try {
+        const tieneUbicacion = await tieneUbicacionGuardada();
+        
+        if (!tieneUbicacion) {
+            // Esperar 2 segundos después de cargar dashboard
+            setTimeout(() => {
+                mostrarModalUbicacion();
+            }, 2000);
+        } else {
+            // Mostrar ubicación actual en UI
+            const ubicacion = await obtenerUbicacionGuardada();
+            mostrarUbicacionEnUI(ubicacion);
+        }
+    } catch (error) {
+        console.error('Error al verificar ubicación:', error);
+    }
+}
+
+function mostrarModalUbicacion() {
+    const modal = document.getElementById('modal-ubicacion');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function cerrarModalUbicacion() {
+    const modal = document.getElementById('modal-ubicacion');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+async function solicitarUbicacion() {
+    try {
+        const modal = document.getElementById('modal-ubicacion');
+        const btnPermitir = event.target;
+        
+        // Loading state
+        btnPermitir.disabled = true;
+        btnPermitir.classList.add('btn-loading');
+        const textoOriginal = btnPermitir.textContent;
+        btnPermitir.textContent = 'Obteniendo ubicación...';
+        
+        // Solicitar y guardar ubicación
+        const resultado = await solicitarYGuardarUbicacion();
+        
+        if (resultado.success) {
+            // Éxito
+            cerrarModalUbicacion();
+            
+            // Mostrar toast de éxito
+            if (typeof mostrarToast === 'function') {
+                mostrarToast('✅ Ubicación guardada correctamente', 'success');
+            }
+            
+            // Actualizar UI
+            mostrarUbicacionEnUI(resultado);
+            
+            // Recargar ofertas ordenadas por distancia (futuro)
+            // await cargarOfertasConDistancia();
+            
+        } else {
+            // Error
+            throw new Error(resultado.error || 'No se pudo obtener ubicación');
+        }
+        
+    } catch (error) {
+        console.error('Error al solicitar ubicación:', error);
+        
+        // Mostrar error amigable
+        const modal = document.getElementById('modal-ubicacion');
+        const modalBody = modal.querySelector('.modal-body');
+        
+        modalBody.innerHTML = `
+            <div class="modal-header" style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: var(--space-md);">⚠️</div>
+                <h2>No se pudo obtener ubicación</h2>
+            </div>
+
+            <div class="alert alert-danger" style="margin-top: var(--space-lg);">
+                <div class="alert-icon">❌</div>
+                <div class="alert-content">
+                    <div class="alert-message">
+                        ${error.message}
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: var(--space-md);">
+                <div class="alert-icon">💡</div>
+                <div class="alert-content">
+                    <div class="alert-title">¿Cómo activar la ubicación?</div>
+                    <div class="alert-message">
+                        <ol style="margin: var(--space-sm) 0; padding-left: var(--space-lg); line-height: var(--leading-relaxed);">
+                            <li>Ve a la configuración de tu navegador</li>
+                            <li>Busca "Permisos" o "Ubicación"</li>
+                            <li>Permite el acceso a ChambApp</li>
+                            <li>Recarga esta página</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="margin-top: var(--space-xl);">
+                <button class="btn btn-primary btn-block" onclick="cerrarModalUbicacion()">
+                    Entendido
+                </button>
+            </div>
+        `;
+    }
+}
+
+function mostrarUbicacionEnUI(ubicacion) {
+    // TODO: Crear elemento en header para mostrar ubicación
+    // Por ahora solo log
+    console.log('📍 Ubicación actual:', formatearUbicacion(ubicacion));
+}
+
+// Exponer funciones globales
+window.cerrarModalUbicacion = cerrarModalUbicacion;
+window.solicitarUbicacion = solicitarUbicacion;
+
+// Llamar verificación después de cargar dashboard
+// (agregar esto al final del onAuthStateChanged existente)
