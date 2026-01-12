@@ -68,6 +68,12 @@ async function geocodificar(coords) {
         
         const data = await response.json();
         
+        // 🔍 Logging detallado para debugging
+        console.log('Geocoding API status:', data.status);
+        if (data.error_message) {
+            console.error('Geocoding API error:', data.error_message);
+        }
+        
         if (data.status === 'OK' && data.results[0]) {
             const result = data.results[0];
             const addressComponents = result.address_components;
@@ -97,8 +103,21 @@ async function geocodificar(coords) {
                 direccionCompleta: result.formatted_address,
                 timestamp: new Date().toISOString()
             };
+        } else if (data.status === 'OVER_QUERY_LIMIT') {
+            // ⚠️ Rate limiting de Google - usar fallback
+            console.warn('Google Geocoding: Límite de requests excedido, usando fallback');
+            return {
+                lat: coords.lat,
+                lng: coords.lng,
+                distrito: 'Ubicacion detectada',
+                provincia: '',
+                departamento: '',
+                direccionCompleta: `${coords.lat}, ${coords.lng}`,
+                timestamp: new Date().toISOString()
+            };
         } else {
-            throw new Error('No se pudo geocodificar la ubicacion');
+            console.error('Geocoding fallo con status:', data.status);
+            throw new Error(`No se pudo geocodificar la ubicacion (${data.status})`);
         }
     } catch (error) {
         console.error('Error en geocodificacion:', error);
@@ -217,6 +236,7 @@ async function verificarUbicacion(uid, tipoUsuario) {
 
 async function actualizarUbicacionEnBackground(uid) {
     try {
+        // ⏰ Actualizar cada 30 minutos (no 3 segundos) para evitar rate limiting
         setTimeout(async () => {
             const nuevaUbicacion = await actualizarUbicacionSilenciosa(uid);
             
@@ -224,7 +244,7 @@ async function actualizarUbicacionEnBackground(uid) {
                 mostrarBadgeUbicacion(nuevaUbicacion);
                 console.log('Badge actualizado automáticamente');
             }
-        }, 3000);
+        }, 30 * 60 * 1000); // 30 minutos
         
     } catch (error) {
         console.warn('Error actualizando ubicacion en background:', error);
