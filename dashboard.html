@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ChambApp</title>
     
-    <!-- 🔴 MEJORA #1: SOLO UN CSS -->
     <link rel="stylesheet" href="css/dashboard-main.css">
-    
-    <!-- CSS Nuevos - UX Mejorado -->
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/accessibility.css">
@@ -35,10 +32,7 @@
                 <span class="hamburger-line"></span>
             </button>
             <div class="logo" id="logo-text">ChambApp</div>
-            
-            <!-- 🆕 BADGE DE UBICACIÓN (se crea dinámicamente por JS) -->
-            <!-- El badge aparece aquí automáticamente cuando el usuario tiene ubicación -->
-            
+            <!-- ✅ Badge ubicación se insertará aquí dinámicamente -->
             <div class="user-menu">
                 <span class="user-name" id="user-name">👤 Bienvenido</span>
                 <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
@@ -71,7 +65,6 @@
                     <span class="icon">💬</span>
                     <span>Mensajes</span>
                 </div>
-                <!-- 🔴 FIX: Convertir a link dinámico -->
                 <a href="perfil-trabajador.html" class="nav-item" id="nav-perfil">
                     <span class="icon">⚙️</span>
                     <span>Mi Perfil</span>
@@ -82,7 +75,7 @@
         <!-- Main Content -->
         <main class="main-content" id="main-content">
     
-            <!-- 🔴 MEJORA #2: SKELETON LOADING -->
+            <!-- Loading Screen -->
             <div id="loading-screen">
                 <div class="stats-grid">
                     <div class="skeleton skeleton-stat"></div>
@@ -136,11 +129,10 @@
                     <!-- Panel de Filtros -->
                     <div class="filtros-container">
                         <div class="filtros-header">
-                            <h3>🔍 Buscar y Filtrar</h3>
+                            <h3>🔎 Buscar y Filtrar</h3>
                             <button class="btn-limpiar" onclick="limpiarFiltros()">🔄 Limpiar</button>
                         </div>
                 
-                        <!-- 🔴 MEJORA #4: DEBOUNCE EN FILTROS -->
                         <div class="filtros-grid">
                             <div class="filtro-item">
                                 <label for="filtro-busqueda">🔎 Buscar:</label>
@@ -241,11 +233,66 @@
     <!-- Overlay sidebar móvil -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
 
-    <!-- Modal -->
+    <!-- Modal genérico -->
     <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)" role="dialog" aria-modal="true">
         <div class="modal-content">
             <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">&times;</button>
             <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- ✅ MODAL UBICACIÓN (Task 9 Parte 2) -->
+    <div id="modal-ubicacion" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="background: #dbeafe; padding: 1.5rem; border-radius: 12px 12px 0 0;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: #1e40af;">
+                    📍 Activar Ubicación
+                </h2>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                <p style="font-size: 1.1rem; color: #374151; margin-bottom: 1.5rem; line-height: 1.6;">
+                    Para mostrarte <strong>ofertas cercanas</strong>, necesitamos conocer tu ubicación.
+                </p>
+                
+                <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <p style="font-size: 0.9rem; color: #6b7280; margin: 0;">
+                        🔒 <strong>Tu privacidad es importante:</strong><br>
+                        Solo guardamos tu distrito para mostrarte trabajos cercanos. 
+                        No compartimos tu ubicación exacta.
+                    </p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                        <span style="color: #374151;">Ver ofertas cerca de ti</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                        <span style="color: #374151;">Ahorra tiempo en traslados</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                        <span style="color: #374151;">Encuentra chambas más rápido</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 1.5rem; border-top: 1px solid #e5e7eb; display: flex; gap: 1rem;">
+                <button 
+                    class="btn btn-secondary" 
+                    onclick="cerrarModalUbicacion()"
+                    style="flex: 1;"
+                >
+                    Ahora no
+                </button>
+                <button 
+                    class="btn btn-primary" 
+                    onclick="solicitarUbicacion()"
+                    style="flex: 2;"
+                >
+                    📍 Activar Ubicación
+                </button>
+            </div>
         </div>
     </div>
     
@@ -254,7 +301,7 @@
     <script src="js/toast.js"></script>
     <script src="js/onboarding.js"></script>
     
-    <!-- 🔴 MEJORA: Dashboard JS optimizado -->
+    <!-- Dashboard JS con Task 9 -->
     <script type="module" src="js/dashboard/dashboard.js"></script>
     
     <!-- Onboarding -->
@@ -273,50 +320,5 @@
             }, 500);
         });
     </script>
-    
-    <!-- Modal Solicitar Ubicación -->
-    <div id="modal-ubicacion" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-ubicacion-titulo">
-        <div class="modal-content" style="max-width: 500px;">
-            <button class="modal-close" onclick="cerrarModalUbicacion()" aria-label="Cerrar">&times;</button>
-            
-            <div class="modal-body">
-                <div class="modal-header" style="text-align: center;">
-                    <div style="font-size: 4rem; margin-bottom: var(--space-md);">📍</div>
-                    <h2 id="modal-ubicacion-titulo">¿Permitir ubicación?</h2>
-                    <p style="color: var(--gray); font-size: var(--text-base); margin-top: var(--space-sm);">
-                        Te ayudará a encontrar trabajos cerca de ti
-                    </p>
-                </div>
-
-                <div class="alert alert-info" style="margin-top: var(--space-lg);">
-                    <div class="alert-icon">ℹ️</div>
-                    <div class="alert-content">
-                        <div class="alert-title">¿Por qué necesitamos tu ubicación?</div>
-                        <div class="alert-message">
-                            <ul style="margin: var(--space-sm) 0; padding-left: var(--space-lg); line-height: var(--leading-relaxed);">
-                                <li>Ver ofertas cerca de ti</li>
-                                <li>Ordenar por distancia</li>
-                                <li>Ahorrarte tiempo de viaje</li>
-                                <li>Más oportunidades locales</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer" style="margin-top: var(--space-xl); gap: var(--gap-sm); display: flex; flex-direction: column;">
-                    <button class="btn btn-primary btn-block" onclick="solicitarUbicacion()">
-                        📍 Permitir Ubicación
-                    </button>
-                    <button class="btn btn-ghost btn-block" onclick="cerrarModalUbicacion()">
-                        Después
-                    </button>
-                </div>
-
-                <p style="font-size: var(--text-xs); color: var(--gray); text-align: center; margin-top: var(--space-md);">
-                    Tu ubicación se guarda de forma segura y solo tú puedes verla.
-                </p>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
