@@ -834,9 +834,21 @@ function toggleMenu() {
 /**
  * Verificar si el usuario tiene ubicación guardada
  * Si no tiene, mostrar modal después de 2 segundos
+ * 🔴 SOLO PARA TRABAJADORES
  */
 async function verificarUbicacion() {
     try {
+        // 🔴 OBTENER TIPO DE USUARIO
+        const usuarioStr = localStorage.getItem('usuarioChambApp');
+        const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+        
+        // 🔴 SOLO PARA TRABAJADORES
+        if (!usuario || usuario.tipo !== 'trabajador') {
+            console.log('💼 Empleador detectado - Modal de ubicación no necesario');
+            return; // Salir si es empleador
+        }
+        
+        // Continuar solo si es trabajador
         const tieneUbicacion = await tieneUbicacionGuardada();
         
         if (!tieneUbicacion) {
