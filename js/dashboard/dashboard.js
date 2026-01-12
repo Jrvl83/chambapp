@@ -1,11 +1,21 @@
 // ========================================
 // DASHBOARD.JS - OPTIMIZADO UX/UI
-// ChambApp - Debounce + Loading States
+// ChambApp - Debounce + Loading States + Geolocalización
 // ========================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, deleteDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+// ========================================
+// IMPORT GEOLOCALIZACIÓN
+// ========================================
+import { 
+    tieneUbicacionGuardada, 
+    solicitarYGuardarUbicacion,
+    formatearUbicacion,
+    obtenerUbicacionGuardada
+} from '../utils/geolocation.js';
 
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
@@ -38,7 +48,10 @@ onAuthStateChanged(auth, async (user) => {
             
             // 🔴 MEJORA #2: Ocultar loading, mostrar contenido
             ocultarLoading();
-            // Verificar ubicación
+            
+            // ========================================
+            // 🔴 GEOLOCALIZACIÓN: Verificar ubicación
+            // ========================================
             await verificarUbicacion();
         } else {
             alert('Error al cargar perfil');
@@ -815,38 +828,13 @@ function toggleMenu() {
 }
 
 // ========================================
-// EXPONER FUNCIONES GLOBALES
+// 🔴 SISTEMA DE UBICACIÓN - FUNCIONES
 // ========================================
-window.verDetalleOferta = verDetalleOferta;
-window.contactarOferta = contactarOferta;
-window.enviarMensajeContacto = enviarMensajeContacto;
-window.cerrarModal = cerrarModal;
-window.clickFueraModal = clickFueraModal;
-window.mostrarModal = mostrarModal;
-window.cerrarSesion = cerrarSesion;
-window.confirmarSalir = confirmarSalir;
-window.aplicarFiltros = aplicarFiltros;
-window.limpiarFiltros = limpiarFiltros;
-window.editarOferta = editarOferta;
-window.eliminarOferta = eliminarOferta;
-window.confirmarEliminarOferta = confirmarEliminarOferta;
-window.toggleMenu = toggleMenu;
 
-// Cerrar modal con ESC
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') cerrarModal();
-});
-// ========================================
-// SISTEMA DE UBICACIÓN
-// ========================================
-import { 
-    tieneUbicacionGuardada, 
-    solicitarYGuardarUbicacion,
-    formatearUbicacion,
-    obtenerUbicacionGuardada
-} from '../utils/geolocation.js';
-
-// Verificar ubicación al cargar dashboard
+/**
+ * Verificar si el usuario tiene ubicación guardada
+ * Si no tiene, mostrar modal después de 2 segundos
+ */
 async function verificarUbicacion() {
     try {
         const tieneUbicacion = await tieneUbicacionGuardada();
@@ -866,6 +854,9 @@ async function verificarUbicacion() {
     }
 }
 
+/**
+ * Mostrar el modal de solicitud de ubicación
+ */
 function mostrarModalUbicacion() {
     const modal = document.getElementById('modal-ubicacion');
     if (modal) {
@@ -874,6 +865,9 @@ function mostrarModalUbicacion() {
     }
 }
 
+/**
+ * Cerrar el modal de ubicación
+ */
 function cerrarModalUbicacion() {
     const modal = document.getElementById('modal-ubicacion');
     if (modal) {
@@ -882,9 +876,12 @@ function cerrarModalUbicacion() {
     }
 }
 
+/**
+ * Solicitar ubicación al usuario (GPS)
+ * Maneja todo el flujo: GPS → Geocoding → Guardar en Firestore
+ */
 async function solicitarUbicacion() {
     try {
-        const modal = document.getElementById('modal-ubicacion');
         const btnPermitir = event.target;
         
         // Loading state
@@ -906,9 +903,9 @@ async function solicitarUbicacion() {
             }
             
             // Actualizar UI
-            mostrarUbicacionEnUI(resultado);
+            mostrarUbicacionEnUI(resultado.data);
             
-            // Recargar ofertas ordenadas por distancia (futuro)
+            // TODO: Recargar ofertas ordenadas por distancia
             // await cargarOfertasConDistancia();
             
         } else {
@@ -919,7 +916,7 @@ async function solicitarUbicacion() {
     } catch (error) {
         console.error('Error al solicitar ubicación:', error);
         
-        // Mostrar error amigable
+        // Mostrar error amigable en el modal
         const modal = document.getElementById('modal-ubicacion');
         const modalBody = modal.querySelector('.modal-body');
         
@@ -962,15 +959,51 @@ async function solicitarUbicacion() {
     }
 }
 
+/**
+ * Mostrar la ubicación del usuario en la UI
+ * @param {Object} ubicacion - Objeto con datos de ubicación
+ */
 function mostrarUbicacionEnUI(ubicacion) {
-    // TODO: Crear elemento en header para mostrar ubicación
-    // Por ahora solo log
-    console.log('📍 Ubicación actual:', formatearUbicacion(ubicacion));
+    // TODO: Implementar en Task 9 Parte 2
+    // Por ahora solo mostramos en consola
+    console.log('📍 Ubicación guardada:', formatearUbicacion(ubicacion));
+    
+    // Futuro: Agregar badge en header del dashboard
+    // const header = document.querySelector('.dashboard-header');
+    // const badge = document.createElement('div');
+    // badge.className = 'ubicacion-badge';
+    // badge.innerHTML = `📍 ${ubicacion.distrito || 'Lima'}`;
+    // header.appendChild(badge);
 }
 
-// Exponer funciones globales
+// ========================================
+// EXPONER FUNCIONES GLOBALES
+// ========================================
+window.verDetalleOferta = verDetalleOferta;
+window.contactarOferta = contactarOferta;
+window.enviarMensajeContacto = enviarMensajeContacto;
+window.cerrarModal = cerrarModal;
+window.clickFueraModal = clickFueraModal;
+window.mostrarModal = mostrarModal;
+window.cerrarSesion = cerrarSesion;
+window.confirmarSalir = confirmarSalir;
+window.aplicarFiltros = aplicarFiltros;
+window.limpiarFiltros = limpiarFiltros;
+window.editarOferta = editarOferta;
+window.eliminarOferta = eliminarOferta;
+window.confirmarEliminarOferta = confirmarEliminarOferta;
+window.toggleMenu = toggleMenu;
+
+// ========================================
+// 🔴 EXPONER FUNCIONES DE UBICACIÓN
+// ========================================
 window.cerrarModalUbicacion = cerrarModalUbicacion;
 window.solicitarUbicacion = solicitarUbicacion;
 
-// Llamar verificación después de cargar dashboard
-// (agregar esto al final del onAuthStateChanged existente)
+// Cerrar modal con ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        cerrarModal();
+        cerrarModalUbicacion();
+    }
+});
