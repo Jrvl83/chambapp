@@ -4,6 +4,9 @@
 // Task 9: Geolocalización completa
 // ============================================
 
+import { GOOGLE_GEOCODING_API_KEY } from '../config/api-keys.js';
+import { calcularDistanciaCoords, formatearDistancia } from './distance.js';
+
 /**
  * Solicitar coordenadas GPS del navegador
  * @returns {Promise<{lat: number, lng: number}>}
@@ -58,7 +61,7 @@ export async function geocodificar(coords) {
     const { lat, lng } = coords;
     
     // Google Geocoding API
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyBxUb73baTPSq_nvX5vCjGN_d_ctEC8ySs&language=es`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_GEOCODING_API_KEY}&language=es`;
     
     try {
         const response = await fetch(url);
@@ -119,7 +122,7 @@ export async function geocodificar(coords) {
  */
 export async function guardarUbicacion(uid, ubicacion) {
     try {
-        const { db } = await import('../config/firebase-config.js');
+        const { db } = await import('../config/firebase-init.js');
         const { doc, setDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
         
         const ubicacionData = {
@@ -154,7 +157,7 @@ export async function guardarUbicacion(uid, ubicacion) {
  */
 export async function obtenerUbicacionGuardada(uid) {
     try {
-        const { db } = await import('../config/firebase-config.js');
+        const { db } = await import('../config/firebase-init.js');
         const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
         
         const ubicacionRef = doc(db, 'usuarios', uid, 'ubicacion', 'actual');
@@ -205,39 +208,5 @@ export async function actualizarUbicacionSilenciosa(uid) {
     }
 }
 
-/**
- * Calcular distancia entre dos puntos (fórmula Haversine)
- * @param {object} coords1 - {lat, lng}
- * @param {object} coords2 - {lat, lng}
- * @returns {number} Distancia en kilómetros
- */
-export function calcularDistancia(coords1, coords2) {
-    const R = 6371; // Radio de la Tierra en km
-    
-    const lat1 = coords1.lat * Math.PI / 180;
-    const lat2 = coords2.lat * Math.PI / 180;
-    const deltaLat = (coords2.lat - coords1.lat) * Math.PI / 180;
-    const deltaLng = (coords2.lng - coords1.lng) * Math.PI / 180;
-    
-    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-              Math.cos(lat1) * Math.cos(lat2) *
-              Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    
-    const distancia = R * c;
-    
-    return Math.round(distancia * 10) / 10; // Redondear a 1 decimal
-}
-
-/**
- * Formatear distancia para mostrar
- * @param {number} km - Distancia en kilómetros
- * @returns {string} Texto formateado
- */
-export function formatearDistancia(km) {
-    if (km < 1) {
-        return `${Math.round(km * 1000)} m`;
-    }
-    return `${km} km`;
-}
+// Re-exportar funciones de distancia desde modulo centralizado
+export { calcularDistanciaCoords as calcularDistancia, formatearDistancia };

@@ -7,19 +7,29 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Verificar que el usuario esté logueado
+        // Verificar que el usuario este logueado
         const usuarioStr = localStorage.getItem('usuarioChambApp');
         if (!usuarioStr) {
-            alert('Debes iniciar sesión');
-            window.location.href = 'login.html';
+            if (typeof toastError === 'function') {
+                toastError('Debes iniciar sesion');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+            } else {
+                alert('Debes iniciar sesion');
+                window.location.href = 'login.html';
+            }
         }
 
-        const usuario = JSON.parse(usuarioStr);
+        const usuario = JSON.parse(usuarioStr || '{}');
 
         // Verificar que sea empleador
         if (usuario.tipo !== 'empleador') {
-            alert('Solo los empleadores pueden ver aplicaciones');
-            window.location.href = 'dashboard.html';
+            if (typeof toastError === 'function') {
+                toastError('Solo los empleadores pueden ver aplicaciones');
+                setTimeout(() => window.location.href = 'dashboard.html', 1000);
+            } else {
+                alert('Solo los empleadores pueden ver aplicaciones');
+                window.location.href = 'dashboard.html';
+            }
         }
 
         cargarAplicaciones();

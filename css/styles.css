@@ -1,21 +1,24 @@
-/* Reset y Variables */
+/* ============================================
+   STYLES.CSS - Landing Page ChambApp
+   Usa variables de design-system.css
+   ============================================ */
+
+/* Reset basico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Aliases para compatibilidad con codigo existente */
 :root {
-    --primary-color: #2563eb;
-    --secondary-color: #10b981;
-    --dark: #1e293b;
-    --light: #f8fafc;
-    --gray: #64748b;
+    --primary-color: var(--primary, #2563eb);
+    --secondary-color: var(--secondary, #10b981);
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    line-height: var(--leading-relaxed, 1.6);
     color: var(--dark);
 }
 
@@ -43,8 +46,8 @@ header .container {
 
 .logo {
     font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
+    font-weight: var(--font-bold, bold);
+    color: var(--primary);
 }
 
 nav {
@@ -60,12 +63,12 @@ nav a {
 }
 
 nav a:hover {
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark, #1e40af) 100%);
     color: white;
     padding: 100px 0;
     text-align: center;
@@ -102,7 +105,7 @@ nav a:hover {
 
 .btn-primary {
     background: white;
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 .btn-primary:hover {
@@ -118,7 +121,7 @@ nav a:hover {
 
 .btn-secondary:hover {
     background: white;
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 /* Features Section */
@@ -162,7 +165,7 @@ nav a:hover {
 .feature-card h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
 /* Registro Section */
@@ -199,7 +202,7 @@ nav a:hover {
 .form-registro select:focus,
 .form-registro textarea:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--primary);
 }
 
 .form-registro textarea {

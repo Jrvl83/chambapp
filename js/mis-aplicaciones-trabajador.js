@@ -12,19 +12,29 @@ const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Verificar autenticación
+// Verificar autenticacion
 const usuarioStr = localStorage.getItem('usuarioChambApp');
 if (!usuarioStr) {
-    alert('Debes iniciar sesión');
-    window.location.href = 'login.html';
+    if (typeof toastError === 'function') {
+        toastError('Debes iniciar sesion');
+        setTimeout(() => window.location.href = 'login.html', 1000);
+    } else {
+        alert('Debes iniciar sesion');
+        window.location.href = 'login.html';
+    }
 }
 
-const usuario = JSON.parse(usuarioStr);
+const usuario = JSON.parse(usuarioStr || '{}');
 
 // Verificar que sea TRABAJADOR
 if (usuario.tipo !== 'trabajador') {
-    alert('Esta página es solo para trabajadores');
-    window.location.href = 'dashboard.html';
+    if (typeof toastError === 'function') {
+        toastError('Esta pagina es solo para trabajadores');
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else {
+        alert('Esta pagina es solo para trabajadores');
+        window.location.href = 'dashboard.html';
+    }
 }
 
 // Variables globales

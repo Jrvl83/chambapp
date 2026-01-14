@@ -4,6 +4,8 @@
 // 1,874 distritos completos del Perú
 // ============================================
 
+import { calcularDistancia, formatearDistancia } from './distance.js';
+
 /**
  * Cache de datos cargados
  */
@@ -31,12 +33,16 @@ async function cargarDatosUbigeo() {
     
     try {
         console.log('📥 Cargando datos UBIGEO del Perú...');
-        
+
+        // Detectar base URL (local vs GitHub Pages)
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        const baseURL = isGitHubPages ? '/chambapp' : '';
+
         // Cargar los 3 archivos en paralelo
         const [depts, provs, dists] = await Promise.all([
-            fetch('/chambapp/data/ubigeo_departamento.json').then(r => r.json()),
-            fetch('/chambapp/data/ubigeo_provincia.json').then(r => r.json()),
-            fetch('/chambapp/data/ubigeo_distrito.json').then(r => r.json())
+            fetch(`${baseURL}/data/ubigeo_departamento.json`).then(r => r.json()),
+            fetch(`${baseURL}/data/ubigeo_provincia.json`).then(r => r.json()),
+            fetch(`${baseURL}/data/ubigeo_distrito.json`).then(r => r.json())
         ]);
         
         // Procesar y optimizar datos
@@ -221,36 +227,7 @@ export async function obtenerCoordenadasDistrito(distrito) {
     return { lat: -12.046373, lng: -77.042754 };
 }
 
-/**
- * Calcular distancia entre dos puntos (Fórmula de Haversine)
- * @param {number} lat1 
- * @param {number} lng1 
- * @param {number} lat2 
- * @param {number} lng2 
- * @returns {number} Distancia en kilómetros
- */
-export function calcularDistancia(lat1, lng1, lat2, lng2) {
-    const R = 6371; // Radio de la Tierra en km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = 
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-        Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return Math.round((R * c) * 10) / 10;
-}
-
-/**
- * Formatear distancia para mostrar
- * @param {number} km 
- * @returns {string}
- */
-export function formatearDistancia(km) {
-    if (km < 1) {
-        return `${Math.round(km * 1000)} m`;
-    }
-    return `${km} km`;
-}
+// Re-exportar funciones de distancia desde modulo centralizado
+export { calcularDistancia, formatearDistancia };
 
 console.log('✅ Módulo UBIGEO cargado - Listo para cargar datos completos del Perú');

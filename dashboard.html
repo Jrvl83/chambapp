@@ -11,10 +11,34 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     
-    <!-- Intro.js Onboarding -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
-    <link rel="stylesheet" href="css/introjs-custom.css">
-    <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
+    <!-- Intro.js Onboarding - Carga condicional -->
+    <script>
+        // Solo cargar Intro.js si el onboarding no se ha completado
+        (function() {
+            const onboardingCompleted = localStorage.getItem('chambapp-onboarding-completed');
+            if (!onboardingCompleted) {
+                // Cargar CSS
+                const cssIntro = document.createElement('link');
+                cssIntro.rel = 'stylesheet';
+                cssIntro.href = 'https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css';
+                document.head.appendChild(cssIntro);
+
+                const cssCustom = document.createElement('link');
+                cssCustom.rel = 'stylesheet';
+                cssCustom.href = 'css/introjs-custom.css';
+                document.head.appendChild(cssCustom);
+
+                // Cargar JS
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js';
+                document.head.appendChild(script);
+
+                console.log('📚 Intro.js cargado (onboarding pendiente)');
+            } else {
+                console.log('✅ Onboarding ya completado - Intro.js no cargado');
+            }
+        })();
+    </script>
 </head>
 <body>
     
@@ -49,7 +73,7 @@
                     <span class="icon">🏠</span>
                     <span>Inicio</span>
                 </div>
-                <div class="nav-item" id="nav-buscar" tabindex="0">
+                <div class="nav-item" id="nav-buscar" tabindex="0" onclick="irABuscar()">
                     <span class="icon">🔍</span>
                     <span id="nav-buscar-text">Buscar Chambas</span>
                 </div>

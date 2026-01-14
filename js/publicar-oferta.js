@@ -1,31 +1,36 @@
 // ============================================
 // PUBLICAR OFERTA - FORMULARIO MULTI-PASO
-// ChambApp - Con Sistema de Edici贸n + Ubicaci贸n RENIEC
+// ChambApp - Con Sistema de Edicion + Ubicacion RENIEC
 // ============================================
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+// Firebase - Importar instancias centralizadas
+import { auth, db } from './config/firebase-init.js';
+import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { obtenerDepartamentos, obtenerProvincias, obtenerDistritos, obtenerCoordenadasDistrito } from './utils/ubigeo-api.js';
 
-// Inicializar Firebase
-const app = initializeApp(window.firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Verificar autenticaci贸n
+// Verificar autenticacion
 const usuarioStr = localStorage.getItem('usuarioChambApp');
 if (!usuarioStr) {
-    alert('Debes iniciar sesi贸n para publicar ofertas');
-    window.location.href = 'login.html';
+    if (typeof toastError === 'function') {
+        toastError('Debes iniciar sesion para publicar ofertas');
+        setTimeout(() => window.location.href = 'login.html', 1000);
+    } else {
+        alert('Debes iniciar sesion para publicar ofertas');
+        window.location.href = 'login.html';
+    }
 }
 
-const usuario = JSON.parse(usuarioStr);
+const usuario = JSON.parse(usuarioStr || '{}');
 
 // Verificar que sea empleador
 if (usuario.tipo !== 'empleador') {
-    alert('Solo los empleadores pueden publicar ofertas');
-    window.location.href = 'dashboard.html';
+    if (typeof toastError === 'function') {
+        toastError('Solo los empleadores pueden publicar ofertas');
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    } else {
+        alert('Solo los empleadores pueden publicar ofertas');
+        window.location.href = 'dashboard.html';
+    }
 }
 
 // ============================================

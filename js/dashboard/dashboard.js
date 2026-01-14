@@ -201,8 +201,12 @@ onAuthStateChanged(auth, async (user) => {
             // Ocultar loading
             ocultarLoading();
         } else {
-            alert('Error al cargar perfil');
-            window.location.href = 'login.html';
+            if (typeof toastError === 'function') {
+                toastError('Error al cargar perfil');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+            } else {
+                window.location.href = 'login.html';
+            }
         }
     } else {
         window.location.href = 'login.html';
@@ -357,7 +361,9 @@ window.solicitarUbicacion = async function() {
         
     } catch (error) {
         console.error('Error:', error);
-        alert('Error: ' + error.message);
+        if (typeof toastError === 'function') {
+            toastError('Error al obtener ubicacion');
+        }
         btn.textContent = textoOriginal;
         btn.disabled = false;
     }
@@ -376,12 +382,49 @@ function actualizarHeaderUsuario(usuario) {
 
 function personalizarPorTipo(tipo) {
     const navPublicar = document.getElementById('nav-publicar');
-    
+    const navBuscar = document.getElementById('nav-buscar');
+    const navTrabajadores = document.getElementById('nav-trabajadores');
+    const navTrabajadoresText = document.getElementById('nav-trabajadores-text');
+    const navPerfil = document.getElementById('nav-perfil');
+
     if (tipo === 'trabajador') {
+        // === MENÚ TRABAJADOR ===
+        // Ocultar: Publicar Oferta
         if (navPublicar) navPublicar.style.display = 'none';
+
+        // Mostrar: Buscar Chambas
+        if (navBuscar) navBuscar.style.display = 'flex';
+
+        // Cambiar: "Trabajadores" → "Mis Aplicaciones"
+        if (navTrabajadores) {
+            navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
+            navTrabajadores.querySelector('.icon').textContent = '📋';
+        }
+        if (navTrabajadoresText) navTrabajadoresText.textContent = 'Mis Aplicaciones';
+
+        // Perfil trabajador
+        if (navPerfil) navPerfil.href = 'perfil-trabajador.html';
+
     } else {
+        // === MENÚ EMPLEADOR ===
+        // Mostrar: Publicar Oferta
         if (navPublicar) navPublicar.style.display = 'flex';
+
+        // Ocultar: Buscar Chambas
+        if (navBuscar) navBuscar.style.display = 'none';
+
+        // Cambiar: "Trabajadores" → "Ver Candidatos"
+        if (navTrabajadores) {
+            navTrabajadores.href = 'mis-aplicaciones.html';
+            navTrabajadores.querySelector('.icon').textContent = '👥';
+        }
+        if (navTrabajadoresText) navTrabajadoresText.textContent = 'Ver Candidatos';
+
+        // Perfil empleador
+        if (navPerfil) navPerfil.href = 'perfil-empleador.html';
     }
+
+    console.log('✅ Menú personalizado para:', tipo);
 }
 
 function ocultarLoading() {
@@ -455,7 +498,7 @@ function crearOfertaCard(oferta, id) {
             <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 120)}...</p>
             <div class='oferta-detalles'>
                 <span class='detalle'>💰 ${oferta.salario}</span>
-                <span class='detalle'>📍 ${oferta.ubicacion}</span>
+                <span class='detalle'>📍 ${typeof oferta.ubicacion === 'object' ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'Sin ubicación') : oferta.ubicacion}</span>
             </div>
             <div class='oferta-footer'>
                 <button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>
@@ -477,7 +520,92 @@ function mostrarEmptyState() {
 }
 
 async function cargarEstadisticas(usuario, userUid) {
-    console.log('Estadísticas cargadas');
+    try {
+        if (usuario.tipo === 'trabajador') {
+            // ESTADÍSTICAS TRABAJADOR
+
+            // 1. Ofertas disponibles (todas las activas)
+            const ofertasQuery = query(
+                collection(db, 'ofertas'),
+                where('estado', '==', 'activa')
+            );
+            const ofertasSnap = await getDocs(ofertasQuery);
+
+            document.getElementById('stat-icon-1').textContent = '📋';
+            document.getElementById('stat-number-1').textContent = ofertasSnap.size;
+            document.getElementById('stat-label-1').textContent = 'Ofertas Disponibles';
+
+            // 2. Mis aplicaciones
+            const aplicacionesQuery = query(
+                collection(db, 'aplicaciones'),
+                where('aplicanteId', '==', userUid)
+            );
+            const aplicacionesSnap = await getDocs(aplicacionesQuery);
+
+            document.getElementById('stat-icon-2').textContent = '💼';
+            document.getElementById('stat-number-2').textContent = aplicacionesSnap.size;
+            document.getElementById('stat-label-2').textContent = 'Mis Aplicaciones';
+
+            // 3. Trabajos completados
+            const completadosQuery = query(
+                collection(db, 'aplicaciones'),
+                where('aplicanteId', '==', userUid),
+                where('estado', '==', 'completado')
+            );
+            const completadosSnap = await getDocs(completadosQuery);
+
+            document.getElementById('stat-icon-3').textContent = '🤝';
+            document.getElementById('stat-number-3').textContent = completadosSnap.size;
+            document.getElementById('stat-label-3').textContent = 'Trabajos Completados';
+
+        } else {
+            // ESTADÍSTICAS EMPLEADOR
+
+            // 1. Mis ofertas activas
+            const misOfertasQuery = query(
+                collection(db, 'ofertas'),
+                where('empleadorId', '==', userUid),
+                where('estado', '==', 'activa')
+            );
+            const misOfertasSnap = await getDocs(misOfertasQuery);
+
+            document.getElementById('stat-icon-1').textContent = '📋';
+            document.getElementById('stat-number-1').textContent = misOfertasSnap.size;
+            document.getElementById('stat-label-1').textContent = 'Mis Ofertas Activas';
+
+            // 2. Total aplicaciones recibidas
+            const aplicacionesQuery = query(
+                collection(db, 'aplicaciones'),
+                where('empleadorId', '==', userUid)
+            );
+            const aplicacionesSnap = await getDocs(aplicacionesQuery);
+
+            document.getElementById('stat-icon-2').textContent = '👥';
+            document.getElementById('stat-number-2').textContent = aplicacionesSnap.size;
+            document.getElementById('stat-label-2').textContent = 'Aplicaciones Recibidas';
+
+            // 3. Contrataciones realizadas
+            const contratacionesQuery = query(
+                collection(db, 'aplicaciones'),
+                where('empleadorId', '==', userUid),
+                where('estado', '==', 'completado')
+            );
+            const contratacionesSnap = await getDocs(contratacionesQuery);
+
+            document.getElementById('stat-icon-3').textContent = '🤝';
+            document.getElementById('stat-number-3').textContent = contratacionesSnap.size;
+            document.getElementById('stat-label-3').textContent = 'Contrataciones';
+        }
+
+        console.log('✅ Estadísticas cargadas');
+
+    } catch (error) {
+        console.error('Error cargando estadísticas:', error);
+        // Mostrar valores por defecto en caso de error
+        document.getElementById('stat-number-1').textContent = '-';
+        document.getElementById('stat-number-2').textContent = '-';
+        document.getElementById('stat-number-3').textContent = '-';
+    }
 }
 
 function formatearFecha(timestamp) {
@@ -489,6 +617,28 @@ function formatearFecha(timestamp) {
 // ========================================
 // FUNCIONES GLOBALES
 // ========================================
+
+window.irABuscar = function() {
+    // Cerrar menú móvil si está abierto
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+
+    // Scroll al panel de filtros
+    const filtros = document.querySelector('.filtros-container');
+    if (filtros) {
+        filtros.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Focus en el input de búsqueda después del scroll
+        setTimeout(() => {
+            const inputBusqueda = document.getElementById('filtro-busqueda');
+            if (inputBusqueda) {
+                inputBusqueda.focus();
+            }
+        }, 500);
+    }
+};
 
 window.cerrarSesion = async function() {
     try {
@@ -509,14 +659,166 @@ window.toggleMenu = function() {
 window.aplicarFiltros = function() {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-        console.log('Aplicando filtros');
+        const busqueda = document.getElementById('filtro-busqueda')?.value.toLowerCase().trim() || '';
+        const categoria = document.getElementById('filtro-categoria')?.value || '';
+        const ubicacion = document.getElementById('filtro-ubicacion')?.value.toLowerCase().trim() || '';
+
+        let ofertasFiltradas = todasLasOfertas.filter(item => {
+            const oferta = item.data;
+            let cumple = true;
+
+            // Filtro por búsqueda (título o descripción)
+            if (busqueda) {
+                const titulo = (oferta.titulo || '').toLowerCase();
+                const descripcion = (oferta.descripcion || '').toLowerCase();
+                cumple = cumple && (titulo.includes(busqueda) || descripcion.includes(busqueda));
+            }
+
+            // Filtro por categoría
+            if (categoria) {
+                cumple = cumple && oferta.categoria === categoria;
+            }
+
+            // Filtro por ubicación
+            if (ubicacion) {
+                let ubicacionOferta = '';
+                if (typeof oferta.ubicacion === 'object') {
+                    ubicacionOferta = (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || '').toLowerCase();
+                } else {
+                    ubicacionOferta = (oferta.ubicacion || '').toLowerCase();
+                }
+                cumple = cumple && ubicacionOferta.includes(ubicacion);
+            }
+
+            return cumple;
+        });
+
+        // Renderizar ofertas filtradas
+        const ofertasGrid = document.querySelector('.ofertas-grid');
+        if (ofertasGrid) {
+            if (ofertasFiltradas.length === 0) {
+                ofertasGrid.innerHTML = `
+                    <div class='empty-state'>
+                        <div class='empty-state-icon'>🔍</div>
+                        <h3>No se encontraron ofertas</h3>
+                        <p>Intenta con otros filtros</p>
+                    </div>
+                `;
+            } else {
+                ofertasGrid.innerHTML = '';
+                ofertasFiltradas.forEach(item => {
+                    ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id);
+                });
+            }
+        }
+
+        // Actualizar contador
+        const contador = document.getElementById('resultados-count');
+        if (contador) {
+            contador.textContent = `Mostrando ${ofertasFiltradas.length} de ${todasLasOfertas.length} ofertas`;
+        }
+
     }, 300);
 };
 
 window.limpiarFiltros = function() {
-    console.log('Limpiando filtros');
+    // Limpiar inputs
+    const busqueda = document.getElementById('filtro-busqueda');
+    const categoria = document.getElementById('filtro-categoria');
+    const ubicacion = document.getElementById('filtro-ubicacion');
+
+    if (busqueda) busqueda.value = '';
+    if (categoria) categoria.value = '';
+    if (ubicacion) ubicacion.value = '';
+
+    // Mostrar todas las ofertas
+    const ofertasGrid = document.querySelector('.ofertas-grid');
+    if (ofertasGrid) {
+        ofertasGrid.innerHTML = '';
+        todasLasOfertas.forEach(item => {
+            ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id);
+        });
+    }
+
+    // Actualizar contador
+    const contador = document.getElementById('resultados-count');
+    if (contador) {
+        contador.textContent = 'Mostrando todas las ofertas';
+    }
 };
 
-window.verDetalle = function(id) {
+window.verDetalle = async function(id) {
     console.log('Ver detalle:', id);
+    try {
+        const docRef = doc(db, 'ofertas', id);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            if (typeof toastError === 'function') {
+                toastError('No se encontró la oferta');
+            }
+            return;
+        }
+
+        const oferta = docSnap.data();
+        const ubicacionTexto = typeof oferta.ubicacion === 'object'
+            ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'No especificada')
+            : (oferta.ubicacion || 'No especificada');
+
+        const modalBody = document.getElementById('modal-body');
+        modalBody.innerHTML = `
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${oferta.titulo}</h2>
+                <span class="oferta-categoria ${oferta.categoria}" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                    ${oferta.categoria}
+                </span>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 0.5rem;">📝 Descripción</h3>
+                <p style="color: var(--gray); line-height: 1.6;">${oferta.descripcion}</p>
+            </div>
+
+            <div style="background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div><strong>💰 Salario:</strong><br>${oferta.salario}</div>
+                    <div><strong>📍 Ubicación:</strong><br>${ubicacionTexto}</div>
+                    <div><strong>⏱️ Duración:</strong><br>${oferta.duracion || 'No especificada'}</div>
+                    <div><strong>🕐 Horario:</strong><br>${oferta.horario || 'No especificado'}</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 0.5rem;">📋 Requisitos</h3>
+                <p><strong>Experiencia:</strong> ${oferta.experiencia || 'No especificada'}</p>
+                <p><strong>Habilidades:</strong> ${oferta.habilidades || 'No especificadas'}</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+            </div>
+        `;
+
+        const modalOverlay = document.getElementById('modal-overlay');
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+    } catch (error) {
+        console.error('Error al cargar oferta:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar los detalles');
+        }
+    }
+};
+
+window.cerrarModal = function() {
+    const modalOverlay = document.getElementById('modal-overlay');
+    modalOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+};
+
+window.clickFueraModal = function(event) {
+    if (event.target.id === 'modal-overlay') {
+        cerrarModal();
+    }
 };

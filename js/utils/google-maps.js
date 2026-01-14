@@ -3,8 +3,8 @@
 // Módulo para cargar y gestionar Google Maps API
 // ============================================
 
-// ⚠️ IMPORTANTE: Reemplaza con tu API Key real
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE';
+import { GOOGLE_MAPS_API_KEY } from '../config/api-keys.js';
+import { calcularDistancia, formatearDistancia } from './distance.js';
 
 // Estado de carga de la API
 let mapsAPILoaded = false;
@@ -213,54 +213,10 @@ export function centrarMapa(map, lat, lng, zoom = null) {
 }
 
 // ============================================
-// CALCULAR DISTANCIA (HAVERSINE)
+// CALCULAR DISTANCIA - Importado desde distance.js
 // ============================================
-
-/**
- * Calcular distancia entre dos puntos usando fórmula de Haversine
- * @param {number} lat1 - Latitud punto 1
- * @param {number} lon1 - Longitud punto 1
- * @param {number} lat2 - Latitud punto 2
- * @param {number} lon2 - Longitud punto 2
- * @returns {number} Distancia en kilómetros
- */
-export function calcularDistancia(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radio de la Tierra en km
-    
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    
-    const a = 
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distancia = R * c;
-    
-    return Math.round(distancia * 10) / 10; // Redondear a 1 decimal
-}
-
-/**
- * Convertir grados a radianes
- * @param {number} degrees - Grados
- * @returns {number} Radianes
- */
-function toRad(degrees) {
-    return degrees * (Math.PI / 180);
-}
-
-/**
- * Formatear distancia para mostrar
- * @param {number} distanciaKm - Distancia en kilómetros
- * @returns {string} Distancia formateada
- */
-export function formatearDistancia(distanciaKm) {
-    if (distanciaKm < 1) {
-        return `${Math.round(distanciaKm * 1000)} m`;
-    }
-    return `${distanciaKm} km`;
-}
+// Re-exportar para mantener compatibilidad
+export { calcularDistancia, formatearDistancia };
 
 // ============================================
 // ESTILOS PERSONALIZADOS DEL MAPA

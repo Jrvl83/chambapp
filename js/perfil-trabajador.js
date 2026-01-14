@@ -3,16 +3,11 @@
 // ChambApp - JavaScript con Firestore + Storage
 // ============================================
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
-
-// Inicializar Firebase
-const app = initializeApp(window.firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+// Firebase - Importar instancias centralizadas
+import { auth, db, storage } from './config/firebase-init.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
 // Variables globales
 let perfilData = {};
@@ -33,16 +28,16 @@ onAuthStateChanged(auth, async (user) => {
         
         const usuarioStr = localStorage.getItem('usuarioChambApp');
         if (!usuarioStr) {
-            alert('Debes iniciar sesión');
-            window.location.href = 'login.html';
+            toastError('Debes iniciar sesión');
+            setTimeout(() => window.location.href = 'login.html', 1000);
             return;
         }
-        
+
         usuario = JSON.parse(usuarioStr);
-        
+
         if (usuario.tipo !== 'trabajador') {
-            alert('Esta página es solo para trabajadores');
-            window.location.href = 'dashboard.html';
+            toastError('Esta página es solo para trabajadores');
+            setTimeout(() => window.location.href = 'dashboard.html', 1000);
             return;
         }
         
@@ -52,8 +47,8 @@ onAuthStateChanged(auth, async (user) => {
         
     } else {
         console.log('❌ No hay usuario autenticado');
-        alert('Debes iniciar sesión');
-        window.location.href = 'login.html';
+        toastError('Debes iniciar sesión');
+        setTimeout(() => window.location.href = 'login.html', 1000);
     }
 });
 
