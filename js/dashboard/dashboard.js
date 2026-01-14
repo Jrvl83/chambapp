@@ -6,8 +6,9 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 
-// ✅ Usar window.firebaseConfig (arquitectura original)
+// Usar window.firebaseConfig (arquitectura original)
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -17,6 +18,7 @@ let usuarioActual = null;
 let todasLasOfertas = [];
 let aplicacionesUsuario = [];
 let debounceTimer;
+let ubicacionUsuario = null; // Task 11: Ubicacion del usuario para calcular distancias
 
 // ========================================
 // FUNCIONES GEOLOCALIZACIÓN (Task 9)
@@ -264,25 +266,41 @@ async function actualizarUbicacionEnBackground(uid) {
 }
 
 function mostrarBadgeUbicacion(ubicacion) {
+    // Task 11: Guardar ubicacion del usuario para calcular distancias
+    if (ubicacion && ubicacion.lat && ubicacion.lng) {
+        ubicacionUsuario = {
+            lat: ubicacion.lat,
+            lng: ubicacion.lng,
+            distrito: ubicacion.distrito
+        };
+        console.log('📍 Ubicacion usuario guardada para distancias:', ubicacionUsuario);
+
+        // Mostrar filtro de distancia solo si hay ubicacion
+        const filtroDistancia = document.getElementById('filtro-distancia-container');
+        if (filtroDistancia) {
+            filtroDistancia.style.display = 'block';
+        }
+    }
+
     let badge = document.getElementById('ubicacion-badge');
-    
+
     if (!badge) {
         badge = document.createElement('div');
         badge.id = 'ubicacion-badge';
         badge.className = 'ubicacion-badge';
-        
+
         const logo = document.querySelector('.logo');
         if (logo) {
             logo.after(badge);
         }
     }
-    
+
     badge.innerHTML = `
         <span class='ubicacion-texto' title='${ubicacion.direccionCompleta || ubicacion.distrito}'>
             📍 ${ubicacion.distrito}
         </span>
-        <button 
-            class='ubicacion-actualizar' 
+        <button
+            class='ubicacion-actualizar'
             onclick='actualizarUbicacionManual()'
             title='Actualizar ubicacion'
             aria-label='Actualizar ubicacion'
@@ -479,7 +497,22 @@ async function cargarOfertas(usuario, userUid) {
         snapshot.forEach((docSnap) => {
             const oferta = docSnap.data();
             todasLasOfertas.push({ id: docSnap.id, data: oferta });
-            ofertasGrid.innerHTML += crearOfertaCard(oferta, docSnap.id);
+
+            // Task 11: Calcular distancia si es posible
+            let distanciaKm = null;
+            if (ubicacionUsuario && oferta.ubicacion && typeof oferta.ubicacion === 'object' && oferta.ubicacion.coordenadas) {
+                const coords = oferta.ubicacion.coordenadas;
+                if (coords.lat && coords.lng) {
+                    distanciaKm = calcularDistancia(
+                        ubicacionUsuario.lat,
+                        ubicacionUsuario.lng,
+                        coords.lat,
+                        coords.lng
+                    );
+                }
+            }
+
+            ofertasGrid.innerHTML += crearOfertaCard(oferta, docSnap.id, distanciaKm);
         });
         
     } catch (error) {
@@ -487,7 +520,20 @@ async function cargarOfertas(usuario, userUid) {
     }
 }
 
-function crearOfertaCard(oferta, id) {
+function crearOfertaCard(oferta, id, distanciaKm = null) {
+    // Obtener texto de ubicacion
+    const ubicacionTexto = typeof oferta.ubicacion === 'object'
+        ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'Sin ubicacion')
+        : (oferta.ubicacion || 'Sin ubicacion');
+
+    // Badge de distancia (Task 11)
+    let distanciaBadge = '';
+    if (distanciaKm !== null && distanciaKm >= 0) {
+        const distanciaFormateada = formatearDistancia(distanciaKm);
+        const colorClase = distanciaKm <= 5 ? 'distancia-cerca' : (distanciaKm <= 15 ? 'distancia-media' : 'distancia-lejos');
+        distanciaBadge = `<span class='distancia-badge ${colorClase}'>📏 A ${distanciaFormateada} de ti</span>`;
+    }
+
     return `
         <div class='oferta-card'>
             <div class='oferta-header'>
@@ -498,7 +544,8 @@ function crearOfertaCard(oferta, id) {
             <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 120)}...</p>
             <div class='oferta-detalles'>
                 <span class='detalle'>💰 ${oferta.salario}</span>
-                <span class='detalle'>📍 ${typeof oferta.ubicacion === 'object' ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'Sin ubicación') : oferta.ubicacion}</span>
+                <span class='detalle'>📍 ${ubicacionTexto}</span>
+                ${distanciaBadge}
             </div>
             <div class='oferta-footer'>
                 <button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>
@@ -662,24 +709,48 @@ window.aplicarFiltros = function() {
         const busqueda = document.getElementById('filtro-busqueda')?.value.toLowerCase().trim() || '';
         const categoria = document.getElementById('filtro-categoria')?.value || '';
         const ubicacion = document.getElementById('filtro-ubicacion')?.value.toLowerCase().trim() || '';
+        const distanciaMax = document.getElementById('filtro-distancia')?.value || '';
+        const ordenar = document.getElementById('filtro-ordenar')?.value || 'recientes';
 
-        let ofertasFiltradas = todasLasOfertas.filter(item => {
+        // Task 11: Calcular distancia para cada oferta si tenemos ubicacion del usuario
+        let ofertasConDistancia = todasLasOfertas.map(item => {
+            const oferta = item.data;
+            let distanciaKm = null;
+
+            // Calcular distancia si hay ubicacion del usuario y la oferta tiene coordenadas
+            if (ubicacionUsuario && oferta.ubicacion && typeof oferta.ubicacion === 'object' && oferta.ubicacion.coordenadas) {
+                const coords = oferta.ubicacion.coordenadas;
+                if (coords.lat && coords.lng) {
+                    distanciaKm = calcularDistancia(
+                        ubicacionUsuario.lat,
+                        ubicacionUsuario.lng,
+                        coords.lat,
+                        coords.lng
+                    );
+                }
+            }
+
+            return { ...item, distanciaKm };
+        });
+
+        // Filtrar ofertas
+        let ofertasFiltradas = ofertasConDistancia.filter(item => {
             const oferta = item.data;
             let cumple = true;
 
-            // Filtro por búsqueda (título o descripción)
+            // Filtro por busqueda (titulo o descripcion)
             if (busqueda) {
                 const titulo = (oferta.titulo || '').toLowerCase();
                 const descripcion = (oferta.descripcion || '').toLowerCase();
                 cumple = cumple && (titulo.includes(busqueda) || descripcion.includes(busqueda));
             }
 
-            // Filtro por categoría
+            // Filtro por categoria
             if (categoria) {
                 cumple = cumple && oferta.categoria === categoria;
             }
 
-            // Filtro por ubicación
+            // Filtro por ubicacion (texto)
             if (ubicacion) {
                 let ubicacionOferta = '';
                 if (typeof oferta.ubicacion === 'object') {
@@ -690,8 +761,31 @@ window.aplicarFiltros = function() {
                 cumple = cumple && ubicacionOferta.includes(ubicacion);
             }
 
+            // Task 11: Filtro por distancia maxima
+            if (distanciaMax && ubicacionUsuario) {
+                const maxKm = parseFloat(distanciaMax);
+                if (item.distanciaKm === null) {
+                    // Si no tiene coordenadas, no cumple el filtro de distancia
+                    cumple = false;
+                } else {
+                    cumple = cumple && item.distanciaKm <= maxKm;
+                }
+            }
+
             return cumple;
         });
+
+        // Task 11: Ordenar ofertas
+        if (ordenar === 'cercanas' && ubicacionUsuario) {
+            ofertasFiltradas.sort((a, b) => {
+                // Ofertas sin distancia van al final
+                if (a.distanciaKm === null && b.distanciaKm === null) return 0;
+                if (a.distanciaKm === null) return 1;
+                if (b.distanciaKm === null) return -1;
+                return a.distanciaKm - b.distanciaKm;
+            });
+        }
+        // 'recientes' ya viene ordenado por fecha desde Firestore
 
         // Renderizar ofertas filtradas
         const ofertasGrid = document.querySelector('.ofertas-grid');
@@ -707,7 +801,7 @@ window.aplicarFiltros = function() {
             } else {
                 ofertasGrid.innerHTML = '';
                 ofertasFiltradas.forEach(item => {
-                    ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id);
+                    ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id, item.distanciaKm);
                 });
             }
         }
@@ -715,7 +809,8 @@ window.aplicarFiltros = function() {
         // Actualizar contador
         const contador = document.getElementById('resultados-count');
         if (contador) {
-            contador.textContent = `Mostrando ${ofertasFiltradas.length} de ${todasLasOfertas.length} ofertas`;
+            const textoDistancia = distanciaMax ? ` (hasta ${distanciaMax} km)` : '';
+            contador.textContent = `Mostrando ${ofertasFiltradas.length} de ${todasLasOfertas.length} ofertas${textoDistancia}`;
         }
 
     }, 300);
@@ -726,17 +821,36 @@ window.limpiarFiltros = function() {
     const busqueda = document.getElementById('filtro-busqueda');
     const categoria = document.getElementById('filtro-categoria');
     const ubicacion = document.getElementById('filtro-ubicacion');
+    const distancia = document.getElementById('filtro-distancia');
+    const ordenar = document.getElementById('filtro-ordenar');
 
     if (busqueda) busqueda.value = '';
     if (categoria) categoria.value = '';
     if (ubicacion) ubicacion.value = '';
+    if (distancia) distancia.value = '';
+    if (ordenar) ordenar.value = 'recientes';
 
-    // Mostrar todas las ofertas
+    // Task 11: Mostrar todas las ofertas con distancia calculada
     const ofertasGrid = document.querySelector('.ofertas-grid');
     if (ofertasGrid) {
         ofertasGrid.innerHTML = '';
         todasLasOfertas.forEach(item => {
-            ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id);
+            let distanciaKm = null;
+
+            // Calcular distancia si es posible
+            if (ubicacionUsuario && item.data.ubicacion && typeof item.data.ubicacion === 'object' && item.data.ubicacion.coordenadas) {
+                const coords = item.data.ubicacion.coordenadas;
+                if (coords.lat && coords.lng) {
+                    distanciaKm = calcularDistancia(
+                        ubicacionUsuario.lat,
+                        ubicacionUsuario.lng,
+                        coords.lat,
+                        coords.lng
+                    );
+                }
+            }
+
+            ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id, distanciaKm);
         });
     }
 

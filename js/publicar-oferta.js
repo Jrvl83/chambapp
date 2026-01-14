@@ -7,6 +7,7 @@
 import { auth, db } from './config/firebase-init.js';
 import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { obtenerDepartamentos, obtenerProvincias, obtenerDistritos, obtenerCoordenadasDistrito } from './utils/ubigeo-api.js';
+import { GOOGLE_MAPS_API_KEY } from './config/api-keys.js';
 
 // Verificar autenticacion
 const usuarioStr = localStorage.getItem('usuarioChambApp');
@@ -58,10 +59,214 @@ const btnNext = document.getElementById('btnNext');
 const btnSubmit = document.getElementById('btnSubmit');
 const formOferta = document.getElementById('formOferta');
 
-// Variables para el sistema de ubicaci贸n
+// Variables para el sistema de ubicacion
 let departamentoSeleccionado = null;
 let provinciaSeleccionada = null;
 let distritoSeleccionado = null;
+
+// Variables para Google Maps y Places
+let mapaPreview = null;
+let marcadorPreview = null;
+let autocomplete = null;
+let coordenadasSeleccionadas = null;
+let direccionExactaSeleccionada = null;
+
+// Bounds de Peru (para validacion)
+const PERU_BOUNDS = {
+    north: -0.0389,
+    south: -18.3516,
+    east: -68.6519,
+    west: -81.3269
+};
+
+// ============================================
+// CARGAR GOOGLE MAPS API CON PLACES
+// ============================================
+let googleMapsLoaded = false;
+let googleMapsLoading = false;
+
+async function cargarGoogleMapsAPI() {
+    if (googleMapsLoaded) {
+        return Promise.resolve();
+    }
+
+    if (googleMapsLoading) {
+        // Esperar a que termine de cargar
+        return new Promise((resolve) => {
+            const checkLoaded = setInterval(() => {
+                if (googleMapsLoaded) {
+                    clearInterval(checkLoaded);
+                    resolve();
+                }
+            }, 100);
+        });
+    }
+
+    googleMapsLoading = true;
+
+    return new Promise((resolve, reject) => {
+        window.initGoogleMapsPublicar = () => {
+            googleMapsLoaded = true;
+            googleMapsLoading = false;
+            console.log('✅ Google Maps API cargada para publicar-oferta');
+            resolve();
+        };
+
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMapsPublicar`;
+        script.async = true;
+        script.defer = true;
+
+        script.onerror = () => {
+            googleMapsLoading = false;
+            console.error('❌ Error al cargar Google Maps API');
+            reject(new Error('Error al cargar Google Maps'));
+        };
+
+        document.head.appendChild(script);
+    });
+}
+
+// ============================================
+// INICIALIZAR MAPA PREVIEW
+// ============================================
+async function inicializarMapaPreview() {
+    try {
+        await cargarGoogleMapsAPI();
+
+        const contenedorMapa = document.getElementById('mapa-preview');
+        if (!contenedorMapa) return;
+
+        // Crear mapa centrado en Lima por defecto
+        mapaPreview = new google.maps.Map(contenedorMapa, {
+            center: { lat: -12.0464, lng: -77.0428 },
+            zoom: 12,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false,
+            zoomControl: true,
+            styles: [
+                {
+                    featureType: 'poi',
+                    elementType: 'labels',
+                    stylers: [{ visibility: 'off' }]
+                }
+            ]
+        });
+
+        // Crear marcador (inicialmente oculto)
+        marcadorPreview = new google.maps.Marker({
+            map: mapaPreview,
+            visible: false,
+            animation: google.maps.Animation.DROP
+        });
+
+        // Marcar como cargado
+        contenedorMapa.classList.add('loaded');
+
+        console.log('✅ Mapa preview inicializado');
+
+    } catch (error) {
+        console.error('❌ Error al inicializar mapa preview:', error);
+    }
+}
+
+// ============================================
+// INICIALIZAR AUTOCOMPLETE DE DIRECCIONES
+// ============================================
+async function inicializarAutocomplete() {
+    try {
+        await cargarGoogleMapsAPI();
+
+        const inputDireccion = document.getElementById('direccion-exacta');
+        if (!inputDireccion) return;
+
+        // Configurar autocomplete restringido a Peru
+        autocomplete = new google.maps.places.Autocomplete(inputDireccion, {
+            componentRestrictions: { country: 'pe' },
+            fields: ['formatted_address', 'geometry', 'address_components'],
+            types: ['address']
+        });
+
+        // Evento cuando se selecciona una direccion
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+
+            if (!place.geometry || !place.geometry.location) {
+                console.warn('⚠️ No se encontro ubicacion para esta direccion');
+                return;
+            }
+
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+
+            // Validar que este en Peru
+            if (!validarCoordenadasPeru(lat, lng)) {
+                if (typeof toastWarning === 'function') {
+                    toastWarning('La direccion debe estar dentro de Peru');
+                }
+                return;
+            }
+
+            // Guardar coordenadas y direccion
+            coordenadasSeleccionadas = { lat, lng };
+            direccionExactaSeleccionada = place.formatted_address;
+
+            // Actualizar mapa
+            actualizarMapaPreview(lat, lng, place.formatted_address);
+
+            console.log('✅ Direccion seleccionada:', place.formatted_address);
+        });
+
+        console.log('✅ Autocomplete inicializado');
+
+    } catch (error) {
+        console.error('❌ Error al inicializar autocomplete:', error);
+    }
+}
+
+// ============================================
+// VALIDAR COORDENADAS DENTRO DE PERU
+// ============================================
+function validarCoordenadasPeru(lat, lng) {
+    return (
+        lat >= PERU_BOUNDS.south &&
+        lat <= PERU_BOUNDS.north &&
+        lng >= PERU_BOUNDS.west &&
+        lng <= PERU_BOUNDS.east
+    );
+}
+
+// ============================================
+// ACTUALIZAR MAPA PREVIEW
+// ============================================
+function actualizarMapaPreview(lat, lng, texto = '') {
+    if (!mapaPreview || !marcadorPreview) {
+        console.warn('⚠️ Mapa no inicializado');
+        return;
+    }
+
+    const posicion = { lat, lng };
+
+    // Centrar mapa
+    mapaPreview.setCenter(posicion);
+    mapaPreview.setZoom(15);
+
+    // Mostrar marcador
+    marcadorPreview.setPosition(posicion);
+    marcadorPreview.setVisible(true);
+
+    // Actualizar info de ubicacion
+    const infoContainer = document.getElementById('mapa-ubicacion-info');
+    const textoUbicacion = document.getElementById('mapa-ubicacion-texto');
+
+    if (infoContainer && textoUbicacion) {
+        infoContainer.style.display = 'flex';
+        textoUbicacion.textContent = texto || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+
+    console.log('📍 Mapa actualizado:', lat, lng);
+}
 
 // ============================================
 // INICIALIZAR SISTEMA DE UBICACI脫N
@@ -214,46 +419,104 @@ window.cargarDistritos = async function() {
 // ============================================
 // SELECCIONAR DISTRITO
 // ============================================
-window.seleccionarDistrito = function() {
+window.seleccionarDistrito = async function() {
     const selectDistrito = document.getElementById('distrito');
     const districtId = selectDistrito.value;
-    
+
     if (!districtId) {
         distritoSeleccionado = null;
+        coordenadasSeleccionadas = null;
         return;
     }
-    
+
     const selectedOption = selectDistrito.options[selectDistrito.selectedIndex];
     distritoSeleccionado = {
         id: districtId,
         nombre: selectedOption.dataset.name || selectedOption.textContent
     };
-    
-    console.log('鉁?Distrito seleccionado:', distritoSeleccionado.nombre);
+
+    console.log('✅ Distrito seleccionado:', distritoSeleccionado.nombre);
+
+    // Obtener coordenadas del distrito y actualizar mapa
+    try {
+        // Pasar departamento y provincia para búsqueda precisa (evita confusión entre distritos con mismo nombre)
+        const coords = await obtenerCoordenadasDistrito(
+            distritoSeleccionado.nombre,
+            departamentoSeleccionado?.id,
+            provinciaSeleccionada?.id
+        );
+
+        if (coords && validarCoordenadasPeru(coords.lat, coords.lng)) {
+            coordenadasSeleccionadas = coords;
+
+            // Construir texto de ubicacion
+            const textoUbicacion = `${distritoSeleccionado.nombre}, ${provinciaSeleccionada?.nombre || ''}, ${departamentoSeleccionado?.nombre || ''}`;
+
+            // Esperar a que el mapa este listo si aun no cargo
+            if (!mapaPreview) {
+                await cargarGoogleMapsAPI();
+                await inicializarMapaPreview();
+            }
+
+            // Actualizar mapa preview
+            actualizarMapaPreview(coords.lat, coords.lng, textoUbicacion);
+        }
+    } catch (error) {
+        console.warn('⚠️ No se pudieron obtener coordenadas del distrito:', error);
+    }
 };
 
 // ============================================
-// OBTENER UBICACI脫N COMPLETA
+// OBTENER UBICACION COMPLETA
 // ============================================
 async function obtenerUbicacionCompleta() {
     if (!departamentoSeleccionado || !provinciaSeleccionada || !distritoSeleccionado) {
         return null;
     }
-    
-    // Obtener coordenadas del distrito
-    const coordenadas = await obtenerCoordenadasDistrito(distritoSeleccionado.nombre);
-    
-    // Obtener referencia (opcional)
-    const referencia = document.getElementById('referencia')?.value || '';
-    
+
+    // Usar coordenadas seleccionadas (del autocomplete o del distrito)
+    let coordenadas = coordenadasSeleccionadas;
+
+    // Si no hay coordenadas seleccionadas, obtener del distrito
+    if (!coordenadas) {
+        coordenadas = await obtenerCoordenadasDistrito(
+            distritoSeleccionado.nombre,
+            departamentoSeleccionado?.id,
+            provinciaSeleccionada?.id
+        );
+    }
+
+    // Validar que las coordenadas esten en Peru
+    if (coordenadas && !validarCoordenadasPeru(coordenadas.lat, coordenadas.lng)) {
+        console.warn('⚠️ Coordenadas fuera de Peru, usando centro de Lima');
+        coordenadas = { lat: -12.0464, lng: -77.0428 };
+    }
+
+    // Obtener direccion exacta y referencia
+    const direccionExacta = document.getElementById('direccion-exacta')?.value?.trim() || '';
+    const referencia = document.getElementById('referencia')?.value?.trim() || '';
+
+    // Construir texto completo
+    let textoCompleto = `${distritoSeleccionado.nombre}, ${provinciaSeleccionada.nombre}, ${departamentoSeleccionado.nombre}`;
+
+    // Si hay direccion exacta, usarla como texto principal
+    if (direccionExactaSeleccionada) {
+        textoCompleto = direccionExactaSeleccionada;
+    } else if (direccionExacta) {
+        textoCompleto = `${direccionExacta}, ${distritoSeleccionado.nombre}`;
+    }
+
     return {
         departamento: departamentoSeleccionado.nombre,
         provincia: provinciaSeleccionada.nombre,
         distrito: distritoSeleccionado.nombre,
-        referencia: referencia.trim(),
+        direccion_exacta: direccionExactaSeleccionada || direccionExacta || '',
+        referencia: referencia,
         coordenadas: coordenadas,
-        // Texto completo para b煤squedas y filtros
-        texto_completo: `${distritoSeleccionado.nombre}, ${provinciaSeleccionada.nombre}, ${departamentoSeleccionado.nombre}`
+        // Texto completo para busquedas y filtros
+        texto_completo: textoCompleto,
+        // Flag para saber si es ubicacion precisa
+        es_ubicacion_precisa: !!direccionExactaSeleccionada
     };
 }
 
@@ -549,11 +812,24 @@ async function updateReviewSection() {
     document.getElementById('review-descripcion').textContent = 
         document.getElementById('descripcion').value || '-';
     
-    // Detalles del Trabajo - Ubicaci贸n
+    // Detalles del Trabajo - Ubicacion
     const ubicacion = await obtenerUbicacionCompleta();
     if (ubicacion) {
-        document.getElementById('review-ubicacion').textContent = ubicacion.texto_completo;
-        
+        // Mostrar ubicacion base (distrito, provincia, departamento)
+        document.getElementById('review-ubicacion').textContent =
+            `${ubicacion.distrito}, ${ubicacion.provincia}, ${ubicacion.departamento}`;
+
+        // Mostrar direccion exacta si existe
+        const direccionContainer = document.getElementById('review-direccion-exacta-container');
+        if (direccionContainer) {
+            if (ubicacion.direccion_exacta) {
+                direccionContainer.style.display = 'flex';
+                document.getElementById('review-direccion-exacta').textContent = ubicacion.direccion_exacta;
+            } else {
+                direccionContainer.style.display = 'none';
+            }
+        }
+
         // Mostrar referencia si existe
         const referenciaContainer = document.getElementById('review-referencia-container');
         if (ubicacion.referencia) {
@@ -710,9 +986,20 @@ formOferta.addEventListener('submit', async (e) => {
 });
 
 // ============================================
-// INICIALIZACI脫N
+// INICIALIZACION
 // ============================================
 showStep(currentStep);
 inicializarUbicacion();
 
-console.log('鉁?Formulario multi-paso con UBIGEO cargado correctamente');
+// Inicializar Google Maps y Autocomplete (con delay para mejor UX)
+setTimeout(async () => {
+    try {
+        await inicializarMapaPreview();
+        await inicializarAutocomplete();
+    } catch (error) {
+        console.warn('⚠️ No se pudo cargar Google Maps:', error.message);
+        // El formulario sigue funcionando sin el mapa
+    }
+}, 500);
+
+console.log('✅ Formulario multi-paso con UBIGEO y Google Maps cargado correctamente');

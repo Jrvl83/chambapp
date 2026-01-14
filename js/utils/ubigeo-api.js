@@ -189,39 +189,70 @@ export async function obtenerDistritos(departmentId, provinceId) {
 /**
  * Obtener coordenadas de un distrito
  * @param {string} distrito - Nombre del distrito
+ * @param {string} departamentoId - ID del departamento (opcional pero recomendado)
+ * @param {string} provinciaId - ID de la provincia (opcional pero recomendado)
  * @returns {Object} Coordenadas {lat, lng}
  */
-export async function obtenerCoordenadasDistrito(distrito) {
+export async function obtenerCoordenadasDistrito(distrito, departamentoId = null, provinciaId = null) {
     const datos = await cargarDatosUbigeo();
-    
+
     if (!datos || !datos.distritos) {
         console.warn('⚠️ Datos no cargados, usando coordenadas de Lima');
         return { lat: -12.046373, lng: -77.042754 };
     }
-    
+
     // Normalizar nombre para búsqueda
     const distritoNormalizado = distrito
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim();
-    
-    // Buscar distrito
-    const dist = datos.distritos.find(d => {
-        const nombreNormalizado = d.name
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase();
-        return nombreNormalizado === distritoNormalizado;
-    });
-    
+
+    // Buscar distrito con filtros de departamento y provincia si están disponibles
+    let dist = null;
+
+    if (departamentoId && provinciaId) {
+        // Búsqueda precisa: filtrar por depto, provincia y nombre
+        dist = datos.distritos.find(d => {
+            const nombreNormalizado = d.name
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase();
+            return nombreNormalizado === distritoNormalizado &&
+                   d.dept_id === departamentoId &&
+                   d.prov_id === provinciaId;
+        });
+    } else if (departamentoId) {
+        // Búsqueda por depto y nombre
+        dist = datos.distritos.find(d => {
+            const nombreNormalizado = d.name
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase();
+            return nombreNormalizado === distritoNormalizado &&
+                   d.dept_id === departamentoId;
+        });
+    }
+
+    // Fallback: búsqueda solo por nombre (comportamiento anterior)
+    if (!dist) {
+        dist = datos.distritos.find(d => {
+            const nombreNormalizado = d.name
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase();
+            return nombreNormalizado === distritoNormalizado;
+        });
+    }
+
     if (dist && dist.latitude && dist.longitude) {
+        console.log(`✅ Coordenadas encontradas para "${distrito}": ${dist.latitude}, ${dist.longitude}`);
         return {
             lat: dist.latitude,
             lng: dist.longitude
         };
     }
-    
+
     // Fallback: Centro de Lima
     console.log(`⚠️ Coordenadas no encontradas para "${distrito}", usando centro de Lima`);
     return { lat: -12.046373, lng: -77.042754 };

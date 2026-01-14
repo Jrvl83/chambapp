@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0066FF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Publicar Oferta - ChambApp</title>
     
     <!-- CSS -->
@@ -176,12 +179,47 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="direccion-exacta">Dirección Exacta (Opcional)</label>
+                            <div class="direccion-input-wrapper">
+                                <input
+                                    type="text"
+                                    id="direccion-exacta"
+                                    name="direccion-exacta"
+                                    placeholder="Ej: Av. Larco 345, Miraflores"
+                                    maxlength="200"
+                                    autocomplete="off"
+                                >
+                                <span class="direccion-icon">📍</span>
+                            </div>
+                            <div class="helper-text">
+                                Escribe la dirección para ubicación precisa con autocompletado
+                            </div>
+                        </div>
+
+                        <!-- Mini-Mapa Preview -->
+                        <div class="form-group">
+                            <label>Vista Previa de Ubicación</label>
+                            <div id="mapa-preview-container" class="mapa-preview-container">
+                                <div id="mapa-preview" class="mapa-preview">
+                                    <div class="mapa-placeholder">
+                                        <span class="mapa-placeholder-icon">🗺️</span>
+                                        <p>Selecciona un distrito para ver el mapa</p>
+                                    </div>
+                                </div>
+                                <div id="mapa-ubicacion-info" class="mapa-ubicacion-info" style="display: none;">
+                                    <span class="ubicacion-badge">📍</span>
+                                    <span id="mapa-ubicacion-texto">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="referencia">Referencia Adicional (Opcional)</label>
-                            <input 
-                                type="text" 
-                                id="referencia" 
+                            <input
+                                type="text"
+                                id="referencia"
                                 name="referencia"
-                                placeholder="Ej: Cerca del Parque Kennedy, frente al Centro Comercial..." 
+                                placeholder="Ej: Cerca del Parque Kennedy, frente al Centro Comercial..."
                                 maxlength="200"
                             >
                             <div class="helper-text">
@@ -322,6 +360,10 @@
                                 <div class="review-item">
                                     <span class="review-label">Ubicación:</span>
                                     <span class="review-value" id="review-ubicacion">-</span>
+                                </div>
+                                <div class="review-item" id="review-direccion-exacta-container" style="display: none;">
+                                    <span class="review-label">Dirección:</span>
+                                    <span class="review-value" id="review-direccion-exacta">-</span>
                                 </div>
                                 <div class="review-item" id="review-referencia-container" style="display: none;">
                                     <span class="review-label">Referencia:</span>
