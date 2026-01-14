@@ -10,25 +10,25 @@
 
 ### Progreso General
 - **Fase Actual:** Fase 1 - Experiencia WOW
-- **Progreso Fase 1:** 36% completo (16/44 tareas)
-- **Progreso Total:** ~9% del proyecto (16/176 tareas)
+- **Progreso Fase 1:** 39% completo (17/44 tareas)
+- **Progreso Total:** ~10% del proyecto (17/176 tareas)
 - **Tiempo Invertido:** ~2 meses
 - **Tiempo Restante:** 4-5 meses hasta lanzamiento
 
 ### Última Tarea Completada
-**Task 10:** Geocoding Ofertas (14 Ene 2026)
-- Google Places API Autocomplete integrado
-- Mini-mapa preview en formulario publicar oferta
-- Validación de coordenadas dentro de Perú (bounds)
-- Estructura de ubicación mejorada en Firestore
-- Script de migración para ofertas existentes
-- Compatibilidad iOS mejorada en todos los HTML
+**Task 11:** Búsqueda por Distancia (14 Ene 2026)
+- Filtro "Distancia máxima" (5km, 10km, 20km, 50km)
+- Badge "A X km de ti" en cada oferta (verde/amarillo/rojo)
+- Ordenar ofertas por cercanía al usuario
+- Filtro visible solo para trabajadores con ubicación
+- Fix crítico: coordenadas correctas para distritos duplicados
 
 ### Próxima Tarea Crítica
-**Task 11:** Búsqueda por Distancia
-- Filtro "Distancia máxima" (5km, 10km, 20km, 50km)
-- Mostrar "A X km de ti" en cada oferta
-- Ordenar ofertas por cercanía al usuario
+**Task 12:** Mapa Interactivo Ofertas
+- Crear `/mapa-ofertas.html` (página nueva)
+- Mostrar pins en mapa por cada oferta
+- Cluster pins cuando hay muchos cercanos
+- Click pin → preview oferta
 
 ### Pendiente Menor
 - Fix warning onboarding `.stats-grid`
@@ -119,7 +119,7 @@ chambapp/
 
 ---
 
-## TAREAS COMPLETADAS (1-10)
+## TAREAS COMPLETADAS (1-11)
 
 ### Fundamentos Técnicos (Tasks 1-3)
 1. Estructura archivos JS separados (modular)
@@ -132,7 +132,7 @@ chambapp/
 6. Página perfil trabajador (portfolio, experiencia, skills)
 7. Editor perfil interactivo (multi-sección)
 
-### Geolocalización (Tasks 8-10)
+### Geolocalización (Tasks 8-11)
 8. Integración Google Maps API (setup completo)
 9. Permiso ubicación usuario (GPS + reverse geocoding + badge)
 10. **Geocoding Ofertas** (completada 14 Ene 2026)
@@ -152,6 +152,11 @@ chambapp/
           es_ubicacion_precisa: true
       }
       ```
+11. **Búsqueda por Distancia** (completada 14 Ene 2026)
+    - Filtro "Distancia máxima" (5km, 10km, 20km, 50km)
+    - Badge "A X km de ti" con colores (verde ≤5km, amarillo 5-15km, rojo >15km)
+    - Ordenar ofertas por cercanía
+    - Fix: `obtenerCoordenadasDistrito` ahora filtra por depto/provincia
 
 ### Mejoras iOS (14 Ene 2026)
 - viewport-fit=cover en todos los HTML
@@ -160,26 +165,9 @@ chambapp/
 
 ---
 
-## PRÓXIMAS 3 TAREAS (11-13)
+## PRÓXIMAS 3 TAREAS (12-14)
 
-### Task 11: Búsqueda por Distancia (SIGUIENTE)
-**Objetivo:** Filtrar ofertas por cercanía
-
-**Subtareas:**
-- [ ] Crear filtro "Distancia máxima" (dropdown: 5km, 10km, 20km, 50km)
-- [ ] Usar función Haversine existente (distance.js)
-- [ ] Ordenar ofertas por cercanía al usuario
-- [ ] Mostrar "A X km de ti" en cada card oferta
-- [ ] Caché resultados cálculo (performance)
-
-**Archivos a Modificar:**
-- `js/dashboard/dashboard.js` (agregar filtro distancia)
-- `dashboard.html` (UI filtro)
-- `css/dashboard-main.css` (estilos)
-
----
-
-### Task 12: Mapa Interactivo Ofertas
+### Task 12: Mapa Interactivo Ofertas (SIGUIENTE)
 **Objetivo:** Vista de mapa con pins de ofertas
 
 **Subtareas:**
@@ -187,13 +175,30 @@ chambapp/
 - [ ] Mostrar pins en mapa por cada oferta
 - [ ] Cluster pins cuando hay muchos cercanos
 - [ ] Click pin → preview oferta (tooltip/modal)
-- [ ] Toggle vista lista/mapa
+- [ ] Toggle vista lista/mapa en dashboard
 - [ ] Responsive móvil
+
+**Archivos a Crear/Modificar:**
+- `mapa-ofertas.html` (nuevo)
+- `js/mapa-ofertas.js` (nuevo)
+- `css/mapa-ofertas.css` (nuevo)
+- `dashboard.html` (botón toggle vista)
 
 ---
 
 ### Task 13: Sistema de Calificaciones
 **Objetivo:** Calificaciones 5 estrellas bidireccionales
+
+**Subtareas:**
+- [ ] Modelo Firestore para calificaciones
+- [ ] UI de estrellas (dar/ver calificación)
+- [ ] Promedio en perfil trabajador
+- [ ] Calificación después de trabajo completado
+
+---
+
+### Task 14: Sistema de Mensajería
+**Objetivo:** Chat básico entre empleador y trabajador
 
 ---
 
@@ -277,6 +282,8 @@ chambapp/
 - **Ene 2026:** Firebase Plan Blaze activado
 - **14 Ene 2026:** Task 10 completada - Geocoding Ofertas
 - **14 Ene 2026:** Compatibilidad iOS mejorada (9 archivos HTML)
+- **14 Ene 2026:** Task 11 completada - Búsqueda por Distancia
+- **14 Ene 2026:** Fix bug coordenadas distritos duplicados (Miraflores, Comas, etc.)
 
 ---
 
@@ -296,7 +303,7 @@ import('./js/utils/migrar-ofertas.js').then(m => m.migrarOfertas());
 ---
 
 **Última actualización:** 14 Enero 2026
-**Versión:** 1.1
+**Versión:** 1.2
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 
