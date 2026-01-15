@@ -1,17 +1,17 @@
 # 🎯 FASE 1: EXPERIENCIA WOW - DETALLADO
 
-**44 Tareas para Producto Excepcional**  
-**Duración:** 12-13 semanas (~3 meses)  
-**Progreso Actual:** 45% (15/44 tareas completadas)
+**45 Tareas para Producto Excepcional**
+**Duración:** 12-13 semanas (~3 meses)
+**Progreso Actual:** 38% (17/45 tareas completadas)
 
 ---
 
 ## 📊 PROGRESO FASE 1
 
 ```
-✅ COMPLETADAS: ████████████░░░░░░░░░░░░░░░░ 15/44 (34%)
-🔄 EN PROGRESO: ███░░░░░░░░░░░░░░░░░░░░░░░░ 3/44 (7%)
-⏳ PENDIENTES:  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 26/44 (59%)
+✅ COMPLETADAS: █████████████░░░░░░░░░░░░░░░ 17/45 (38%)
+🔄 EN PROGRESO: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/45 (0%)
+⏳ PENDIENTES:  ████████████████░░░░░░░░░░░░ 28/45 (62%)
 ```
 
 ### Sprints (1 semana cada uno):
@@ -19,12 +19,12 @@
 - **Sprint 2:** ✅ Tasks 4-7 (Perfiles) - COMPLETADO  
 - **Sprint 3:** 🔄 Tasks 8-12 (Geolocalización) - EN PROGRESO (Task 9 completada)
 - **Sprint 4:** ⏳ Tasks 13-17 (Calificaciones)
-- **Sprint 5:** ⏳ Tasks 18-22 (Mensajería)
-- **Sprint 6:** ⏳ Tasks 23-26 (Búsqueda Avanzada)
-- **Sprint 7:** ⏳ Tasks 27-30 (Notificaciones)
-- **Sprint 8-9:** ⏳ Tasks 31-36 (UX/UI Polish)
-- **Sprint 10:** ⏳ Tasks 37-39 (Performance/PWA)
-- **Sprint 11-12:** ⏳ Tasks 40-44 (Testing/QA)
+- **Sprint 5:** ⏳ Tasks 18-23 (Mensajería + Aceptar/Rechazar)
+- **Sprint 6:** ⏳ Tasks 24-27 (Búsqueda Avanzada)
+- **Sprint 7:** ⏳ Tasks 28-31 (Notificaciones)
+- **Sprint 8-9:** ⏳ Tasks 32-37 (UX/UI Polish)
+- **Sprint 10:** ⏳ Tasks 38-40 (Performance/PWA)
+- **Sprint 11-12:** ⏳ Tasks 41-45 (Testing/QA)
 
 ---
 
@@ -464,6 +464,10 @@ new StarRating('#rating-input', {
 
 ## 🟠 PRIORIDAD 5: SISTEMA DE MENSAJERÍA (Semana 3-4)
 
+> **NOTA IMPORTANTE:** Este sprint incluye también la funcionalidad de **Aceptar/Rechazar postulaciones**,
+> ya que el flujo lógico es: Postulación → Conversación → Decisión (Aceptar/Rechazar) → Trabajo → Calificación.
+> El empleador debe poder conversar con el trabajador ANTES de decidir si lo contrata.
+
 ### Task 18: Estructura Firestore Chat
 **Tiempo:** 1 día | **Estado:** ⏳ Pendiente
 
@@ -560,7 +564,45 @@ new StarRating('#rating-input', {
 
 ---
 
-### Task 21: Notificaciones Mensajes
+### Task 21: Aceptar/Rechazar Postulaciones
+**Tiempo:** 1-2 días | **Estado:** ⏳ Pendiente
+
+**Objetivo:** Permitir al empleador decidir sobre candidatos después de conversar
+
+**Flujo completo:**
+```
+Trabajador postula → Empleador ve en "Ver Candidatos" → Inicia chat →
+Conversan → Empleador ACEPTA o RECHAZA → Notificación al trabajador
+```
+
+**Subtareas:**
+- [ ] Agregar botones "Aceptar" y "Rechazar" en cada postulación (Ver Candidatos)
+- [ ] Botón "Aceptar":
+  - Cambiar estado aplicación a "aceptado"
+  - Notificar al trabajador (email + in-app)
+  - Mostrar datos de contacto completos
+  - Actualizar UI con badge verde "ACEPTADO"
+- [ ] Botón "Rechazar":
+  - Modal confirmación "¿Seguro que deseas rechazar a [nombre]?"
+  - Cambiar estado aplicación a "rechazado"
+  - Notificar al trabajador (email + in-app) con mensaje genérico
+  - Ocultar de lista activa o mostrar con badge gris "RECHAZADO"
+- [ ] Estados de aplicación: `pendiente` → `aceptado` | `rechazado` | `completado`
+- [ ] Filtro en "Ver Candidatos": Todos, Pendientes, Aceptados, Rechazados
+- [ ] Vista trabajador: mostrar estado de sus aplicaciones (Pendiente/Aceptado/Rechazado)
+
+**Archivos a Modificar:**
+```
+- js/mis-aplicaciones.js (botones aceptar/rechazar)
+- css/mis-aplicaciones.css (estilos badges estados)
+- js/mis-aplicaciones-trabajador.js (mostrar estado)
+```
+
+**Por qué:** Cierra el ciclo de contratación, da feedback al trabajador
+
+---
+
+### Task 22: Notificaciones Mensajes
 **Tiempo:** 1-2 días | **Estado:** ⏳ Pendiente
 
 **Subtareas:**
@@ -578,7 +620,7 @@ new StarRating('#rating-input', {
 
 ---
 
-### Task 22: Límites Mensajes Free vs Premium
+### Task 23: Límites Mensajes Free vs Premium
 **Tiempo:** 1 día | **Estado:** ⏳ Pendiente
 
 **Subtareas:**
@@ -1112,25 +1154,25 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 |-----------|--------|--------|--------|
 | Fundamentos Técnicos | 3 | 1 semana | ✅ Completado |
 | Perfiles Completos | 4 | 1.5 semanas | ✅ Completado |
-| Geolocalización | 5 | 1.5 semanas | 🔄 En Progreso (60%) |
+| Geolocalización | 5 | 1.5 semanas | ✅ Completado |
 | Calificaciones | 5 | 1 semana | ⏳ Pendiente |
-| Mensajería | 5 | 1 semana | ⏳ Pendiente |
+| Mensajería + Aceptar/Rechazar | 6 | 1.5 semanas | ⏳ Pendiente |
 | Búsqueda Avanzada | 4 | 1 semana | ⏳ Pendiente |
 | Notificaciones | 4 | 1 semana | ⏳ Pendiente |
 | UX/UI Polish | 6 | 2 semanas | ⏳ Pendiente |
 | Performance/PWA | 3 | 1 semana | ⏳ Pendiente |
 | Testing/QA | 5 | 2 semanas | ⏳ Pendiente |
 
-**TOTAL:** 44 tareas | **12-13 semanas** (~3 meses)
+**TOTAL:** 45 tareas | **12-13 semanas** (~3 meses)
 
 ---
 
 ### Progreso Actual
 
 ```
-COMPLETADAS: 15/44 (34%)
-EN PROGRESO: 3/44 (7%)
-PENDIENTES:  26/44 (59%)
+COMPLETADAS: 17/45 (38%)
+EN PROGRESO: 0/45 (0%)
+PENDIENTES:  28/45 (62%)
 ```
 
 ---

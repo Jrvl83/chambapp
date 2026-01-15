@@ -197,8 +197,15 @@ chambapp/
 
 ---
 
-### Task 14: Sistema de Mensajería
-**Objetivo:** Chat básico entre empleador y trabajador
+### Tasks 18-23: Sistema de Mensajería + Aceptar/Rechazar
+**Objetivo:** Chat entre empleador y trabajador + decisión de contratación
+
+**Flujo completo:**
+```
+Postulación → Conversación (chat) → Decisión (Aceptar/Rechazar) → Trabajo → Calificación
+```
+
+**Incluye Task 21:** Aceptar/Rechazar postulaciones después de conversar
 
 ---
 

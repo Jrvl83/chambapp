@@ -5,7 +5,7 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 
 // Usar window.firebaseConfig (arquitectura original)
@@ -15,6 +15,7 @@ const db = getFirestore(app);
 
 // Variables globales
 let usuarioActual = null;
+let usuarioData = null; // Datos completos del usuario (nombre, tipo, etc.)
 let todasLasOfertas = [];
 let aplicacionesUsuario = [];
 let debounceTimer;
@@ -182,9 +183,10 @@ onAuthStateChanged(auth, async (user) => {
     if (user) {
         usuarioActual = user;
         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-        
+
         if (userDoc.exists()) {
             const usuario = userDoc.data();
+            usuarioData = usuario; // Guardar datos del usuario globalmente
             
             // Actualizar header
             actualizarHeaderUsuario(usuario);
@@ -879,6 +881,28 @@ window.verDetalle = async function(id) {
             ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'No especificada')
             : (oferta.ubicacion || 'No especificada');
 
+        // Determinar si el usuario puede postular
+        const esTrabajador = usuarioData && usuarioData.tipo === 'trabajador';
+        const yaAplico = aplicacionesUsuario.includes(id);
+
+        // Botón de acción según tipo de usuario
+        let botonAccion = '';
+        if (esTrabajador) {
+            if (yaAplico) {
+                botonAccion = `
+                    <button class="btn btn-success btn-disabled" disabled style="flex: 1; cursor: not-allowed; opacity: 0.7;">
+                        ✅ Ya postulaste
+                    </button>
+                `;
+            } else {
+                botonAccion = `
+                    <button class="btn btn-primary" onclick="mostrarFormularioPostulacion('${id}')" style="flex: 1;">
+                        📝 Postular a esta chamba
+                    </button>
+                `;
+            }
+        }
+
         const modalBody = document.getElementById('modal-body');
         modalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -908,8 +932,14 @@ window.verDetalle = async function(id) {
                 <p><strong>Habilidades:</strong> ${oferta.habilidades || 'No especificadas'}</p>
             </div>
 
-            <div style="text-align: center; margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+            <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
+                <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
+                <span style="color: var(--dark);">${oferta.empleadorNombre || 'Empleador'}</span>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="cerrarModal()" style="flex: 1;">Cerrar</button>
+                ${botonAccion}
             </div>
         `;
 
@@ -934,5 +964,138 @@ window.cerrarModal = function() {
 window.clickFueraModal = function(event) {
     if (event.target.id === 'modal-overlay') {
         cerrarModal();
+    }
+};
+
+// ========================================
+// FUNCIONES DE POSTULACIÓN
+// ========================================
+
+window.mostrarFormularioPostulacion = async function(ofertaId) {
+    try {
+        const docRef = doc(db, 'ofertas', ofertaId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            if (typeof toastError === 'function') {
+                toastError('No se encontró la oferta');
+            }
+            return;
+        }
+
+        const oferta = docSnap.data();
+
+        const modalBody = document.getElementById('modal-body');
+        modalBody.innerHTML = `
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Postular a:</h2>
+                <h3 style="color: var(--dark);">${oferta.titulo}</h3>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="mensaje-postulacion" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
+                    💬 Mensaje para el empleador:
+                </label>
+                <textarea
+                    id="mensaje-postulacion"
+                    placeholder="Preséntate brevemente y explica por qué eres el candidato ideal para esta chamba..."
+                    style="width: 100%; min-height: 120px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; resize: vertical; font-family: inherit;"
+                ></textarea>
+                <p style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">
+                    Tip: Un buen mensaje aumenta tus posibilidades de ser contactado
+                </p>
+            </div>
+
+            <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #f59e0b;">
+                <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
+                    <strong>📧 Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-secondary" onclick="verDetalle('${ofertaId}')" style="flex: 1;">
+                    ← Volver
+                </button>
+                <button class="btn btn-primary" onclick="enviarPostulacion('${ofertaId}')" id="btn-enviar-postulacion" style="flex: 2;">
+                    ✉️ Enviar Postulación
+                </button>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error al mostrar formulario:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar el formulario');
+        }
+    }
+};
+
+window.enviarPostulacion = async function(ofertaId) {
+    const mensaje = document.getElementById('mensaje-postulacion')?.value.trim();
+
+    if (!mensaje) {
+        if (typeof toastError === 'function') {
+            toastError('Por favor escribe un mensaje');
+        }
+        return;
+    }
+
+    const btnEnviar = document.getElementById('btn-enviar-postulacion');
+    const textoOriginal = btnEnviar.innerHTML;
+
+    try {
+        btnEnviar.disabled = true;
+        btnEnviar.innerHTML = '⏳ Enviando...';
+
+        // Obtener datos de la oferta
+        const ofertaDoc = await getDoc(doc(db, 'ofertas', ofertaId));
+        if (!ofertaDoc.exists()) {
+            throw new Error('Oferta no encontrada');
+        }
+        const oferta = ofertaDoc.data();
+
+        // Crear la aplicación/postulación
+        const aplicacion = {
+            // Datos del trabajador
+            aplicanteId: usuarioActual.uid,
+            aplicanteEmail: usuarioActual.email,
+            aplicanteNombre: usuarioData?.nombre || 'Trabajador',
+
+            // Datos del empleador
+            empleadorId: oferta.empleadorId || '',
+            empleadorEmail: oferta.empleadorEmail || '',
+            empleadorNombre: oferta.empleadorNombre || 'Empleador',
+
+            // Datos de la oferta
+            ofertaId: ofertaId,
+            ofertaTitulo: oferta.titulo || '',
+            ofertaCategoria: oferta.categoria || '',
+
+            // Mensaje y estado
+            mensaje: mensaje,
+            estado: 'pendiente',
+            fechaAplicacion: serverTimestamp()
+        };
+
+        // Guardar en Firestore
+        await addDoc(collection(db, 'aplicaciones'), aplicacion);
+
+        // Actualizar lista local de aplicaciones
+        aplicacionesUsuario.push(ofertaId);
+
+        // Mostrar éxito
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('¡Postulación enviada exitosamente!');
+        }
+
+        // Cerrar modal
+        cerrarModal();
+
+    } catch (error) {
+        console.error('Error al enviar postulación:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al enviar postulación');
+        }
+        btnEnviar.disabled = false;
+        btnEnviar.innerHTML = textoOriginal;
     }
 };
