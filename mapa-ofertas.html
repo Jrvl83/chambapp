@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mapa de Ofertas - ChambApp</title>
+
+    <link rel="stylesheet" href="css/dashboard-main.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/mapa-ofertas.css">
+</head>
+<body>
+
+    <!-- Skip to Main Content -->
+    <a href="#main-content" class="skip-to-main">
+        Saltar al contenido principal
+    </a>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            <a href="dashboard.html" class="logo" id="logo-text">ChambApp</a>
+            <div class="user-menu">
+                <span class="user-name" id="user-name">Cargando...</span>
+                <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="mapa-container">
+        <!-- Sidebar Filtros -->
+        <aside class="mapa-sidebar" id="mapa-sidebar">
+            <div class="sidebar-header">
+                <h2>Filtrar Ofertas</h2>
+                <button class="btn-cerrar-sidebar" onclick="toggleSidebar()" aria-label="Cerrar filtros">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="filtros-mapa">
+                <div class="filtro-grupo">
+                    <label for="filtro-categoria-mapa">Categoria:</label>
+                    <select id="filtro-categoria-mapa" onchange="aplicarFiltrosMapa()">
+                        <option value="">Todas</option>
+                        <option value="construccion">Construccion</option>
+                        <option value="electricidad">Electricidad</option>
+                        <option value="gasfiteria">Gasfiteria</option>
+                        <option value="pintura">Pintura</option>
+                        <option value="carpinteria">Carpinteria</option>
+                        <option value="limpieza">Limpieza</option>
+                        <option value="jardineria">Jardineria</option>
+                        <option value="mecanica">Mecanica</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label for="filtro-distancia-mapa">Distancia maxima:</label>
+                    <select id="filtro-distancia-mapa" onchange="aplicarFiltrosMapa()">
+                        <option value="">Sin limite</option>
+                        <option value="5">Hasta 5 km</option>
+                        <option value="10">Hasta 10 km</option>
+                        <option value="20">Hasta 20 km</option>
+                        <option value="50">Hasta 50 km</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-secondary btn-block" onclick="limpiarFiltrosMapa()">
+                    Limpiar filtros
+                </button>
+
+                <div class="mapa-stats">
+                    <div class="stat-item">
+                        <span class="stat-numero" id="total-ofertas">0</span>
+                        <span class="stat-label">ofertas en el mapa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de ofertas en sidebar -->
+            <div class="ofertas-lista-sidebar" id="ofertas-lista">
+                <h3>Ofertas cercanas</h3>
+                <div class="ofertas-lista-contenido" id="ofertas-lista-contenido">
+                    <!-- Se carga dinamicamente -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mapa Principal -->
+        <main class="mapa-main" id="main-content">
+            <!-- Controles del mapa -->
+            <div class="mapa-controles">
+                <button class="btn-control" onclick="toggleSidebar()" aria-label="Mostrar filtros" title="Filtros">
+                    <span class="icono">&#9776;</span>
+                    <span class="texto">Filtros</span>
+                </button>
+                <button class="btn-control" onclick="centrarEnMiUbicacion()" aria-label="Mi ubicacion" title="Mi ubicacion">
+                    <span class="icono">&#128205;</span>
+                    <span class="texto">Mi ubicacion</span>
+                </button>
+                <a href="dashboard.html" class="btn-control" aria-label="Ver lista" title="Ver lista">
+                    <span class="icono">&#128203;</span>
+                    <span class="texto">Ver lista</span>
+                </a>
+            </div>
+
+            <!-- Contenedor del mapa -->
+            <div id="mapa" class="mapa-google">
+                <!-- Loading state -->
+                <div class="mapa-loading" id="mapa-loading">
+                    <div class="spinner"></div>
+                    <p>Cargando mapa...</p>
+                </div>
+            </div>
+
+            <!-- Preview de oferta (aparece al hacer click en marker) -->
+            <div class="oferta-preview" id="oferta-preview" style="display: none;">
+                <button class="btn-cerrar-preview" onclick="cerrarPreview()" aria-label="Cerrar">&times;</button>
+                <div class="preview-contenido" id="preview-contenido">
+                    <!-- Se carga dinamicamente -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Sidebar menu movil (reutilizado del dashboard) -->
+    <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+        <button class="sidebar-close" id="sidebar-close" onclick="toggleMenu()" aria-label="Cerrar menu">&times;</button>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">&#127968;</span>
+                <span>Inicio</span>
+            </a>
+            <a href="mapa-ofertas.html" class="nav-item active">
+                <span class="icon">&#128506;</span>
+                <span>Mapa de Ofertas</span>
+            </a>
+            <a href="publicar-oferta.html" class="nav-item" id="nav-publicar">
+                <span class="icon">&#10133;</span>
+                <span>Publicar Oferta</span>
+            </a>
+            <a href="mis-aplicaciones.html" class="nav-item" id="nav-trabajadores">
+                <span class="icon">&#128101;</span>
+                <span id="nav-trabajadores-text">Ver Candidatos</span>
+            </a>
+            <div class="nav-item" tabindex="0">
+                <span class="icon">&#128172;</span>
+                <span>Mensajes</span>
+            </div>
+            <a href="perfil-trabajador.html" class="nav-item" id="nav-perfil">
+                <span class="icon">&#9881;</span>
+                <span>Mi Perfil</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Overlay sidebar movil -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
+
+    <!-- Modal Detalle Oferta -->
+    <div class="modal-overlay" id="modal-detalle-overlay" onclick="clickFueraModalDetalle(event)">
+        <div class="modal-detalle-oferta">
+            <button class="btn-cerrar-modal-detalle" onclick="cerrarModalDetalle()">&times;</button>
+            <div class="modal-detalle-body" id="modal-detalle-body">
+                <!-- Se carga dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+
+    <!-- Mapa JS -->
+    <script type="module" src="js/mapa-ofertas.js"></script>
+</body>
+</html>

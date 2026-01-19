@@ -1,0 +1,952 @@
+/* ============================================
+   MAPA OFERTAS CSS - ChambApp
+   Task 12: Mapa Interactivo de Ofertas
+   ============================================ */
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.mapa-container {
+    display: flex;
+    height: calc(100vh - 73px); /* Altura total menos header */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ============================================
+   SIDEBAR DE FILTROS
+   ============================================ */
+.mapa-sidebar {
+    width: 320px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 1rem 1.25rem;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-cerrar-sidebar {
+    display: none;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.btn-cerrar-sidebar:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Filtros */
+.filtros-mapa {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.filtro-grupo {
+    margin-bottom: 1rem;
+}
+
+.filtro-grupo label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.filtro-grupo select {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--dark);
+    background: var(--white);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filtro-grupo select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Stats del mapa */
+.mapa-stats {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.stat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.stat-numero {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--gray);
+}
+
+/* Lista de ofertas en sidebar */
+.ofertas-lista-sidebar {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+}
+
+.ofertas-lista-sidebar h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+}
+
+.ofertas-lista-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Card de oferta en sidebar */
+.oferta-mini-card {
+    padding: 0.875rem;
+    background: var(--light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.oferta-mini-card:hover {
+    background: var(--white);
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.oferta-mini-card.activa {
+    background: var(--white);
+    border-color: var(--primary);
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.15);
+}
+
+.oferta-mini-titulo {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.375rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.oferta-mini-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--gray);
+}
+
+.oferta-mini-detalles span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.oferta-mini-categoria {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+    background: var(--primary);
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   AREA PRINCIPAL DEL MAPA
+   ============================================ */
+.mapa-main {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.mapa-google {
+    flex: 1;
+    width: 100%;
+    min-height: 400px;
+    background: #e5e3df;
+    position: relative;
+}
+
+/* Loading del mapa */
+.mapa-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 5;
+}
+
+.mapa-loading.oculto {
+    display: none;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.mapa-loading p {
+    font-size: 0.9375rem;
+    color: var(--gray);
+}
+
+/* ============================================
+   CONTROLES DEL MAPA
+   ============================================ */
+.mapa-controles {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 5;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--white);
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-control:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-control .icono {
+    font-size: 1rem;
+}
+
+/* ============================================
+   PREVIEW DE OFERTA
+   ============================================ */
+.oferta-preview {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 2rem);
+    max-width: 400px;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.btn-cerrar-preview {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--light);
+    border-radius: 50%;
+    font-size: 1.25rem;
+    color: var(--gray);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-cerrar-preview:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.preview-contenido {
+    padding: 1.25rem;
+}
+
+.preview-categoria {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    background: var(--primary);
+    margin-bottom: 0.75rem;
+}
+
+.preview-titulo {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.preview-descripcion {
+    font-size: 0.875rem;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.preview-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.preview-detalle {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--dark);
+}
+
+.preview-acciones {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.preview-acciones .btn {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 0.9375rem;
+}
+
+/* ============================================
+   INFO WINDOW PERSONALIZADA (Marker popup)
+   ============================================ */
+.info-window-content {
+    padding: 0.5rem;
+    max-width: 250px;
+}
+
+.info-window-titulo {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.375rem;
+}
+
+.info-window-salario {
+    font-size: 0.875rem;
+    color: var(--secondary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.info-window-btn {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.info-window-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ============================================
+   COLORES DE CATEGORIAS PARA MARKERS
+   ============================================ */
+.preview-categoria.construccion,
+.oferta-mini-categoria.construccion { background: var(--cat-construccion); }
+.preview-categoria.electricidad,
+.oferta-mini-categoria.electricidad { background: var(--cat-electricidad); }
+.preview-categoria.gasfiteria,
+.oferta-mini-categoria.gasfiteria { background: var(--cat-gasfiteria); }
+.preview-categoria.pintura,
+.oferta-mini-categoria.pintura { background: var(--cat-pintura); }
+.preview-categoria.carpinteria,
+.oferta-mini-categoria.carpinteria { background: var(--cat-carpinteria); }
+.preview-categoria.limpieza,
+.oferta-mini-categoria.limpieza { background: var(--cat-limpieza); }
+.preview-categoria.jardineria,
+.oferta-mini-categoria.jardineria { background: var(--cat-jardineria); }
+.preview-categoria.mecanica,
+.oferta-mini-categoria.mecanica { background: var(--cat-mecanica); }
+.preview-categoria.otros,
+.oferta-mini-categoria.otros { background: var(--cat-otros); }
+
+/* ============================================
+   MODAL LISTA OFERTAS CLUSTER
+   ============================================ */
+.modal-lista-cluster {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-lista-cluster.activo {
+    display: flex;
+}
+
+.modal-lista-contenido {
+    background: var(--white);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-lista-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-lista-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+}
+
+.btn-cerrar-modal {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--light);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: var(--gray);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-cerrar-modal:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.modal-lista-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+/* Items de oferta en el modal */
+.oferta-cluster-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    margin: 0.5rem;
+    background: var(--light);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.oferta-cluster-item:hover {
+    background: var(--white);
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+}
+
+.oferta-cluster-categoria {
+    flex-shrink: 0;
+}
+
+.categoria-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    background: var(--primary);
+}
+
+.categoria-tag.construccion { background: var(--cat-construccion); }
+.categoria-tag.electricidad { background: var(--cat-electricidad); }
+.categoria-tag.gasfiteria { background: var(--cat-gasfiteria); }
+.categoria-tag.pintura { background: var(--cat-pintura); }
+.categoria-tag.carpinteria { background: var(--cat-carpinteria); }
+.categoria-tag.limpieza { background: var(--cat-limpieza); }
+.categoria-tag.jardineria { background: var(--cat-jardineria); }
+.categoria-tag.mecanica { background: var(--cat-mecanica); }
+.categoria-tag.otros { background: var(--cat-otros); }
+
+.oferta-cluster-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.oferta-cluster-info h4 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0 0 0.25rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.oferta-cluster-detalles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--gray);
+}
+
+.oferta-cluster-detalles span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.distancia-mini {
+    color: var(--secondary);
+    font-weight: 500;
+}
+
+.oferta-cluster-arrow {
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    color: var(--gray-light);
+    font-weight: 300;
+}
+
+/* ============================================
+   MODAL DETALLE OFERTA COMPLETO
+   ============================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-detalle-oferta {
+    background: var(--white);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.btn-cerrar-modal-detalle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--light);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: var(--gray);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.btn-cerrar-modal-detalle:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.modal-detalle-body {
+    padding: 1.5rem;
+}
+
+.detalle-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-right: 2rem;
+}
+
+.detalle-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.detalle-categoria {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: white;
+    background: var(--primary);
+}
+
+.detalle-categoria.construccion { background: var(--cat-construccion); }
+.detalle-categoria.electricidad { background: var(--cat-electricidad); }
+.detalle-categoria.gasfiteria { background: var(--cat-gasfiteria); }
+.detalle-categoria.pintura { background: var(--cat-pintura); }
+.detalle-categoria.carpinteria { background: var(--cat-carpinteria); }
+.detalle-categoria.limpieza { background: var(--cat-limpieza); }
+.detalle-categoria.jardineria { background: var(--cat-jardineria); }
+.detalle-categoria.mecanica { background: var(--cat-mecanica); }
+.detalle-categoria.otros { background: var(--cat-otros); }
+
+.detalle-seccion {
+    margin-bottom: 1.25rem;
+}
+
+.detalle-seccion h4 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.detalle-seccion p {
+    color: var(--gray);
+    line-height: 1.6;
+    font-size: 0.9375rem;
+}
+
+.detalle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    background: var(--light);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+}
+
+.detalle-item {
+    font-size: 0.875rem;
+}
+
+.detalle-item strong {
+    display: block;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.detalle-item span {
+    color: var(--gray);
+}
+
+.detalle-empleador {
+    background: #f0f9ff;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.detalle-empleador strong {
+    color: var(--primary);
+}
+
+.detalle-empleador span {
+    color: var(--dark);
+}
+
+.detalle-acciones {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.detalle-acciones .btn {
+    flex: 1;
+    padding: 0.875rem;
+    font-size: 1rem;
+}
+
+/* ============================================
+   RESPONSIVE - TABLET
+   ============================================ */
+@media (max-width: 1024px) {
+    .mapa-sidebar {
+        width: 280px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOVIL
+   ============================================ */
+@media (max-width: 768px) {
+    .mapa-container {
+        flex-direction: column;
+        height: calc(100vh - 65px);
+    }
+
+    /* Sidebar como drawer desde abajo */
+    .mapa-sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 60vh;
+        max-height: 60vh;
+        transform: translateY(100%);
+        z-index: 100;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .mapa-sidebar.activo {
+        transform: translateY(0);
+    }
+
+    .btn-cerrar-sidebar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Controles del mapa */
+    .mapa-controles {
+        top: auto;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-control {
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8125rem;
+    }
+
+    .btn-control .texto {
+        display: none;
+    }
+
+    .btn-control .icono {
+        font-size: 1.125rem;
+    }
+
+    /* Preview de oferta */
+    .oferta-preview {
+        bottom: 5rem;
+        width: calc(100% - 1.5rem);
+        max-width: none;
+        left: 0.75rem;
+        right: 0.75rem;
+        transform: none;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Lista de ofertas scroll horizontal en movil */
+    .ofertas-lista-sidebar {
+        max-height: 200px;
+    }
+}
+
+/* ============================================
+   OVERLAY PARA SIDEBAR MOVIL
+   ============================================ */
+.mapa-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+.mapa-overlay.activo {
+    display: block;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.mapa-empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--gray);
+}
+
+.mapa-empty-state .icono {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.mapa-empty-state p {
+    font-size: 0.9375rem;
+}
+
+/* ============================================
+   BADGE DE DISTANCIA
+   ============================================ */
+.distancia-badge-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.distancia-cerca { background: #dcfce7; color: #166534; }
+.distancia-media { background: #fef9c3; color: #854d0e; }
+.distancia-lejos { background: #fee2e2; color: #991b1b; }

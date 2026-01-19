@@ -352,6 +352,49 @@ body {
 }
 
 /* ============================================
+   BOTON VER MAPA (Task 12)
+   ============================================ */
+.btn-ver-mapa {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-ver-mapa:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-ver-mapa:active {
+    transform: scale(0.97);
+}
+
+.btn-ver-mapa .icono {
+    font-size: 1.125rem;
+}
+
+@media (max-width: 480px) {
+    .btn-ver-mapa .texto {
+        display: none;
+    }
+
+    .btn-ver-mapa {
+        padding: 0.625rem;
+    }
+}
+
+/* ============================================
    🔴 MEJORA #4: DEBOUNCE FILTROS
    ============================================ */
 .filtros-container {

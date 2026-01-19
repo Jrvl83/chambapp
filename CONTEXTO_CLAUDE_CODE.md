@@ -1,7 +1,7 @@
 # CONTEXTO CLAUDE CODE - CHAMBAPP
 
 **Archivo de Inicialización para Claude Code**
-**Actualizado:** 14 Enero 2026
+**Actualizado:** 19 Enero 2026
 **Lee este archivo al inicio de cada sesión**
 
 ---
@@ -10,27 +10,32 @@
 
 ### Progreso General
 - **Fase Actual:** Fase 1 - Experiencia WOW
-- **Progreso Fase 1:** 39% completo (17/44 tareas)
-- **Progreso Total:** ~10% del proyecto (17/176 tareas)
+- **Progreso Fase 1:** 41% completo (18/44 tareas)
+- **Progreso Total:** ~10% del proyecto (18/176 tareas)
 - **Tiempo Invertido:** ~2 meses
 - **Tiempo Restante:** 4-5 meses hasta lanzamiento
 
 ### Última Tarea Completada
-**Task 11:** Búsqueda por Distancia (14 Ene 2026)
-- Filtro "Distancia máxima" (5km, 10km, 20km, 50km)
-- Badge "A X km de ti" en cada oferta (verde/amarillo/rojo)
-- Ordenar ofertas por cercanía al usuario
-- Filtro visible solo para trabajadores con ubicación
-- Fix crítico: coordenadas correctas para distritos duplicados
+**Task 12:** Mapa Interactivo Ofertas (19 Ene 2026)
+- Página `/mapa-ofertas.html` creada
+- Pins/markers en mapa por cada oferta con coordenadas
+- Clustering de pins cercanos con MarkerClusterer
+- Click en pin → preview de oferta con detalles
+- Sidebar con lista de ofertas y filtros (categoría, distancia)
+- Botón "Ver Mapa" en dashboard
+- Toggle lista/mapa funcional
+- Responsive móvil (sidebar como drawer desde abajo)
+- Centrar en ubicación del usuario
+- Colores de markers por categoría
 
 ### Próxima Tarea Crítica
-**Task 12:** Mapa Interactivo Ofertas
-- Crear `/mapa-ofertas.html` (página nueva)
-- Mostrar pins en mapa por cada oferta
-- Cluster pins cuando hay muchos cercanos
-- Click pin → preview oferta
+**Task 13:** Sistema de Calificaciones
+- Estructura Firestore para calificaciones
+- UI de estrellas (dar/ver calificación)
+- Promedio en perfil trabajador
+- Calificación después de trabajo completado
 
-### Pendiente Menor
+### Pendiente Menor (Sprint UX/UI Polish)
 - Fix warning onboarding `.stats-grid`
 - Actualizar google.maps.Marker a AdvancedMarkerElement (deprecation warning)
 
@@ -66,12 +71,14 @@ chambapp/
 ├── perfil-empleador.html
 ├── mis-aplicaciones.html
 ├── mis-aplicaciones-trabajador.html
+├── mapa-ofertas.html (nuevo Task 12)
 ├── css/
 │   ├── design-system.css
 │   ├── components.css
 │   ├── accessibility.css
 │   ├── toast.css
 │   ├── publicar-oferta.css (actualizado Task 10)
+│   ├── mapa-ofertas.css (nuevo Task 12)
 │   └── ...
 ├── js/
 │   ├── config/
@@ -90,6 +97,7 @@ chambapp/
 │   │   ├── ubigeo-api.js
 │   │   └── migrar-ofertas.js (nuevo Task 10)
 │   ├── publicar-oferta.js (actualizado Task 10)
+│   ├── mapa-ofertas.js (nuevo Task 12)
 │   ├── toast.js
 │   └── onboarding.js
 ├── data/
@@ -119,7 +127,7 @@ chambapp/
 
 ---
 
-## TAREAS COMPLETADAS (1-11)
+## TAREAS COMPLETADAS (1-12)
 
 ### Fundamentos Técnicos (Tasks 1-3)
 1. Estructura archivos JS separados (modular)
@@ -132,7 +140,7 @@ chambapp/
 6. Página perfil trabajador (portfolio, experiencia, skills)
 7. Editor perfil interactivo (multi-sección)
 
-### Geolocalización (Tasks 8-11)
+### Geolocalización (Tasks 8-12)
 8. Integración Google Maps API (setup completo)
 9. Permiso ubicación usuario (GPS + reverse geocoding + badge)
 10. **Geocoding Ofertas** (completada 14 Ene 2026)
@@ -157,6 +165,24 @@ chambapp/
     - Badge "A X km de ti" con colores (verde ≤5km, amarillo 5-15km, rojo >15km)
     - Ordenar ofertas por cercanía
     - Fix: `obtenerCoordenadasDistrito` ahora filtra por depto/provincia
+12. **Mapa Interactivo Ofertas** (completada 19 Ene 2026)
+    - Página `/mapa-ofertas.html` con mapa Google Maps
+    - Markers por categoría con colores diferentes
+    - Clustering de markers cercanos (MarkerClusterer)
+    - Click en cluster con misma ubicación → lista de ofertas
+    - Preview rápido al hacer click en marker
+    - Modal detalle completo SIN salir del mapa
+    - Postulación directa desde el mapa
+    - Filtros por categoría y distancia en sidebar
+    - Solo visible para trabajadores (empleadores redirigidos)
+    - Responsive móvil (sidebar como drawer)
+    - Markers/pins por cada oferta con coordenadas
+    - Clustering de pins cercanos (MarkerClusterer)
+    - Click en pin → preview de oferta
+    - Sidebar con lista de ofertas y filtros
+    - Botón "Ver Mapa" en dashboard
+    - Colores de markers por categoría
+    - Responsive móvil (sidebar como drawer)
 
 ### Mejoras iOS (14 Ene 2026)
 - viewport-fit=cover en todos los HTML
@@ -165,28 +191,9 @@ chambapp/
 
 ---
 
-## PRÓXIMAS 3 TAREAS (12-14)
+## PRÓXIMAS 3 TAREAS (13-15)
 
-### Task 12: Mapa Interactivo Ofertas (SIGUIENTE)
-**Objetivo:** Vista de mapa con pins de ofertas
-
-**Subtareas:**
-- [ ] Crear `/mapa-ofertas.html` (página nueva)
-- [ ] Mostrar pins en mapa por cada oferta
-- [ ] Cluster pins cuando hay muchos cercanos
-- [ ] Click pin → preview oferta (tooltip/modal)
-- [ ] Toggle vista lista/mapa en dashboard
-- [ ] Responsive móvil
-
-**Archivos a Crear/Modificar:**
-- `mapa-ofertas.html` (nuevo)
-- `js/mapa-ofertas.js` (nuevo)
-- `css/mapa-ofertas.css` (nuevo)
-- `dashboard.html` (botón toggle vista)
-
----
-
-### Task 13: Sistema de Calificaciones
+### Task 13: Sistema de Calificaciones (SIGUIENTE)
 **Objetivo:** Calificaciones 5 estrellas bidireccionales
 
 **Subtareas:**
@@ -291,6 +298,7 @@ Postulación → Conversación (chat) → Decisión (Aceptar/Rechazar) → Traba
 - **14 Ene 2026:** Compatibilidad iOS mejorada (9 archivos HTML)
 - **14 Ene 2026:** Task 11 completada - Búsqueda por Distancia
 - **14 Ene 2026:** Fix bug coordenadas distritos duplicados (Miraflores, Comas, etc.)
+- **19 Ene 2026:** Task 12 completada - Mapa Interactivo Ofertas
 
 ---
 
@@ -309,8 +317,8 @@ import('./js/utils/migrar-ofertas.js').then(m => m.migrarOfertas());
 
 ---
 
-**Última actualización:** 14 Enero 2026
-**Versión:** 1.2
+**Última actualización:** 19 Enero 2026
+**Versión:** 1.3
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 

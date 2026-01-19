@@ -201,9 +201,12 @@ onAuthStateChanged(auth, async (user) => {
             await cargarAplicacionesUsuario(user.uid);
             await cargarOfertas(usuario, user.uid);
             await cargarEstadisticas(usuario, user.uid);
-            
+
             // Ocultar loading
             ocultarLoading();
+
+            // Verificar si hay parámetro ?oferta= en la URL (viene del mapa)
+            verificarParametroOferta();
         } else {
             if (typeof toastError === 'function') {
                 toastError('Error al cargar perfil');
@@ -403,6 +406,8 @@ function actualizarHeaderUsuario(usuario) {
 function personalizarPorTipo(tipo) {
     const navPublicar = document.getElementById('nav-publicar');
     const navBuscar = document.getElementById('nav-buscar');
+    const navMapa = document.getElementById('nav-mapa');
+    const btnVerMapa = document.getElementById('btn-ver-mapa');
     const navTrabajadores = document.getElementById('nav-trabajadores');
     const navTrabajadoresText = document.getElementById('nav-trabajadores-text');
     const navPerfil = document.getElementById('nav-perfil');
@@ -414,6 +419,10 @@ function personalizarPorTipo(tipo) {
 
         // Mostrar: Buscar Chambas
         if (navBuscar) navBuscar.style.display = 'flex';
+
+        // Mostrar: Mapa de Ofertas (solo trabajadores)
+        if (navMapa) navMapa.style.display = 'flex';
+        if (btnVerMapa) btnVerMapa.style.display = 'inline-flex';
 
         // Cambiar: "Trabajadores" → "Mis Aplicaciones"
         if (navTrabajadores) {
@@ -432,6 +441,10 @@ function personalizarPorTipo(tipo) {
 
         // Ocultar: Buscar Chambas
         if (navBuscar) navBuscar.style.display = 'none';
+
+        // Ocultar: Mapa de Ofertas (solo para trabajadores)
+        if (navMapa) navMapa.style.display = 'none';
+        if (btnVerMapa) btnVerMapa.style.display = 'none';
 
         // Cambiar: "Trabajadores" → "Ver Candidatos"
         if (navTrabajadores) {
@@ -661,6 +674,31 @@ function formatearFecha(timestamp) {
     if (!timestamp) return '';
     const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return fecha.toLocaleDateString('es-PE');
+}
+
+// ========================================
+// VERIFICAR SI HAY OFERTA PENDIENTE DE ABRIR
+// ========================================
+function verificarParametroOferta() {
+    // Leer de sessionStorage (viene del mapa de ofertas)
+    const ofertaId = sessionStorage.getItem('abrirOferta');
+
+    console.log('verificarParametroOferta - ofertaId desde sessionStorage:', ofertaId);
+
+    if (ofertaId) {
+        // Limpiar inmediatamente para que no se abra de nuevo
+        sessionStorage.removeItem('abrirOferta');
+
+        console.log('Abriendo oferta:', ofertaId);
+        // Pequeño delay para asegurar que el DOM esté listo
+        setTimeout(() => {
+            if (typeof window.verDetalle === 'function') {
+                window.verDetalle(ofertaId);
+            } else {
+                console.error('Funcion verDetalle no disponible');
+            }
+        }, 500);
+    }
 }
 
 // ========================================
