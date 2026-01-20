@@ -19,7 +19,7 @@
 - **Sprint 2:** ✅ Tasks 4-7 (Perfiles) - COMPLETADO
 - **Sprint 3:** ✅ Tasks 8-12 (Geolocalización) - COMPLETADO
 - **Sprint 4:** 🎯 Task 21 + Tasks 13-17 (Aceptar/Rechazar + Calificaciones) - EN CURSO
-  > Task 21 adelantada: prerequisito para calificaciones + WhatsApp
+  > ✅ Task 21 completada (19 Ene 2026) - Siguiente: Tasks 13-17
 - **Sprint 5:** ⏳ Tasks 24-27 (Búsqueda Avanzada)
 - **Sprint 6:** ⏳ Tasks 28-31 (Notificaciones)
 - **Sprint 7-8:** ⏳ Tasks 32-37 (UX/UI Polish)
@@ -556,51 +556,52 @@ new StarRating('#rating-input', {
 
 ---
 
-### 🎯 Task 21: Aceptar/Rechazar Postulaciones + WhatsApp [SIGUIENTE]
-**Tiempo:** 2-3 días | **Estado:** 🎯 SIGUIENTE (adelantada)
+### ✅ Task 21: Aceptar/Rechazar Postulaciones + WhatsApp [COMPLETADA]
+**Tiempo:** 1 día | **Estado:** ✅ COMPLETADA (19 Ene 2026)
 
 **Objetivo:** Permitir al empleador decidir sobre candidatos y contactarlos por WhatsApp
 
-> **NOTA:** Esta tarea se adelanta porque es prerequisito para probar el sistema de calificaciones. Sin poder aceptar postulaciones, no se puede llegar al estado "completado" donde se activan las calificaciones.
-
-**Flujo actualizado:**
+**Flujo implementado:**
 ```
 Trabajador postula → Empleador ve en "Ver Candidatos" →
 Empleador ACEPTA o RECHAZA → Si acepta: Botón WhatsApp visible →
-Contactan por WhatsApp → Trabajo → Marcar Completado → Calificación
+Contactan por WhatsApp → Trabajo → Marcar Completado → [Calificación]
 ```
 
-**Subtareas:**
-- [ ] Agregar botones "Aceptar" y "Rechazar" en cada postulación (Ver Candidatos)
-- [ ] Botón "Aceptar":
+**Subtareas completadas:**
+- [x] Agregar botones "Aceptar" y "Rechazar" en cada postulación (Ver Candidatos)
+- [x] Botón "Aceptar":
   - Cambiar estado aplicación a "aceptado"
   - Mostrar número de teléfono del trabajador
-  - Mostrar botón "Contactar por WhatsApp" con mensaje pre-llenado:
-    `"Hola [nombre], te contacto por la chamba de [título] en ChambApp..."`
+  - Mostrar botón "Contactar por WhatsApp" con mensaje pre-llenado
   - Actualizar UI con badge verde "ACEPTADO"
-- [ ] Botón "Rechazar":
+- [x] Botón "Rechazar":
   - Modal confirmación "¿Seguro que deseas rechazar a [nombre]?"
   - Cambiar estado aplicación a "rechazado"
   - Mostrar con badge gris "RECHAZADO"
-- [ ] Botón "Marcar como Completado":
+- [x] Botón "Marcar como Completado":
   - Solo visible en postulaciones aceptadas
   - Cambia estado a "completado"
-  - Dispara modal de calificación (Task 15)
-- [ ] Estados de aplicación: `pendiente` → `aceptado` | `rechazado` | `completado`
-- [ ] Filtro en "Ver Candidatos": Todos, Pendientes, Aceptados, Rechazados, Completados
-- [ ] Vista trabajador: mostrar estado de sus aplicaciones con colores
-  - Pendiente: amarillo
-  - Aceptado: verde + datos contacto empleador + WhatsApp
-  - Rechazado: gris
-  - Completado: azul
+  - Muestra botón "Calificar" (placeholder para Task 13-15)
+- [x] Estados de aplicación: `pendiente` → `aceptado` | `rechazado` | `completado`
+- [x] Filtro en "Ver Candidatos": Todos, Pendientes, Aceptados, Rechazados, Completados
+- [x] Vista trabajador: mostrar estado de sus aplicaciones con colores
+- [x] Teléfonos guardados en aplicaciones (dashboard.js y mapa-ofertas.js)
+- [x] **Bonus: Migración a Nueva Places API** (AutocompleteSuggestion)
 
-**Archivos a Modificar:**
+**Archivos Modificados:**
 ```
 - mis-aplicaciones.html (UI botones y filtros)
-- js/mis-aplicaciones.js (lógica aceptar/rechazar/completar)
-- css/mis-aplicaciones.css (estilos badges estados)
+- js/mis-aplicaciones.js (lógica aceptar/rechazar/completar + escape HTML)
+- css/mis-aplicaciones.css (estilos badges estados + WhatsApp)
 - mis-aplicaciones-trabajador.html (UI estado)
-- js/mis-aplicaciones-trabajador.js (mostrar estado + WhatsApp)
+- js/mis-aplicaciones-trabajador.js (mostrar estado + contacto empleador)
+- css/mis-aplicaciones-trabajador.css (estilos estados)
+- js/dashboard/dashboard.js (guardar teléfonos en aplicación)
+- js/mapa-ofertas.js (guardar teléfonos en aplicación)
+- js/publicar-oferta.js (Nueva Places API + mapeo códigos postales)
+- css/publicar-oferta.css (estilos dropdown sugerencias)
+- publicar-oferta.html (contenedor autocomplete)
 ```
 
 **Por qué:** Prerequisito para calificaciones + contacto directo vía WhatsApp
@@ -1190,8 +1191,9 @@ PENDIENTES:  27/45 (60%)
 - ✅ **Task 12:** Mapa Interactivo Ofertas (19 Ene 2026)
 
 ### Esta Semana (ORDEN ACTUALIZADO):
-1. 🎯 **Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp
-   > Se adelanta porque es prerequisito para probar calificaciones
+1. ✅ **Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp (COMPLETADA 19 Ene 2026)
+   > Incluye migración a Nueva Places API
+2. 🎯 **Task 13:** Sistema de Calificaciones (SIGUIENTE)
 
 ### Próximas 2 Semanas:
 2. 🎯 **Tasks 13-17:** Sistema de Calificaciones completo

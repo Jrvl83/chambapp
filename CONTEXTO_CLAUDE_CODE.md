@@ -10,33 +10,35 @@
 
 ### Progreso General
 - **Fase Actual:** Fase 1 - Experiencia WOW
-- **Progreso Fase 1:** 41% completo (18/44 tareas)
-- **Progreso Total:** ~10% del proyecto (18/176 tareas)
+- **Progreso Fase 1:** 43% completo (19/44 tareas)
+- **Progreso Total:** ~11% del proyecto (19/176 tareas)
 - **Tiempo Invertido:** ~2 meses
 - **Tiempo Restante:** 4-5 meses hasta lanzamiento
 
 ### Última Tarea Completada
-**Task 12:** Mapa Interactivo Ofertas (19 Ene 2026)
-- Página `/mapa-ofertas.html` creada
-- Pins/markers en mapa por cada oferta con coordenadas
-- Clustering de pins cercanos con MarkerClusterer
-- Click en pin → preview de oferta con detalles
-- Sidebar con lista de ofertas y filtros (categoría, distancia)
-- Botón "Ver Mapa" en dashboard
-- Toggle lista/mapa funcional
-- Responsive móvil (sidebar como drawer desde abajo)
-- Centrar en ubicación del usuario
-- Colores de markers por categoría
+**Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp (19 Ene 2026)
+- Botones "Aceptar" y "Rechazar" en vista empleador (mis-aplicaciones.html)
+- Estados: pendiente → aceptado | rechazado → completado
+- Botón WhatsApp con mensaje pre-llenado al aceptar
+- Botón "Marcar como Completado" para trabajos terminados
+- Filtros por estado en ambas vistas (empleador y trabajador)
+- Vista trabajador muestra estado y datos de contacto del empleador
+- Teléfonos guardados en aplicaciones (dashboard.js y mapa-ofertas.js)
+- **Migración a Nueva Places API:**
+  - Reemplazado Autocomplete legacy por AutocompleteSuggestion
+  - Input y dropdown de sugerencias custom (sin pantalla negra)
+  - Autollenado de departamento/provincia/distrito
+  - Mapeo de códigos postales para distritos de Lima
+  - Reverse geocoding como fallback
 
 ### Próxima Tarea Crítica
-**Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp
-- Botones "Aceptar" y "Rechazar" en Ver Candidatos
-- Estados: pendiente → aceptado | rechazado | completado
-- Botón WhatsApp con mensaje pre-llenado (al aceptar)
-- Botón "Marcar como Completado" (para trabajos terminados)
-- Vista trabajador: ver estado de sus aplicaciones
+**Task 13:** Sistema de Calificaciones
+- Modelo Firestore para calificaciones
+- UI de estrellas (dar/ver calificación)
+- Promedio en perfil trabajador
+- Calificación después de trabajo completado
 
-> **Nota:** Task 21 se adelanta porque es prerequisito para probar el sistema de calificaciones (Tasks 13-17). Sin poder aceptar postulaciones, no se puede llegar al estado "completado" donde se activan las calificaciones.
+> **Nota:** Ahora que Task 21 está completada, se puede probar el flujo completo: Postulación → Aceptar → WhatsApp → Completado → Calificación
 
 ### Pendiente Menor (Sprint UX/UI Polish)
 - Fix warning onboarding `.stats-grid`
@@ -130,7 +132,7 @@ chambapp/
 
 ---
 
-## TAREAS COMPLETADAS (1-12)
+## TAREAS COMPLETADAS (1-12, 21)
 
 ### Fundamentos Técnicos (Tasks 1-3)
 1. Estructura archivos JS separados (modular)
@@ -187,6 +189,17 @@ chambapp/
     - Colores de markers por categoría
     - Responsive móvil (sidebar como drawer)
 
+### Gestión de Postulaciones (Task 21)
+21. **Aceptar/Rechazar + WhatsApp** (completada 19 Ene 2026)
+    - Vista empleador: botones Aceptar/Rechazar
+    - Estados: pendiente → aceptado | rechazado → completado
+    - Botón WhatsApp con mensaje pre-llenado
+    - Botón "Marcar como Completado"
+    - Filtros por estado en ambas vistas
+    - Vista trabajador: ver estado y contacto del empleador
+    - Teléfonos guardados en aplicaciones
+    - **Migración Nueva Places API** (AutocompleteSuggestion + códigos postales)
+
 ### Mejoras iOS (14 Ene 2026)
 - viewport-fit=cover en todos los HTML
 - Meta tags Apple en todos los HTML
@@ -194,7 +207,7 @@ chambapp/
 
 ---
 
-## PRÓXIMAS 3 TAREAS (13-15)
+## PRÓXIMAS TAREAS (13-17)
 
 ### Task 13: Sistema de Calificaciones (SIGUIENTE)
 **Objetivo:** Calificaciones 5 estrellas bidireccionales
@@ -203,21 +216,21 @@ chambapp/
 - [ ] Modelo Firestore para calificaciones
 - [ ] UI de estrellas (dar/ver calificación)
 - [ ] Promedio en perfil trabajador
-- [ ] Calificación después de trabajo completado
+- [ ] Calificación después de trabajo completado (desde botón ⭐ Calificar)
 
 ---
 
 ### Orden de Desarrollo Actualizado (19 Ene 2026)
 
-**Flujo lógico del usuario:**
+**Flujo lógico del usuario (YA FUNCIONAL hasta Completado):**
 ```
-Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → Calificación
+Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → [Calificación]
 ```
 
-**Nuevo orden de tareas:**
-1. **Task 21:** Aceptar/Rechazar + Botón WhatsApp (SIGUIENTE)
-2. **Tasks 13-17:** Sistema de Calificaciones (después de Task 21)
-3. **Tasks 18-20, 22-23:** Chat In-App (diferido, opcional - WhatsApp cubre la necesidad inicial)
+**Próximas tareas:**
+1. ✅ **Task 21:** Aceptar/Rechazar + Botón WhatsApp (COMPLETADA)
+2. **Tasks 13-17:** Sistema de Calificaciones (SIGUIENTE)
+3. **Tasks 18-20, 22-23:** Chat In-App (DIFERIDO - WhatsApp cubre la necesidad)
 
 ---
 
@@ -283,8 +296,10 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → Ca
 ### Pendientes Resolver:
 - Warning onboarding `.stats-grid`
 - google.maps.Marker deprecated (usar AdvancedMarkerElement)
-- google.maps.places.Autocomplete deprecated (usar PlaceAutocompleteElement)
 - Meta tag `apple-mobile-web-app-capable` deprecated
+
+### Resueltos:
+- ✅ google.maps.places.Autocomplete migrado a AutocompleteSuggestion (19 Ene 2026)
 
 ### Notas Importantes:
 - Firebase Plan Blaze: Monitorear costos mensual
@@ -304,6 +319,8 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → Ca
 - **14 Ene 2026:** Task 11 completada - Búsqueda por Distancia
 - **14 Ene 2026:** Fix bug coordenadas distritos duplicados (Miraflores, Comas, etc.)
 - **19 Ene 2026:** Task 12 completada - Mapa Interactivo Ofertas
+- **19 Ene 2026:** Task 21 completada - Aceptar/Rechazar + WhatsApp
+- **19 Ene 2026:** Migración a Nueva Places API (AutocompleteSuggestion)
 
 ---
 
@@ -323,7 +340,7 @@ import('./js/utils/migrar-ofertas.js').then(m => m.migrarOfertas());
 ---
 
 **Última actualización:** 19 Enero 2026
-**Versión:** 1.3
+**Versión:** 1.4
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 

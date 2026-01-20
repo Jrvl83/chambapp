@@ -10,9 +10,9 @@
 ```
 PROGRESO GENERAL
 
-███░░░░░░░░░░░░░░░░░░░░░░ 10% (18/176 tareas)
+███░░░░░░░░░░░░░░░░░░░░░░ 11% (19/176 tareas)
 
-Fase 1: █████████████░░░░░░░░░░░░░░░ 41% (18/44)
+Fase 1: ██████████████░░░░░░░░░░░░░░ 43% (19/44)
 Fase 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
 Fase 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
 Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
@@ -23,14 +23,15 @@ Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░
 ## 🎯 FASES DEL PROYECTO
 
 ### 📦 FASE 1: EXPERIENCIA WOW (44 tareas | 3 meses)
-**Estado:** 🔄 En Progreso (41%)
+**Estado:** 🔄 En Progreso (43%)
 **Objetivo:** Producto excepcional con features core
 
 **Categorías:**
 - ✅ Fundamentos Técnicos (3 tareas)
 - ✅ Perfiles Completos (4 tareas)
 - ✅ Geolocalización (5 tareas) - COMPLETADO
-- 🎯 Aceptar/Rechazar + Calificaciones (Task 21 + Tasks 13-17) - EN CURSO
+- ✅ Aceptar/Rechazar + WhatsApp (Task 21) - COMPLETADO
+- 🎯 Calificaciones (Tasks 13-17) - SIGUIENTE
 - ⏸️ Mensajería In-App (Tasks 18-20, 22-23) - DIFERIDO (WhatsApp primero)
 - ⏳ Búsqueda Avanzada (4 tareas)
 - ⏳ Notificaciones Push (4 tareas)
@@ -134,7 +135,7 @@ Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░
 │                    TIMELINE 6 MESES                          │
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
-│ NOV-ENE 2026  ████████████░░░░ FASE 1 (45% completado)     │
+│ NOV-ENE 2026  ████████████░░░░ FASE 1 (43% completado)     │
 │               ↑                                              │
 │               Estamos aquí                                   │
 │                                                              │
@@ -162,8 +163,8 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 | 1 | Fundamentos Técnicos | 3 | 100% | ✅ |
 | 2 | Perfiles Completos | 4 | 100% | ✅ |
 | 3 | Geolocalización | 5 | 100% | ✅ |
-| 4 | Aceptar/Rechazar (Task 21) | 1 | 0% | 🎯 SIGUIENTE |
-| 5 | Calificaciones | 5 | 0% | ⏳ |
+| 4 | Aceptar/Rechazar + WhatsApp (Task 21) | 1 | 100% | ✅ |
+| 5 | Calificaciones | 5 | 0% | 🎯 SIGUIENTE |
 | 6 | Mensajería In-App | 5 | 0% | ⏸️ DIFERIDO |
 | 7 | Búsqueda Avanzada | 4 | 0% | ⏳ |
 | 8 | Notificaciones | 4 | 0% | ⏳ |
@@ -171,9 +172,9 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 | 10 | Performance/PWA | 3 | 0% | ⏳ |
 | 11 | Testing/QA | 5 | 0% | ⏳ |
 
-**Total Fase 1:** 18/44 completadas (41%)
+**Total Fase 1:** 19/44 completadas (43%)
 
-### Tareas Completadas (1-12):
+### Tareas Completadas (1-12, 21):
 1. ✅ Estructura archivos JS separados
 2. ✅ Sistema design tokens CSS
 3. ✅ Componentes reutilizables UI
@@ -186,16 +187,17 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 10. ✅ Geocoding ofertas (14 Ene 2026)
 11. ✅ Búsqueda por distancia (14 Ene 2026)
 12. ✅ Mapa interactivo ofertas (19 Ene 2026)
+21. ✅ Aceptar/Rechazar + WhatsApp (19 Ene 2026) - Incluye migración Nueva Places API
 
 ### Próximas Tareas (ORDEN ACTUALIZADO 19 Ene):
-21. 🎯 **Aceptar/Rechazar + WhatsApp** (adelantada - prerequisito calificaciones)
-13. 🎯 Estructura Firestore Calificaciones
+13. 🎯 **Estructura Firestore Calificaciones** (SIGUIENTE)
 14. 🎯 Sistema de Estrellas Interactivo
 15. 🎯 Modal Calificar Trabajo
+16. 🎯 Promedio en Perfil Trabajador
+17. 🎯 Historial de Calificaciones
 
-> **Nota:** Task 21 se adelanta porque sin aceptar postulaciones no se puede
-> llegar al estado "completado" donde se activan las calificaciones.
-> WhatsApp reemplaza chat in-app inicial (Tasks 18-20 diferidas).
+> **Nota:** Flujo completo ya funcional: Postulación → Aceptar/Rechazar → WhatsApp → Completado
+> Task 13-17 (Calificaciones) es el siguiente bloque crítico.
 
 ---
 
@@ -439,6 +441,7 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 - **Ene 2026:** Badge ubicación dinámico
 - **14 Ene 2026:** Geocoding ofertas + Búsqueda por distancia
 - **19 Ene 2026:** Mapa interactivo ofertas (Sprint Geolocalización COMPLETADO)
+- **19 Ene 2026:** Aceptar/Rechazar + WhatsApp + Migración Nueva Places API
 
 ### 🎯 Por Completar:
 - **Feb 2026:** Fase 1 completa (MVP funcional)
