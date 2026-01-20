@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#0066FF">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Mis Aplicaciones - ChambApp</title>
+    <title>Mis Postulaciones - ChambApp</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/design-system.css">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/mis-aplicaciones-trabajador.css">
-    
+
     <!-- Intro.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
     <link rel="stylesheet" href="css/introjs-custom.css">
@@ -32,8 +32,8 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-title">
-                <h1>📋 Mis Aplicaciones</h1>
-                <p>Revisa el estado de tus postulaciones</p>
+                <h1>📋 Mis Postulaciones</h1>
+                <p>Revisa el estado de tus aplicaciones a chambas</p>
             </div>
             <a href="dashboard.html" class="btn btn-primary">
                 🔍 Buscar más chambas
@@ -46,28 +46,28 @@
                 <div class="stat-icon">📊</div>
                 <div class="stat-content">
                     <div class="stat-number" id="total-aplicaciones">0</div>
-                    <div class="stat-label">Total Aplicaciones</div>
+                    <div class="stat-label">Total Postulaciones</div>
                 </div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-pendiente">
                 <div class="stat-icon">🟡</div>
                 <div class="stat-content">
                     <div class="stat-number" id="pendientes">0</div>
                     <div class="stat-label">Pendientes</div>
                 </div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-aceptado">
                 <div class="stat-icon">✅</div>
                 <div class="stat-content">
-                    <div class="stat-number" id="contactados">0</div>
-                    <div class="stat-label">Contactados</div>
+                    <div class="stat-number" id="aceptados">0</div>
+                    <div class="stat-label">Aceptados</div>
                 </div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-exito">
                 <div class="stat-icon">⭐</div>
                 <div class="stat-content">
-                    <div class="stat-number" id="tasa-respuesta">0%</div>
-                    <div class="stat-label">Tasa de Respuesta</div>
+                    <div class="stat-number" id="tasa-exito">0%</div>
+                    <div class="stat-label">Tasa de Éxito</div>
                 </div>
             </div>
         </div>
@@ -78,9 +78,10 @@
                 <label for="filtro-estado">Estado:</label>
                 <select id="filtro-estado" onchange="aplicarFiltros()">
                     <option value="">Todos</option>
-                    <option value="pendiente">Pendientes</option>
-                    <option value="contactado">Contactados</option>
-                    <option value="cancelada">Canceladas</option>
+                    <option value="pendiente">🟡 Pendientes</option>
+                    <option value="aceptado">✅ Aceptados</option>
+                    <option value="completado">🏁 Completados</option>
+                    <option value="rechazado">❌ No seleccionados</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -99,7 +100,7 @@
                 </select>
             </div>
             <button class="btn btn-secondary" onclick="limpiarFiltros()">
-                🔄 Limpiar Filtros
+                🔄 Limpiar
             </button>
         </div>
 
@@ -111,7 +112,7 @@
         <!-- Loading State -->
         <div id="loading-screen" class="loading-state">
             <div class="spinner">⏳</div>
-            <p>Cargando tus aplicaciones...</p>
+            <p>Cargando tus postulaciones...</p>
         </div>
 
         <!-- Aplicaciones Container -->
@@ -120,8 +121,8 @@
         <!-- Empty State -->
         <div id="empty-state" class="empty-state" style="display: none;">
             <div class="empty-icon">📭</div>
-            <h2>No has aplicado a ninguna oferta aún</h2>
-            <p>Cuando apliques a una chamba, aparecerá aquí para que puedas seguir su estado.</p>
+            <h2>No has postulado a ninguna chamba aún</h2>
+            <p>Cuando postules a una oferta, aparecerá aquí para que puedas seguir su estado.</p>
             <a href="dashboard.html" class="btn btn-primary">
                 🔍 Buscar Chambas
             </a>
@@ -143,7 +144,7 @@
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
     <script type="module" src="js/mis-aplicaciones-trabajador.js"></script>
-    
+
     <!-- Onboarding -->
     <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
     <script src="js/onboarding-aplicaciones-trabajador.js"></script>

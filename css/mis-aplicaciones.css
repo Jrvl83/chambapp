@@ -1,398 +1,689 @@
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* ============================================
+   MIS APLICACIONES - EMPLEADOR (Ver Candidatos)
+   ChambApp - Task 21: Aceptar/Rechazar + WhatsApp
+   Actualizado: 19 Enero 2026
+   ============================================ */
 
-        :root {
-            --primary: #2563eb;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --light: #f1f5f9;
-            --white: #ffffff;
-            --border: #e2e8f0;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--light);
-            color: var(--dark);
-        }
+:root {
+    --primary: #2563eb;
+    --secondary: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --dark: #1e293b;
+    --gray: #64748b;
+    --light: #f1f5f9;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --whatsapp: #25D366;
+    --completado: #8b5cf6;
+}
 
-        .header {
-            background: var(--white);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--light);
+    color: var(--dark);
+}
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
+/* ========================================
+   HEADER
+   ======================================== */
+.header {
+    background: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        .btn-volver {
-            padding: 0.5rem 1rem;
-            background: var(--gray);
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
 
-        .btn-volver:hover {
-            background: #475569;
-        }
+.btn-volver {
+    padding: 0.5rem 1rem;
+    background: var(--gray);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
 
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+.btn-volver:hover {
+    background: #475569;
+}
 
-        .page-header {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+/* ========================================
+   CONTAINER Y PAGE HEADER
+   ======================================== */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
 
-        .page-header h1 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
+.page-header {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-        .page-header p {
-            color: var(--gray);
-        }
+.page-header h1 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
+.page-header p {
+    color: var(--gray);
+}
 
-        .stat-card {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            text-align: center;
-        }
+/* ========================================
+   ESTADÍSTICAS
+   ======================================== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
 
-        .stat-card .number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
+.stat-card {
+    background: var(--white);
+    padding: 1.25rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    border-left: 4px solid var(--primary);
+}
 
-        .stat-card .label {
-            color: var(--gray);
-            margin-top: 0.5rem;
-        }
+.stat-card.stat-pendiente {
+    border-left-color: var(--warning);
+}
 
-        .aplicaciones-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
+.stat-card.stat-pendiente .number {
+    color: var(--warning);
+}
 
-        /* ========================================
-           GRUPOS DE OFERTAS
-           ======================================== */
-        .oferta-grupo {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
+.stat-card.stat-aceptado {
+    border-left-color: var(--secondary);
+}
 
-        .oferta-grupo-header {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            padding: 1.25rem 1.5rem;
-            color: white;
-        }
+.stat-card.stat-aceptado .number {
+    color: var(--secondary);
+}
 
-        .oferta-grupo-titulo {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 0 0 0.5rem 0;
-        }
+.stat-card .number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary);
+}
 
-        .oferta-grupo-meta {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+.stat-card .label {
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
 
-        .oferta-categoria-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-        }
+/* ========================================
+   FILTROS POR ESTADO
+   ======================================== */
+.filtros-estado {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-        .oferta-aplicantes-count {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
+.filtros-label {
+    font-weight: 600;
+    color: var(--dark);
+    margin-right: 1rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
 
-        .oferta-grupo-aplicaciones {
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+.filtros-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
 
-        /* ========================================
-           CARDS DE APLICACIÓN
-           ======================================== */
-        .aplicacion-card {
-            background: var(--light);
-            border-radius: 10px;
-            padding: 1.25rem;
-            transition: transform 0.2s;
-            border: 1px solid var(--border);
-        }
+.filtro-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--border);
+    background: var(--white);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray);
+}
 
-        .aplicacion-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
+.filtro-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
 
-        .aplicacion-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
+.filtro-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
 
-        .aplicacion-trabajador {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
+.filtro-btn[data-estado="pendiente"].active {
+    background: var(--warning);
+    border-color: var(--warning);
+}
 
-        .aplicacion-avatar {
-            width: 45px;
-            height: 45px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
+.filtro-btn[data-estado="aceptado"].active {
+    background: var(--secondary);
+    border-color: var(--secondary);
+}
 
-        .aplicacion-nombre {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
+.filtro-btn[data-estado="completado"].active {
+    background: var(--completado);
+    border-color: var(--completado);
+}
 
-        .aplicacion-email {
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
+.filtro-btn[data-estado="rechazado"].active {
+    background: var(--danger);
+    border-color: var(--danger);
+}
 
-        /* Estilos antiguos mantenidos por compatibilidad */
-        .aplicacion-titulo {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
+/* ========================================
+   LISTA DE APLICACIONES
+   ======================================== */
+.aplicaciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
 
-        .aplicacion-oferta {
-            color: var(--gray);
-            font-size: 0.875rem;
-        }
+/* ========================================
+   GRUPOS DE OFERTAS
+   ======================================== */
+.oferta-grupo {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
 
-        .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
+.oferta-grupo-header {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    padding: 1.25rem 1.5rem;
+    color: white;
+}
 
-        .badge.pendiente {
-            background: #fef3c7;
-            color: #92400e;
-        }
+.oferta-grupo-titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
 
-        .badge.aceptada {
-            background: #d1fae5;
-            color: #065f46;
-        }
+.oferta-grupo-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
 
-        .badge.rechazada {
-            background: #fee2e2;
-            color: #991b1b;
-        }
+.oferta-categoria-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
 
-        .aplicacion-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-            padding: 1rem;
-            background: var(--light);
-            border-radius: 8px;
-        }
+.oferta-aplicantes-count {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
 
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
+.oferta-grupo-aplicaciones {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-        .info-label {
-            font-size: 0.75rem;
-            color: var(--gray);
-            margin-bottom: 0.25rem;
-        }
+/* ========================================
+   CARDS DE APLICACIÓN
+   ======================================== */
+.aplicacion-card {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+    border: 2px solid var(--border);
+}
 
-        .info-value {
-            font-weight: 600;
-            color: var(--dark);
-        }
+.aplicacion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-        .aplicacion-mensaje {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f0f9ff;
-            border-left: 3px solid var(--primary);
-            border-radius: 4px;
-        }
+/* Estilos por estado */
+.aplicacion-card.estado-pendiente {
+    border-left: 4px solid var(--warning);
+}
 
-        .aplicacion-mensaje strong {
-            color: var(--primary);
-        }
+.aplicacion-card.estado-aceptado {
+    border-left: 4px solid var(--secondary);
+    background: #f0fdf4;
+}
 
-        .aplicacion-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
+.aplicacion-card.estado-rechazado {
+    border-left: 4px solid var(--danger);
+    background: #fef2f2;
+    opacity: 0.7;
+}
 
-        .btn {
-            padding: 0.625rem 1.25rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+.aplicacion-card.estado-completado {
+    border-left: 4px solid var(--completado);
+    background: #faf5ff;
+}
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
+.aplicacion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
-        .btn-success {
-            background: var(--secondary);
-            color: white;
-        }
+.aplicacion-trabajador {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
 
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
+.aplicacion-avatar {
+    width: 45px;
+    height: 45px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
+.aplicacion-nombre {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
 
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+.aplicacion-email {
+    font-size: 0.85rem;
+    color: var(--gray);
+}
 
-        .empty-state .icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
+/* ========================================
+   BADGES DE ESTADO
+   ======================================== */
+.badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-        .empty-state h2 {
-            color: var(--gray);
-            margin-bottom: 1rem;
-        }
+.badge.pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
 
-        .loading {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
+.badge.aceptado {
+    background: #d1fae5;
+    color: #065f46;
+}
 
-        .loading .spinner {
-            font-size: 3rem;
-            animation: spin 1s linear infinite;
-        }
+.badge.rechazado {
+    background: #fee2e2;
+    color: #991b1b;
+}
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+.badge.completado {
+    background: #ede9fe;
+    color: #5b21b6;
+}
 
-        /* ========================================
-           ESTILOS ADICIONALES
-           ======================================== */
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            text-decoration: none;
-            display: inline-block;
-        }
+/* ========================================
+   INFO DE APLICACIÓN
+   ======================================== */
+.aplicacion-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255,255,255,0.7);
+    border-radius: 8px;
+}
 
-        .sin-contacto {
-            color: var(--gray);
-            font-size: 0.875rem;
-            font-style: italic;
-        }
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .oferta-grupo-header {
-                padding: 1rem;
-            }
+.info-label {
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-bottom: 0.25rem;
+}
 
-            .oferta-grupo-titulo {
-                font-size: 1.1rem;
-            }
+.info-value {
+    font-weight: 600;
+    color: var(--dark);
+}
 
-            .oferta-grupo-meta {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
+.aplicacion-mensaje {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f0f9ff;
+    border-left: 3px solid var(--primary);
+    border-radius: 4px;
+}
 
-            .aplicacion-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
+.aplicacion-mensaje strong {
+    color: var(--primary);
+}
 
-            .aplicacion-actions {
-                flex-direction: column;
-            }
+/* ========================================
+   ACCIONES Y BOTONES
+   ======================================== */
+.aplicacion-actions {
+    margin-top: 1rem;
+}
 
-            .aplicacion-actions .btn {
-                text-align: center;
-            }
-        }
+.btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* Botón WhatsApp */
+.btn-whatsapp {
+    background: var(--whatsapp);
+    color: white;
+}
+
+.btn-whatsapp:hover {
+    background: #128C7E;
+    transform: translateY(-1px);
+}
+
+.whatsapp-icon {
+    margin-right: 0.25rem;
+}
+
+/* Botón Completado */
+.btn-completado {
+    background: var(--completado);
+    color: white;
+}
+
+.btn-completado:hover {
+    background: #7c3aed;
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   SECCIÓN CONTACTO ACEPTADO
+   ======================================== */
+.contacto-aceptado {
+    background: #ecfdf5;
+    border: 2px solid var(--secondary);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.contacto-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.contacto-label {
+    color: var(--gray);
+}
+
+.contacto-telefono {
+    font-weight: 700;
+    color: var(--dark);
+    font-size: 1.1rem;
+}
+
+.contacto-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ========================================
+   ESTADOS FINALES
+   ======================================== */
+.estado-final {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: var(--light);
+}
+
+.estado-final.completado {
+    background: #ede9fe;
+}
+
+.texto-rechazado {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.texto-completado {
+    color: var(--completado);
+    font-weight: 600;
+}
+
+/* ========================================
+   EMPTY STATE Y LOADING
+   ======================================== */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.empty-state .icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+}
+
+.loading {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.loading .spinner {
+    font-size: 3rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+        margin: 1rem auto;
+    }
+
+    .header {
+        padding: 1rem;
+    }
+
+    .page-header {
+        padding: 1.5rem;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card .number {
+        font-size: 1.5rem;
+    }
+
+    .filtros-estado {
+        padding: 1rem;
+    }
+
+    .filtros-label {
+        font-size: 0.875rem;
+    }
+
+    .filtros-botones {
+        gap: 0.4rem;
+    }
+
+    .filtro-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .oferta-grupo-header {
+        padding: 1rem;
+    }
+
+    .oferta-grupo-titulo {
+        font-size: 1.1rem;
+    }
+
+    .oferta-grupo-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .aplicacion-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .aplicacion-info {
+        grid-template-columns: 1fr;
+    }
+
+    .contacto-botones {
+        flex-direction: column;
+    }
+
+    .contacto-botones .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .estado-final {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card .number {
+        font-size: 1.25rem;
+    }
+
+    .stat-card .label {
+        font-size: 0.75rem;
+    }
+}

@@ -1097,11 +1097,13 @@ window.enviarPostulacion = async function(ofertaId) {
             aplicanteId: usuarioActual.uid,
             aplicanteEmail: usuarioActual.email,
             aplicanteNombre: usuarioData?.nombre || 'Trabajador',
+            aplicanteTelefono: usuarioData?.telefono || '',
 
             // Datos del empleador
             empleadorId: oferta.empleadorId || '',
             empleadorEmail: oferta.empleadorEmail || '',
             empleadorNombre: oferta.empleadorNombre || 'Empleador',
+            empleadorTelefono: oferta.empleadorTelefono || '',
 
             // Datos de la oferta
             ofertaId: ofertaId,

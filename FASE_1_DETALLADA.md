@@ -2,29 +2,30 @@
 
 **45 Tareas para Producto Excepcional**
 **Duración:** 12-13 semanas (~3 meses)
-**Progreso Actual:** 38% (17/45 tareas completadas)
+**Progreso Actual:** 40% (18/45 tareas completadas)
 
 ---
 
 ## 📊 PROGRESO FASE 1
 
 ```
-✅ COMPLETADAS: █████████████░░░░░░░░░░░░░░░ 17/45 (38%)
+✅ COMPLETADAS: ██████████████░░░░░░░░░░░░░░ 18/45 (40%)
 🔄 EN PROGRESO: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/45 (0%)
-⏳ PENDIENTES:  ████████████████░░░░░░░░░░░░ 28/45 (62%)
+⏳ PENDIENTES:  ███████████████░░░░░░░░░░░░░ 27/45 (60%)
 ```
 
 ### Sprints (1 semana cada uno):
 - **Sprint 1:** ✅ Tasks 1-3 (Fundamentos) - COMPLETADO
-- **Sprint 2:** ✅ Tasks 4-7 (Perfiles) - COMPLETADO  
-- **Sprint 3:** 🔄 Tasks 8-12 (Geolocalización) - EN PROGRESO (Task 9 completada)
-- **Sprint 4:** ⏳ Tasks 13-17 (Calificaciones)
-- **Sprint 5:** ⏳ Tasks 18-23 (Mensajería + Aceptar/Rechazar)
-- **Sprint 6:** ⏳ Tasks 24-27 (Búsqueda Avanzada)
-- **Sprint 7:** ⏳ Tasks 28-31 (Notificaciones)
-- **Sprint 8-9:** ⏳ Tasks 32-37 (UX/UI Polish)
-- **Sprint 10:** ⏳ Tasks 38-40 (Performance/PWA)
-- **Sprint 11-12:** ⏳ Tasks 41-45 (Testing/QA)
+- **Sprint 2:** ✅ Tasks 4-7 (Perfiles) - COMPLETADO
+- **Sprint 3:** ✅ Tasks 8-12 (Geolocalización) - COMPLETADO
+- **Sprint 4:** 🎯 Task 21 + Tasks 13-17 (Aceptar/Rechazar + Calificaciones) - EN CURSO
+  > Task 21 adelantada: prerequisito para calificaciones + WhatsApp
+- **Sprint 5:** ⏳ Tasks 24-27 (Búsqueda Avanzada)
+- **Sprint 6:** ⏳ Tasks 28-31 (Notificaciones)
+- **Sprint 7-8:** ⏳ Tasks 32-37 (UX/UI Polish)
+- **Sprint 9:** ⏳ Tasks 38-40 (Performance/PWA)
+- **Sprint 10-11:** ⏳ Tasks 41-45 (Testing/QA)
+- **Diferido:** ⏸️ Tasks 18-20, 22-23 (Chat In-App) - WhatsApp cubre necesidad inicial
 
 ---
 
@@ -159,7 +160,7 @@
 
 ---
 
-## 🔴 PRIORIDAD 3: GEOLOCALIZACIÓN 🔄 EN PROGRESO
+## 🔴 PRIORIDAD 3: GEOLOCALIZACIÓN ✅ COMPLETADO
 
 ### ✅ Task 8: Integración Google Maps API
 **Tiempo:** 1 día | **Estado:** ✅ Completado
@@ -197,111 +198,100 @@
 
 ---
 
-### 🎯 Task 10: Geocoding Ofertas [SIGUIENTE TAREA]
-**Tiempo:** 2 días | **Estado:** 🔄 Próxima
+### ✅ Task 10: Geocoding Ofertas
+**Tiempo:** 2 días | **Estado:** ✅ Completado (14 Ene 2026)
 
 **Objetivo:** Ofertas con ubicación precisa
 
-**Subtareas:**
-- [ ] Agregar campo `coordenadas: {lat, lng}` a schema ofertas en Firestore
-- [ ] Agregar campo `direccion: string` legible
-- [ ] Modificar `publicar-oferta.html`: agregar sección ubicación (Paso 3)
-- [ ] Integrar Google Places API Autocomplete para direcciones
-- [ ] Crear función `convertirDireccionACoordenadas(direccion)`
-- [ ] Mostrar mini-mapa preview ubicación en formulario
-- [ ] Validar coordenadas están dentro de Perú (bounds)
-- [ ] Guardar ambos: dirección legible + coordenadas
-- [ ] Migrar ofertas existentes (Lima centro default: -12.046374, -77.042793)
-- [ ] Testing con diferentes direcciones
+**Subtareas Completadas:**
+- ✅ Google Places API Autocomplete integrado
+- ✅ Mini-mapa preview en formulario publicar oferta
+- ✅ Validación bounds Perú
+- ✅ Estructura ubicación en Firestore:
+  ```javascript
+  ubicacion: {
+      departamento: "Lima",
+      provincia: "Lima",
+      distrito: "Miraflores",
+      direccion_exacta: "Av. Larco 345",
+      referencia: "Frente al parque",
+      coordenadas: { lat: -12.119, lng: -77.030 },
+      texto_completo: "Av. Larco 345, Miraflores",
+      es_ubicacion_precisa: true
+  }
+  ```
+- ✅ Script migración ofertas existentes
+- ✅ Testing con diferentes direcciones
 
-**Archivos a Modificar:**
+**Archivos Creados/Modificados:**
 ```
-- publicar-oferta.html (agregar input dirección + mapa preview)
-- js/dashboard/publicar-oferta.js (lógica geocoding)
-- css/pages/publicar-oferta.css (estilos mapa)
-- Firestore: agregar campos a collection ofertas
+- publicar-oferta.html (sección ubicación con autocomplete)
+- js/publicar-oferta.js (lógica geocoding)
+- css/publicar-oferta.css (estilos mapa preview)
+- js/utils/migrar-ofertas.js (NUEVO - migración)
 ```
 
 **Por qué:** Ofertas necesitan ubicación para búsqueda por distancia
 
 ---
 
-### Task 11: Búsqueda por Distancia
-**Tiempo:** 2 días | **Estado:** ⏳ Pendiente
+### ✅ Task 11: Búsqueda por Distancia
+**Tiempo:** 2 días | **Estado:** ✅ Completado (14 Ene 2026)
 
 **Objetivo:** Feature #1 más solicitada
 
-**Subtareas:**
-- [ ] Crear filtro dropdown "Distancia máxima": 5km, 10km, 20km, 50km, Todas
-- [ ] Implementar función `calcularDistanciaHaversine(lat1, lng1, lat2, lng2)`
-- [ ] Obtener ubicación actual usuario (de Firestore)
-- [ ] Filtrar ofertas por distancia al aplicar filtro
-- [ ] Ordenar ofertas por cercanía (más cercanas primero)
-- [ ] Mostrar "A X.X km de ti" en cada card oferta
-- [ ] Caché resultados cálculo (performance)
-- [ ] Testing con diferentes ubicaciones usuario
+**Subtareas Completadas:**
+- ✅ Filtro dropdown "Distancia máxima": 5km, 10km, 20km, 50km
+- ✅ Función `calcularDistanciaHaversine()` en js/utils/distance.js
+- ✅ Badge "A X km de ti" con colores (verde ≤5km, amarillo 5-15km, rojo >15km)
+- ✅ Ordenar ofertas por cercanía
+- ✅ Fix: `obtenerCoordenadasDistrito` filtra por depto/provincia (evita duplicados)
+- ✅ Testing con diferentes ubicaciones
 
-**Archivos a Crear/Modificar:**
+**Archivos Creados/Modificados:**
 ```
-- js/utils/distance-calculator.js (NUEVO - funciones Haversine)
-- js/dashboard/dashboard.js (agregar filtro distancia)
-- dashboard.html (UI filtro dropdown)
-- css/components/filters.css (estilos)
-```
-
-**Algoritmo Haversine:**
-```javascript
-function calcularDistanciaHaversine(lat1, lng1, lat2, lng2) {
-  const R = 6371; // Radio Tierra en km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * 
-            Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLng/2) * Math.sin(dLng/2);
-  
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distancia = R * c; // Distancia en km
-  
-  return distancia;
-}
+- js/utils/distance.js (funciones Haversine)
+- js/dashboard/dashboard.js (filtro distancia integrado)
+- dashboard.html (dropdown distancia)
+- css/dashboard-main.css (estilos badge distancia)
 ```
 
 **Por qué:** Feature crítica para encontrar trabajo cercano
 
 ---
 
-### Task 12: Mapa Interactivo Ofertas
-**Tiempo:** 3-4 días | **Estado:** ⏳ Pendiente
+### ✅ Task 12: Mapa Interactivo Ofertas
+**Tiempo:** 3-4 días | **Estado:** ✅ Completado (19 Ene 2026)
 
 **Objetivo:** UX premium
 
-**Subtareas:**
-- [ ] Crear `/mapa-ofertas.html` (página nueva)
-- [ ] Inicializar mapa Google Maps centrado en Lima
-- [ ] Mostrar pins (markers) en mapa para cada oferta
-- [ ] Implementar clustering de pins cercanos (MarkerClusterer)
-- [ ] Click en pin → mostrar preview oferta (InfoWindow)
-- [ ] Sidebar con filtros (categoría, salario, distancia)
-- [ ] Actualizar mapa en tiempo real al cambiar filtros
-- [ ] Botón "Buscar en esta área" (cuando usuario mueve/zoom mapa)
-- [ ] Toggle vista lista/mapa
-- [ ] Responsive móvil (mapa arriba, lista abajo)
-- [ ] Loading states mientras carga ofertas
-- [ ] Link desde dashboard principal
+**Subtareas Completadas:**
+- ✅ Página `/mapa-ofertas.html` creada
+- ✅ Google Maps centrado en Lima con ubicación usuario
+- ✅ Markers por categoría con colores SVG personalizados
+- ✅ Clustering de markers cercanos (MarkerClusterer)
+- ✅ Click en cluster con misma ubicación → modal lista ofertas
+- ✅ Preview rápido al hacer click en marker
+- ✅ Modal detalle completo SIN salir del mapa
+- ✅ Postulación directa desde el mapa
+- ✅ Sidebar con filtros (categoría, distancia)
+- ✅ Solo visible para trabajadores (empleadores redirigidos)
+- ✅ Responsive móvil (sidebar como drawer desde abajo)
+- ✅ Botón "Ver Mapa" en dashboard (solo trabajadores)
+- ✅ Link en navegación lateral
 
-**Archivos a Crear:**
+**Archivos Creados:**
 ```
 - mapa-ofertas.html (NUEVO)
-- js/mapa/mapa-ofertas.js (NUEVO)
-- css/pages/mapa-ofertas.css (NUEVO)
+- js/mapa-ofertas.js (NUEVO)
+- css/mapa-ofertas.css (NUEVO)
 ```
 
 **Componentes del Mapa:**
 - Google Maps JavaScript API
-- Marker Clusterer (para agrupar pins)
-- InfoWindow custom con preview oferta
+- MarkerClusterer (agrupación pins)
+- Markers SVG con colores por categoría
+- Modal detalle + postulación in-page
 - Filtros sidebar sincronizados
 
 **Por qué:** Diferenciador clave, competidores no tienen
@@ -462,11 +452,13 @@ new StarRating('#rating-input', {
 
 ---
 
-## 🟠 PRIORIDAD 5: SISTEMA DE MENSAJERÍA (Semana 3-4)
+## 🟠 PRIORIDAD 5: SISTEMA DE MENSAJERÍA (DIFERIDO)
 
-> **NOTA IMPORTANTE:** Este sprint incluye también la funcionalidad de **Aceptar/Rechazar postulaciones**,
-> ya que el flujo lógico es: Postulación → Conversación → Decisión (Aceptar/Rechazar) → Trabajo → Calificación.
-> El empleador debe poder conversar con el trabajador ANTES de decidir si lo contrata.
+> **ACTUALIZACIÓN 19 Ene 2026:** El chat in-app se difiere porque WhatsApp cubrirá la necesidad inicial de comunicación. Task 21 (Aceptar/Rechazar) se adelantó al Sprint 4 con integración WhatsApp.
+>
+> **Nuevo flujo:** Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → Calificación
+>
+> Las tasks de mensajería (18-20, 22-23) se implementarán después si hay demanda de chat in-app.
 
 ### Task 18: Estructura Firestore Chat
 **Tiempo:** 1 día | **Estado:** ⏳ Pendiente
@@ -564,41 +556,54 @@ new StarRating('#rating-input', {
 
 ---
 
-### Task 21: Aceptar/Rechazar Postulaciones
-**Tiempo:** 1-2 días | **Estado:** ⏳ Pendiente
+### 🎯 Task 21: Aceptar/Rechazar Postulaciones + WhatsApp [SIGUIENTE]
+**Tiempo:** 2-3 días | **Estado:** 🎯 SIGUIENTE (adelantada)
 
-**Objetivo:** Permitir al empleador decidir sobre candidatos después de conversar
+**Objetivo:** Permitir al empleador decidir sobre candidatos y contactarlos por WhatsApp
 
-**Flujo completo:**
+> **NOTA:** Esta tarea se adelanta porque es prerequisito para probar el sistema de calificaciones. Sin poder aceptar postulaciones, no se puede llegar al estado "completado" donde se activan las calificaciones.
+
+**Flujo actualizado:**
 ```
-Trabajador postula → Empleador ve en "Ver Candidatos" → Inicia chat →
-Conversan → Empleador ACEPTA o RECHAZA → Notificación al trabajador
+Trabajador postula → Empleador ve en "Ver Candidatos" →
+Empleador ACEPTA o RECHAZA → Si acepta: Botón WhatsApp visible →
+Contactan por WhatsApp → Trabajo → Marcar Completado → Calificación
 ```
 
 **Subtareas:**
 - [ ] Agregar botones "Aceptar" y "Rechazar" en cada postulación (Ver Candidatos)
 - [ ] Botón "Aceptar":
   - Cambiar estado aplicación a "aceptado"
-  - Notificar al trabajador (email + in-app)
-  - Mostrar datos de contacto completos
+  - Mostrar número de teléfono del trabajador
+  - Mostrar botón "Contactar por WhatsApp" con mensaje pre-llenado:
+    `"Hola [nombre], te contacto por la chamba de [título] en ChambApp..."`
   - Actualizar UI con badge verde "ACEPTADO"
 - [ ] Botón "Rechazar":
   - Modal confirmación "¿Seguro que deseas rechazar a [nombre]?"
   - Cambiar estado aplicación a "rechazado"
-  - Notificar al trabajador (email + in-app) con mensaje genérico
-  - Ocultar de lista activa o mostrar con badge gris "RECHAZADO"
+  - Mostrar con badge gris "RECHAZADO"
+- [ ] Botón "Marcar como Completado":
+  - Solo visible en postulaciones aceptadas
+  - Cambia estado a "completado"
+  - Dispara modal de calificación (Task 15)
 - [ ] Estados de aplicación: `pendiente` → `aceptado` | `rechazado` | `completado`
-- [ ] Filtro en "Ver Candidatos": Todos, Pendientes, Aceptados, Rechazados
-- [ ] Vista trabajador: mostrar estado de sus aplicaciones (Pendiente/Aceptado/Rechazado)
+- [ ] Filtro en "Ver Candidatos": Todos, Pendientes, Aceptados, Rechazados, Completados
+- [ ] Vista trabajador: mostrar estado de sus aplicaciones con colores
+  - Pendiente: amarillo
+  - Aceptado: verde + datos contacto empleador + WhatsApp
+  - Rechazado: gris
+  - Completado: azul
 
 **Archivos a Modificar:**
 ```
-- js/mis-aplicaciones.js (botones aceptar/rechazar)
+- mis-aplicaciones.html (UI botones y filtros)
+- js/mis-aplicaciones.js (lógica aceptar/rechazar/completar)
 - css/mis-aplicaciones.css (estilos badges estados)
-- js/mis-aplicaciones-trabajador.js (mostrar estado)
+- mis-aplicaciones-trabajador.html (UI estado)
+- js/mis-aplicaciones-trabajador.js (mostrar estado + WhatsApp)
 ```
 
-**Por qué:** Cierra el ciclo de contratación, da feedback al trabajador
+**Por qué:** Prerequisito para calificaciones + contacto directo vía WhatsApp
 
 ---
 
@@ -1154,7 +1159,7 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 |-----------|--------|--------|--------|
 | Fundamentos Técnicos | 3 | 1 semana | ✅ Completado |
 | Perfiles Completos | 4 | 1.5 semanas | ✅ Completado |
-| Geolocalización | 5 | 1.5 semanas | ✅ Completado |
+| Geolocalización | 5 | 1.5 semanas | ✅ Completado (19 Ene 2026) |
 | Calificaciones | 5 | 1 semana | ⏳ Pendiente |
 | Mensajería + Aceptar/Rechazar | 6 | 1.5 semanas | ⏳ Pendiente |
 | Búsqueda Avanzada | 4 | 1 semana | ⏳ Pendiente |
@@ -1170,25 +1175,29 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 ### Progreso Actual
 
 ```
-COMPLETADAS: 17/45 (38%)
+COMPLETADAS: 18/45 (40%)
 EN PROGRESO: 0/45 (0%)
-PENDIENTES:  28/45 (62%)
+PENDIENTES:  27/45 (60%)
 ```
 
 ---
 
 ## 🎯 PRÓXIMOS PASOS INMEDIATOS
 
-### Esta Semana:
-1. ✅ Fix warning `.stats-grid` (30 min)
-2. 🎯 **Task 10:** Geocoding Ofertas (2 días)
-3. 🎯 **Task 11:** Búsqueda por Distancia (2 días)
+### Completado Recientemente:
+- ✅ **Task 10:** Geocoding Ofertas (14 Ene 2026)
+- ✅ **Task 11:** Búsqueda por Distancia (14 Ene 2026)
+- ✅ **Task 12:** Mapa Interactivo Ofertas (19 Ene 2026)
 
-### Próxima Semana:
-4. 🎯 **Task 12:** Mapa Interactivo (3-4 días)
+### Esta Semana (ORDEN ACTUALIZADO):
+1. 🎯 **Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp
+   > Se adelanta porque es prerequisito para probar calificaciones
 
-### Siguientes 2 Semanas:
-5. 🎯 **Tasks 13-17:** Sistema Calificaciones completo
+### Próximas 2 Semanas:
+2. 🎯 **Tasks 13-17:** Sistema de Calificaciones completo
+
+### Diferido (WhatsApp cubre necesidad inicial):
+3. ⏸️ **Tasks 18-20, 22-23:** Chat In-App (opcional, implementar después si hay demanda)
 
 ---
 
@@ -1212,8 +1221,8 @@ PENDIENTES:  28/45 (62%)
 
 ---
 
-**Última actualización:** 13 Enero 2026  
-**Autor:** Joel (ChambApp Founder)  
+**Última actualización:** 19 Enero 2026
+**Autor:** Joel (ChambApp Founder)
 **Próxima revisión:** Al completar cada 5 tareas
 
 ---

@@ -181,14 +181,9 @@
                         <div class="form-group">
                             <label for="direccion-exacta">Dirección Exacta (Opcional)</label>
                             <div class="direccion-input-wrapper">
-                                <input
-                                    type="text"
-                                    id="direccion-exacta"
-                                    name="direccion-exacta"
-                                    placeholder="Ej: Av. Larco 345, Miraflores"
-                                    maxlength="200"
-                                    autocomplete="off"
-                                >
+                                <div id="direccion-autocomplete-container" class="autocomplete-container">
+                                    <!-- PlaceAutocompleteElement se insertará aquí via JS -->
+                                </div>
                                 <span class="direccion-icon">📍</span>
                             </div>
                             <div class="helper-text">

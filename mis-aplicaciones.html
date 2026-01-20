@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#0066FF">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Mis Aplicaciones - ChambApp</title>
+    <title>Ver Candidatos - ChambApp</title>
 
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/mis-aplicaciones.css">
-    
+
     <!-- Intro.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
     <link rel="stylesheet" href="css/introjs-custom.css">
@@ -24,28 +25,55 @@
 
     <div class="container">
         <div class="page-header">
-            <h1>📋 Mis Aplicaciones</h1>
-            <p>Gestiona las aplicaciones a tus ofertas de trabajo</p>
+            <h1>👥 Ver Candidatos</h1>
+            <p>Gestiona las postulaciones a tus ofertas de trabajo</p>
         </div>
 
+        <!-- Estadísticas -->
         <div class="stats" id="stats">
             <div class="stat-card">
                 <div class="number" id="total-aplicaciones">0</div>
-                <div class="label">Total Aplicaciones</div>
+                <div class="label">Total Postulaciones</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-pendiente">
                 <div class="number" id="pendientes">0</div>
                 <div class="label">Pendientes</div>
             </div>
+            <div class="stat-card stat-aceptado">
+                <div class="number" id="aceptados">0</div>
+                <div class="label">Aceptados</div>
+            </div>
             <div class="stat-card">
                 <div class="number" id="ofertas-activas">0</div>
-                <div class="label">Ofertas Activas</div>
+                <div class="label">Mis Ofertas</div>
+            </div>
+        </div>
+
+        <!-- Filtros por Estado -->
+        <div class="filtros-estado">
+            <span class="filtros-label">Filtrar por estado:</span>
+            <div class="filtros-botones">
+                <button class="filtro-btn active" data-estado="" onclick="filtrarPorEstado('')">
+                    Todos
+                </button>
+                <button class="filtro-btn" data-estado="pendiente" onclick="filtrarPorEstado('pendiente')">
+                    🟡 Pendientes
+                </button>
+                <button class="filtro-btn" data-estado="aceptado" onclick="filtrarPorEstado('aceptado')">
+                    ✅ Aceptados
+                </button>
+                <button class="filtro-btn" data-estado="completado" onclick="filtrarPorEstado('completado')">
+                    🏁 Completados
+                </button>
+                <button class="filtro-btn" data-estado="rechazado" onclick="filtrarPorEstado('rechazado')">
+                    ❌ Rechazados
+                </button>
             </div>
         </div>
 
         <div id="loading" class="loading">
             <div class="spinner">⏳</div>
-            <p>Cargando aplicaciones...</p>
+            <p>Cargando postulaciones...</p>
         </div>
 
         <div id="aplicaciones-container" class="aplicaciones-list" style="display: none;"></div>
@@ -54,13 +82,17 @@
             <div class="icon">📭</div>
             <h2>No hay aplicaciones aún</h2>
             <p>Cuando alguien aplique a tus ofertas, aparecerán aquí.</p>
+            <a href="publicar-oferta.html" class="btn btn-primary" style="margin-top: 1rem;">
+                ➕ Publicar una Oferta
+            </a>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script type="module" src="js/mis-aplicaciones.js"></script>
-    
+
     <!-- Onboarding -->
     <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
     <script src="js/onboarding-aplicaciones-empleador.js"></script>

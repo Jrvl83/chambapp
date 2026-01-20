@@ -29,11 +29,14 @@
 - Colores de markers por categoría
 
 ### Próxima Tarea Crítica
-**Task 13:** Sistema de Calificaciones
-- Estructura Firestore para calificaciones
-- UI de estrellas (dar/ver calificación)
-- Promedio en perfil trabajador
-- Calificación después de trabajo completado
+**Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp
+- Botones "Aceptar" y "Rechazar" en Ver Candidatos
+- Estados: pendiente → aceptado | rechazado | completado
+- Botón WhatsApp con mensaje pre-llenado (al aceptar)
+- Botón "Marcar como Completado" (para trabajos terminados)
+- Vista trabajador: ver estado de sus aplicaciones
+
+> **Nota:** Task 21 se adelanta porque es prerequisito para probar el sistema de calificaciones (Tasks 13-17). Sin poder aceptar postulaciones, no se puede llegar al estado "completado" donde se activan las calificaciones.
 
 ### Pendiente Menor (Sprint UX/UI Polish)
 - Fix warning onboarding `.stats-grid`
@@ -204,15 +207,17 @@ chambapp/
 
 ---
 
-### Tasks 18-23: Sistema de Mensajería + Aceptar/Rechazar
-**Objetivo:** Chat entre empleador y trabajador + decisión de contratación
+### Orden de Desarrollo Actualizado (19 Ene 2026)
 
-**Flujo completo:**
+**Flujo lógico del usuario:**
 ```
-Postulación → Conversación (chat) → Decisión (Aceptar/Rechazar) → Trabajo → Calificación
+Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → Calificación
 ```
 
-**Incluye Task 21:** Aceptar/Rechazar postulaciones después de conversar
+**Nuevo orden de tareas:**
+1. **Task 21:** Aceptar/Rechazar + Botón WhatsApp (SIGUIENTE)
+2. **Tasks 13-17:** Sistema de Calificaciones (después de Task 21)
+3. **Tasks 18-20, 22-23:** Chat In-App (diferido, opcional - WhatsApp cubre la necesidad inicial)
 
 ---
 

@@ -1,7 +1,7 @@
 # 🗺️ ROADMAP COMPLETO - CHAMBAPP
 
-**176 Tareas en 4 Fases | 6 meses hasta lanzamiento**  
-**Actualizado:** 13 Enero 2026
+**176 Tareas en 4 Fases | 6 meses hasta lanzamiento**
+**Actualizado:** 19 Enero 2026
 
 ---
 
@@ -10,9 +10,9 @@
 ```
 PROGRESO GENERAL
 
-███░░░░░░░░░░░░░░░░░░░░░░ 10% (15/176 tareas)
+███░░░░░░░░░░░░░░░░░░░░░░ 10% (18/176 tareas)
 
-Fase 1: ████████████░░░░░░░░░░░░░░░░ 45% (15/44)
+Fase 1: █████████████░░░░░░░░░░░░░░░ 41% (18/44)
 Fase 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
 Fase 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
 Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
@@ -23,15 +23,15 @@ Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░
 ## 🎯 FASES DEL PROYECTO
 
 ### 📦 FASE 1: EXPERIENCIA WOW (44 tareas | 3 meses)
-**Estado:** 🔄 En Progreso (45%)  
+**Estado:** 🔄 En Progreso (41%)
 **Objetivo:** Producto excepcional con features core
 
 **Categorías:**
 - ✅ Fundamentos Técnicos (3 tareas)
 - ✅ Perfiles Completos (4 tareas)
-- 🔄 Geolocalización (5 tareas) - 60% completado
-- ⏳ Sistema Calificaciones (5 tareas)
-- ⏳ Mensajería Real-time (5 tareas)
+- ✅ Geolocalización (5 tareas) - COMPLETADO
+- 🎯 Aceptar/Rechazar + Calificaciones (Task 21 + Tasks 13-17) - EN CURSO
+- ⏸️ Mensajería In-App (Tasks 18-20, 22-23) - DIFERIDO (WhatsApp primero)
 - ⏳ Búsqueda Avanzada (4 tareas)
 - ⏳ Notificaciones Push (4 tareas)
 - ⏳ UX/UI Polish Global (6 tareas)
@@ -41,10 +41,12 @@ Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░
 **Features Clave:**
 - Perfiles ricos trabajadores/empleadores
 - Geolocalización GPS + mapas interactivos
+- Aceptar/Rechazar postulaciones
+- Contacto directo vía WhatsApp
 - Sistema calificaciones 5 estrellas
-- Chat 1-1 tiempo real
 - Notificaciones push
 - PWA instalable
+- Chat in-app (diferido - WhatsApp cubre necesidad inicial)
 
 ---
 
@@ -159,18 +161,19 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 |---|-----------|--------|----------|--------|
 | 1 | Fundamentos Técnicos | 3 | 100% | ✅ |
 | 2 | Perfiles Completos | 4 | 100% | ✅ |
-| 3 | Geolocalización | 5 | 60% | 🔄 |
-| 4 | Calificaciones | 5 | 0% | ⏳ |
-| 5 | Mensajería | 5 | 0% | ⏳ |
-| 6 | Búsqueda Avanzada | 4 | 0% | ⏳ |
-| 7 | Notificaciones | 4 | 0% | ⏳ |
-| 8 | UX/UI Polish | 6 | 0% | ⏳ |
-| 9 | Performance/PWA | 3 | 0% | ⏳ |
-| 10 | Testing/QA | 5 | 0% | ⏳ |
+| 3 | Geolocalización | 5 | 100% | ✅ |
+| 4 | Aceptar/Rechazar (Task 21) | 1 | 0% | 🎯 SIGUIENTE |
+| 5 | Calificaciones | 5 | 0% | ⏳ |
+| 6 | Mensajería In-App | 5 | 0% | ⏸️ DIFERIDO |
+| 7 | Búsqueda Avanzada | 4 | 0% | ⏳ |
+| 8 | Notificaciones | 4 | 0% | ⏳ |
+| 9 | UX/UI Polish | 6 | 0% | ⏳ |
+| 10 | Performance/PWA | 3 | 0% | ⏳ |
+| 11 | Testing/QA | 5 | 0% | ⏳ |
 
-**Total Fase 1:** 15/44 completadas (34%)
+**Total Fase 1:** 18/44 completadas (41%)
 
-### Tareas Completadas (1-9):
+### Tareas Completadas (1-12):
 1. ✅ Estructura archivos JS separados
 2. ✅ Sistema design tokens CSS
 3. ✅ Componentes reutilizables UI
@@ -180,11 +183,19 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 7. ✅ Editor perfil interactivo
 8. ✅ Integración Google Maps API
 9. ✅ Permiso ubicación usuario + badge
+10. ✅ Geocoding ofertas (14 Ene 2026)
+11. ✅ Búsqueda por distancia (14 Ene 2026)
+12. ✅ Mapa interactivo ofertas (19 Ene 2026)
 
-### Próximas 3 Tareas:
-10. 🎯 Geocoding ofertas (2 días)
-11. 🎯 Búsqueda por distancia (2 días)
-12. 🎯 Mapa interactivo ofertas (3-4 días)
+### Próximas Tareas (ORDEN ACTUALIZADO 19 Ene):
+21. 🎯 **Aceptar/Rechazar + WhatsApp** (adelantada - prerequisito calificaciones)
+13. 🎯 Estructura Firestore Calificaciones
+14. 🎯 Sistema de Estrellas Interactivo
+15. 🎯 Modal Calificar Trabajo
+
+> **Nota:** Task 21 se adelanta porque sin aceptar postulaciones no se puede
+> llegar al estado "completado" donde se activan las calificaciones.
+> WhatsApp reemplaza chat in-app inicial (Tasks 18-20 diferidas).
 
 ---
 
@@ -426,6 +437,8 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 - **Dic 2025:** Perfiles completos
 - **Ene 2026:** Google Maps integrado
 - **Ene 2026:** Badge ubicación dinámico
+- **14 Ene 2026:** Geocoding ofertas + Búsqueda por distancia
+- **19 Ene 2026:** Mapa interactivo ofertas (Sprint Geolocalización COMPLETADO)
 
 ### 🎯 Por Completar:
 - **Feb 2026:** Fase 1 completa (MVP funcional)
@@ -499,7 +512,7 @@ Este documento se actualiza:
 - ✅ Al alcanzar hitos críticos
 - ✅ Mensualmente (mínimo)
 
-**Última actualización:** 13 Enero 2026  
+**Última actualización:** 19 Enero 2026
 **Próxima revisión:** Al completar Fase 1 (Febrero 2026)
 
 ---

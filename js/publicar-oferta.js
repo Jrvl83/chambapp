@@ -113,7 +113,7 @@ async function cargarGoogleMapsAPI() {
         };
 
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initGoogleMapsPublicar`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,marker&loading=async&callback=initGoogleMapsPublicar`;
         script.async = true;
         script.defer = true;
 
@@ -172,57 +172,662 @@ async function inicializarMapaPreview() {
 }
 
 // ============================================
-// INICIALIZAR AUTOCOMPLETE DE DIRECCIONES
+// INICIALIZAR AUTOCOMPLETE DE DIRECCIONES (Nueva Places API)
 // ============================================
+let sugerenciasContainer = null;
+let sugerenciasActuales = []; // Guardar las sugerencias para acceder después
+
 async function inicializarAutocomplete() {
     try {
         await cargarGoogleMapsAPI();
 
+        const contenedorAutocomplete = document.getElementById('direccion-autocomplete-container');
+        if (!contenedorAutocomplete) {
+            console.warn('⚠️ Contenedor de autocomplete no encontrado');
+            return;
+        }
+
+        // Crear input y contenedor de sugerencias
+        contenedorAutocomplete.innerHTML = `
+            <input
+                type="text"
+                id="direccion-exacta"
+                name="direccion-exacta"
+                placeholder="Ej: Av. Larco 345, Miraflores"
+                maxlength="200"
+                autocomplete="off"
+                class="direccion-input"
+            >
+            <div id="sugerencias-direccion" class="sugerencias-container"></div>
+        `;
+
         const inputDireccion = document.getElementById('direccion-exacta');
-        if (!inputDireccion) return;
+        sugerenciasContainer = document.getElementById('sugerencias-direccion');
 
-        // Configurar autocomplete restringido a Peru
-        autocomplete = new google.maps.places.Autocomplete(inputDireccion, {
-            componentRestrictions: { country: 'pe' },
-            fields: ['formatted_address', 'geometry', 'address_components'],
-            types: ['address']
-        });
+        // Evento al escribir
+        let debounceTimer;
+        inputDireccion.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
 
-        // Evento cuando se selecciona una direccion
-        autocomplete.addListener('place_changed', () => {
-            const place = autocomplete.getPlace();
-
-            if (!place.geometry || !place.geometry.location) {
-                console.warn('⚠️ No se encontro ubicacion para esta direccion');
+            if (query.length < 3) {
+                ocultarSugerencias();
                 return;
             }
 
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-
-            // Validar que este en Peru
-            if (!validarCoordenadasPeru(lat, lng)) {
-                if (typeof toastWarning === 'function') {
-                    toastWarning('La direccion debe estar dentro de Peru');
-                }
-                return;
-            }
-
-            // Guardar coordenadas y direccion
-            coordenadasSeleccionadas = { lat, lng };
-            direccionExactaSeleccionada = place.formatted_address;
-
-            // Actualizar mapa
-            actualizarMapaPreview(lat, lng, place.formatted_address);
-
-            console.log('✅ Direccion seleccionada:', place.formatted_address);
+            debounceTimer = setTimeout(() => {
+                buscarSugerencias(query);
+            }, 300);
         });
 
-        console.log('✅ Autocomplete inicializado');
+        // Ocultar sugerencias al hacer click fuera
+        document.addEventListener('click', (e) => {
+            if (!contenedorAutocomplete.contains(e.target)) {
+                ocultarSugerencias();
+            }
+        });
+
+        // Navegación con teclado
+        inputDireccion.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                ocultarSugerencias();
+            }
+        });
+
+        console.log('✅ Autocomplete (Nueva Places API) inicializado');
 
     } catch (error) {
         console.error('❌ Error al inicializar autocomplete:', error);
+        mostrarInputFallback();
     }
+}
+
+// Buscar sugerencias de direcciones usando la nueva API
+async function buscarSugerencias(query) {
+    try {
+        // Importar AutocompleteSuggestion de la nueva API
+        const { AutocompleteSuggestion } = await google.maps.importLibrary("places");
+
+        const request = {
+            input: query,
+            includedRegionCodes: ['pe'], // Restringir a Perú
+            includedPrimaryTypes: ['street_address', 'route', 'premise', 'subpremise', 'establishment']
+        };
+
+        const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+
+        if (suggestions && suggestions.length > 0) {
+            sugerenciasActuales = suggestions;
+            mostrarSugerencias(suggestions);
+        } else {
+            ocultarSugerencias();
+        }
+    } catch (error) {
+        console.error('Error al buscar sugerencias:', error);
+        ocultarSugerencias();
+    }
+}
+
+// Mostrar sugerencias en el dropdown
+function mostrarSugerencias(suggestions) {
+    if (!sugerenciasContainer) return;
+
+    sugerenciasContainer.innerHTML = suggestions.map((suggestion, index) => {
+        const prediction = suggestion.placePrediction;
+        const mainText = prediction.mainText?.text || prediction.text?.text || '';
+        const secondaryText = prediction.secondaryText?.text || '';
+
+        return `
+            <div class="sugerencia-item" data-index="${index}">
+                <span class="sugerencia-icon">📍</span>
+                <div class="sugerencia-texto">
+                    <span class="sugerencia-principal">${mainText}</span>
+                    <span class="sugerencia-secundario">${secondaryText}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    sugerenciasContainer.style.display = 'block';
+
+    // Agregar eventos a cada sugerencia
+    sugerenciasContainer.querySelectorAll('.sugerencia-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const index = parseInt(item.dataset.index);
+            seleccionarSugerencia(index);
+        });
+    });
+}
+
+// Ocultar sugerencias
+function ocultarSugerencias() {
+    if (sugerenciasContainer) {
+        sugerenciasContainer.style.display = 'none';
+        sugerenciasContainer.innerHTML = '';
+    }
+    sugerenciasActuales = [];
+}
+
+// Seleccionar una sugerencia y obtener detalles
+async function seleccionarSugerencia(index) {
+    try {
+        const suggestion = sugerenciasActuales[index];
+        if (!suggestion) return;
+
+        // Convertir la predicción a un objeto Place
+        const place = suggestion.placePrediction.toPlace();
+
+        // Obtener los detalles del lugar
+        await place.fetchFields({
+            fields: ['formattedAddress', 'location', 'addressComponents']
+        });
+
+        console.log('📍 Place seleccionado:', place);
+        console.log('📍 Address Components:', place.addressComponents);
+
+        // Actualizar input con la dirección formateada
+        const inputDireccion = document.getElementById('direccion-exacta');
+        if (inputDireccion) {
+            inputDireccion.value = place.formattedAddress || '';
+        }
+
+        ocultarSugerencias();
+
+        if (!place.location) {
+            console.warn('⚠️ No se encontro ubicacion');
+            return;
+        }
+
+        const lat = place.location.lat();
+        const lng = place.location.lng();
+
+        // Validar que este en Peru
+        if (!validarCoordenadasPeru(lat, lng)) {
+            if (typeof toastWarning === 'function') {
+                toastWarning('La direccion debe estar dentro de Peru');
+            }
+            return;
+        }
+
+        // Guardar coordenadas y direccion
+        coordenadasSeleccionadas = { lat, lng };
+        direccionExactaSeleccionada = place.formattedAddress;
+
+        // Extraer y llenar departamento, provincia, distrito
+        if (place.addressComponents) {
+            await autocompletarUbigeo(place.addressComponents);
+        }
+
+        // Actualizar mapa
+        actualizarMapaPreview(lat, lng, place.formattedAddress);
+
+        // Mostrar toast de éxito
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('Ubicación seleccionada correctamente');
+        }
+
+        console.log('✅ Direccion seleccionada:', place.formattedAddress);
+        console.log('✅ Coordenadas:', lat, lng);
+
+    } catch (error) {
+        console.error('❌ Error al obtener detalles:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al procesar la dirección');
+        }
+    }
+}
+
+// ============================================
+// AUTOCOMPLETAR UBIGEO DESDE ADDRESS COMPONENTS
+// ============================================
+async function autocompletarUbigeo(addressComponents, coordenadas = null) {
+    if (!addressComponents || addressComponents.length === 0) {
+        console.warn('⚠️ No hay address components para autocompletar');
+        return;
+    }
+
+    console.log('📍 Address Components recibidos:', addressComponents);
+
+    // Extraer información de los componentes
+    let departamento = '';
+    let provincia = '';
+    let distrito = '';
+    let codigoPostal = '';
+    let localityFound = false;
+
+    for (const component of addressComponents) {
+        const types = component.types || [];
+        const nombre = component.longText || component.long_name || component.shortText || component.short_name || '';
+
+        console.log('Component:', { types, nombre });
+
+        // Código postal - guardar para inferir distrito
+        if (types.includes('postal_code')) {
+            codigoPostal = nombre;
+        }
+
+        // Departamento (administrative_area_level_1)
+        if (types.includes('administrative_area_level_1')) {
+            departamento = nombre;
+            departamento = departamento
+                .replace(/^(Región|Region|Departamento de|Gobierno Regional de|Provincia de)\s*/i, '')
+                .trim();
+        }
+
+        // Provincia (administrative_area_level_2)
+        if (types.includes('administrative_area_level_2')) {
+            provincia = nombre;
+            provincia = provincia.replace(/^(Provincia de|Provincia)\s*/i, '').trim();
+        }
+
+        // Distrito - locality es el más confiable
+        if (types.includes('locality')) {
+            distrito = nombre.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+            localityFound = true;
+        }
+
+        // sublocality_level_1 a veces tiene el distrito en Lima
+        if (!localityFound && types.includes('sublocality_level_1')) {
+            distrito = nombre.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+        }
+
+        // administrative_area_level_3 es backup para distrito
+        if (!distrito && types.includes('administrative_area_level_3')) {
+            distrito = nombre.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+        }
+    }
+
+    // Caso especial: Lima Metropolitana
+    if (departamento === 'Lima' && !provincia) {
+        provincia = 'Lima';
+    }
+
+    // Si el distrito es "Lima" o está vacío y tenemos código postal, inferir distrito
+    if (codigoPostal && (distrito.toLowerCase() === 'lima' || !distrito)) {
+        const distritoInferido = obtenerDistritoPorCodigoPostal(codigoPostal);
+        if (distritoInferido && distritoInferido.toLowerCase() !== 'lima') {
+            console.log(`📍 Distrito inferido por código postal ${codigoPostal}:`, distritoInferido);
+            distrito = distritoInferido;
+        }
+    }
+
+    console.log('📍 Ubigeo extraído (inicial):', { departamento, provincia, distrito, codigoPostal });
+
+    // Intentar seleccionar departamento y provincia
+    if (departamento) {
+        const deptoOk = await seleccionarDepartamento(departamento);
+        if (deptoOk) {
+            await new Promise(resolve => setTimeout(resolve, 600));
+
+            if (provincia) {
+                const provOk = await seleccionarProvincia(provincia);
+                if (provOk) {
+                    await new Promise(resolve => setTimeout(resolve, 600));
+
+                    // Intentar seleccionar el distrito
+                    if (distrito) {
+                        const distOk = await seleccionarDistrito(distrito);
+
+                        // Si no se encontró y tenemos coordenadas, usar reverse geocoding
+                        if (!distOk && coordenadasSeleccionadas) {
+                            console.log('🔄 Distrito no encontrado, usando reverse geocoding...');
+                            const distritoReverso = await obtenerDistritoPorCoordenadas(
+                                coordenadasSeleccionadas.lat,
+                                coordenadasSeleccionadas.lng
+                            );
+                            if (distritoReverso) {
+                                await seleccionarDistrito(distritoReverso);
+                            }
+                        }
+                    } else if (coordenadasSeleccionadas) {
+                        // Si no tenemos distrito, intentar obtenerlo por reverse geocoding
+                        console.log('🔄 No hay distrito, usando reverse geocoding...');
+                        const distritoReverso = await obtenerDistritoPorCoordenadas(
+                            coordenadasSeleccionadas.lat,
+                            coordenadasSeleccionadas.lng
+                        );
+                        if (distritoReverso) {
+                            await seleccionarDistrito(distritoReverso);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Obtener distrito usando reverse geocoding
+async function obtenerDistritoPorCoordenadas(lat, lng) {
+    try {
+        const { Geocoder } = await google.maps.importLibrary("geocoding");
+        const geocoder = new Geocoder();
+
+        const response = await geocoder.geocode({
+            location: { lat, lng }
+        });
+
+        console.log('🔍 Reverse geocoding results:', response.results);
+
+        if (response.results && response.results.length > 0) {
+            // Estrategia 1: Buscar resultado con tipo "sublocality_level_1" (más específico para distritos en Lima)
+            for (const result of response.results) {
+                // Buscar resultados que sean específicamente de tipo sublocality
+                if (result.types.includes('sublocality_level_1') || result.types.includes('sublocality')) {
+                    for (const component of result.address_components) {
+                        if (component.types.includes('sublocality_level_1') || component.types.includes('sublocality')) {
+                            const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+                            if (distrito.toLowerCase() !== 'lima') {
+                                console.log('📍 Distrito (sublocality) encontrado:', distrito);
+                                return distrito;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Estrategia 2: Buscar en resultados de tipo "neighborhood" o "political"
+            for (const result of response.results) {
+                if (result.types.includes('neighborhood') || result.types.includes('political')) {
+                    for (const component of result.address_components) {
+                        if (component.types.includes('locality') ||
+                            component.types.includes('sublocality_level_1') ||
+                            component.types.includes('administrative_area_level_3')) {
+                            const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+                            if (distrito.toLowerCase() !== 'lima') {
+                                console.log('📍 Distrito (neighborhood/political) encontrado:', distrito);
+                                return distrito;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Estrategia 3: Buscar administrative_area_level_3 en cualquier resultado
+            for (const result of response.results) {
+                for (const component of result.address_components) {
+                    if (component.types.includes('administrative_area_level_3')) {
+                        const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+                        if (distrito.toLowerCase() !== 'lima') {
+                            console.log('📍 Distrito (admin_level_3) encontrado:', distrito);
+                            return distrito;
+                        }
+                    }
+                }
+            }
+
+            // Estrategia 4: Buscar locality que NO sea "Lima"
+            for (const result of response.results) {
+                for (const component of result.address_components) {
+                    if (component.types.includes('locality')) {
+                        const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
+                        if (distrito.toLowerCase() !== 'lima') {
+                            console.log('📍 Distrito (locality) encontrado:', distrito);
+                            return distrito;
+                        }
+                    }
+                }
+            }
+
+            // Estrategia 5: Usar código postal para inferir distrito (Lima)
+            for (const result of response.results) {
+                for (const component of result.address_components) {
+                    if (component.types.includes('postal_code')) {
+                        const codigoPostal = component.long_name;
+                        const distritoInferido = obtenerDistritoPorCodigoPostal(codigoPostal);
+                        if (distritoInferido) {
+                            console.log('📍 Distrito inferido por código postal:', distritoInferido);
+                            return distritoInferido;
+                        }
+                    }
+                }
+            }
+
+            // Si todo falla, devolver Lima
+            console.log('⚠️ No se pudo determinar distrito específico, usando Lima');
+            return 'Lima';
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error en reverse geocoding:', error);
+        return null;
+    }
+}
+
+// Mapeo de códigos postales a distritos de Lima Metropolitana
+function obtenerDistritoPorCodigoPostal(codigo) {
+    const mapaCodigosPostales = {
+        // Los Olivos
+        '15301': 'Los Olivos',
+        '15302': 'Los Olivos',
+        '15303': 'Los Olivos',
+        '15304': 'Los Olivos',
+        '15305': 'Los Olivos',
+        '15306': 'Los Olivos',
+        // San Martín de Porres
+        '15101': 'San Martin de Porres',
+        '15102': 'San Martin de Porres',
+        '15103': 'San Martin de Porres',
+        '15104': 'San Martin de Porres',
+        '15105': 'San Martin de Porres',
+        '15106': 'San Martin de Porres',
+        '15107': 'San Martin de Porres',
+        '15108': 'San Martin de Porres',
+        '15109': 'San Martin de Porres',
+        '15110': 'San Martin de Porres',
+        '15111': 'San Martin de Porres',
+        '15112': 'San Martin de Porres',
+        // Comas
+        '15311': 'Comas',
+        '15312': 'Comas',
+        '15313': 'Comas',
+        '15314': 'Comas',
+        '15316': 'Comas',
+        // Independencia
+        '15311': 'Independencia',
+        // San Juan de Lurigancho
+        '15401': 'San Juan de Lurigancho',
+        '15402': 'San Juan de Lurigancho',
+        '15403': 'San Juan de Lurigancho',
+        '15404': 'San Juan de Lurigancho',
+        '15405': 'San Juan de Lurigancho',
+        '15406': 'San Juan de Lurigancho',
+        '15407': 'San Juan de Lurigancho',
+        '15408': 'San Juan de Lurigancho',
+        // Miraflores
+        '15074': 'Miraflores',
+        '15046': 'Miraflores',
+        '15047': 'Miraflores',
+        '15048': 'Miraflores',
+        // San Isidro
+        '15036': 'San Isidro',
+        '15073': 'San Isidro',
+        '15076': 'San Isidro',
+        // Surco (Santiago de Surco)
+        '15038': 'Santiago de Surco',
+        '15039': 'Santiago de Surco',
+        '15053': 'Santiago de Surco',
+        '15054': 'Santiago de Surco',
+        '15055': 'Santiago de Surco',
+        '15056': 'Santiago de Surco',
+        '15057': 'Santiago de Surco',
+        '15058': 'Santiago de Surco',
+        // La Molina
+        '15023': 'La Molina',
+        '15024': 'La Molina',
+        '15026': 'La Molina',
+        // San Borja
+        '15034': 'San Borja',
+        '15037': 'San Borja',
+        '15041': 'San Borja',
+        // Jesús María
+        '15072': 'Jesus Maria',
+        '15076': 'Jesus Maria',
+        // Lince
+        '15046': 'Lince',
+        // Pueblo Libre
+        '15084': 'Pueblo Libre',
+        // Magdalena del Mar
+        '15086': 'Magdalena del Mar',
+        // Barranco
+        '15063': 'Barranco',
+        // Chorrillos
+        '15064': 'Chorrillos',
+        '15066': 'Chorrillos',
+        '15067': 'Chorrillos',
+        // Villa El Salvador
+        '15816': 'Villa El Salvador',
+        '15817': 'Villa El Salvador',
+        // San Juan de Miraflores
+        '15801': 'San Juan de Miraflores',
+        '15802': 'San Juan de Miraflores',
+        '15803': 'San Juan de Miraflores',
+        '15804': 'San Juan de Miraflores',
+        // Villa María del Triunfo
+        '15806': 'Villa Maria del Triunfo',
+        '15807': 'Villa Maria del Triunfo',
+        '15808': 'Villa Maria del Triunfo',
+        // Ate
+        '15022': 'Ate',
+        '15023': 'Ate',
+        '15494': 'Ate',
+        // Santa Anita
+        '15011': 'Santa Anita',
+        // El Agustino
+        '15007': 'El Agustino',
+        // La Victoria
+        '15018': 'La Victoria',
+        '15019': 'La Victoria',
+        '15033': 'La Victoria',
+        // Breña
+        '15083': 'Brena',
+        // Rímac
+        '15094': 'Rimac',
+        '15095': 'Rimac',
+        '15096': 'Rimac',
+        // Cercado de Lima
+        '15001': 'Lima',
+        '15003': 'Lima',
+        '15004': 'Lima',
+        '15005': 'Lima',
+        '15006': 'Lima',
+        '15081': 'Lima',
+        '15082': 'Lima',
+        // Callao
+        '07001': 'Callao',
+        '07006': 'Callao',
+        '07011': 'Callao',
+        '07016': 'Callao',
+        '07021': 'Callao',
+        '07026': 'Callao',
+        '07031': 'Callao',
+        '07036': 'Callao',
+        '07041': 'Callao',
+    };
+
+    return mapaCodigosPostales[codigo] || null;
+}
+
+// Buscar y seleccionar departamento por nombre
+async function seleccionarDepartamento(nombreDepto) {
+    const selectDepto = document.getElementById('departamento');
+    if (!selectDepto) return false;
+
+    const nombreNormalizado = normalizarTexto(nombreDepto);
+
+    for (const option of selectDepto.options) {
+        if (normalizarTexto(option.text).includes(nombreNormalizado) ||
+            nombreNormalizado.includes(normalizarTexto(option.text))) {
+            selectDepto.value = option.value;
+            // Disparar evento change para cargar provincias
+            selectDepto.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log('✅ Departamento seleccionado:', option.text);
+            return true;
+        }
+    }
+
+    console.warn('⚠️ No se encontró departamento:', nombreDepto);
+    return false;
+}
+
+// Buscar y seleccionar provincia por nombre
+async function seleccionarProvincia(nombreProv) {
+    const selectProv = document.getElementById('provincia');
+    if (!selectProv) return false;
+
+    // Esperar a que se carguen las opciones
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    const nombreNormalizado = normalizarTexto(nombreProv);
+
+    for (const option of selectProv.options) {
+        if (normalizarTexto(option.text).includes(nombreNormalizado) ||
+            nombreNormalizado.includes(normalizarTexto(option.text))) {
+            selectProv.value = option.value;
+            // Disparar evento change para cargar distritos
+            selectProv.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log('✅ Provincia seleccionada:', option.text);
+            return true;
+        }
+    }
+
+    console.warn('⚠️ No se encontró provincia:', nombreProv);
+    return false;
+}
+
+// Buscar y seleccionar distrito por nombre
+async function seleccionarDistrito(nombreDist) {
+    const selectDist = document.getElementById('distrito');
+    if (!selectDist) return false;
+
+    // Esperar a que se carguen las opciones
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    const nombreNormalizado = normalizarTexto(nombreDist);
+
+    for (const option of selectDist.options) {
+        if (normalizarTexto(option.text).includes(nombreNormalizado) ||
+            nombreNormalizado.includes(normalizarTexto(option.text))) {
+            selectDist.value = option.value;
+            // Disparar evento change
+            selectDist.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log('✅ Distrito seleccionado:', option.text);
+            return true;
+        }
+    }
+
+    console.warn('⚠️ No se encontró distrito:', nombreDist);
+    return false;
+}
+
+// Normalizar texto para comparación
+function normalizarTexto(texto) {
+    if (!texto) return '';
+    return texto
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Quitar acentos
+        .replace(/[^a-z0-9\s]/g, '') // Solo letras, números y espacios
+        .trim();
+}
+
+// Fallback si la nueva API falla
+function mostrarInputFallback() {
+    const contenedor = document.getElementById('direccion-autocomplete-container');
+    if (!contenedor) return;
+
+    contenedor.innerHTML = `
+        <input
+            type="text"
+            id="direccion-exacta"
+            name="direccion-exacta"
+            placeholder="Ej: Av. Larco 345, Miraflores (sin autocompletado)"
+            maxlength="200"
+            autocomplete="off"
+            class="fallback-input"
+        >
+    `;
+    console.warn('⚠️ Usando input de fallback sin autocompletado');
 }
 
 // ============================================
@@ -493,7 +1098,9 @@ async function obtenerUbicacionCompleta() {
     }
 
     // Obtener direccion exacta y referencia
-    const direccionExacta = document.getElementById('direccion-exacta')?.value?.trim() || '';
+    const inputDireccion = document.getElementById('direccion-exacta');
+    const direccionExacta = direccionExactaSeleccionada || inputDireccion?.value?.trim() || '';
+
     const referencia = document.getElementById('referencia')?.value?.trim() || '';
 
     // Construir texto completo
