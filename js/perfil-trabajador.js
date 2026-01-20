@@ -82,6 +82,7 @@ async function cargarPerfil() {
         cargarDisponibilidad();
         cargarPortfolio();
         calcularCompletitud();
+        cargarCalificacionPerfil();
         
     } catch (error) {
         console.error('❌ Error al cargar perfil:', error);
@@ -962,6 +963,34 @@ function calcularCompletitud() {
     } else {
         document.getElementById('completeness-tip').textContent = 'Completa tu perfil para recibir más oportunidades';
         document.getElementById('badge-completado').style.display = 'none';
+    }
+}
+
+// ============================================
+// CARGAR CALIFICACION DEL PERFIL - Task 13
+// ============================================
+function cargarCalificacionPerfil() {
+    const badgeCalificacion = document.getElementById('badge-calificacion');
+    const promedioEl = document.getElementById('perfil-promedio');
+    const totalEl = document.getElementById('perfil-total-calificaciones');
+
+    if (!badgeCalificacion) return;
+
+    const promedio = perfilData.calificacionPromedio || 0;
+    const total = perfilData.totalCalificaciones || 0;
+
+    if (total === 0) {
+        // Sin calificaciones aun
+        badgeCalificacion.style.display = 'inline-flex';
+        badgeCalificacion.classList.add('sin-calificaciones');
+        promedioEl.textContent = '-';
+        totalEl.textContent = '(Sin calificaciones)';
+    } else {
+        // Con calificaciones
+        badgeCalificacion.style.display = 'inline-flex';
+        badgeCalificacion.classList.remove('sin-calificaciones');
+        promedioEl.textContent = promedio.toFixed(1);
+        totalEl.textContent = `(${total})`;
     }
 }
 

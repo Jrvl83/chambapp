@@ -15,6 +15,7 @@ import {
     doc,
     getDoc,
     updateDoc,
+    addDoc,
     serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
@@ -283,14 +284,29 @@ function crearAplicacionCard(aplicacion) {
             </div>
         `;
     } else if (estado === 'completado') {
-        botonesAccion = `
-            <div class="estado-final completado">
-                <span class="texto-completado">✅ Trabajo completado</span>
-                <button class="btn btn-primary btn-sm" onclick="calificarTrabajador('${aplicacion.id}', '${emailEscapado}', '${nombreEscapado}')">
-                    ⭐ Calificar
-                </button>
-            </div>
-        `;
+        // Verificar si ya fue calificado
+        if (aplicacion.calificado) {
+            botonesAccion = `
+                <div class="estado-final completado">
+                    <span class="texto-completado">✅ Trabajo completado</span>
+                    <div class="estado-calificado">
+                        <span class="calificacion-mostrada">
+                            <span class="estrella-filled">★</span>
+                            Calificado
+                        </span>
+                    </div>
+                </div>
+            `;
+        } else {
+            botonesAccion = `
+                <div class="estado-final completado">
+                    <span class="texto-completado">✅ Trabajo completado</span>
+                    <button class="btn btn-primary btn-sm" onclick="calificarTrabajador('${aplicacion.id}', '${emailEscapado}', '${nombreEscapado}')">
+                        ⭐ Calificar
+                    </button>
+                </div>
+            `;
+        }
     }
 
     return `
@@ -464,12 +480,354 @@ async function marcarCompletado(aplicacionId, nombreTrabajador, tituloOferta) {
 }
 
 // ============================================
-// CALIFICAR TRABAJADOR (placeholder para Task 13-15)
+// SISTEMA DE CALIFICACIONES - Task 13
 // ============================================
-function calificarTrabajador(aplicacionId, trabajadorEmail, nombreTrabajador) {
-    // Por ahora solo un mensaje, se implementará en Tasks 13-15
-    alert(`Sistema de calificaciones próximamente.\n\nPodrás calificar a ${nombreTrabajador} cuando se implemente el Task 13-15.`);
+
+// Variables para el modal de calificacion
+let calificacionActual = {
+    aplicacionId: null,
+    trabajadorEmail: null,
+    trabajadorNombre: null,
+    ofertaId: null,
+    ofertaTitulo: null,
+    puntuacion: 0
+};
+
+// Textos para cada nivel de estrella
+const textosEstrellas = {
+    0: 'Selecciona una calificacion',
+    1: 'Muy malo',
+    2: 'Malo',
+    3: 'Regular',
+    4: 'Bueno',
+    5: 'Excelente'
+};
+
+// ============================================
+// ABRIR MODAL DE CALIFICACION
+// ============================================
+async function calificarTrabajador(aplicacionId, trabajadorEmail, nombreTrabajador) {
+    try {
+        // Verificar si ya fue calificado
+        const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
+
+        if (aplicacion && aplicacion.calificado) {
+            if (typeof toastInfo === 'function') {
+                toastInfo('Ya calificaste a este trabajador');
+            } else {
+                alert('Ya calificaste a este trabajador');
+            }
+            return;
+        }
+
+        // Guardar datos para la calificacion
+        calificacionActual = {
+            aplicacionId: aplicacionId,
+            trabajadorEmail: trabajadorEmail,
+            trabajadorNombre: nombreTrabajador,
+            ofertaId: aplicacion?.ofertaId || null,
+            ofertaTitulo: aplicacion?.ofertaTitulo || 'Trabajo completado',
+            puntuacion: 0
+        };
+
+        // Actualizar UI del modal
+        document.getElementById('cal-nombre').textContent = nombreTrabajador;
+        document.getElementById('cal-trabajo').textContent = calificacionActual.ofertaTitulo;
+        document.getElementById('cal-comentario').value = '';
+        document.getElementById('cal-char-count').textContent = '0';
+
+        // Resetear estrellas
+        resetearEstrellas();
+
+        // Mostrar modal
+        document.getElementById('modal-calificacion').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+    } catch (error) {
+        console.error('Error al abrir modal de calificacion:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar el formulario de calificacion');
+        }
+    }
 }
+
+// ============================================
+// CERRAR MODAL
+// ============================================
+function cerrarModalCalificacion() {
+    document.getElementById('modal-calificacion').classList.remove('active');
+    document.body.style.overflow = 'auto';
+    resetearEstrellas();
+    calificacionActual = {
+        aplicacionId: null,
+        trabajadorEmail: null,
+        trabajadorNombre: null,
+        ofertaId: null,
+        ofertaTitulo: null,
+        puntuacion: 0
+    };
+}
+
+// ============================================
+// SELECCIONAR ESTRELLAS
+// ============================================
+function seleccionarEstrella(valor) {
+    calificacionActual.puntuacion = valor;
+
+    // Actualizar visualizacion de estrellas
+    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
+    estrellas.forEach((estrella, index) => {
+        if (index < valor) {
+            estrella.classList.add('active');
+            estrella.textContent = '★';
+        } else {
+            estrella.classList.remove('active');
+            estrella.textContent = '☆';
+        }
+    });
+
+    // Actualizar texto
+    const textoEl = document.getElementById('estrellas-texto');
+    textoEl.textContent = textosEstrellas[valor];
+    textoEl.classList.add('selected');
+
+    // Habilitar boton de enviar
+    document.getElementById('btn-enviar-calificacion').disabled = false;
+}
+
+function resetearEstrellas() {
+    calificacionActual.puntuacion = 0;
+    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
+    estrellas.forEach(estrella => {
+        estrella.classList.remove('active', 'hover');
+        estrella.textContent = '☆';
+    });
+
+    const textoEl = document.getElementById('estrellas-texto');
+    if (textoEl) {
+        textoEl.textContent = textosEstrellas[0];
+        textoEl.classList.remove('selected');
+    }
+
+    const btnEnviar = document.getElementById('btn-enviar-calificacion');
+    if (btnEnviar) {
+        btnEnviar.disabled = true;
+    }
+}
+
+// ============================================
+// ENVIAR CALIFICACION A FIRESTORE
+// ============================================
+async function enviarCalificacion() {
+    if (calificacionActual.puntuacion === 0) {
+        if (typeof toastError === 'function') {
+            toastError('Selecciona una calificacion');
+        }
+        return;
+    }
+
+    const btnEnviar = document.getElementById('btn-enviar-calificacion');
+    btnEnviar.disabled = true;
+    btnEnviar.innerHTML = '⏳ Enviando...';
+
+    try {
+        const comentario = document.getElementById('cal-comentario').value.trim();
+
+        // Buscar datos del trabajador por email
+        const trabajadoresQuery = query(
+            collection(db, 'usuarios'),
+            where('email', '==', calificacionActual.trabajadorEmail)
+        );
+        const trabajadoresSnap = await getDocs(trabajadoresQuery);
+
+        let trabajadorId = null;
+        let trabajadorData = null;
+
+        if (!trabajadoresSnap.empty) {
+            const trabajadorDoc = trabajadoresSnap.docs[0];
+            trabajadorId = trabajadorDoc.id;
+            trabajadorData = trabajadorDoc.data();
+        }
+
+        // Obtener aplicacion para fecha completado
+        const aplicacionRef = doc(db, 'aplicaciones', calificacionActual.aplicacionId);
+        const aplicacionSnap = await getDoc(aplicacionRef);
+        const aplicacionData = aplicacionSnap.data();
+
+        // Crear documento de calificacion
+        const calificacionData = {
+            aplicacionId: calificacionActual.aplicacionId,
+
+            trabajadorId: trabajadorId,
+            trabajadorEmail: calificacionActual.trabajadorEmail,
+            trabajadorNombre: calificacionActual.trabajadorNombre,
+
+            empleadorId: usuario.uid || auth.currentUser?.uid,
+            empleadorEmail: usuario.email,
+            empleadorNombre: usuario.nombre || 'Empleador',
+
+            ofertaId: calificacionActual.ofertaId,
+            ofertaTitulo: calificacionActual.ofertaTitulo,
+            ofertaCategoria: aplicacionData?.ofertaCategoria || '',
+
+            puntuacion: calificacionActual.puntuacion,
+            comentario: comentario,
+
+            fechaCalificacion: serverTimestamp(),
+            fechaTrabajoCompletado: aplicacionData?.fechaCompletado || null
+        };
+
+        // Guardar calificacion
+        const calificacionRef = await addDoc(collection(db, 'calificaciones'), calificacionData);
+
+        // Actualizar aplicacion como calificada
+        await updateDoc(aplicacionRef, {
+            calificado: true,
+            calificacionId: calificacionRef.id
+        });
+
+        // Actualizar promedio del trabajador
+        if (trabajadorId) {
+            await actualizarPromedioTrabajador(trabajadorId, calificacionActual.puntuacion);
+        }
+
+        // Actualizar UI local
+        const aplicacion = todasLasAplicaciones.find(a => a.id === calificacionActual.aplicacionId);
+        if (aplicacion) {
+            aplicacion.calificado = true;
+            aplicacion.calificacionId = calificacionRef.id;
+        }
+
+        // Cerrar modal y mostrar exito
+        cerrarModalCalificacion();
+        if (typeof toastSuccess === 'function') {
+            toastSuccess(`¡Gracias por calificar a ${calificacionActual.trabajadorNombre}!`);
+        } else {
+            alert(`¡Gracias por calificar a ${calificacionActual.trabajadorNombre}!`);
+        }
+
+        // Re-renderizar la lista para mostrar estado actualizado
+        mostrarAplicaciones(todasLasAplicaciones);
+
+    } catch (error) {
+        console.error('Error al enviar calificacion:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al enviar la calificacion. Intenta de nuevo.');
+        } else {
+            alert('Error al enviar la calificacion');
+        }
+
+    } finally {
+        btnEnviar.disabled = false;
+        btnEnviar.innerHTML = 'Enviar Calificacion';
+    }
+}
+
+// ============================================
+// ACTUALIZAR PROMEDIO DEL TRABAJADOR
+// ============================================
+async function actualizarPromedioTrabajador(trabajadorId, nuevaPuntuacion) {
+    try {
+        const trabajadorRef = doc(db, 'usuarios', trabajadorId);
+        const trabajadorSnap = await getDoc(trabajadorRef);
+
+        if (!trabajadorSnap.exists()) return;
+
+        const data = trabajadorSnap.data();
+        const promedioActual = data.calificacionPromedio || 0;
+        const totalActual = data.totalCalificaciones || 0;
+
+        // Calcular nuevo promedio
+        const nuevoTotal = totalActual + 1;
+        const sumaTotal = (promedioActual * totalActual) + nuevaPuntuacion;
+        const nuevoPromedio = Number((sumaTotal / nuevoTotal).toFixed(2));
+
+        // Actualizar distribucion
+        const distribucion = data.distribucionCalificaciones || {
+            "5": 0, "4": 0, "3": 0, "2": 0, "1": 0
+        };
+        distribucion[String(nuevaPuntuacion)] = (distribucion[String(nuevaPuntuacion)] || 0) + 1;
+
+        // Guardar actualizacion
+        await updateDoc(trabajadorRef, {
+            calificacionPromedio: nuevoPromedio,
+            totalCalificaciones: nuevoTotal,
+            distribucionCalificaciones: distribucion
+        });
+
+        console.log(`✅ Promedio actualizado: ${nuevoPromedio} (${nuevoTotal} calificaciones)`);
+
+    } catch (error) {
+        console.error('Error al actualizar promedio:', error);
+        // No lanzar error - la calificacion ya se guardo
+    }
+}
+
+// ============================================
+// INICIALIZAR EVENTOS DEL MODAL
+// ============================================
+function inicializarEventosCalificacion() {
+    // Contador de caracteres del comentario
+    const comentarioInput = document.getElementById('cal-comentario');
+    if (comentarioInput) {
+        comentarioInput.addEventListener('input', (e) => {
+            document.getElementById('cal-char-count').textContent = e.target.value.length;
+        });
+    }
+
+    // Hover de estrellas
+    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
+    estrellas.forEach((estrella, index) => {
+        estrella.addEventListener('mouseenter', () => {
+            estrellas.forEach((e, i) => {
+                if (i <= index) {
+                    e.classList.add('hover');
+                    e.textContent = '★';
+                } else if (!e.classList.contains('active')) {
+                    e.classList.remove('hover');
+                    e.textContent = '☆';
+                }
+            });
+        });
+    });
+
+    const estrellasContainer = document.getElementById('estrellas-input');
+    if (estrellasContainer) {
+        estrellasContainer.addEventListener('mouseleave', () => {
+            estrellas.forEach((e, i) => {
+                e.classList.remove('hover');
+                if (i < calificacionActual.puntuacion) {
+                    e.textContent = '★';
+                } else {
+                    e.textContent = '☆';
+                }
+            });
+        });
+    }
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('modal-calificacion');
+            if (modal && modal.classList.contains('active')) {
+                cerrarModalCalificacion();
+            }
+        }
+    });
+
+    // Cerrar modal al hacer click fuera
+    const modal = document.getElementById('modal-calificacion');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                cerrarModalCalificacion();
+            }
+        });
+    }
+}
+
+// Inicializar eventos cuando el DOM este listo
+document.addEventListener('DOMContentLoaded', inicializarEventosCalificacion);
 
 // ============================================
 // FILTRAR POR ESTADO
@@ -539,6 +897,11 @@ window.rechazarAplicacion = rechazarAplicacion;
 window.marcarCompletado = marcarCompletado;
 window.calificarTrabajador = calificarTrabajador;
 window.filtrarPorEstado = filtrarPorEstado;
+
+// Funciones del sistema de calificaciones
+window.cerrarModalCalificacion = cerrarModalCalificacion;
+window.seleccionarEstrella = seleccionarEstrella;
+window.enviarCalificacion = enviarCalificacion;
 
 // ============================================
 // INICIALIZACIÓN

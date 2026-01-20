@@ -88,6 +88,56 @@
         </div>
     </div>
 
+    <!-- Modal Calificar Trabajador -->
+    <div id="modal-calificacion" class="modal-overlay">
+        <div class="modal-container modal-calificacion">
+            <div class="modal-header">
+                <h2>Calificar Trabajador</h2>
+                <button class="modal-close" onclick="cerrarModalCalificacion()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Info del trabajo -->
+                <div class="calificacion-info">
+                    <div class="trabajador-info">
+                        <div class="trabajador-avatar">👤</div>
+                        <div>
+                            <div class="trabajador-nombre" id="cal-nombre">Nombre</div>
+                            <div class="trabajo-titulo" id="cal-trabajo">Trabajo realizado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estrellas interactivas -->
+                <div class="calificacion-estrellas">
+                    <p class="estrellas-label">¿Como fue tu experiencia?</p>
+                    <div class="estrellas-container" id="estrellas-input">
+                        <button type="button" class="estrella" data-valor="1" onclick="seleccionarEstrella(1)">☆</button>
+                        <button type="button" class="estrella" data-valor="2" onclick="seleccionarEstrella(2)">☆</button>
+                        <button type="button" class="estrella" data-valor="3" onclick="seleccionarEstrella(3)">☆</button>
+                        <button type="button" class="estrella" data-valor="4" onclick="seleccionarEstrella(4)">☆</button>
+                        <button type="button" class="estrella" data-valor="5" onclick="seleccionarEstrella(5)">☆</button>
+                    </div>
+                    <div class="estrellas-texto" id="estrellas-texto">Selecciona una calificacion</div>
+                </div>
+
+                <!-- Comentario opcional -->
+                <div class="calificacion-comentario">
+                    <label for="cal-comentario">Comentario (opcional)</label>
+                    <textarea id="cal-comentario" rows="3"
+                        placeholder="Describe tu experiencia trabajando con este profesional..."
+                        maxlength="300"></textarea>
+                    <span class="char-count"><span id="cal-char-count">0</span>/300</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalCalificacion()">Cancelar</button>
+                <button class="btn btn-primary" id="btn-enviar-calificacion" onclick="enviarCalificacion()" disabled>
+                    Enviar Calificacion
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
