@@ -1,0 +1,459 @@
+/* ============================================
+   DASHBOARD EMPLEADOR - CHAMBAPP
+   Vista compacta y orientada a acciones
+   ============================================ */
+
+/* ============================================
+   GREETING HEADER
+   ============================================ */
+.empleador-greeting {
+    margin-bottom: 1.5rem;
+}
+
+.empleador-greeting h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0 0 0.25rem 0;
+}
+
+.empleador-subtitulo {
+    color: var(--gray);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* ============================================
+   ALERTA DE PENDIENTES
+   ============================================ */
+.alerta-pendientes {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    animation: alertaPulse 2s ease-in-out infinite;
+}
+
+@keyframes alertaPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+}
+
+.alerta-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.alerta-content {
+    flex: 1;
+    color: #92400e;
+    font-size: 0.9375rem;
+}
+
+.alerta-content strong {
+    color: #78350f;
+}
+
+.alerta-action {
+    background: #f59e0b;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.alerta-action:hover {
+    background: #d97706;
+    transform: translateX(4px);
+}
+
+/* ============================================
+   QUICK STATS
+   ============================================ */
+.empleador-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.empleador-stat {
+    background: var(--white);
+    padding: 1.25rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.empleador-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.empleador-stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+.empleador-stat-label {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+.empleador-section {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.empleador-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.empleador-section-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+}
+
+.btn-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.btn-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* ============================================
+   OFERTAS GRID (COMPACTO)
+   ============================================ */
+.empleador-ofertas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.oferta-card-compacta {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+}
+
+.oferta-card-compacta:hover {
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.oferta-card-compacta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.oferta-card-compacta-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+    line-height: 1.3;
+    flex: 1;
+    margin-right: 0.5rem;
+}
+
+.oferta-card-compacta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-aplicaciones {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.badge-aplicaciones.tiene-pendientes {
+    background: #fef3c7;
+    color: #92400e;
+    animation: badgePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.badge-sin-aplicaciones {
+    background: var(--light);
+    color: var(--gray);
+}
+
+.oferta-card-compacta-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--gray);
+    margin-bottom: 0.75rem;
+}
+
+.oferta-card-compacta-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.oferta-card-compacta-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.oferta-card-compacta-actions .btn {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+}
+
+/* Estado de la oferta */
+.oferta-estado {
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.oferta-estado-activa {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.oferta-estado-pausada {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.oferta-estado-cerrada {
+    background: var(--light);
+    color: var(--gray);
+}
+
+/* ============================================
+   TIMELINE DE ACTIVIDAD
+   ============================================ */
+.actividad-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.actividad-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+}
+
+.actividad-item:last-child {
+    border-bottom: none;
+}
+
+.actividad-item:hover {
+    background: var(--light);
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 8px;
+}
+
+.actividad-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.actividad-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.actividad-texto {
+    font-size: 0.9375rem;
+    color: var(--dark);
+    margin: 0 0 0.25rem 0;
+    line-height: 1.4;
+}
+
+.actividad-texto strong {
+    font-weight: 600;
+}
+
+.actividad-tiempo {
+    font-size: 0.75rem;
+    color: var(--gray);
+}
+
+.actividad-action {
+    color: var(--primary);
+    font-size: 0.8125rem;
+    text-decoration: none;
+    white-space: nowrap;
+    align-self: center;
+}
+
+.actividad-action:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   EMPTY STATES
+   ============================================ */
+.empleador-empty {
+    text-align: center;
+    padding: 2rem;
+}
+
+.empleador-empty .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empleador-empty h3 {
+    font-size: 1.125rem;
+    color: var(--dark);
+    margin: 0 0 0.5rem 0;
+}
+
+.empleador-empty p {
+    color: var(--gray);
+    font-size: 0.9375rem;
+    margin: 0 0 1.25rem 0;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .empleador-greeting h1 {
+        font-size: 1.5rem;
+    }
+
+    .alerta-pendientes {
+        flex-wrap: wrap;
+    }
+
+    .alerta-content {
+        flex-basis: calc(100% - 3rem);
+    }
+
+    .alerta-action {
+        width: 100%;
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+
+    .empleador-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .empleador-stat {
+        padding: 1rem 0.75rem;
+    }
+
+    .empleador-stat-number {
+        font-size: 1.5rem;
+    }
+
+    .empleador-stat-label {
+        font-size: 0.6875rem;
+    }
+
+    .empleador-ofertas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .empleador-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .empleador-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .empleador-section-header .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .empleador-stats {
+        gap: 0.5rem;
+    }
+
+    .empleador-stat {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .empleador-stat-number {
+        font-size: 1.25rem;
+    }
+
+    .oferta-card-compacta-actions {
+        flex-direction: column;
+    }
+}

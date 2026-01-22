@@ -188,26 +188,33 @@ onAuthStateChanged(auth, async (user) => {
         if (userDoc.exists()) {
             const usuario = userDoc.data();
             usuarioData = usuario; // Guardar datos del usuario globalmente
-            
+            const tipoUsuario = usuario.tipo || 'trabajador';
+
             // Actualizar header
             actualizarHeaderUsuario(usuario);
-            
-            // Personalizar dashboard
-            personalizarPorTipo(usuario.tipo || 'trabajador');
-            
-            // ✅ Verificar ubicación (Task 9)
-            await verificarUbicacion(user.uid, usuario.tipo);
-            
-            // Cargar datos
-            await cargarAplicacionesUsuario(user.uid);
-            await cargarOfertas(usuario, user.uid);
-            await cargarEstadisticas(usuario, user.uid);
+
+            // Personalizar dashboard y mostrar vista correcta
+            personalizarPorTipo(tipoUsuario);
+
+            // Cargar datos según el tipo de usuario
+            if (tipoUsuario === 'trabajador') {
+                // ✅ Verificar ubicación (Task 9) - solo trabajadores
+                await verificarUbicacion(user.uid, tipoUsuario);
+
+                // Cargar datos trabajador
+                await cargarAplicacionesUsuario(user.uid);
+                await cargarOfertasTrabajador();
+                await cargarEstadisticasTrabajador(user.uid);
+
+                // Task 24: Inicializar filtros avanzados (solo trabajador)
+                inicializarFiltrosAvanzados();
+            } else {
+                // Cargar datos empleador
+                await cargarDashboardEmpleador(usuario, user.uid);
+            }
 
             // Ocultar loading
             ocultarLoading();
-
-            // Task 24: Inicializar filtros avanzados
-            inicializarFiltrosAvanzados();
 
             // Verificar si hay parámetro ?oferta= en la URL (viene del mapa)
             verificarParametroOferta();
@@ -410,54 +417,55 @@ function personalizarPorTipo(tipo) {
     const navPublicar = document.getElementById('nav-publicar');
     const navBuscar = document.getElementById('nav-buscar');
     const navMapa = document.getElementById('nav-mapa');
-    const btnVerMapa = document.getElementById('btn-ver-mapa');
     const navTrabajadores = document.getElementById('nav-trabajadores');
     const navTrabajadoresText = document.getElementById('nav-trabajadores-text');
     const navPerfil = document.getElementById('nav-perfil');
+    const bottomNavProfile = document.querySelector('.bottom-nav-item[data-page="profile"]');
+
+    // ✅ Vistas separadas
+    const vistaTrabajador = document.getElementById('dashboard-trabajador');
+    const vistaEmpleador = document.getElementById('dashboard-empleador');
 
     if (tipo === 'trabajador') {
-        // === MENÚ TRABAJADOR ===
-        // Ocultar: Publicar Oferta
+        // === VISTA TRABAJADOR ===
+        if (vistaTrabajador) vistaTrabajador.style.display = 'block';
+        if (vistaEmpleador) vistaEmpleador.style.display = 'none';
+
+        // Sidebar
         if (navPublicar) navPublicar.style.display = 'none';
-
-        // Mostrar: Buscar Chambas
         if (navBuscar) navBuscar.style.display = 'flex';
-
-        // Mostrar: Mapa de Ofertas (solo trabajadores)
         if (navMapa) navMapa.style.display = 'flex';
-        if (btnVerMapa) btnVerMapa.style.display = 'inline-flex';
-
-        // Cambiar: "Trabajadores" → "Mis Aplicaciones"
         if (navTrabajadores) {
             navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
             navTrabajadores.querySelector('.icon').textContent = '📋';
         }
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Mis Aplicaciones';
-
-        // Perfil trabajador
         if (navPerfil) navPerfil.href = 'perfil-trabajador.html';
+        if (bottomNavProfile) bottomNavProfile.href = 'perfil-trabajador.html';
 
     } else {
-        // === MENÚ EMPLEADOR ===
-        // Mostrar: Publicar Oferta
+        // === VISTA EMPLEADOR ===
+        if (vistaTrabajador) vistaTrabajador.style.display = 'none';
+        if (vistaEmpleador) vistaEmpleador.style.display = 'block';
+
+        // Sidebar
         if (navPublicar) navPublicar.style.display = 'flex';
-
-        // Ocultar: Buscar Chambas
         if (navBuscar) navBuscar.style.display = 'none';
-
-        // Ocultar: Mapa de Ofertas (solo para trabajadores)
         if (navMapa) navMapa.style.display = 'none';
-        if (btnVerMapa) btnVerMapa.style.display = 'none';
-
-        // Cambiar: "Trabajadores" → "Ver Candidatos"
         if (navTrabajadores) {
             navTrabajadores.href = 'mis-aplicaciones.html';
             navTrabajadores.querySelector('.icon').textContent = '👥';
         }
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Ver Candidatos';
-
-        // Perfil empleador
         if (navPerfil) navPerfil.href = 'perfil-empleador.html';
+        if (bottomNavProfile) bottomNavProfile.href = 'perfil-empleador.html';
+
+        // Actualizar saludo empleador
+        const saludo = document.getElementById('empleador-saludo');
+        if (saludo && usuarioData) {
+            const nombre = usuarioData.nombre ? usuarioData.nombre.split(' ')[0] : '';
+            saludo.textContent = `👋 Hola${nombre ? ', ' + nombre : ''}!`;
+        }
     }
 
     // ✅ Actualizar Bottom Navigation (PWA mobile)
@@ -465,14 +473,12 @@ function personalizarPorTipo(tipo) {
         BottomNav.setUserRole(tipo);
     }
 
-    console.log('✅ Menú personalizado para:', tipo);
+    console.log('✅ Dashboard personalizado para:', tipo);
 }
 
 function ocultarLoading() {
     const loading = document.getElementById('loading-screen');
-    const content = document.getElementById('dashboard-content');
     if (loading) loading.style.display = 'none';
-    if (content) content.style.display = 'block';
 }
 
 async function cargarAplicacionesUsuario(userId) {
@@ -488,35 +494,29 @@ async function cargarAplicacionesUsuario(userId) {
     }
 }
 
-async function cargarOfertas(usuario, userUid) {
+// ========================================
+// FUNCIONES DASHBOARD TRABAJADOR
+// ========================================
+
+async function cargarOfertasTrabajador() {
     try {
-        let q;
-        
-        if (usuario && usuario.tipo === 'empleador') {
-            q = query(
-                collection(db, 'ofertas'), 
-                where('empleadorEmail', '==', usuario.email),
-                orderBy('fechaCreacion', 'desc')
-            );
-        } else {
-            q = query(
-                collection(db, 'ofertas'),
-                orderBy('fechaCreacion', 'desc'),
-                limit(20)
-            );
-        }
-        
+        const q = query(
+            collection(db, 'ofertas'),
+            orderBy('fechaCreacion', 'desc'),
+            limit(20)
+        );
+
         const snapshot = await getDocs(q);
-        const ofertasGrid = document.querySelector('.ofertas-grid');
-        
+        const ofertasGrid = document.getElementById('ofertas-grid-trabajador');
+
         if (snapshot.empty || !ofertasGrid) {
-            mostrarEmptyState();
+            mostrarEmptyStateTrabajador();
             return;
         }
-        
+
         ofertasGrid.innerHTML = '';
         todasLasOfertas = [];
-        
+
         snapshot.forEach((docSnap) => {
             const oferta = docSnap.data();
             todasLasOfertas.push({ id: docSnap.id, data: oferta });
@@ -535,15 +535,254 @@ async function cargarOfertas(usuario, userUid) {
                 }
             }
 
-            ofertasGrid.innerHTML += crearOfertaCard(oferta, docSnap.id, distanciaKm);
+            ofertasGrid.innerHTML += crearOfertaCardTrabajador(oferta, docSnap.id, distanciaKm);
         });
-        
+
     } catch (error) {
-        console.error('Error cargando ofertas:', error);
+        console.error('Error cargando ofertas trabajador:', error);
     }
 }
 
-function crearOfertaCard(oferta, id, distanciaKm = null) {
+async function cargarEstadisticasTrabajador(userUid) {
+    try {
+        // 1. Ofertas disponibles
+        const ofertasQuery = query(
+            collection(db, 'ofertas'),
+            where('estado', '==', 'activa')
+        );
+        const ofertasSnap = await getDocs(ofertasQuery);
+        document.getElementById('stat-number-t1').textContent = ofertasSnap.size;
+
+        // 2. Mis aplicaciones
+        const aplicacionesQuery = query(
+            collection(db, 'aplicaciones'),
+            where('trabajadorId', '==', userUid)
+        );
+        const aplicacionesSnap = await getDocs(aplicacionesQuery);
+        document.getElementById('stat-number-t2').textContent = aplicacionesSnap.size;
+
+        // 3. Trabajos completados
+        const completadosQuery = query(
+            collection(db, 'aplicaciones'),
+            where('trabajadorId', '==', userUid),
+            where('estado', '==', 'completado')
+        );
+        const completadosSnap = await getDocs(completadosQuery);
+        document.getElementById('stat-number-t3').textContent = completadosSnap.size;
+
+    } catch (error) {
+        console.error('Error cargando estadísticas trabajador:', error);
+    }
+}
+
+function mostrarEmptyStateTrabajador() {
+    const grid = document.getElementById('ofertas-grid-trabajador');
+    if (!grid) return;
+
+    grid.innerHTML = `
+        <div class='empty-state'>
+            <div class='empty-state-icon'>🔍</div>
+            <h3>No hay chambas disponibles</h3>
+            <p>Aún no hay ofertas de trabajo publicadas. ¡Vuelve pronto!</p>
+            <a href='mapa-ofertas.html' class='btn btn-primary' style='margin-top: 1rem;'>
+                🗺️ Explorar Mapa
+            </a>
+        </div>
+    `;
+}
+
+// ========================================
+// FUNCIONES DASHBOARD EMPLEADOR
+// ========================================
+
+async function cargarDashboardEmpleador(usuario, userUid) {
+    try {
+        // 1. Cargar ofertas del empleador
+        const ofertasQuery = query(
+            collection(db, 'ofertas'),
+            where('empleadorEmail', '==', usuario.email),
+            orderBy('fechaCreacion', 'desc')
+        );
+        const ofertasSnap = await getDocs(ofertasQuery);
+
+        // 2. Cargar aplicaciones a sus ofertas
+        const aplicacionesQuery = query(
+            collection(db, 'aplicaciones'),
+            where('empleadorId', '==', userUid)
+        );
+        const aplicacionesSnap = await getDocs(aplicacionesQuery);
+
+        // Contar pendientes
+        let pendientes = 0;
+        let contratados = 0;
+        aplicacionesSnap.forEach(doc => {
+            const estado = doc.data().estado;
+            if (estado === 'pendiente') pendientes++;
+            if (estado === 'aceptado' || estado === 'completado') contratados++;
+        });
+
+        // Actualizar stats
+        document.getElementById('emp-ofertas-activas').textContent = ofertasSnap.size;
+        document.getElementById('emp-total-aplicaciones').textContent = aplicacionesSnap.size;
+        document.getElementById('emp-contrataciones').textContent = contratados;
+
+        // Mostrar alerta de pendientes
+        const alertaPendientes = document.getElementById('alerta-pendientes');
+        if (pendientes > 0) {
+            alertaPendientes.style.display = 'flex';
+            document.getElementById('pendientes-count').textContent =
+                `${pendientes} postulacion${pendientes > 1 ? 'es' : ''}`;
+        } else {
+            alertaPendientes.style.display = 'none';
+        }
+
+        // Renderizar ofertas compactas
+        renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap);
+
+        // Renderizar actividad reciente
+        renderizarActividadReciente(aplicacionesSnap);
+
+    } catch (error) {
+        console.error('Error cargando dashboard empleador:', error);
+    }
+}
+
+function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
+    const grid = document.getElementById('empleador-ofertas-grid');
+    const empty = document.getElementById('empleador-ofertas-empty');
+
+    if (ofertasSnap.empty) {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+    }
+
+    grid.style.display = 'grid';
+    empty.style.display = 'none';
+    grid.innerHTML = '';
+
+    // Contar aplicaciones por oferta
+    const aplicacionesPorOferta = {};
+    const pendientesPorOferta = {};
+    aplicacionesSnap.forEach(doc => {
+        const data = doc.data();
+        const ofertaId = data.ofertaId;
+        aplicacionesPorOferta[ofertaId] = (aplicacionesPorOferta[ofertaId] || 0) + 1;
+        if (data.estado === 'pendiente') {
+            pendientesPorOferta[ofertaId] = (pendientesPorOferta[ofertaId] || 0) + 1;
+        }
+    });
+
+    ofertasSnap.forEach((docSnap) => {
+        const oferta = docSnap.data();
+        const id = docSnap.id;
+        const numAplicaciones = aplicacionesPorOferta[id] || 0;
+        const numPendientes = pendientesPorOferta[id] || 0;
+
+        const ubicacionTexto = typeof oferta.ubicacion === 'object'
+            ? (oferta.ubicacion.distrito || 'Sin ubicación')
+            : (oferta.ubicacion || 'Sin ubicación');
+
+        const badgeClass = numPendientes > 0 ? 'badge-aplicaciones tiene-pendientes' :
+                          (numAplicaciones > 0 ? 'badge-aplicaciones' : 'badge-sin-aplicaciones');
+        const badgeText = numPendientes > 0 ? `🔔 ${numPendientes} nuevas` :
+                         (numAplicaciones > 0 ? `${numAplicaciones} postulaciones` : 'Sin postulaciones');
+
+        grid.innerHTML += `
+            <div class="oferta-card-compacta" onclick="window.location.href='mis-aplicaciones.html'">
+                <div class="oferta-card-compacta-header">
+                    <h3 class="oferta-card-compacta-titulo">${oferta.titulo}</h3>
+                    <span class="oferta-card-compacta-badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <div class="oferta-card-compacta-meta">
+                    <span>📍 ${ubicacionTexto}</span>
+                    <span>💰 ${oferta.salario}</span>
+                </div>
+                <div class="oferta-card-compacta-actions">
+                    <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
+                        👥 Ver Candidatos
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function renderizarActividadReciente(aplicacionesSnap) {
+    const timeline = document.getElementById('actividad-timeline');
+    const empty = document.getElementById('actividad-empty');
+
+    if (aplicacionesSnap.empty) {
+        timeline.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+    }
+
+    timeline.style.display = 'flex';
+    empty.style.display = 'none';
+    timeline.innerHTML = '';
+
+    // Ordenar por fecha y tomar las últimas 5
+    const aplicaciones = [];
+    aplicacionesSnap.forEach(doc => {
+        aplicaciones.push({ id: doc.id, ...doc.data() });
+    });
+
+    aplicaciones.sort((a, b) => {
+        const fechaA = a.fechaAplicacion?.toDate?.() || new Date(0);
+        const fechaB = b.fechaAplicacion?.toDate?.() || new Date(0);
+        return fechaB - fechaA;
+    });
+
+    const recientes = aplicaciones.slice(0, 5);
+
+    recientes.forEach(app => {
+        const fecha = app.fechaAplicacion?.toDate?.() || new Date();
+        const tiempoRelativo = calcularTiempoRelativo(fecha);
+        const nombreTrabajador = app.trabajadorNombre || 'Un trabajador';
+        const tituloOferta = app.ofertaTitulo || 'una oferta';
+
+        let icono = '👤';
+        let accion = 'aplicó a';
+        if (app.estado === 'aceptado') {
+            icono = '✅';
+            accion = 'fue aceptado en';
+        } else if (app.estado === 'rechazado') {
+            icono = '❌';
+            accion = 'no fue seleccionado para';
+        } else if (app.estado === 'completado') {
+            icono = '🏁';
+            accion = 'completó';
+        }
+
+        timeline.innerHTML += `
+            <div class="actividad-item">
+                <div class="actividad-avatar">${icono}</div>
+                <div class="actividad-content">
+                    <p class="actividad-texto"><strong>${nombreTrabajador}</strong> ${accion} "${tituloOferta}"</p>
+                    <span class="actividad-tiempo">${tiempoRelativo}</span>
+                </div>
+                <a href="mis-aplicaciones.html" class="actividad-action">Ver</a>
+            </div>
+        `;
+    });
+}
+
+function calcularTiempoRelativo(fecha) {
+    const ahora = new Date();
+    const diff = ahora - fecha;
+    const minutos = Math.floor(diff / 60000);
+    const horas = Math.floor(diff / 3600000);
+    const dias = Math.floor(diff / 86400000);
+
+    if (minutos < 1) return 'Ahora mismo';
+    if (minutos < 60) return `Hace ${minutos} min`;
+    if (horas < 24) return `Hace ${horas}h`;
+    if (dias < 7) return `Hace ${dias} día${dias > 1 ? 's' : ''}`;
+    return fecha.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
+}
+
+function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
     // Obtener texto de ubicacion
     const ubicacionTexto = typeof oferta.ubicacion === 'object'
         ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'Sin ubicacion')
@@ -556,6 +795,13 @@ function crearOfertaCard(oferta, id, distanciaKm = null) {
         const colorClase = distanciaKm <= 5 ? 'distancia-cerca' : (distanciaKm <= 15 ? 'distancia-media' : 'distancia-lejos');
         distanciaBadge = `<span class='distancia-badge ${colorClase}'>📏 A ${distanciaFormateada} de ti</span>`;
     }
+
+    // Verificar si ya aplicó
+    const yaAplico = aplicacionesUsuario.includes(id);
+    const footerHTML = yaAplico
+        ? `<span class='oferta-badge'>✅ Ya aplicaste</span>
+           <button class='btn btn-secondary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>`
+        : `<button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>`;
 
     return `
         <div class='oferta-card'>
@@ -571,112 +817,13 @@ function crearOfertaCard(oferta, id, distanciaKm = null) {
                 ${distanciaBadge}
             </div>
             <div class='oferta-footer'>
-                <button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>
+                ${footerHTML}
             </div>
         </div>
     `;
 }
 
-function mostrarEmptyState() {
-    const grid = document.querySelector('.ofertas-grid');
-    if (grid) {
-        grid.innerHTML = `
-            <div class='empty-state'>
-                <div class='empty-state-icon'>📭</div>
-                <h3>No hay ofertas disponibles</h3>
-            </div>
-        `;
-    }
-}
-
-async function cargarEstadisticas(usuario, userUid) {
-    try {
-        if (usuario.tipo === 'trabajador') {
-            // ESTADÍSTICAS TRABAJADOR
-
-            // 1. Ofertas disponibles (todas las activas)
-            const ofertasQuery = query(
-                collection(db, 'ofertas'),
-                where('estado', '==', 'activa')
-            );
-            const ofertasSnap = await getDocs(ofertasQuery);
-
-            document.getElementById('stat-icon-1').textContent = '📋';
-            document.getElementById('stat-number-1').textContent = ofertasSnap.size;
-            document.getElementById('stat-label-1').textContent = 'Ofertas Disponibles';
-
-            // 2. Mis aplicaciones
-            const aplicacionesQuery = query(
-                collection(db, 'aplicaciones'),
-                where('aplicanteId', '==', userUid)
-            );
-            const aplicacionesSnap = await getDocs(aplicacionesQuery);
-
-            document.getElementById('stat-icon-2').textContent = '💼';
-            document.getElementById('stat-number-2').textContent = aplicacionesSnap.size;
-            document.getElementById('stat-label-2').textContent = 'Mis Aplicaciones';
-
-            // 3. Trabajos completados
-            const completadosQuery = query(
-                collection(db, 'aplicaciones'),
-                where('aplicanteId', '==', userUid),
-                where('estado', '==', 'completado')
-            );
-            const completadosSnap = await getDocs(completadosQuery);
-
-            document.getElementById('stat-icon-3').textContent = '🤝';
-            document.getElementById('stat-number-3').textContent = completadosSnap.size;
-            document.getElementById('stat-label-3').textContent = 'Trabajos Completados';
-
-        } else {
-            // ESTADÍSTICAS EMPLEADOR
-
-            // 1. Mis ofertas activas
-            const misOfertasQuery = query(
-                collection(db, 'ofertas'),
-                where('empleadorId', '==', userUid),
-                where('estado', '==', 'activa')
-            );
-            const misOfertasSnap = await getDocs(misOfertasQuery);
-
-            document.getElementById('stat-icon-1').textContent = '📋';
-            document.getElementById('stat-number-1').textContent = misOfertasSnap.size;
-            document.getElementById('stat-label-1').textContent = 'Mis Ofertas Activas';
-
-            // 2. Total aplicaciones recibidas
-            const aplicacionesQuery = query(
-                collection(db, 'aplicaciones'),
-                where('empleadorId', '==', userUid)
-            );
-            const aplicacionesSnap = await getDocs(aplicacionesQuery);
-
-            document.getElementById('stat-icon-2').textContent = '👥';
-            document.getElementById('stat-number-2').textContent = aplicacionesSnap.size;
-            document.getElementById('stat-label-2').textContent = 'Aplicaciones Recibidas';
-
-            // 3. Contrataciones realizadas
-            const contratacionesQuery = query(
-                collection(db, 'aplicaciones'),
-                where('empleadorId', '==', userUid),
-                where('estado', '==', 'completado')
-            );
-            const contratacionesSnap = await getDocs(contratacionesQuery);
-
-            document.getElementById('stat-icon-3').textContent = '🤝';
-            document.getElementById('stat-number-3').textContent = contratacionesSnap.size;
-            document.getElementById('stat-label-3').textContent = 'Contrataciones';
-        }
-
-        console.log('✅ Estadísticas cargadas');
-
-    } catch (error) {
-        console.error('Error cargando estadísticas:', error);
-        // Mostrar valores por defecto en caso de error
-        document.getElementById('stat-number-1').textContent = '-';
-        document.getElementById('stat-number-2').textContent = '-';
-        document.getElementById('stat-number-3').textContent = '-';
-    }
-}
+// Función cargarEstadisticas removida - ahora usamos cargarEstadisticasTrabajador y cargarDashboardEmpleador
 
 function formatearFecha(timestamp) {
     if (!timestamp) return '';

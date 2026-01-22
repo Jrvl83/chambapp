@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/filtros-avanzados.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
+    <link rel="stylesheet" href="css/dashboard-empleador.css">
 
     <!-- Intro.js Onboarding - Carga condicional -->
     <script>
@@ -125,96 +126,131 @@
                 </div>
             </div>
     
-            <!-- Contenido real -->
-            <div id="dashboard-content" style="display: none;">
-                
-                <!-- Stats Cards -->
+            <!-- ========================================
+                 VISTA TRABAJADOR
+                 ======================================== -->
+            <div id="dashboard-trabajador" class="dashboard-view" style="display: none;">
+
+                <!-- Stats Cards Trabajador -->
                 <div class="stats-grid">
                     <div class="stat-card" tabindex="0">
-                        <div class="stat-icon" id="stat-icon-1">👷</div>
+                        <div class="stat-icon" id="stat-icon-t1">📋</div>
                         <div class="stat-info">
-                            <h3 id="stat-number-1">0</h3>
-                            <p id="stat-label-1">Cargando...</p>
+                            <h3 id="stat-number-t1">0</h3>
+                            <p id="stat-label-t1">Ofertas Disponibles</p>
                         </div>
                     </div>
                     <div class="stat-card" tabindex="0">
-                        <div class="stat-icon" id="stat-icon-2">💼</div>
+                        <div class="stat-icon" id="stat-icon-t2">💼</div>
                         <div class="stat-info">
-                            <h3 id="stat-number-2">0</h3>
-                            <p id="stat-label-2">Cargando...</p>
+                            <h3 id="stat-number-t2">0</h3>
+                            <p id="stat-label-t2">Mis Aplicaciones</p>
                         </div>
                     </div>
                     <div class="stat-card" tabindex="0">
-                        <div class="stat-icon" id="stat-icon-3">🤝</div>
+                        <div class="stat-icon" id="stat-icon-t3">🤝</div>
                         <div class="stat-info">
-                            <h3 id="stat-number-3">0</h3>
-                            <p id="stat-label-3">Cargando...</p>
+                            <h3 id="stat-number-t3">0</h3>
+                            <p id="stat-label-t3">Trabajos Completados</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Ofertas Recientes -->
+                <!-- Ofertas Section -->
                 <section class="section">
                     <div class="section-header">
-                        <h2 id="titulo-ofertas">Ofertas Recientes</h2>
-                        <a href="mapa-ofertas.html" class="btn-ver-mapa" id="btn-ver-mapa" title="Ver en mapa">
+                        <h2>Chambas Disponibles</h2>
+                        <a href="mapa-ofertas.html" class="btn-ver-mapa" title="Ver en mapa">
                             <span class="icono">&#128506;</span>
                             <span class="texto">Ver Mapa</span>
                         </a>
                     </div>
-            
+
                     <!-- Panel de Filtros Avanzados -->
                     <div id="filtros-avanzados-container" class="filtros-avanzados">
                         <!-- Componente se inicializa via JavaScript -->
                     </div>
-                    
-                    <div class="ofertas-grid">
+
+                    <div class="ofertas-grid" id="ofertas-grid-trabajador">
                         <!-- Ofertas se cargan dinámicamente -->
                     </div>
                 </section>
+            </div>
 
-                <!-- Trabajadores Destacados -->
-                <section class="section">
-                    <div class="section-header">
-                        <h2>Trabajadores Destacados</h2>
+            <!-- ========================================
+                 VISTA EMPLEADOR
+                 ======================================== -->
+            <div id="dashboard-empleador" class="dashboard-view" style="display: none;">
+
+                <!-- Greeting Header -->
+                <div class="empleador-greeting">
+                    <h1 id="empleador-saludo">👋 Hola!</h1>
+                    <p class="empleador-subtitulo">Gestiona tus ofertas y candidatos</p>
+                </div>
+
+                <!-- Alerta de Pendientes -->
+                <div class="alerta-pendientes" id="alerta-pendientes" style="display: none;">
+                    <div class="alerta-icon">🔔</div>
+                    <div class="alerta-content">
+                        <strong id="pendientes-count">0 postulaciones</strong> pendientes de revisar
+                    </div>
+                    <a href="mis-aplicaciones.html" class="alerta-action">
+                        Ver Candidatos →
+                    </a>
+                </div>
+
+                <!-- Quick Stats Empleador -->
+                <div class="empleador-stats">
+                    <div class="empleador-stat">
+                        <span class="empleador-stat-number" id="emp-ofertas-activas">0</span>
+                        <span class="empleador-stat-label">Ofertas Activas</span>
+                    </div>
+                    <div class="empleador-stat">
+                        <span class="empleador-stat-number" id="emp-total-aplicaciones">0</span>
+                        <span class="empleador-stat-label">Postulaciones</span>
+                    </div>
+                    <div class="empleador-stat">
+                        <span class="empleador-stat-number" id="emp-contrataciones">0</span>
+                        <span class="empleador-stat-label">Contratados</span>
+                    </div>
+                </div>
+
+                <!-- Mis Ofertas -->
+                <section class="empleador-section">
+                    <div class="empleador-section-header">
+                        <h2>Mis Ofertas</h2>
+                        <a href="publicar-oferta.html" class="btn btn-primary">
+                            ➕ Nueva Oferta
+                        </a>
                     </div>
 
-                    <div class="trabajadores-grid">
-                        <div class="trabajador-card">
-                            <div class="trabajador-avatar">👨‍🔧</div>
-                            <h4>Carlos Mendoza</h4>
-                            <p class="trabajador-categoria">Electricista</p>
-                            <div class="trabajador-rating">⭐⭐⭐⭐⭐ (4.9)</div>
-                            <p class="trabajador-exp">8 años de experiencia</p>
-                            <button class="btn btn-primary btn-small">Ver Perfil</button>
-                        </div>
+                    <div class="empleador-ofertas-grid" id="empleador-ofertas-grid">
+                        <!-- Cards de ofertas compactas -->
+                    </div>
 
-                        <div class="trabajador-card">
-                            <div class="trabajador-avatar">👨‍🎨</div>
-                            <h4>Luis García</h4>
-                            <p class="trabajador-categoria">Pintor</p>
-                            <div class="trabajador-rating">⭐⭐⭐⭐⭐ (4.8)</div>
-                            <p class="trabajador-exp">5 años de experiencia</p>
-                            <button class="btn btn-primary btn-small">Ver Perfil</button>
-                        </div>
+                    <div class="empleador-empty" id="empleador-ofertas-empty" style="display: none;">
+                        <div class="empty-icon">📝</div>
+                        <h3>No tienes ofertas publicadas</h3>
+                        <p>Publica tu primera oferta y encuentra trabajadores calificados</p>
+                        <a href="publicar-oferta.html" class="btn btn-primary">
+                            ➕ Publicar Primera Oferta
+                        </a>
+                    </div>
+                </section>
 
-                        <div class="trabajador-card">
-                            <div class="trabajador-avatar">👷‍♀️</div>
-                            <h4>María Torres</h4>
-                            <p class="trabajador-categoria">Jardinera</p>
-                            <div class="trabajador-rating">⭐⭐⭐⭐⭐ (5.0)</div>
-                            <p class="trabajador-exp">6 años de experiencia</p>
-                            <button class="btn btn-primary btn-small">Ver Perfil</button>
-                        </div>
+                <!-- Actividad Reciente -->
+                <section class="empleador-section">
+                    <div class="empleador-section-header">
+                        <h2>Actividad Reciente</h2>
+                        <a href="mis-aplicaciones.html" class="btn-link">Ver todo →</a>
+                    </div>
 
-                        <div class="trabajador-card">
-                            <div class="trabajador-avatar">🔧</div>
-                            <h4>Pedro Sánchez</h4>
-                            <p class="trabajador-categoria">Gasfitero</p>
-                            <div class="trabajador-rating">⭐⭐⭐⭐ (4.7)</div>
-                            <p class="trabajador-exp">10 años de experiencia</p>
-                            <button class="btn btn-primary btn-small">Ver Perfil</button>
-                        </div>
+                    <div class="actividad-timeline" id="actividad-timeline">
+                        <!-- Timeline items -->
+                    </div>
+
+                    <div class="empleador-empty" id="actividad-empty" style="display: none;">
+                        <p>No hay actividad reciente</p>
                     </div>
                 </section>
             </div>
