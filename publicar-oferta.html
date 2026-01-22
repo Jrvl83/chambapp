@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/publicar-oferta.css">
-    
+    <link rel="stylesheet" href="css/bottom-nav.css">
+
     <!-- Intro.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
     <link rel="stylesheet" href="css/introjs-custom.css">
@@ -421,9 +422,36 @@
         </div>
     </div>
 
+    <!-- Bottom Navigation (Mobile PWA) -->
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Navegacion principal movil">
+        <div class="bottom-nav-items">
+            <a href="dashboard.html" class="bottom-nav-item" data-page="home">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-label">Inicio</span>
+            </a>
+            <a href="mapa-ofertas.html" class="bottom-nav-item" data-page="explore">
+                <span class="bottom-nav-icon">🔍</span>
+                <span class="bottom-nav-label">Explorar</span>
+            </a>
+            <a href="publicar-oferta.html" class="bottom-nav-item nav-add active" data-page="add" id="bottom-nav-add" aria-current="page">
+                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-label">Publicar</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-page="messages">
+                <span class="bottom-nav-icon">💬</span>
+                <span class="bottom-nav-label">Mensajes</span>
+            </a>
+            <a href="perfil-trabajador.html" class="bottom-nav-item" data-page="profile">
+                <span class="bottom-nav-icon">👤</span>
+                <span class="bottom-nav-label">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
+    <script src="js/components/bottom-nav.js"></script>
     <script type="module" src="js/publicar-oferta.js"></script>
     
     <!-- Onboarding -->

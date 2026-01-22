@@ -460,6 +460,11 @@ function personalizarPorTipo(tipo) {
         if (navPerfil) navPerfil.href = 'perfil-empleador.html';
     }
 
+    // ✅ Actualizar Bottom Navigation (PWA mobile)
+    if (typeof BottomNav !== 'undefined' && BottomNav.setUserRole) {
+        BottomNav.setUserRole(tipo);
+    }
+
     console.log('✅ Menú personalizado para:', tipo);
 }
 

@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/filtros-avanzados.css">
-    
+    <link rel="stylesheet" href="css/bottom-nav.css">
+
     <!-- Intro.js Onboarding - Carga condicional -->
     <script>
         // Solo cargar Intro.js si el onboarding no se ha completado
@@ -223,6 +224,33 @@
     <!-- Overlay sidebar móvil -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
 
+    <!-- Bottom Navigation (Mobile PWA) -->
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Navegación principal móvil">
+        <div class="bottom-nav-items">
+            <a href="dashboard.html" class="bottom-nav-item active" data-page="home" aria-current="page">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-label">Inicio</span>
+            </a>
+            <a href="mapa-ofertas.html" class="bottom-nav-item" data-page="explore">
+                <span class="bottom-nav-icon">🔍</span>
+                <span class="bottom-nav-label">Explorar</span>
+            </a>
+            <a href="publicar-oferta.html" class="bottom-nav-item nav-add" data-page="add" id="bottom-nav-add">
+                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-label">Publicar</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-page="messages">
+                <span class="bottom-nav-icon">💬</span>
+                <span class="bottom-nav-label">Mensajes</span>
+                <!-- <span class="bottom-nav-badge">3</span> -->
+            </a>
+            <a href="perfil-trabajador.html" class="bottom-nav-item" data-page="profile">
+                <span class="bottom-nav-icon">👤</span>
+                <span class="bottom-nav-label">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
     <!-- Modal genérico -->
     <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)" role="dialog" aria-modal="true">
         <div class="modal-content">
@@ -291,6 +319,7 @@
     <script src="js/toast.js"></script>
     <script src="js/onboarding.js"></script>
     <script src="js/components/filtros-avanzados.js"></script>
+    <script src="js/components/bottom-nav.js"></script>
 
     <!-- Dashboard JS con Task 9 -->
     <script type="module" src="js/dashboard/dashboard.js"></script>

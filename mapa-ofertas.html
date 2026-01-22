@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/mapa-ofertas.css">
+    <link rel="stylesheet" href="css/bottom-nav.css">
 </head>
 <body>
 
@@ -168,6 +169,32 @@
     <!-- Overlay sidebar movil -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
 
+    <!-- Bottom Navigation (Mobile PWA) -->
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Navegacion principal movil">
+        <div class="bottom-nav-items">
+            <a href="dashboard.html" class="bottom-nav-item" data-page="home">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-label">Inicio</span>
+            </a>
+            <a href="mapa-ofertas.html" class="bottom-nav-item active" data-page="explore" aria-current="page">
+                <span class="bottom-nav-icon">🔍</span>
+                <span class="bottom-nav-label">Explorar</span>
+            </a>
+            <a href="publicar-oferta.html" class="bottom-nav-item nav-add" data-page="add" id="bottom-nav-add">
+                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-label">Publicar</span>
+            </a>
+            <a href="#" class="bottom-nav-item" data-page="messages">
+                <span class="bottom-nav-icon">💬</span>
+                <span class="bottom-nav-label">Mensajes</span>
+            </a>
+            <a href="perfil-trabajador.html" class="bottom-nav-item" data-page="profile">
+                <span class="bottom-nav-icon">👤</span>
+                <span class="bottom-nav-label">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
     <!-- Modal Detalle Oferta -->
     <div class="modal-overlay" id="modal-detalle-overlay" onclick="clickFueraModalDetalle(event)">
         <div class="modal-detalle-oferta">
@@ -181,6 +208,7 @@
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
+    <script src="js/components/bottom-nav.js"></script>
 
     <!-- Mapa JS -->
     <script type="module" src="js/mapa-ofertas.js"></script>
