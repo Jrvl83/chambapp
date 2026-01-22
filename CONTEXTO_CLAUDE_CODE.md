@@ -16,7 +16,7 @@
 - **Tiempo Restante:** 4-5 meses hasta lanzamiento
 
 ### Últimas Tareas Completadas
-**Tasks 14-17:** Mejoras al Sistema de Calificaciones (21 Ene 2026)
+**Tasks 14-17 + Mejora Rating:** Sistema de Calificaciones Expandido (21 Ene 2026)
 - **Task 14:** Vista de reseñas recibidas para trabajador
   - Nueva pestaña "Reseñas" en perfil trabajador
   - Resumen con promedio y distribución de estrellas (barras visuales)
@@ -37,6 +37,11 @@
   - Modal para escribir respuesta (max 300 chars)
   - Campo `respuesta` y `fechaRespuesta` en documentos de calificación
   - Botón "Responder" en cada reseña sin respuesta
+- **Mejora Extra:** Rating visible en postulaciones para empleador
+  - Empleador ve ★ 4.5 (12) junto al nombre del trabajador
+  - Click en rating abre modal con detalle de calificaciones
+  - Muestra todas las reseñas recibidas por el trabajador
+  - "Sin calificaciones aún" si el trabajador es nuevo
 
 ### Próxima Tarea Crítica
 **Tasks 18-20, 22-23:** Chat In-App (DIFERIDO - WhatsApp cubre la necesidad)
@@ -116,7 +121,8 @@ chambapp/
 │   ├── ubigeo_provincia.json
 │   └── ubigeo_distrito.json
 └── docs/
-    └── PLAN_PRUEBAS_TASK10.md (nuevo)
+    ├── PLAN_PRUEBAS_TASK10.md
+    └── PLAN_PRUEBAS_TASKS14-17.md (nuevo)
 ```
 
 ---
@@ -255,6 +261,9 @@ chambapp/
 - `historial-calificaciones.html` - Nueva página (Task 16)
 - `js/historial-calificaciones.js` - Lógica historial
 - `css/historial-calificaciones.css` - Estilos historial
+- `mis-aplicaciones.html` - Modal detalle calificaciones trabajador
+- `js/mis-aplicaciones.js` - Rating trabajador + verDetalleCalificaciones()
+- `css/mis-aplicaciones.css` - Estilos rating y modal detalle
 
 ---
 
@@ -365,6 +374,7 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 - **19 Ene 2026:** Migración a Nueva Places API (AutocompleteSuggestion)
 - **20 Ene 2026:** Task 13 completada - Sistema de Calificaciones
 - **21 Ene 2026:** Tasks 14-17 completadas - Sistema de Calificaciones expandido (bidireccional, historial, respuestas)
+- **21 Ene 2026:** Rating del trabajador visible en postulaciones + Modal detalle calificaciones
 
 ---
 
@@ -384,7 +394,7 @@ import('./js/utils/migrar-ofertas.js').then(m => m.migrarOfertas());
 ---
 
 **Última actualización:** 21 Enero 2026
-**Versión:** 1.6
+**Versión:** 1.7
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 
