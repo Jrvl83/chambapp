@@ -20,6 +20,7 @@ let todasLasOfertas = [];
 let aplicacionesUsuario = [];
 let debounceTimer;
 let ubicacionUsuario = null; // Task 11: Ubicacion del usuario para calcular distancias
+let filtrosAvanzadosComponent = null; // Task 24: Componente de filtros avanzados
 
 // ========================================
 // FUNCIONES GEOLOCALIZACIÓN (Task 9)
@@ -205,6 +206,9 @@ onAuthStateChanged(auth, async (user) => {
             // Ocultar loading
             ocultarLoading();
 
+            // Task 24: Inicializar filtros avanzados
+            inicializarFiltrosAvanzados();
+
             // Verificar si hay parámetro ?oferta= en la URL (viene del mapa)
             verificarParametroOferta();
         } else {
@@ -280,10 +284,9 @@ function mostrarBadgeUbicacion(ubicacion) {
         };
         console.log('📍 Ubicacion usuario guardada para distancias:', ubicacionUsuario);
 
-        // Mostrar filtro de distancia solo si hay ubicacion
-        const filtroDistancia = document.getElementById('filtro-distancia-container');
-        if (filtroDistancia) {
-            filtroDistancia.style.display = 'block';
+        // Task 24: Notificar al componente de filtros avanzados
+        if (filtrosAvanzadosComponent) {
+            filtrosAvanzadosComponent.setUserLocation(ubicacionUsuario);
         }
     }
 
@@ -743,161 +746,259 @@ window.toggleMenu = function() {
     if (overlay) overlay.classList.toggle('active');
 };
 
-window.aplicarFiltros = function() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-        const busqueda = document.getElementById('filtro-busqueda')?.value.toLowerCase().trim() || '';
-        const categoria = document.getElementById('filtro-categoria')?.value || '';
-        const ubicacion = document.getElementById('filtro-ubicacion')?.value.toLowerCase().trim() || '';
-        const distanciaMax = document.getElementById('filtro-distancia')?.value || '';
-        const ordenar = document.getElementById('filtro-ordenar')?.value || 'recientes';
+// ========================================
+// TASK 24: FILTROS AVANZADOS
+// ========================================
 
-        // Task 11: Calcular distancia para cada oferta si tenemos ubicacion del usuario
-        let ofertasConDistancia = todasLasOfertas.map(item => {
-            const oferta = item.data;
-            let distanciaKm = null;
+function inicializarFiltrosAvanzados() {
+    // Verificar que el componente esté disponible
+    if (typeof FiltrosAvanzados === 'undefined') {
+        console.error('FiltrosAvanzados no está disponible');
+        return;
+    }
 
-            // Calcular distancia si hay ubicacion del usuario y la oferta tiene coordenadas
-            if (ubicacionUsuario && oferta.ubicacion && typeof oferta.ubicacion === 'object' && oferta.ubicacion.coordenadas) {
-                const coords = oferta.ubicacion.coordenadas;
-                if (coords.lat && coords.lng) {
-                    distanciaKm = calcularDistancia(
-                        ubicacionUsuario.lat,
-                        ubicacionUsuario.lng,
-                        coords.lat,
-                        coords.lng
-                    );
-                }
+    const container = document.getElementById('filtros-avanzados-container');
+    if (!container) {
+        console.error('Contenedor de filtros no encontrado');
+        return;
+    }
+
+    // Crear instancia del componente
+    filtrosAvanzadosComponent = new FiltrosAvanzados('filtros-avanzados-container', {
+        persistir: true,
+        storageKey: 'chambapp-dashboard-filtros',
+        debounceMs: 300
+    });
+
+    // Si ya tenemos ubicación del usuario, notificar al componente
+    if (ubicacionUsuario) {
+        filtrosAvanzadosComponent.setUserLocation(ubicacionUsuario);
+    }
+
+    // Callback cuando cambian los filtros
+    filtrosAvanzadosComponent.onChange((estado) => {
+        aplicarFiltrosAvanzados(estado);
+    });
+
+    // Callback cuando se limpian todos los filtros
+    filtrosAvanzadosComponent.onClear(() => {
+        mostrarTodasLasOfertas();
+    });
+
+    // Aplicar filtros iniciales si hay estado guardado
+    const estadoInicial = filtrosAvanzadosComponent.getState();
+    const hayFiltrosActivos = estadoInicial.busqueda ||
+        estadoInicial.categorias.length > 0 ||
+        estadoInicial.ubicacion ||
+        estadoInicial.distanciaMax ||
+        estadoInicial.salarioMin > 0 ||
+        estadoInicial.salarioMax < 5000 ||
+        estadoInicial.fechaPublicacion;
+
+    if (hayFiltrosActivos) {
+        aplicarFiltrosAvanzados(estadoInicial);
+    }
+
+    console.log('✅ Filtros avanzados inicializados');
+}
+
+function parsearSalario(salarioStr) {
+    // Extraer número de strings como "S/ 1,500", "1500 soles", "50/hora", etc.
+    if (!salarioStr) return 0;
+    const match = salarioStr.toString().match(/[\d,]+/);
+    if (match) {
+        return parseInt(match[0].replace(/,/g, ''));
+    }
+    return 0;
+}
+
+function calcularDiasAtras(periodo) {
+    const periodos = {
+        'ultimos7': 7,
+        'ultimos30': 30,
+        'ultimos90': 90
+    };
+    return periodos[periodo] || 365;
+}
+
+function aplicarFiltrosAvanzados(estado) {
+    const {
+        busqueda,
+        categorias,
+        ubicacion,
+        distanciaMax,
+        salarioMin,
+        salarioMax,
+        fechaPublicacion,
+        ordenar
+    } = estado;
+
+    // Calcular distancia para cada oferta
+    let ofertasConDistancia = todasLasOfertas.map(item => {
+        const oferta = item.data;
+        let distanciaKm = null;
+
+        if (ubicacionUsuario && oferta.ubicacion && typeof oferta.ubicacion === 'object' && oferta.ubicacion.coordenadas) {
+            const coords = oferta.ubicacion.coordenadas;
+            if (coords.lat && coords.lng) {
+                distanciaKm = calcularDistancia(
+                    ubicacionUsuario.lat,
+                    ubicacionUsuario.lng,
+                    coords.lat,
+                    coords.lng
+                );
             }
+        }
 
-            return { ...item, distanciaKm };
-        });
+        return { ...item, distanciaKm };
+    });
 
-        // Filtrar ofertas
-        let ofertasFiltradas = ofertasConDistancia.filter(item => {
-            const oferta = item.data;
-            let cumple = true;
+    // Filtrar ofertas
+    let ofertasFiltradas = ofertasConDistancia.filter(item => {
+        const oferta = item.data;
 
-            // Filtro por busqueda (titulo o descripcion)
-            if (busqueda) {
-                const titulo = (oferta.titulo || '').toLowerCase();
-                const descripcion = (oferta.descripcion || '').toLowerCase();
-                cumple = cumple && (titulo.includes(busqueda) || descripcion.includes(busqueda));
+        // Filtro búsqueda texto
+        if (busqueda) {
+            const texto = `${oferta.titulo || ''} ${oferta.descripcion || ''}`.toLowerCase();
+            if (!texto.includes(busqueda.toLowerCase())) return false;
+        }
+
+        // Filtro categorías (multiselect)
+        if (categorias && categorias.length > 0) {
+            if (!categorias.includes(oferta.categoria)) return false;
+        }
+
+        // Filtro ubicación texto
+        if (ubicacion) {
+            let ubicacionOferta = '';
+            if (typeof oferta.ubicacion === 'object') {
+                ubicacionOferta = (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || '').toLowerCase();
+            } else {
+                ubicacionOferta = (oferta.ubicacion || '').toLowerCase();
             }
+            if (!ubicacionOferta.includes(ubicacion.toLowerCase())) return false;
+        }
 
-            // Filtro por categoria
-            if (categoria) {
-                cumple = cumple && oferta.categoria === categoria;
+        // Filtro distancia máxima
+        if (distanciaMax && ubicacionUsuario) {
+            const maxKm = parseFloat(distanciaMax);
+            if (item.distanciaKm === null || item.distanciaKm > maxKm) {
+                return false;
             }
+        }
 
-            // Filtro por ubicacion (texto)
-            if (ubicacion) {
-                let ubicacionOferta = '';
-                if (typeof oferta.ubicacion === 'object') {
-                    ubicacionOferta = (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || '').toLowerCase();
-                } else {
-                    ubicacionOferta = (oferta.ubicacion || '').toLowerCase();
-                }
-                cumple = cumple && ubicacionOferta.includes(ubicacion);
-            }
+        // Filtro rango salarial
+        if (salarioMin > 0 || salarioMax < 5000) {
+            const salarioOferta = parsearSalario(oferta.salario);
+            if (salarioMin > 0 && salarioOferta < salarioMin) return false;
+            if (salarioMax < 5000 && salarioOferta > salarioMax) return false;
+        }
 
-            // Task 11: Filtro por distancia maxima
-            if (distanciaMax && ubicacionUsuario) {
-                const maxKm = parseFloat(distanciaMax);
-                if (item.distanciaKm === null) {
-                    // Si no tiene coordenadas, no cumple el filtro de distancia
-                    cumple = false;
-                } else {
-                    cumple = cumple && item.distanciaKm <= maxKm;
-                }
-            }
+        // Filtro fecha publicación
+        if (fechaPublicacion) {
+            const fechaOferta = oferta.fechaCreacion?.toDate?.() || new Date(oferta.fechaCreacion);
+            const diasAtras = calcularDiasAtras(fechaPublicacion);
+            const fechaLimite = new Date();
+            fechaLimite.setDate(fechaLimite.getDate() - diasAtras);
 
-            return cumple;
-        });
+            if (fechaOferta < fechaLimite) return false;
+        }
 
-        // Task 11: Ordenar ofertas
-        if (ordenar === 'cercanas' && ubicacionUsuario) {
-            ofertasFiltradas.sort((a, b) => {
-                // Ofertas sin distancia van al final
+        return true;
+    });
+
+    // Ordenar
+    ofertasFiltradas = ordenarOfertas(ofertasFiltradas, ordenar);
+
+    // Renderizar
+    renderizarOfertasFiltradas(ofertasFiltradas);
+
+    // Actualizar contador en el componente
+    if (filtrosAvanzadosComponent) {
+        filtrosAvanzadosComponent.updateResultsCount(ofertasFiltradas.length, todasLasOfertas.length);
+    }
+}
+
+function ordenarOfertas(ofertas, criterio) {
+    switch (criterio) {
+        case 'cercanas':
+            return ofertas.sort((a, b) => {
                 if (a.distanciaKm === null && b.distanciaKm === null) return 0;
                 if (a.distanciaKm === null) return 1;
                 if (b.distanciaKm === null) return -1;
                 return a.distanciaKm - b.distanciaKm;
             });
-        }
-        // 'recientes' ya viene ordenado por fecha desde Firestore
+        case 'salario-asc':
+            return ofertas.sort((a, b) => {
+                return parsearSalario(a.data.salario) - parsearSalario(b.data.salario);
+            });
+        case 'salario-desc':
+            return ofertas.sort((a, b) => {
+                return parsearSalario(b.data.salario) - parsearSalario(a.data.salario);
+            });
+        case 'recientes':
+        default:
+            // Ya viene ordenado de Firestore
+            return ofertas;
+    }
+}
 
-        // Renderizar ofertas filtradas
-        const ofertasGrid = document.querySelector('.ofertas-grid');
-        if (ofertasGrid) {
-            if (ofertasFiltradas.length === 0) {
-                ofertasGrid.innerHTML = `
-                    <div class='empty-state'>
-                        <div class='empty-state-icon'>🔍</div>
-                        <h3>No se encontraron ofertas</h3>
-                        <p>Intenta con otros filtros</p>
-                    </div>
-                `;
-            } else {
-                ofertasGrid.innerHTML = '';
-                ofertasFiltradas.forEach(item => {
-                    ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id, item.distanciaKm);
-                });
+function renderizarOfertasFiltradas(ofertas) {
+    const ofertasGrid = document.querySelector('.ofertas-grid');
+    if (!ofertasGrid) return;
+
+    if (ofertas.length === 0) {
+        ofertasGrid.innerHTML = `
+            <div class='empty-state'>
+                <div class='empty-state-icon'>🔍</div>
+                <h3>No se encontraron ofertas</h3>
+                <p>Intenta con otros filtros o amplía tu búsqueda</p>
+            </div>
+        `;
+        return;
+    }
+
+    ofertasGrid.innerHTML = ofertas.map(item =>
+        crearOfertaCard(item.data, item.id, item.distanciaKm)
+    ).join('');
+}
+
+function mostrarTodasLasOfertas() {
+    const ofertasConDistancia = todasLasOfertas.map(item => {
+        let distanciaKm = null;
+
+        if (ubicacionUsuario && item.data.ubicacion && typeof item.data.ubicacion === 'object' && item.data.ubicacion.coordenadas) {
+            const coords = item.data.ubicacion.coordenadas;
+            if (coords.lat && coords.lng) {
+                distanciaKm = calcularDistancia(
+                    ubicacionUsuario.lat,
+                    ubicacionUsuario.lng,
+                    coords.lat,
+                    coords.lng
+                );
             }
         }
 
-        // Actualizar contador
-        const contador = document.getElementById('resultados-count');
-        if (contador) {
-            const textoDistancia = distanciaMax ? ` (hasta ${distanciaMax} km)` : '';
-            contador.textContent = `Mostrando ${ofertasFiltradas.length} de ${todasLasOfertas.length} ofertas${textoDistancia}`;
-        }
+        return { ...item, distanciaKm };
+    });
 
-    }, 300);
+    renderizarOfertasFiltradas(ofertasConDistancia);
+
+    if (filtrosAvanzadosComponent) {
+        filtrosAvanzadosComponent.updateResultsCount(todasLasOfertas.length, todasLasOfertas.length);
+    }
+}
+
+// Mantener compatibilidad con código antiguo (por si se llama desde otro lugar)
+window.aplicarFiltros = function() {
+    if (filtrosAvanzadosComponent) {
+        aplicarFiltrosAvanzados(filtrosAvanzadosComponent.getState());
+    }
 };
 
 window.limpiarFiltros = function() {
-    // Limpiar inputs
-    const busqueda = document.getElementById('filtro-busqueda');
-    const categoria = document.getElementById('filtro-categoria');
-    const ubicacion = document.getElementById('filtro-ubicacion');
-    const distancia = document.getElementById('filtro-distancia');
-    const ordenar = document.getElementById('filtro-ordenar');
-
-    if (busqueda) busqueda.value = '';
-    if (categoria) categoria.value = '';
-    if (ubicacion) ubicacion.value = '';
-    if (distancia) distancia.value = '';
-    if (ordenar) ordenar.value = 'recientes';
-
-    // Task 11: Mostrar todas las ofertas con distancia calculada
-    const ofertasGrid = document.querySelector('.ofertas-grid');
-    if (ofertasGrid) {
-        ofertasGrid.innerHTML = '';
-        todasLasOfertas.forEach(item => {
-            let distanciaKm = null;
-
-            // Calcular distancia si es posible
-            if (ubicacionUsuario && item.data.ubicacion && typeof item.data.ubicacion === 'object' && item.data.ubicacion.coordenadas) {
-                const coords = item.data.ubicacion.coordenadas;
-                if (coords.lat && coords.lng) {
-                    distanciaKm = calcularDistancia(
-                        ubicacionUsuario.lat,
-                        ubicacionUsuario.lng,
-                        coords.lat,
-                        coords.lng
-                    );
-                }
-            }
-
-            ofertasGrid.innerHTML += crearOfertaCard(item.data, item.id, distanciaKm);
-        });
-    }
-
-    // Actualizar contador
-    const contador = document.getElementById('resultados-count');
-    if (contador) {
-        contador.textContent = 'Mostrando todas las ofertas';
+    if (filtrosAvanzadosComponent) {
+        filtrosAvanzadosComponent.clearAll();
     }
 };
 

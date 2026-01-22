@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/filtros-avanzados.css">
     
     <!-- Intro.js Onboarding - Carga condicional -->
     <script>
@@ -161,74 +162,9 @@
                         </a>
                     </div>
             
-                    <!-- Panel de Filtros -->
-                    <div class="filtros-container">
-                        <div class="filtros-header">
-                            <h3>🔎 Buscar y Filtrar</h3>
-                            <button class="btn-limpiar" onclick="limpiarFiltros()">🔄 Limpiar</button>
-                        </div>
-                
-                        <div class="filtros-grid">
-                            <div class="filtro-item">
-                                <label for="filtro-busqueda">🔎 Buscar:</label>
-                                <input 
-                                    type="text" 
-                                    id="filtro-busqueda" 
-                                    placeholder="Buscar..." 
-                                    oninput="aplicarFiltros()"
-                                    aria-label="Buscar ofertas"
-                                >
-                            </div>
-                    
-                            <div class="filtro-item">
-                                <label for="filtro-categoria">🏷️ Categoría:</label>
-                                <select id="filtro-categoria" onchange="aplicarFiltros()">
-                                    <option value="">Todas</option>
-                                    <option value="construccion">Construcción</option>
-                                    <option value="electricidad">Electricidad</option>
-                                    <option value="gasfiteria">Gasfitería</option>
-                                    <option value="pintura">Pintura</option>
-                                    <option value="carpinteria">Carpintería</option>
-                                    <option value="limpieza">Limpieza</option>
-                                    <option value="jardineria">Jardinería</option>
-                                    <option value="mecanica">Mecánica</option>
-                                    <option value="otros">Otros</option>
-                                </select>
-                            </div>
-                    
-                            <div class="filtro-item">
-                                <label for="filtro-ubicacion">📍 Ubicación:</label>
-                                <input
-                                    type="text"
-                                    id="filtro-ubicacion"
-                                    placeholder="Ej: San Isidro"
-                                    oninput="aplicarFiltros()"
-                                >
-                            </div>
-
-                            <div class="filtro-item" id="filtro-distancia-container">
-                                <label for="filtro-distancia">📏 Distancia máxima:</label>
-                                <select id="filtro-distancia" onchange="aplicarFiltros()">
-                                    <option value="">Cualquier distancia</option>
-                                    <option value="5">Hasta 5 km</option>
-                                    <option value="10">Hasta 10 km</option>
-                                    <option value="20">Hasta 20 km</option>
-                                    <option value="50">Hasta 50 km</option>
-                                </select>
-                            </div>
-
-                            <div class="filtro-item">
-                                <label for="filtro-ordenar">🔄 Ordenar por:</label>
-                                <select id="filtro-ordenar" onchange="aplicarFiltros()">
-                                    <option value="recientes">Más recientes</option>
-                                    <option value="cercanas">Más cercanas</option>
-                                </select>
-                            </div>
-                        </div>
-                
-                        <div class="resultados-count" id="resultados-count" role="status" aria-live="polite">
-                            Mostrando todas las ofertas
-                        </div>
+                    <!-- Panel de Filtros Avanzados -->
+                    <div id="filtros-avanzados-container" class="filtros-avanzados">
+                        <!-- Componente se inicializa via JavaScript -->
                     </div>
                     
                     <div class="ofertas-grid">
@@ -354,7 +290,8 @@
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
     <script src="js/onboarding.js"></script>
-    
+    <script src="js/components/filtros-avanzados.js"></script>
+
     <!-- Dashboard JS con Task 9 -->
     <script type="module" src="js/dashboard/dashboard.js"></script>
     
