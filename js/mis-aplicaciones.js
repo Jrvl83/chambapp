@@ -52,6 +52,7 @@ if (usuario.tipo !== 'empleador') {
 // Variables globales
 let todasLasAplicaciones = [];
 let filtroEstadoActual = '';
+let trabajadoresRatings = {}; // Cache de ratings de trabajadores
 
 // Función para escapar comillas en strings para onclick
 function escaparParaHTML(str) {
@@ -95,6 +96,9 @@ async function cargarAplicaciones() {
             todasLasAplicaciones.push(aplicacion);
         });
 
+        // Cargar ratings de los trabajadores
+        await cargarRatingsTrabajadores(todasLasAplicaciones);
+
         // Mostrar aplicaciones
         mostrarAplicaciones(todasLasAplicaciones);
 
@@ -107,6 +111,62 @@ async function cargarAplicaciones() {
             <div class="icon" style="font-size: 3rem;">❌</div>
             <p style="color: #ef4444;">Error al cargar las aplicaciones</p>
         `;
+    }
+}
+
+// ============================================
+// CARGAR RATINGS DE TRABAJADORES
+// ============================================
+async function cargarRatingsTrabajadores(aplicaciones) {
+    try {
+        // Obtener emails únicos de trabajadores
+        const emailsUnicos = [...new Set(aplicaciones.map(a => a.aplicanteEmail).filter(Boolean))];
+
+        if (emailsUnicos.length === 0) return;
+
+        // Consultar perfiles de trabajadores
+        const trabajadoresQuery = query(
+            collection(db, 'usuarios'),
+            where('email', 'in', emailsUnicos.slice(0, 10)) // Firestore limita 'in' a 10 elementos
+        );
+
+        const snapshot = await getDocs(trabajadoresQuery);
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.email) {
+                trabajadoresRatings[data.email] = {
+                    promedio: data.calificacionPromedio || 0,
+                    total: data.totalCalificaciones || 0
+                };
+            }
+        });
+
+        // Si hay más de 10 trabajadores, cargar el resto
+        if (emailsUnicos.length > 10) {
+            const emailsRestantes = emailsUnicos.slice(10);
+            for (let i = 0; i < emailsRestantes.length; i += 10) {
+                const batch = emailsRestantes.slice(i, i + 10);
+                const batchQuery = query(
+                    collection(db, 'usuarios'),
+                    where('email', 'in', batch)
+                );
+                const batchSnapshot = await getDocs(batchQuery);
+                batchSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.email) {
+                        trabajadoresRatings[data.email] = {
+                            promedio: data.calificacionPromedio || 0,
+                            total: data.totalCalificaciones || 0
+                        };
+                    }
+                });
+            }
+        }
+
+        console.log('✅ Ratings de trabajadores cargados:', Object.keys(trabajadoresRatings).length);
+    } catch (error) {
+        console.error('Error al cargar ratings de trabajadores:', error);
     }
 }
 
@@ -309,6 +369,19 @@ function crearAplicacionCard(aplicacion) {
         }
     }
 
+    // Obtener rating del trabajador
+    const ratingInfo = trabajadoresRatings[email] || { promedio: 0, total: 0 };
+    const ratingHTML = ratingInfo.total > 0
+        ? `<div class="trabajador-rating clickable" onclick="verDetalleCalificaciones('${emailEscapado}', '${nombreEscapado}')">
+               <span class="rating-estrella">★</span>
+               <span class="rating-numero">${ratingInfo.promedio.toFixed(1)}</span>
+               <span class="rating-total">(${ratingInfo.total})</span>
+               <span class="rating-ver">👁️</span>
+           </div>`
+        : `<div class="trabajador-rating sin-rating">
+               <span class="rating-texto">Sin calificaciones aún</span>
+           </div>`;
+
     return `
         <div class="aplicacion-card estado-${estado}">
             <div class="aplicacion-header">
@@ -317,6 +390,7 @@ function crearAplicacionCard(aplicacion) {
                     <div>
                         <div class="aplicacion-nombre">${nombre}</div>
                         <div class="aplicacion-email">${email}</div>
+                        ${ratingHTML}
                     </div>
                 </div>
                 ${estadoBadge}
@@ -890,6 +964,158 @@ function formatearFecha(timestamp) {
 }
 
 // ============================================
+// VER DETALLE DE CALIFICACIONES DEL TRABAJADOR
+// ============================================
+async function verDetalleCalificaciones(emailTrabajador, nombreTrabajador) {
+    try {
+        const modal = document.getElementById('modal-detalle-calificaciones');
+        const contenido = document.getElementById('detalle-calificaciones-contenido');
+
+        if (!modal || !contenido) {
+            console.error('Modal de detalle no encontrado');
+            return;
+        }
+
+        // Mostrar loading
+        contenido.innerHTML = `
+            <div class="loading-calificaciones">
+                <div class="spinner-small"></div>
+                <p>Cargando calificaciones...</p>
+            </div>
+        `;
+
+        document.getElementById('detalle-nombre-trabajador').textContent = nombreTrabajador;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Obtener datos del trabajador
+        const ratingInfo = trabajadoresRatings[emailTrabajador] || { promedio: 0, total: 0 };
+
+        // Buscar calificaciones del trabajador
+        const calificacionesQuery = query(
+            collection(db, 'calificaciones'),
+            where('trabajadorEmail', '==', emailTrabajador)
+        );
+
+        const snapshot = await getDocs(calificacionesQuery);
+
+        // Filtrar solo calificaciones de empleador a trabajador
+        const calificaciones = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (!data.tipo || data.tipo === 'empleador_a_trabajador') {
+                calificaciones.push({ id: doc.id, ...data });
+            }
+        });
+
+        // Ordenar por fecha descendente
+        calificaciones.sort((a, b) => {
+            const fechaA = a.fechaCalificacion?.toDate?.() || new Date(0);
+            const fechaB = b.fechaCalificacion?.toDate?.() || new Date(0);
+            return fechaB - fechaA;
+        });
+
+        // Generar HTML del contenido
+        let html = '';
+
+        // Resumen
+        html += `
+            <div class="detalle-resumen">
+                <div class="detalle-promedio">
+                    <span class="promedio-numero">${ratingInfo.promedio.toFixed(1)}</span>
+                    <div class="promedio-estrellas">${generarEstrellasHTML(ratingInfo.promedio)}</div>
+                    <span class="promedio-total">${ratingInfo.total} calificación${ratingInfo.total !== 1 ? 'es' : ''}</span>
+                </div>
+            </div>
+        `;
+
+        // Lista de reseñas
+        if (calificaciones.length > 0) {
+            html += '<div class="detalle-lista-resenas">';
+            calificaciones.forEach(cal => {
+                const fecha = formatearFechaCalificacion(cal.fechaCalificacion);
+                html += `
+                    <div class="detalle-resena-card">
+                        <div class="detalle-resena-header">
+                            <div class="detalle-resena-info">
+                                <span class="detalle-resena-empleador">👤 ${cal.empleadorNombre || 'Empleador'}</span>
+                                <span class="detalle-resena-trabajo">${cal.ofertaTitulo || 'Trabajo'}</span>
+                            </div>
+                            <div class="detalle-resena-rating">
+                                ${generarEstrellasHTML(cal.puntuacion)}
+                                <span class="detalle-resena-fecha">${fecha}</span>
+                            </div>
+                        </div>
+                        ${cal.comentario ? `
+                            <div class="detalle-resena-comentario">
+                                <p>"${cal.comentario}"</p>
+                            </div>
+                        ` : ''}
+                        ${cal.respuesta ? `
+                            <div class="detalle-resena-respuesta">
+                                <span class="respuesta-label">Respuesta del trabajador:</span>
+                                <p>"${cal.respuesta}"</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+        } else {
+            html += `
+                <div class="detalle-sin-resenas">
+                    <p>📋 Este trabajador aún no tiene reseñas detalladas</p>
+                </div>
+            `;
+        }
+
+        contenido.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error al cargar detalle de calificaciones:', error);
+        const contenido = document.getElementById('detalle-calificaciones-contenido');
+        if (contenido) {
+            contenido.innerHTML = `
+                <div class="error-calificaciones">
+                    <p>❌ Error al cargar las calificaciones</p>
+                </div>
+            `;
+        }
+    }
+}
+
+function cerrarModalDetalleCalificaciones() {
+    const modal = document.getElementById('modal-detalle-calificaciones');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function generarEstrellasHTML(puntuacion) {
+    let html = '';
+    const puntuacionRedondeada = Math.round(puntuacion);
+    for (let i = 1; i <= 5; i++) {
+        if (i <= puntuacionRedondeada) {
+            html += '<span class="estrella-filled">★</span>';
+        } else {
+            html += '<span class="estrella-empty">☆</span>';
+        }
+    }
+    return html;
+}
+
+function formatearFechaCalificacion(timestamp) {
+    if (!timestamp) return 'Reciente';
+    try {
+        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return fecha.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch (error) {
+        return 'Reciente';
+    }
+}
+
+// ============================================
 // EXPONER FUNCIONES GLOBALMENTE
 // ============================================
 window.aceptarAplicacion = aceptarAplicacion;
@@ -902,6 +1128,10 @@ window.filtrarPorEstado = filtrarPorEstado;
 window.cerrarModalCalificacion = cerrarModalCalificacion;
 window.seleccionarEstrella = seleccionarEstrella;
 window.enviarCalificacion = enviarCalificacion;
+
+// Funciones del modal de detalle de calificaciones
+window.verDetalleCalificaciones = verDetalleCalificaciones;
+window.cerrarModalDetalleCalificaciones = cerrarModalDetalleCalificaciones;
 
 // ============================================
 // INICIALIZACIÓN

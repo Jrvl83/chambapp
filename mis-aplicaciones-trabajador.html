@@ -140,6 +140,56 @@
         </div>
     </div>
 
+    <!-- Modal Calificar Empleador - Task 15 -->
+    <div id="modal-calificar-empleador" class="modal-overlay">
+        <div class="modal-container modal-calificacion">
+            <div class="modal-header modal-header-empleador">
+                <h2>⭐ Calificar Empleador</h2>
+                <button class="modal-close" onclick="cerrarModalCalificacionEmpleador()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Info del empleador -->
+                <div class="calificacion-info">
+                    <div class="trabajador-info">
+                        <div class="trabajador-avatar empleador-avatar">🏢</div>
+                        <div>
+                            <div class="trabajador-nombre" id="cal-emp-nombre">Nombre Empleador</div>
+                            <div class="trabajo-titulo" id="cal-emp-trabajo">Trabajo realizado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estrellas interactivas -->
+                <div class="calificacion-estrellas">
+                    <p class="estrellas-label">¿Cómo fue tu experiencia con este empleador?</p>
+                    <div class="estrellas-container" id="estrellas-input-empleador">
+                        <button type="button" class="estrella" data-valor="1" onclick="seleccionarEstrellaEmpleador(1)">☆</button>
+                        <button type="button" class="estrella" data-valor="2" onclick="seleccionarEstrellaEmpleador(2)">☆</button>
+                        <button type="button" class="estrella" data-valor="3" onclick="seleccionarEstrellaEmpleador(3)">☆</button>
+                        <button type="button" class="estrella" data-valor="4" onclick="seleccionarEstrellaEmpleador(4)">☆</button>
+                        <button type="button" class="estrella" data-valor="5" onclick="seleccionarEstrellaEmpleador(5)">☆</button>
+                    </div>
+                    <div class="estrellas-texto" id="estrellas-texto-empleador">Selecciona una calificación</div>
+                </div>
+
+                <!-- Comentario opcional -->
+                <div class="calificacion-comentario">
+                    <label for="cal-emp-comentario">Comentario (opcional)</label>
+                    <textarea id="cal-emp-comentario" rows="3"
+                        placeholder="Describe tu experiencia trabajando con este empleador..."
+                        maxlength="300"></textarea>
+                    <span class="char-count"><span id="cal-emp-char-count">0</span>/300</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalCalificacionEmpleador()">Cancelar</button>
+                <button class="btn btn-primary" id="btn-enviar-calificacion-empleador" onclick="enviarCalificacionEmpleador()" disabled>
+                    ⭐ Enviar Calificación
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>

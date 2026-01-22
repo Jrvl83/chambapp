@@ -138,6 +138,22 @@
         </div>
     </div>
 
+    <!-- Modal Detalle Calificaciones del Trabajador -->
+    <div id="modal-detalle-calificaciones" class="modal-overlay">
+        <div class="modal-container modal-detalle-cal">
+            <div class="modal-header">
+                <h2>⭐ Calificaciones de <span id="detalle-nombre-trabajador">Trabajador</span></h2>
+                <button class="modal-close" onclick="cerrarModalDetalleCalificaciones()">&times;</button>
+            </div>
+            <div class="modal-body" id="detalle-calificaciones-contenido">
+                <!-- Contenido generado por JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalDetalleCalificaciones()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>

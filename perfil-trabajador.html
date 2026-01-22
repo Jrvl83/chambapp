@@ -350,6 +350,9 @@
                 <button class="tab-btn" data-tab="disponibilidad">
                     📅 Disponibilidad
                 </button>
+                <button class="tab-btn" data-tab="resenas">
+                    ⭐ Reseñas
+                </button>
             </div>
 
             <!-- Tab Content: Datos Personales -->
@@ -596,6 +599,45 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tab Content: Reseñas - Task 14 -->
+            <div class="tab-content" id="resenas">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>⭐ Reseñas Recibidas</h2>
+                        <a href="historial-calificaciones.html" class="btn btn-secondary btn-small">
+                            📋 Ver Historial Completo
+                        </a>
+                    </div>
+
+                    <!-- Resumen Calificaciones -->
+                    <div class="resenas-resumen" id="resenas-resumen">
+                        <div class="resumen-promedio">
+                            <span class="promedio-numero" id="resumen-promedio">0.0</span>
+                            <div class="promedio-estrellas" id="resumen-estrellas"></div>
+                            <span class="promedio-total" id="resumen-total">0 reseñas</span>
+                        </div>
+                        <div class="resumen-distribucion" id="resumen-distribucion">
+                            <!-- Barras de distribución generadas por JS -->
+                        </div>
+                    </div>
+
+                    <!-- Lista de Reseñas -->
+                    <div id="resenas-container" class="resenas-list"></div>
+
+                    <!-- Empty State -->
+                    <div id="resenas-empty" class="empty-state-small" style="display: none;">
+                        <p>📋 Aún no has recibido reseñas</p>
+                        <span class="helper-text">Completa trabajos para recibir calificaciones de los empleadores</span>
+                    </div>
+
+                    <!-- Loading -->
+                    <div id="resenas-loading" class="loading-state" style="display: none;">
+                        <div class="spinner-small"></div>
+                        <p>Cargando reseñas...</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Floating Save Button (Mobile) -->
@@ -653,6 +695,34 @@
             <img id="lightbox-img" class="lightbox-img" src="" alt="Portfolio">
             <button class="lightbox-nav next" onclick="navegarLightbox('next')">▶</button>
             <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
+        </div>
+    </div>
+
+    <!-- Modal Responder Reseña - Task 17 -->
+    <div id="modal-responder" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>💬 Responder Reseña</h2>
+                <button class="modal-close" onclick="cerrarModalResponder()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="resena-preview" id="resena-preview">
+                    <!-- Se llena con JS -->
+                </div>
+                <div class="form-group">
+                    <label for="respuesta-texto">Tu respuesta</label>
+                    <textarea id="respuesta-texto" rows="4"
+                        placeholder="Agradece el feedback o aclara algún punto..."
+                        maxlength="300"></textarea>
+                    <span class="char-count"><span id="respuesta-char-count">0</span>/300</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalResponder()">Cancelar</button>
+                <button class="btn btn-primary" id="btn-enviar-respuesta" onclick="enviarRespuesta()">
+                    💬 Enviar Respuesta
+                </button>
+            </div>
         </div>
     </div>
 

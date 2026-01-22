@@ -335,6 +335,250 @@ body {
     color: var(--gray);
 }
 
+/* Rating del trabajador */
+.trabajador-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.35rem;
+    padding: 0.2rem 0.5rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.trabajador-rating .rating-estrella {
+    color: #f59e0b;
+    font-size: 0.9rem;
+}
+
+.trabajador-rating .rating-numero {
+    color: #92400e;
+}
+
+.trabajador-rating .rating-total {
+    color: #a16207;
+    font-size: 0.75rem;
+}
+
+.trabajador-rating.sin-rating {
+    background: var(--light);
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.trabajador-rating.sin-rating .rating-texto {
+    font-style: italic;
+    font-size: 0.75rem;
+}
+
+.trabajador-rating.clickable {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.trabajador-rating.clickable:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.trabajador-rating .rating-ver {
+    margin-left: 0.25rem;
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.trabajador-rating.clickable:hover .rating-ver {
+    opacity: 1;
+}
+
+/* ========================================
+   MODAL DETALLE CALIFICACIONES
+   ======================================== */
+.modal-detalle-cal {
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.loading-calificaciones,
+.error-calificaciones {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray);
+}
+
+.loading-calificaciones .spinner-small {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border);
+    border-top-color: var(--warning);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.detalle-resumen {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.detalle-promedio .promedio-numero {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #92400e;
+    line-height: 1;
+}
+
+.detalle-promedio .promedio-estrellas {
+    margin: 0.5rem 0;
+}
+
+.detalle-promedio .promedio-estrellas .estrella-filled {
+    color: #f59e0b;
+    font-size: 1.5rem;
+}
+
+.detalle-promedio .promedio-estrellas .estrella-empty {
+    color: #fcd34d;
+    font-size: 1.5rem;
+}
+
+.detalle-promedio .promedio-total {
+    color: #a16207;
+    font-size: 0.9rem;
+}
+
+.detalle-lista-resenas {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detalle-resena-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    border-left: 3px solid var(--warning);
+}
+
+.detalle-resena-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.detalle-resena-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.detalle-resena-empleador {
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.detalle-resena-trabajo {
+    color: var(--gray);
+    font-size: 0.8rem;
+}
+
+.detalle-resena-rating {
+    text-align: right;
+}
+
+.detalle-resena-rating .estrella-filled {
+    color: #f59e0b;
+    font-size: 1rem;
+}
+
+.detalle-resena-rating .estrella-empty {
+    color: var(--border);
+    font-size: 1rem;
+}
+
+.detalle-resena-fecha {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+}
+
+.detalle-resena-comentario {
+    background: var(--light);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.detalle-resena-comentario p {
+    color: var(--dark);
+    font-style: italic;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.detalle-resena-respuesta {
+    background: #ecfdf5;
+    border-left: 3px solid var(--secondary);
+    padding: 0.75rem;
+    border-radius: 0 8px 8px 0;
+    margin-top: 0.5rem;
+}
+
+.detalle-resena-respuesta .respuesta-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detalle-resena-respuesta p {
+    color: var(--dark);
+    font-style: italic;
+    font-size: 0.85rem;
+    margin: 0.25rem 0 0;
+    line-height: 1.4;
+}
+
+.detalle-sin-resenas {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray);
+    background: var(--light);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .modal-detalle-cal {
+        max-width: 95%;
+        margin: 1rem;
+    }
+
+    .detalle-resena-header {
+        flex-direction: column;
+    }
+
+    .detalle-resena-rating {
+        text-align: left;
+    }
+}
+
 /* ========================================
    BADGES DE ESTADO
    ======================================== */

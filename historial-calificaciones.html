@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0066FF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Historial de Calificaciones - ChambApp</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/historial-calificaciones.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">💼 ChambApp</div>
+            <a href="perfil-trabajador.html" class="btn-volver">← Volver al Perfil</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>⭐ Historial de Calificaciones</h1>
+            <p>Revisa todas las calificaciones que has dado y recibido</p>
+        </div>
+
+        <!-- Tabs para tipo -->
+        <div class="historial-tabs">
+            <button class="tab-btn active" data-tipo="recibidas" onclick="cambiarTab('recibidas')">
+                📥 Recibidas
+            </button>
+            <button class="tab-btn" data-tipo="dadas" onclick="cambiarTab('dadas')">
+                📤 Dadas
+            </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="historial-filtros">
+            <div class="filter-group">
+                <label for="filtro-puntuacion">Puntuación:</label>
+                <select id="filtro-puntuacion" onchange="aplicarFiltros()">
+                    <option value="">Todas las estrellas</option>
+                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4)</option>
+                    <option value="3">⭐⭐⭐ (3)</option>
+                    <option value="2">⭐⭐ (2)</option>
+                    <option value="1">⭐ (1)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filtro-fecha">Fecha:</label>
+                <select id="filtro-fecha" onchange="aplicarFiltros()">
+                    <option value="">Cualquier fecha</option>
+                    <option value="7">Últimos 7 días</option>
+                    <option value="30">Últimos 30 días</option>
+                    <option value="90">Últimos 3 meses</option>
+                </select>
+            </div>
+            <button class="btn btn-secondary btn-small" onclick="limpiarFiltros()">
+                🔄 Limpiar
+            </button>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading-state">
+            <div class="spinner-small"></div>
+            <p>Cargando historial...</p>
+        </div>
+
+        <!-- Contenedor calificaciones -->
+        <div id="calificaciones-container" class="calificaciones-list" style="display: none;"></div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-icon">📋</div>
+            <h2 id="empty-titulo">No hay calificaciones</h2>
+            <p id="empty-mensaje">Completa trabajos para recibir calificaciones</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+    <script type="module" src="js/historial-calificaciones.js"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, orderBy, addDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -250,6 +250,27 @@ function crearAplicacionCard(aplicacion) {
         </button>
     ` : '';
 
+    // Botón calificar empleador solo si está completado - Task 15
+    let botonCalificarEmpleador = '';
+    if (estado === 'completado') {
+        if (aplicacion.calificadoPorTrabajador) {
+            botonCalificarEmpleador = `
+                <div class="estado-calificado-empleador">
+                    <span class="calificacion-mostrada">
+                        <span class="estrella-filled">★</span> Ya calificaste
+                    </span>
+                </div>
+            `;
+        } else {
+            const nombreEmpleadorEscapado = escaparParaHTML(aplicacion.empleadorNombre || 'Empleador');
+            botonCalificarEmpleador = `
+                <button class="btn btn-warning btn-small" onclick="calificarEmpleador('${aplicacion.id}', '${aplicacion.empleadorEmail}', '${nombreEmpleadorEscapado}')">
+                    ⭐ Calificar Empleador
+                </button>
+            `;
+        }
+    }
+
     return `
         <div class="aplicacion-card ${config.clase}">
             <div class="aplicacion-header">
@@ -282,6 +303,7 @@ function crearAplicacionCard(aplicacion) {
                     👁️ Ver Oferta
                 </button>
                 ${botonCancelar}
+                ${botonCalificarEmpleador}
             </div>
         </div>
     `;
@@ -496,6 +518,308 @@ function clickFueraModal(event) {
 }
 
 // ============================================
+// SISTEMA DE CALIFICACIÓN EMPLEADOR - Task 15
+// ============================================
+
+// Variables para el modal de calificación
+let calificacionEmpleadorActual = {
+    aplicacionId: null,
+    empleadorEmail: null,
+    empleadorNombre: null,
+    ofertaId: null,
+    ofertaTitulo: null,
+    puntuacion: 0
+};
+
+const textosEstrellasEmpleador = {
+    0: 'Selecciona una calificación',
+    1: 'Muy malo',
+    2: 'Malo',
+    3: 'Regular',
+    4: 'Bueno',
+    5: 'Excelente'
+};
+
+async function calificarEmpleador(aplicacionId, empleadorEmail, nombreEmpleador) {
+    try {
+        const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
+
+        if (aplicacion && aplicacion.calificadoPorTrabajador) {
+            if (typeof toastInfo === 'function') {
+                toastInfo('Ya calificaste a este empleador');
+            }
+            return;
+        }
+
+        calificacionEmpleadorActual = {
+            aplicacionId: aplicacionId,
+            empleadorEmail: empleadorEmail,
+            empleadorNombre: nombreEmpleador,
+            ofertaId: aplicacion?.ofertaId || null,
+            ofertaTitulo: aplicacion?.ofertaTitulo || 'Trabajo completado',
+            puntuacion: 0
+        };
+
+        document.getElementById('cal-emp-nombre').textContent = nombreEmpleador;
+        document.getElementById('cal-emp-trabajo').textContent = calificacionEmpleadorActual.ofertaTitulo;
+        document.getElementById('cal-emp-comentario').value = '';
+        document.getElementById('cal-emp-char-count').textContent = '0';
+
+        resetearEstrellasEmpleador();
+
+        document.getElementById('modal-calificar-empleador').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+    } catch (error) {
+        console.error('Error al abrir modal:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al cargar el formulario');
+        }
+    }
+}
+
+function cerrarModalCalificacionEmpleador() {
+    document.getElementById('modal-calificar-empleador').classList.remove('active');
+    document.body.style.overflow = 'auto';
+    resetearEstrellasEmpleador();
+    calificacionEmpleadorActual = {
+        aplicacionId: null,
+        empleadorEmail: null,
+        empleadorNombre: null,
+        ofertaId: null,
+        ofertaTitulo: null,
+        puntuacion: 0
+    };
+}
+
+function seleccionarEstrellaEmpleador(valor) {
+    calificacionEmpleadorActual.puntuacion = valor;
+
+    const estrellas = document.querySelectorAll('#estrellas-input-empleador .estrella');
+    estrellas.forEach((estrella, index) => {
+        if (index < valor) {
+            estrella.classList.add('active');
+            estrella.textContent = '★';
+        } else {
+            estrella.classList.remove('active');
+            estrella.textContent = '☆';
+        }
+    });
+
+    const textoEl = document.getElementById('estrellas-texto-empleador');
+    textoEl.textContent = textosEstrellasEmpleador[valor];
+    textoEl.classList.add('selected');
+
+    document.getElementById('btn-enviar-calificacion-empleador').disabled = false;
+}
+
+function resetearEstrellasEmpleador() {
+    calificacionEmpleadorActual.puntuacion = 0;
+    const estrellas = document.querySelectorAll('#estrellas-input-empleador .estrella');
+    estrellas.forEach(estrella => {
+        estrella.classList.remove('active', 'hover');
+        estrella.textContent = '☆';
+    });
+
+    const textoEl = document.getElementById('estrellas-texto-empleador');
+    if (textoEl) {
+        textoEl.textContent = textosEstrellasEmpleador[0];
+        textoEl.classList.remove('selected');
+    }
+
+    const btnEnviar = document.getElementById('btn-enviar-calificacion-empleador');
+    if (btnEnviar) btnEnviar.disabled = true;
+}
+
+async function enviarCalificacionEmpleador() {
+    if (calificacionEmpleadorActual.puntuacion === 0) {
+        if (typeof toastError === 'function') {
+            toastError('Selecciona una calificación');
+        }
+        return;
+    }
+
+    const btnEnviar = document.getElementById('btn-enviar-calificacion-empleador');
+    btnEnviar.disabled = true;
+    btnEnviar.innerHTML = '⏳ Enviando...';
+
+    try {
+        const comentario = document.getElementById('cal-emp-comentario').value.trim();
+
+        // Buscar datos del empleador por email
+        const empleadoresQuery = query(
+            collection(db, 'usuarios'),
+            where('email', '==', calificacionEmpleadorActual.empleadorEmail)
+        );
+        const empleadoresSnap = await getDocs(empleadoresQuery);
+
+        let empleadorId = null;
+        let empleadorData = null;
+
+        if (!empleadoresSnap.empty) {
+            const empleadorDoc = empleadoresSnap.docs[0];
+            empleadorId = empleadorDoc.id;
+            empleadorData = empleadorDoc.data();
+        }
+
+        // Obtener aplicación
+        const aplicacionRef = doc(db, 'aplicaciones', calificacionEmpleadorActual.aplicacionId);
+        const aplicacionSnap = await getDoc(aplicacionRef);
+        const aplicacionData = aplicacionSnap.exists() ? aplicacionSnap.data() : {};
+
+        // Crear documento de calificación
+        const calificacionData = {
+            aplicacionId: calificacionEmpleadorActual.aplicacionId,
+
+            // Quien califica (trabajador)
+            trabajadorId: auth.currentUser?.uid || null,
+            trabajadorEmail: usuario.email,
+            trabajadorNombre: usuario.nombre || 'Trabajador',
+
+            // Quien es calificado (empleador)
+            empleadorId: empleadorId,
+            empleadorEmail: calificacionEmpleadorActual.empleadorEmail,
+            empleadorNombre: calificacionEmpleadorActual.empleadorNombre,
+
+            ofertaId: calificacionEmpleadorActual.ofertaId,
+            ofertaTitulo: calificacionEmpleadorActual.ofertaTitulo,
+            ofertaCategoria: aplicacionData?.ofertaCategoria || '',
+
+            puntuacion: calificacionEmpleadorActual.puntuacion,
+            comentario: comentario,
+
+            // Tipo de calificación (trabajador califica empleador)
+            tipo: 'trabajador_a_empleador',
+
+            fechaCalificacion: serverTimestamp(),
+            fechaTrabajoCompletado: aplicacionData?.fechaCompletado || null,
+
+            // Para respuestas futuras
+            respuesta: null,
+            fechaRespuesta: null
+        };
+
+        // Guardar calificación
+        const calificacionRef = await addDoc(collection(db, 'calificaciones'), calificacionData);
+
+        // Actualizar aplicación
+        await updateDoc(aplicacionRef, {
+            calificadoPorTrabajador: true,
+            calificacionTrabajadorId: calificacionRef.id
+        });
+
+        // Actualizar promedio del empleador
+        if (empleadorId) {
+            await actualizarPromedioEmpleador(empleadorId, calificacionEmpleadorActual.puntuacion);
+        }
+
+        // Actualizar UI local
+        const aplicacion = todasLasAplicaciones.find(a => a.id === calificacionEmpleadorActual.aplicacionId);
+        if (aplicacion) {
+            aplicacion.calificadoPorTrabajador = true;
+            aplicacion.calificacionTrabajadorId = calificacionRef.id;
+        }
+
+        // Guardar nombre antes de cerrar modal (que resetea el objeto)
+        const nombreEmpleadorCalificado = calificacionEmpleadorActual.empleadorNombre;
+
+        cerrarModalCalificacionEmpleador();
+        if (typeof toastSuccess === 'function') {
+            toastSuccess(`¡Gracias por calificar a ${nombreEmpleadorCalificado}!`);
+        }
+
+        mostrarAplicaciones(aplicacionesFiltradas.length > 0 ? aplicacionesFiltradas : todasLasAplicaciones);
+
+    } catch (error) {
+        console.error('Error al enviar calificación:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al enviar la calificación. Intenta de nuevo.');
+        }
+    } finally {
+        btnEnviar.disabled = false;
+        btnEnviar.innerHTML = '⭐ Enviar Calificación';
+    }
+}
+
+async function actualizarPromedioEmpleador(empleadorId, nuevaPuntuacion) {
+    try {
+        const empleadorRef = doc(db, 'usuarios', empleadorId);
+        const empleadorSnap = await getDoc(empleadorRef);
+
+        if (!empleadorSnap.exists()) return;
+
+        const data = empleadorSnap.data();
+        const promedioActual = data.calificacionPromedio || 0;
+        const totalActual = data.totalCalificaciones || 0;
+
+        const nuevoTotal = totalActual + 1;
+        const sumaTotal = (promedioActual * totalActual) + nuevaPuntuacion;
+        const nuevoPromedio = Number((sumaTotal / nuevoTotal).toFixed(2));
+
+        const distribucion = data.distribucionCalificaciones || { "5": 0, "4": 0, "3": 0, "2": 0, "1": 0 };
+        distribucion[String(nuevaPuntuacion)] = (distribucion[String(nuevaPuntuacion)] || 0) + 1;
+
+        await updateDoc(empleadorRef, {
+            calificacionPromedio: nuevoPromedio,
+            totalCalificaciones: nuevoTotal,
+            distribucionCalificaciones: distribucion
+        });
+
+        console.log(`✅ Promedio empleador actualizado: ${nuevoPromedio} (${nuevoTotal} calificaciones)`);
+
+    } catch (error) {
+        console.error('Error al actualizar promedio empleador:', error);
+    }
+}
+
+// Inicializar eventos del modal de calificación
+function inicializarEventosCalificacionEmpleador() {
+    const comentarioInput = document.getElementById('cal-emp-comentario');
+    if (comentarioInput) {
+        comentarioInput.addEventListener('input', (e) => {
+            document.getElementById('cal-emp-char-count').textContent = e.target.value.length;
+        });
+    }
+
+    // Hover effect en estrellas
+    const estrellas = document.querySelectorAll('#estrellas-input-empleador .estrella');
+    estrellas.forEach((estrella, index) => {
+        estrella.addEventListener('mouseenter', () => {
+            estrellas.forEach((e, i) => {
+                if (i <= index) {
+                    e.classList.add('hover');
+                    e.textContent = '★';
+                } else {
+                    e.classList.remove('hover');
+                    if (!e.classList.contains('active')) {
+                        e.textContent = '☆';
+                    }
+                }
+            });
+        });
+
+        estrella.addEventListener('mouseleave', () => {
+            estrellas.forEach((e, i) => {
+                e.classList.remove('hover');
+                if (!e.classList.contains('active')) {
+                    e.textContent = '☆';
+                }
+            });
+        });
+    });
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cerrarModalCalificacionEmpleador();
+        }
+    });
+}
+
+// Inicializar eventos al cargar
+document.addEventListener('DOMContentLoaded', inicializarEventosCalificacionEmpleador);
+
+// ============================================
 // EXPONER FUNCIONES GLOBALMENTE
 // ============================================
 window.verOfertaCompleta = verOfertaCompleta;
@@ -504,6 +828,10 @@ window.aplicarFiltros = aplicarFiltros;
 window.limpiarFiltros = limpiarFiltros;
 window.cerrarModal = cerrarModal;
 window.clickFueraModal = clickFueraModal;
+window.calificarEmpleador = calificarEmpleador;
+window.cerrarModalCalificacionEmpleador = cerrarModalCalificacionEmpleador;
+window.seleccionarEstrellaEmpleador = seleccionarEstrellaEmpleador;
+window.enviarCalificacionEmpleador = enviarCalificacionEmpleador;
 
 // ============================================
 // INICIALIZACIÓN

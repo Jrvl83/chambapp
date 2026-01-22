@@ -1,7 +1,7 @@
 # CONTEXTO CLAUDE CODE - CHAMBAPP
 
 **Archivo de Inicialización para Claude Code**
-**Actualizado:** 20 Enero 2026
+**Actualizado:** 21 Enero 2026
 **Lee este archivo al inicio de cada sesión**
 
 ---
@@ -10,30 +10,38 @@
 
 ### Progreso General
 - **Fase Actual:** Fase 1 - Experiencia WOW
-- **Progreso Fase 1:** 45% completo (20/44 tareas)
-- **Progreso Total:** ~11% del proyecto (20/176 tareas)
+- **Progreso Fase 1:** 55% completo (24/44 tareas)
+- **Progreso Total:** ~14% del proyecto (24/176 tareas)
 - **Tiempo Invertido:** ~2 meses
 - **Tiempo Restante:** 4-5 meses hasta lanzamiento
 
-### Última Tarea Completada
-**Task 13:** Sistema de Calificaciones (20 Ene 2026)
-- Modal con estrellas interactivas (1-5) para calificar trabajadores
-- Colección Firestore `calificaciones` con puntuación, comentario, metadata
-- Promedio automático en perfil trabajador (badge ★ 4.5)
-- Campos en usuarios: `calificacionPromedio`, `totalCalificaciones`, `distribucionCalificaciones`
-- Campo en aplicaciones: `calificado: boolean`, `calificacionId`
-- UI "Ya Calificado" en vista empleador después de calificar
-- Hover effects y animaciones en estrellas
-- Responsive mobile
+### Últimas Tareas Completadas
+**Tasks 14-17:** Mejoras al Sistema de Calificaciones (21 Ene 2026)
+- **Task 14:** Vista de reseñas recibidas para trabajador
+  - Nueva pestaña "Reseñas" en perfil trabajador
+  - Resumen con promedio y distribución de estrellas (barras visuales)
+  - Lista de reseñas con nombre empleador, trabajo, estrellas, comentario, fecha
+  - Query a colección `calificaciones` filtrado por `trabajadorId`
+- **Task 15:** Calificación bidireccional (trabajador → empleador)
+  - Botón "Calificar Empleador" en mis-aplicaciones-trabajador cuando estado = completado
+  - Modal con estrellas interactivas y comentario opcional
+  - Campo `tipo: "trabajador_a_empleador"` en calificaciones
+  - Campos en aplicaciones: `calificadoPorTrabajador`, `calificacionTrabajadorId`
+  - Actualiza promedio del empleador en su perfil
+- **Task 16:** Historial completo de calificaciones
+  - Nueva página `/historial-calificaciones.html`
+  - Tabs: "Recibidas" / "Dadas"
+  - Filtros por puntuación y fecha
+  - Link desde perfil trabajador
+- **Task 17:** Responder a calificaciones recibidas
+  - Modal para escribir respuesta (max 300 chars)
+  - Campo `respuesta` y `fechaRespuesta` en documentos de calificación
+  - Botón "Responder" en cada reseña sin respuesta
 
 ### Próxima Tarea Crítica
-**Tasks 14-17:** Mejoras al Sistema de Calificaciones
-- Vista de reseñas recibidas (trabajador)
-- Calificación bidireccional (trabajador califica empleador)
-- Historial de calificaciones
-- Respuesta a calificaciones
+**Tasks 18-20, 22-23:** Chat In-App (DIFERIDO - WhatsApp cubre la necesidad)
 
-> **Nota:** Flujo completo funcionando: Postulación → Aceptar → WhatsApp → Completado → ⭐ Calificar → ★ Perfil actualizado
+> **Nota:** Flujo completo funcionando: Postulación → Aceptar → WhatsApp → Completado → ⭐ Calificar (bidireccional) → ★ Perfiles actualizados
 
 ### Pendiente Menor (Sprint UX/UI Polish)
 - Fix warning onboarding `.stats-grid`
@@ -72,6 +80,7 @@ chambapp/
 ├── mis-aplicaciones.html
 ├── mis-aplicaciones-trabajador.html
 ├── mapa-ofertas.html (nuevo Task 12)
+├── historial-calificaciones.html (nuevo Task 16)
 ├── css/
 │   ├── design-system.css
 │   ├── components.css
@@ -79,6 +88,7 @@ chambapp/
 │   ├── toast.css
 │   ├── publicar-oferta.css (actualizado Task 10)
 │   ├── mapa-ofertas.css (nuevo Task 12)
+│   ├── historial-calificaciones.css (nuevo Task 16)
 │   └── ...
 ├── js/
 │   ├── config/
@@ -98,6 +108,7 @@ chambapp/
 │   │   └── migrar-ofertas.js (nuevo Task 10)
 │   ├── publicar-oferta.js (actualizado Task 10)
 │   ├── mapa-ofertas.js (nuevo Task 12)
+│   ├── historial-calificaciones.js (nuevo Task 16)
 │   ├── toast.js
 │   └── onboarding.js
 ├── data/
@@ -223,33 +234,45 @@ chambapp/
 
 ---
 
-## PRÓXIMAS TAREAS (14-17)
+## TAREAS COMPLETADAS (14-17) - 21 Ene 2026
 
-### Tasks 14-17: Mejoras Sistema de Calificaciones
+### Tasks 14-17: Mejoras Sistema de Calificaciones ✅
 **Objetivo:** Expandir el sistema de calificaciones
 
-**Subtareas pendientes:**
-- [ ] Vista de reseñas recibidas para trabajador
-- [ ] Calificación bidireccional (trabajador → empleador)
-- [ ] Historial completo de calificaciones
-- [ ] Responder a calificaciones recibidas
+**Subtareas completadas:**
+- [x] Task 14: Vista de reseñas recibidas para trabajador
+- [x] Task 15: Calificación bidireccional (trabajador → empleador)
+- [x] Task 16: Historial completo de calificaciones
+- [x] Task 17: Responder a calificaciones recibidas
+
+**Archivos creados/modificados:**
+- `perfil-trabajador.html` - Nueva pestaña "Reseñas" + Modal responder
+- `js/perfil-trabajador.js` - Funciones cargarResenasRecibidas, enviarRespuesta
+- `css/perfil-trabajador.css` - Estilos reseñas y distribución
+- `mis-aplicaciones-trabajador.html` - Modal calificar empleador
+- `js/mis-aplicaciones-trabajador.js` - Sistema calificación empleador
+- `css/mis-aplicaciones-trabajador.css` - Estilos modal calificación
+- `historial-calificaciones.html` - Nueva página (Task 16)
+- `js/historial-calificaciones.js` - Lógica historial
+- `css/historial-calificaciones.css` - Estilos historial
 
 ---
 
-### Orden de Desarrollo Actualizado (20 Ene 2026)
+### Orden de Desarrollo Actualizado (21 Ene 2026)
 
-**Flujo lógico del usuario (COMPLETO):**
+**Flujo lógico del usuario (COMPLETO CON CALIFICACIÓN BIDIRECCIONAL):**
 ```
-Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → ⭐ Calificar → ★ Perfil
+Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → ⭐ Calificar (ambos) → ★ Perfiles actualizados
 ```
 
 **Tareas completadas recientemente:**
 1. ✅ **Task 21:** Aceptar/Rechazar + Botón WhatsApp (19 Ene 2026)
 2. ✅ **Task 13:** Sistema de Calificaciones (20 Ene 2026)
+3. ✅ **Tasks 14-17:** Mejoras al Sistema de Calificaciones (21 Ene 2026)
 
 **Próximas tareas:**
-1. **Tasks 14-17:** Mejoras al sistema de calificaciones
-2. **Tasks 18-20, 22-23:** Chat In-App (DIFERIDO - WhatsApp cubre la necesidad)
+1. **Tasks 18-20, 22-23:** Chat In-App (DIFERIDO - WhatsApp cubre la necesidad)
+2. **Sprint UX/UI Polish:** Warnings pendientes, mejoras visuales
 
 ---
 
@@ -341,6 +364,7 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 - **19 Ene 2026:** Task 21 completada - Aceptar/Rechazar + WhatsApp
 - **19 Ene 2026:** Migración a Nueva Places API (AutocompleteSuggestion)
 - **20 Ene 2026:** Task 13 completada - Sistema de Calificaciones
+- **21 Ene 2026:** Tasks 14-17 completadas - Sistema de Calificaciones expandido (bidireccional, historial, respuestas)
 
 ---
 
@@ -359,8 +383,8 @@ import('./js/utils/migrar-ofertas.js').then(m => m.migrarOfertas());
 
 ---
 
-**Última actualización:** 20 Enero 2026
-**Versión:** 1.5
+**Última actualización:** 21 Enero 2026
+**Versión:** 1.6
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 

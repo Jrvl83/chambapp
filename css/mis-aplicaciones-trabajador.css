@@ -796,3 +796,220 @@ body {
         font-size: 0.75rem;
     }
 }
+
+/* ============================================
+   MODAL CALIFICACIÓN EMPLEADOR - Task 15
+   ============================================ */
+
+.modal-calificacion {
+    max-width: 500px;
+}
+
+.modal-header-empleador {
+    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.modal-header-empleador h2 {
+    color: white;
+}
+
+.modal-header-empleador .modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.modal-header-empleador .modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Info del empleador */
+.calificacion-info {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.trabajador-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.trabajador-avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--warning);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+.empleador-avatar {
+    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+}
+
+.trabajador-nombre {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--dark);
+}
+
+.trabajo-titulo {
+    color: var(--gray);
+    font-size: 0.875rem;
+}
+
+/* Estrellas interactivas */
+.calificacion-estrellas {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.estrellas-label {
+    color: var(--dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.estrellas-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.estrellas-container .estrella {
+    background: transparent;
+    border: none;
+    font-size: 2.5rem;
+    color: var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0.25rem;
+}
+
+.estrellas-container .estrella:hover,
+.estrellas-container .estrella.hover {
+    color: var(--warning);
+    transform: scale(1.1);
+}
+
+.estrellas-container .estrella.active {
+    color: var(--warning);
+}
+
+.estrellas-texto {
+    color: var(--gray);
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.estrellas-texto.selected {
+    color: var(--warning);
+    font-weight: 600;
+}
+
+/* Comentario */
+.calificacion-comentario {
+    margin-bottom: 1rem;
+}
+
+.calificacion-comentario label {
+    display: block;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.calificacion-comentario textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: all 0.3s;
+}
+
+.calificacion-comentario textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.char-count {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 2px solid var(--light);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Botón Warning */
+.btn-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+}
+
+/* Estado ya calificado */
+.estado-calificado-empleador {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.estado-calificado-empleador .calificacion-mostrada {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.estado-calificado-empleador .estrella-filled {
+    color: var(--warning);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-calificacion {
+        max-width: 95%;
+    }
+
+    .estrellas-container .estrella {
+        font-size: 2rem;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
