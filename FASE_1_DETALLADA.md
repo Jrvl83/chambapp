@@ -2,25 +2,26 @@
 
 **45 Tareas para Producto Excepcional**
 **Duración:** 12-13 semanas (~3 meses)
-**Progreso Actual:** 40% (18/45 tareas completadas)
+**Progreso Actual:** 51% (23/45 tareas completadas)
 
 ---
 
 ## 📊 PROGRESO FASE 1
 
 ```
-✅ COMPLETADAS: ██████████████░░░░░░░░░░░░░░ 18/45 (40%)
-🔄 EN PROGRESO: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 0/45 (0%)
-⏳ PENDIENTES:  ███████████████░░░░░░░░░░░░░ 27/45 (60%)
+✅ COMPLETADAS: ██████████████████░░░░░░░░░░ 23/45 (51%)
+⏸️ DIFERIDAS:   ███░░░░░░░░░░░░░░░░░░░░░░░░░ 5/45 (11%)
+⏳ PENDIENTES:  ████████████░░░░░░░░░░░░░░░░ 17/45 (38%)
 ```
 
 ### Sprints (1 semana cada uno):
 - **Sprint 1:** ✅ Tasks 1-3 (Fundamentos) - COMPLETADO
 - **Sprint 2:** ✅ Tasks 4-7 (Perfiles) - COMPLETADO
 - **Sprint 3:** ✅ Tasks 8-12 (Geolocalización) - COMPLETADO
-- **Sprint 4:** 🎯 Task 21 + Tasks 13-17 (Aceptar/Rechazar + Calificaciones) - EN CURSO
-  > ✅ Task 21 completada (19 Ene 2026) - Siguiente: Tasks 13-17
-- **Sprint 5:** ⏳ Tasks 24-27 (Búsqueda Avanzada)
+- **Sprint 4:** ✅ Task 21 + Tasks 13-17 (Aceptar/Rechazar + Calificaciones) - COMPLETADO
+  > ✅ Task 21 completada (19 Ene 2026)
+  > ✅ Tasks 13-17 completadas (21 Ene 2026)
+- **Sprint 5:** 🎯 Tasks 24-27 (Búsqueda Avanzada) - SIGUIENTE
 - **Sprint 6:** ⏳ Tasks 28-31 (Notificaciones)
 - **Sprint 7-8:** ⏳ Tasks 32-37 (UX/UI Polish)
 - **Sprint 9:** ⏳ Tasks 38-40 (Performance/PWA)
@@ -298,157 +299,157 @@
 
 ---
 
-## 🟠 PRIORIDAD 4: SISTEMA DE CALIFICACIONES (Semana 3)
+## 🟠 PRIORIDAD 4: SISTEMA DE CALIFICACIONES ✅ COMPLETADO
 
-### Task 13: Estructura Firestore Calificaciones
-**Tiempo:** 1 día | **Estado:** ⏳ Pendiente
+### ✅ Task 13: Estructura Firestore Calificaciones
+**Tiempo:** 1 día | **Estado:** ✅ Completado (20 Ene 2026)
 
 **Objetivo:** Base datos reviews
 
-**Subtareas:**
-- [ ] Crear colección `calificaciones/{id}`
-- [ ] Schema: `{de: uid, para: uid, estrellas: 1-5, comentario: string, ofertaId: string, timestamp}`
-- [ ] Validación: solo después trabajo completado
-- [ ] Validación: una calificación por oferta
-- [ ] Índices: `para` (para mostrar en perfil), `ofertaId` (única)
-- [ ] Reglas seguridad: solo participantes de la oferta pueden calificar
+**Subtareas Completadas:**
+- [x] Crear colección `calificaciones/{id}`
+- [x] Schema completo con campos bidireccionales
+- [x] Validación: solo después trabajo completado
+- [x] Validación: una calificación por oferta por tipo
+- [x] Índices creados para consultas eficientes
+- [x] Reglas seguridad implementadas
 
-**Schema Firestore:**
+**Schema Firestore Implementado:**
 ```javascript
 calificaciones/{calificacionId}
 {
-  de: "uid_calificador",
-  para: "uid_calificado",
-  estrellas: 5,
-  comentario: "Excelente trabajo, muy profesional",
+  trabajadorId: "uid_trabajador",
+  trabajadorEmail: "email",
+  trabajadorNombre: "nombre",
+  empleadorId: "uid_empleador",
+  empleadorEmail: "email",
+  empleadorNombre: "nombre",
   ofertaId: "oferta123",
-  timestamp: serverTimestamp(),
-  tipo: "trabajador" | "empleador"
+  ofertaTitulo: "título",
+  aplicacionId: "aplicacion123",
+  estrellas: 5,
+  comentario: "Excelente trabajo",
+  tipo: "empleador_a_trabajador" | "trabajador_a_empleador",
+  fechaCalificacion: serverTimestamp(),
+  respuesta: null | "texto respuesta",
+  fechaRespuesta: null | timestamp
 }
 ```
 
-**Agregar a usuarios/{uid}:**
+**Campos en usuarios/{uid}:**
 ```javascript
 {
   calificacionPromedio: 4.8,
-  totalCalificaciones: 47
+  totalCalificaciones: 47,
+  distribucionCalificaciones: {1: 0, 2: 0, 3: 1, 4: 2, 5: 10}
 }
 ```
 
-**Por qué:** Base para trust & safety
+---
+
+### ✅ Task 14: Vista de Reseñas Recibidas para Trabajador
+**Tiempo:** 1 día | **Estado:** ✅ Completado (21 Ene 2026)
+
+**Subtareas Completadas:**
+- [x] Nueva pestaña "Reseñas" en perfil-trabajador.html
+- [x] Resumen con promedio grande + estrellas visuales
+- [x] Barras de distribución (5★ a 1★) con porcentajes
+- [x] Lista de reseñas con cards detalladas
+- [x] Nombre empleador, trabajo, estrellas, comentario, fecha
+- [x] Botón "Responder" para reseñas sin respuesta (Task 17)
+- [x] Empty state si no hay reseñas
+- [x] Responsive móvil perfecto
+
+**Archivos Modificados:**
+```
+- perfil-trabajador.html (nueva pestaña reseñas)
+- js/perfil-trabajador.js (cargarResenasRecibidas, renderizar)
+- css/perfil-trabajador.css (estilos reseñas y distribución)
+```
 
 ---
 
-### Task 14: Sistema de Estrellas Interactivo
-**Tiempo:** 1 día | **Estado:** ⏳ Pendiente
+### ✅ Task 15: Calificación Bidireccional (Trabajador → Empleador)
+**Tiempo:** 2 días | **Estado:** ✅ Completado (21 Ene 2026)
 
-**Subtareas:**
-- [ ] Crear componente `/js/components/star-rating.js`
-- [ ] Modo display (solo lectura, mostrar rating)
-- [ ] Modo interactivo (seleccionar 1-5 estrellas)
-- [ ] Hover states (previsualizar selección)
-- [ ] Accesible (keyboard navigation: arrow keys)
-- [ ] Animaciones suaves (fill stars)
-- [ ] Responsive (tamaño adecuado móvil)
-- [ ] Reutilizable en múltiples páginas
+**Subtareas Completadas:**
+- [x] Modal calificación en mis-aplicaciones-trabajador.html
+- [x] Botón "⭐ Calificar Empleador" en estado completado
+- [x] Sistema de estrellas interactivo con textos descriptivos
+- [x] Textarea comentario opcional (max 300 chars)
+- [x] Guardar en Firestore con tipo "trabajador_a_empleador"
+- [x] Actualizar promedio empleador automáticamente
+- [x] Validación: solo una calificación por aplicación
+- [x] Toast feedback "Calificación enviada"
 
-**Uso:**
+**Archivos Modificados:**
+```
+- mis-aplicaciones-trabajador.html (modal calificación)
+- js/mis-aplicaciones-trabajador.js (funciones calificar)
+- css/mis-aplicaciones-trabajador.css (estilos modal)
+```
+
+---
+
+### ✅ Task 16: Historial Completo de Calificaciones
+**Tiempo:** 2 días | **Estado:** ✅ Completado (21 Ene 2026)
+
+**Subtareas Completadas:**
+- [x] Nueva página historial-calificaciones.html
+- [x] Tabs: "Recibidas" / "Dadas"
+- [x] Filtros por puntuación (todas, 5★, 4★, etc)
+- [x] Ordenamiento por fecha
+- [x] Lista con todos los detalles de cada calificación
+- [x] Ver respuestas si existen
+- [x] Link desde perfil trabajador
+- [x] Empty states apropiados
+- [x] Responsive móvil
+
+**Archivos Creados:**
+```
+- historial-calificaciones.html (NUEVO)
+- js/historial-calificaciones.js (NUEVO)
+- css/historial-calificaciones.css (NUEVO)
+```
+
+---
+
+### ✅ Task 17: Responder a Calificaciones Recibidas
+**Tiempo:** 1 día | **Estado:** ✅ Completado (21 Ene 2026)
+
+**Subtareas Completadas:**
+- [x] Modal para escribir respuesta (max 300 chars)
+- [x] Botón "💬 Responder" en cada reseña sin respuesta
+- [x] Guardar respuesta y fechaRespuesta en Firestore
+- [x] Mostrar respuesta después de enviar
+- [x] Validación: solo una respuesta por calificación
+- [x] Reglas Firestore actualizadas para permitir update
+
+**Reglas Firestore:**
 ```javascript
-// Modo display
-new StarRating('#rating-display', {
-  rating: 4.5,
-  readonly: true
-});
-
-// Modo interactivo
-new StarRating('#rating-input', {
-  onChange: (rating) => console.log(rating)
-});
+allow update: if request.auth != null &&
+  resource.data.trabajadorId == request.auth.uid &&
+  (!('respuesta' in resource.data) || resource.data.respuesta == null) &&
+  request.resource.data.respuesta != null;
 ```
-
-**Por qué:** Componente core reutilizable
 
 ---
 
-### Task 15: Modal Calificar Trabajo
-**Tiempo:** 2 días | **Estado:** ⏳ Pendiente
+### ✅ Mejora Extra: Rating Visible en Postulaciones
+**Estado:** ✅ Completado (21 Ene 2026)
 
-**Subtareas:**
-- [ ] Trigger: cuando empleador marca oferta como "Completado"
-- [ ] Modal con título "Califica a [nombre trabajador]"
-- [ ] Star rating interactivo (1-5 estrellas)
-- [ ] Textarea comentario (opcional, max 500 caracteres)
-- [ ] Preview calificación antes de enviar
-- [ ] Validación: estrellas obligatorio, comentario opcional
-- [ ] Guardar en Firestore `calificaciones`
-- [ ] Actualizar `calificacionPromedio` y `totalCalificaciones` del usuario
-- [ ] No editable después (o solo 24h window)
-- [ ] Email notification al calificado
-- [ ] Loading states durante submit
-- [ ] Toast "¡Gracias por tu calificación!"
+**Funcionalidad:**
+- [x] Empleador ve rating del trabajador en cada postulación
+- [x] Click en estrellas abre modal con detalle de calificaciones
+- [x] "Sin calificaciones aún" para trabajadores nuevos
+- [x] Cache de ratings para performance
 
-**Archivos a Crear/Modificar:**
+**Archivos Modificados:**
 ```
-- js/components/modal-calificar.js (NUEVO)
-- css/components/modal-calificar.css (NUEVO)
-- Integrar en dashboard donde marca "Completado"
+- js/mis-aplicaciones.js (cargarRatingsTrabajadores, verDetalleCalificaciones)
+- css/mis-aplicaciones.css (estilos rating y modal detalle)
+- mis-aplicaciones.html (modal detalle calificaciones)
 ```
-
-**Por qué:** Trust & safety fundamental
-
----
-
-### Task 16: Mostrar Calificaciones en Perfil
-**Tiempo:** 2 días | **Estado:** ⏳ Pendiente
-
-**Subtareas:**
-- [ ] En perfil: mostrar promedio estrellas prominente (ej: "4.8 ★")
-- [ ] Número total reviews (ej: "basado en 47 calificaciones")
-- [ ] Histograma distribución:
-  - 5★: 80% (barra visual)
-  - 4★: 15%
-  - 3★: 3%
-  - 2★: 1%
-  - 1★: 1%
-- [ ] Lista últimos 10 comentarios con:
-  - Foto calificador
-  - Nombre
-  - Rating
-  - Comentario
-  - Fecha relativa ("hace 2 días")
-- [ ] Paginación si hay más de 10
-- [ ] Filtrar por estrellas (dropdown: Todas, 5★, 4★, etc)
-- [ ] Ordenar: Recientes primero, Mejores primero
-- [ ] Botón "Reportar review inapropiado"
-
-**Archivos a Modificar:**
-```
-- perfil-trabajador.html (agregar sección calificaciones)
-- js/perfil/calificaciones.js (NUEVO - cargar y mostrar)
-- css/pages/perfil.css (estilos calificaciones)
-```
-
-**Por qué:** Prueba social = más conversiones
-
----
-
-### Task 17: Badges de Confianza
-**Tiempo:** 1 día | **Estado:** ⏳ Pendiente
-
-**Subtareas:**
-- [ ] Badge "Top Rated" ⭐ (promedio >4.5 y mín 10 reviews)
-- [ ] Badge "Nuevo" 🌟 (< 5 reviews)
-- [ ] Badge "Verificado" ✓ (DNI verificado - futuro)
-- [ ] Badge "Premium" 💎 (suscripción activa - futuro)
-- [ ] Mostrar badges en:
-  - Card oferta (cuando aplica)
-  - Perfil trabajador (prominente)
-  - Lista búsqueda trabajadores
-- [ ] Diseño visual atractivo (colores distintivos)
-- [ ] Tooltip explicativo al hover
-- [ ] Lógica condicional para mostrar/ocultar
-
-**Por qué:** Gamificación + señal confianza
 
 ---
 
@@ -1161,8 +1162,9 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 | Fundamentos Técnicos | 3 | 1 semana | ✅ Completado |
 | Perfiles Completos | 4 | 1.5 semanas | ✅ Completado |
 | Geolocalización | 5 | 1.5 semanas | ✅ Completado (19 Ene 2026) |
-| Calificaciones | 5 | 1 semana | ⏳ Pendiente |
-| Mensajería + Aceptar/Rechazar | 6 | 1.5 semanas | ⏳ Pendiente |
+| Aceptar/Rechazar + WhatsApp | 1 | 1 día | ✅ Completado (19 Ene 2026) |
+| Calificaciones | 5 (+1 extra) | 1 semana | ✅ Completado (21 Ene 2026) |
+| Mensajería In-App | 5 | 1.5 semanas | ⏸️ Diferido (WhatsApp cubre) |
 | Búsqueda Avanzada | 4 | 1 semana | ⏳ Pendiente |
 | Notificaciones | 4 | 1 semana | ⏳ Pendiente |
 | UX/UI Polish | 6 | 2 semanas | ⏳ Pendiente |
@@ -1176,9 +1178,9 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 ### Progreso Actual
 
 ```
-COMPLETADAS: 18/45 (40%)
-EN PROGRESO: 0/45 (0%)
-PENDIENTES:  27/45 (60%)
+COMPLETADAS: 23/45 (51%)
+DIFERIDAS:   5/45 (11%)
+PENDIENTES:  17/45 (38%)
 ```
 
 ---
@@ -1189,17 +1191,30 @@ PENDIENTES:  27/45 (60%)
 - ✅ **Task 10:** Geocoding Ofertas (14 Ene 2026)
 - ✅ **Task 11:** Búsqueda por Distancia (14 Ene 2026)
 - ✅ **Task 12:** Mapa Interactivo Ofertas (19 Ene 2026)
+- ✅ **Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp (19 Ene 2026)
+- ✅ **Task 13:** Sistema de Calificaciones base (20 Ene 2026)
+- ✅ **Tasks 14-17:** Sistema de Calificaciones completo (21 Ene 2026)
+  - Task 14: Vista de reseñas recibidas para trabajador
+  - Task 15: Calificación bidireccional (trabajador → empleador)
+  - Task 16: Historial completo de calificaciones
+  - Task 17: Responder a calificaciones recibidas
+  - Extra: Rating visible en postulaciones para empleador
 
-### Esta Semana (ORDEN ACTUALIZADO):
-1. ✅ **Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp (COMPLETADA 19 Ene 2026)
-   > Incluye migración a Nueva Places API
-2. 🎯 **Task 13:** Sistema de Calificaciones (SIGUIENTE)
+### Siguiente Sprint:
+🎯 **Tasks 24-27:** Búsqueda Avanzada
+- Task 24: Refactorizar Filtros Dashboard (multiselect, range slider)
+- Task 25: Ordenamiento Inteligente (relevancia, salario, distancia)
+- Task 26: Guardar Búsquedas (Premium)
+- Task 27: Alertas Automáticas Nuevas Ofertas (Premium)
 
-### Próximas 2 Semanas:
-2. 🎯 **Tasks 13-17:** Sistema de Calificaciones completo
+### Próximos Sprints:
+- **Sprint 6:** Tasks 28-31 (Notificaciones Push)
+- **Sprint 7-8:** Tasks 32-37 (UX/UI Polish)
+- **Sprint 9:** Tasks 38-40 (Performance/PWA)
+- **Sprint 10-11:** Tasks 41-45 (Testing/QA)
 
 ### Diferido (WhatsApp cubre necesidad inicial):
-3. ⏸️ **Tasks 18-20, 22-23:** Chat In-App (opcional, implementar después si hay demanda)
+⏸️ **Tasks 18-20, 22-23:** Chat In-App (opcional, implementar después si hay demanda)
 
 ---
 
@@ -1223,9 +1238,9 @@ PENDIENTES:  27/45 (60%)
 
 ---
 
-**Última actualización:** 19 Enero 2026
+**Última actualización:** 21 Enero 2026
 **Autor:** Joel (ChambApp Founder)
-**Próxima revisión:** Al completar cada 5 tareas
+**Próxima revisión:** Al completar Tasks 24-27 (Búsqueda Avanzada)
 
 ---
 
