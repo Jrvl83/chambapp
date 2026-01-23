@@ -1449,6 +1449,7 @@ PENDIENTES:  18/49 (37%)
 - ✅ **Tasks 23-24:** Filtros Avanzados Dashboard (22 Ene 2026)
 - ✅ **UX:** Bottom Navigation + Dashboard por rol (22 Ene 2026)
 - ✅ **FIX:** Onboarding iOS Safari (23 Ene 2026)
+- ✅ **FIX:** Estadísticas trabajador - campo aplicanteId (23 Ene 2026)
 
 ### Orden de Ejecución (Actualizado 23 Ene 2026):
 | Orden | Sprint | Tasks | Descripción |
