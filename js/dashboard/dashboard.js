@@ -554,9 +554,10 @@ async function cargarEstadisticasTrabajador(userUid) {
         document.getElementById('stat-number-t1').textContent = ofertasSnap.size;
 
         // 2. Mis aplicaciones
+        // NOTA: El campo se llama 'aplicanteId' (no 'trabajadorId') en la colección aplicaciones
         const aplicacionesQuery = query(
             collection(db, 'aplicaciones'),
-            where('trabajadorId', '==', userUid)
+            where('aplicanteId', '==', userUid)
         );
         const aplicacionesSnap = await getDocs(aplicacionesQuery);
         document.getElementById('stat-number-t2').textContent = aplicacionesSnap.size;
@@ -564,7 +565,7 @@ async function cargarEstadisticasTrabajador(userUid) {
         // 3. Trabajos completados
         const completadosQuery = query(
             collection(db, 'aplicaciones'),
-            where('trabajadorId', '==', userUid),
+            where('aplicanteId', '==', userUid),
             where('estado', '==', 'completado')
         );
         const completadosSnap = await getDocs(completadosQuery);
