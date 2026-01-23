@@ -183,11 +183,11 @@ function iniciarTourTrabajador() {
         ocultarBottomNavDuranteOnboarding();
     }
 
-    // Paso 1: Bienvenida
+    // Paso 1: Bienvenida - FIX iOS: Contenido compacto
     const introBienvenida = introJs();
     introBienvenida.setOptions({
         steps: [{
-            intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">👋</div><h2>¡Bienvenido a ChambApp!</h2><p style="margin-top: 1rem;">Te mostraremos como encontrar tu proxima chamba en 30 segundos.</p><p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">' + (isMobile ? 'Optimizado para movil' : 'Tour interactivo') + '</p></div>'
+            intro: '<div style="text-align:center"><div style="font-size:2.5rem;margin-bottom:0.5rem">👋</div><h2>¡Bienvenido!</h2><p>Te mostramos cómo encontrar tu próxima chamba.</p></div>'
         }],
         showProgress: false,
         showBullets: false,
@@ -233,20 +233,21 @@ function tourTrabajadorMobile() {
     setTimeout(function() {
         const introMenu = introJs();
         
+        // FIX iOS: Pasos compactos
         const steps = [
             {
                 element: '#menu-toggle',
-                intro: '<h3>☰ Menu Principal</h3><p>Desde este boton accedes a todas las funciones.</p><p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">Ya lo abrimos para mostrarte...</p>',
+                intro: '<h3>☰ Menú</h3><p>Accede a todas las funciones.</p>',
                 position: 'bottom'
             },
             {
                 element: '#nav-buscar',
-                intro: '<h3>🔍 Buscar Chambas</h3><p>Encuentra trabajos por categoria, ubicacion y salario.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Miles de ofertas nuevas cada semana.</p>',
+                intro: '<h3>🔍 Buscar</h3><p>Encuentra trabajos por categoría y ubicación.</p>',
                 position: 'right'
             },
             {
                 element: '#nav-trabajadores',
-                intro: '<h3>📋 Mis Aplicaciones</h3><p>Revisa el estado de tus postulaciones aqui.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Recibe notificaciones cuando te respondan.</p>',
+                intro: '<h3>📋 Aplicaciones</h3><p>Estado de tus postulaciones.</p>',
                 position: 'right'
             }
         ];
@@ -304,20 +305,21 @@ function tourTrabajadorMobile() {
 function tourTrabajadorDesktop() {
     const intro = introJs();
     
+    // FIX iOS: Pasos compactos
     const steps = [
         {
             element: '#nav-buscar',
-            intro: '<h3>🔍 Buscar Chambas</h3><p>Encuentra trabajos por categoria, ubicacion y salario.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Usa los filtros para encontrar exactamente lo que buscas.</p>',
+            intro: '<h3>🔍 Buscar</h3><p>Encuentra trabajos por categoría y ubicación.</p>',
             position: 'right'
         },
         {
             element: '.stats-grid',
-            intro: '<h3>📊 Tus Estadisticas</h3><p>Aqui veras cuantas chambas has aplicado y cuantas fueron aceptadas.</p><p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">Se actualiza en tiempo real.</p>',
+            intro: '<h3>📊 Estadísticas</h3><p>Chambas aplicadas y aceptadas.</p>',
             position: 'bottom'
         },
         {
             element: '#nav-trabajadores',
-            intro: '<h3>📋 Mis Aplicaciones</h3><p>Revisa todas tus postulaciones y su estado.</p>',
+            intro: '<h3>📋 Aplicaciones</h3><p>Estado de tus postulaciones.</p>',
             position: 'right'
         }
     ];
@@ -358,26 +360,27 @@ function tourTrabajadorDashboard() {
     
     const steps = [];
     
+    // FIX iOS: Pasos compactos
     const ofertaCard = document.querySelector('.oferta-card');
     if (ofertaCard) {
         steps.push({
             element: '.oferta-card',
-            intro: '<h3>📄 Ofertas Disponibles</h3><p>Estas son las chambas activas.</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Haz clic en <strong>"Ver Detalles"</strong> para mas info</li><li>Presiona <strong>"Contactar"</strong> para aplicar</li></ul>',
+            intro: '<h3>📄 Ofertas</h3><p>Haz clic en "Ver Detalles" o "Contactar" para aplicar.</p>',
             position: 'top'
         });
     }
-    
+
     const filtros = document.querySelector('.filtros-container');
     if (filtros) {
         steps.push({
             element: '.filtros-container',
-            intro: '<h3>🔎 Filtros Inteligentes</h3><p>Encuentra la chamba perfecta filtrando por:</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Categoria (electricidad, construccion, etc.)</li><li>Ubicacion (cerca de ti)</li><li>Palabras clave</li></ul>',
+            intro: '<h3>🔎 Filtros</h3><p>Filtra por categoría, ubicación y más.</p>',
             position: 'bottom'
         });
     }
-    
+
     steps.push({
-        intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div><h2>¡Listo para empezar!</h2><p style="margin-top: 1rem;">Ahora puedes buscar tu proxima chamba.</p><div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;"><p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">💡 Tip: Como usuario gratis puedes aplicar a 5 chambas por mes</p></div></div>'
+        intro: '<div style="text-align:center"><div style="font-size:2.5rem;margin-bottom:0.5rem">🎉</div><h2>¡Listo!</h2><p>Busca tu próxima chamba.</p></div>'
     });
     
     if (steps.length === 0) {
@@ -418,10 +421,11 @@ function iniciarTourEmpleador() {
         ocultarBottomNavDuranteOnboarding();
     }
 
+    // FIX iOS: Contenido compacto
     const introBienvenida = introJs();
     introBienvenida.setOptions({
         steps: [{
-            intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">👋</div><h2>¡Bienvenido a ChambApp!</h2><p style="margin-top: 1rem;">Te ayudaremos a encontrar trabajadores rapidamente.</p><p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">Este tour toma solo 30 segundos</p></div>'
+            intro: '<div style="text-align:center"><div style="font-size:2.5rem;margin-bottom:0.5rem">👋</div><h2>¡Bienvenido!</h2><p>Te ayudamos a encontrar trabajadores.</p></div>'
         }],
         showProgress: false,
         showBullets: false,
@@ -467,20 +471,21 @@ function tourEmpleadorMobile() {
     setTimeout(function() {
         const introMenu = introJs();
         
+        // FIX iOS: Pasos compactos
         const steps = [
             {
                 element: '#menu-toggle',
-                intro: '<h3>☰ Menu Principal</h3><p>Accede a todas las funciones desde aqui.</p>',
+                intro: '<h3>☰ Menú</h3><p>Accede a todas las funciones.</p>',
                 position: 'bottom'
             },
             {
                 element: '#nav-publicar',
-                intro: '<h3>➕ Publicar Oferta</h3><p>Crea ofertas de trabajo en menos de 2 minutos.</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Describe el trabajo</li><li>Especifica ubicacion y pago</li><li>Recibe aplicaciones inmediatas</li></ul>',
+                intro: '<h3>➕ Publicar</h3><p>Crea ofertas de trabajo en minutos.</p>',
                 position: 'right'
             },
             {
                 element: '#nav-trabajadores',
-                intro: '<h3>👥 Ver Aplicantes</h3><p>Aqui revisas quien aplico a tus ofertas.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Veras perfiles, experiencia y contacto directo.</p>',
+                intro: '<h3>👥 Aplicantes</h3><p>Revisa quién aplicó a tus ofertas.</p>',
                 position: 'right'
             }
         ];
@@ -538,20 +543,21 @@ function tourEmpleadorMobile() {
 function tourEmpleadorDesktop() {
     const intro = introJs();
     
+    // FIX iOS: Pasos compactos
     const steps = [
         {
             element: '#nav-publicar',
-            intro: '<h3>➕ Publicar Oferta</h3><p>Crea ofertas de trabajo rapidamente.</p><ul style="margin-top: 0.75rem; padding-left: 1.25rem;"><li>Formulario simple de 4 pasos</li><li>Publicacion instantanea</li><li>Visible para miles de trabajadores</li></ul>',
+            intro: '<h3>➕ Publicar</h3><p>Crea ofertas en 4 pasos simples.</p>',
             position: 'right'
         },
         {
             element: '.stats-grid',
-            intro: '<h3>📊 Tus Estadisticas</h3><p>Ve cuantos trabajadores han aplicado a tus ofertas.</p><p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">Informacion actualizada en tiempo real.</p>',
+            intro: '<h3>📊 Estadísticas</h3><p>Aplicantes a tus ofertas en tiempo real.</p>',
             position: 'bottom'
         },
         {
             element: '#nav-trabajadores',
-            intro: '<h3>👥 Tus Aplicantes</h3><p>Revisa perfiles y contacta trabajadores directamente.</p>',
+            intro: '<h3>👥 Aplicantes</h3><p>Revisa perfiles y contacta trabajadores.</p>',
             position: 'right'
         }
     ];
@@ -592,17 +598,18 @@ function tourEmpleadorDashboard() {
     
     const steps = [];
     
+    // FIX iOS: Pasos compactos
     const ofertaCard = document.querySelector('.oferta-card');
     if (ofertaCard) {
         steps.push({
             element: '.oferta-card',
-            intro: '<h3>📄 Tus Ofertas</h3><p>Estas son las chambas que has publicado.</p><p style="font-size: 0.875rem; margin-top: 0.75rem;">Haz clic en <strong>"Ver Aplicantes"</strong> para revisar quien aplico.</p>',
+            intro: '<h3>📄 Ofertas</h3><p>Clic en "Ver Aplicantes" para revisar.</p>',
             position: 'top'
         });
     }
-    
+
     steps.push({
-        intro: '<div style="text-align: center;"><div style="font-size: 3.5rem; margin-bottom: 1rem;">🚀</div><h2>¡Todo listo!</h2><p style="margin-top: 1rem;">Empieza publicando tu primera oferta de trabajo.</p><div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;"><p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">💡 Tip: Ofertas con salario claro reciben 3x mas aplicantes</p></div></div>'
+        intro: '<div style="text-align:center"><div style="font-size:2.5rem;margin-bottom:0.5rem">🚀</div><h2>¡Listo!</h2><p>Publica tu primera oferta.</p></div>'
     });
     
     if (steps.length === 0) {

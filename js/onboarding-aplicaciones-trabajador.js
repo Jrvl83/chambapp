@@ -56,125 +56,48 @@ function mostrarTourAplicacionesTrabajador() {
 
     const intro = introJs();
 
+    // FIX iOS: Pasos compactos
     const steps = [
         {
-            intro: `
-                <div style="text-align: center;">
-                    <div style="font-size: 3.5rem; margin-bottom: 1rem;">📋</div>
-                    <h2>Tus Aplicaciones</h2>
-                    <p style="margin-top: 1rem;">Aquí sigues el estado de todas tus postulaciones.</p>
-                    <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 1rem;">
-                        Tour rápido de 30 segundos
-                    </p>
-                </div>
-            `
+            intro: '<div style="text-align:center"><div style="font-size:2.5rem;margin-bottom:0.5rem">📋</div><h2>Tus Aplicaciones</h2><p>Sigue el estado de tus postulaciones.</p></div>'
         }
     ];
-    
+
     // Stats (si existen)
     const statsGrid = document.querySelector('.stats-grid');
     if (statsGrid) {
         steps.push({
             element: '.stats-grid',
-            intro: `
-                <h3>📊 Tu Rendimiento</h3>
-                <p>Ve de un vistazo:</p>
-                <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                    <li><strong>Total:</strong> Cuántas chambas aplicaste</li>
-                    <li><strong>Pendientes:</strong> Esperando respuesta</li>
-                    <li><strong>Contactados:</strong> Empleadores que te llamaron</li>
-                    <li><strong>Tasa:</strong> % de respuestas que recibes</li>
-                </ul>
-            `,
+            intro: '<h3>📊 Tu Rendimiento</h3><p>Total aplicadas, pendientes, contactados y tasa de respuesta.</p>',
             position: 'bottom'
         });
     }
-    
+
     // Filtros
     const filtrosContainer = document.querySelector('.filters-container');
     if (filtrosContainer) {
         steps.push({
             element: '.filters-container',
-            intro: `
-                <h3>🔍 Filtrar Aplicaciones</h3>
-                <p>Organiza tus postulaciones por:</p>
-                <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                    <li>Estado (pendiente, contactado, cancelada)</li>
-                    <li>Categoría del trabajo</li>
-                </ul>
-                <p style="font-size: 0.875rem; margin-top: 0.75rem; color: #64748b;">
-                    Útil cuando tienes muchas aplicaciones activas
-                </p>
-            `,
+            intro: '<h3>🔍 Filtros</h3><p>Organiza por estado o categoría.</p>',
             position: 'bottom'
         });
     }
-    
+
     // Lista de aplicaciones (si hay)
     const aplicacionesContainer = document.getElementById('aplicaciones-container');
     const hayAplicaciones = aplicacionesContainer && aplicacionesContainer.children.length > 0;
-    
+
     if (hayAplicaciones) {
         steps.push({
             element: '#aplicaciones-container',
-            intro: `
-                <h3>📝 Tus Postulaciones</h3>
-                <p>Para cada aplicación verás:</p>
-                <ul style="margin-top: 0.75rem; padding-left: 1.25rem;">
-                    <li>Título y categoría de la chamba</li>
-                    <li>Cuándo aplicaste</li>
-                    <li>Estado actual (pendiente/contactado)</li>
-                    <li>Datos del empleador</li>
-                </ul>
-            `,
+            intro: '<h3>📝 Postulaciones</h3><p>Título, fecha, estado y datos del empleador.</p>',
             position: 'top'
         });
     }
-    
-    // Tips finales
+
+    // Final con tips compactos
     steps.push({
-        intro: `
-            <div style="text-align: center;">
-                <div style="font-size: 3.5rem; margin-bottom: 1rem;">💡</div>
-                <h2>Tips para Más Respuestas</h2>
-                <div style="text-align: left; margin-top: 1.5rem;">
-                    <div style="padding: 1rem; background: #eff6ff; border-radius: 8px; margin-bottom: 1rem;">
-                        <strong style="color: #2563eb;">1. Responde rápido</strong>
-                        <p style="margin: 0.5rem 0 0 0; font-size: 0.9375rem;">
-                            Los primeros 3 aplicantes tienen 80% más chances
-                        </p>
-                    </div>
-                    <div style="padding: 1rem; background: #dcfce7; border-radius: 8px; margin-bottom: 1rem;">
-                        <strong style="color: #16a34a;">2. Mensaje personalizado</strong>
-                        <p style="margin: 0.5rem 0 0 0; font-size: 0.9375rem;">
-                            Menciona por qué eres ideal para ESE trabajo específico
-                        </p>
-                    </div>
-                    <div style="padding: 1rem; background: #fef3c7; border-radius: 8px;">
-                        <strong style="color: #d97706;">3. Sigue aplicando</strong>
-                        <p style="margin: 0.5rem 0 0 0; font-size: 0.9375rem;">
-                            Aplica a 5-10 ofertas para aumentar tus chances
-                        </p>
-                    </div>
-                </div>
-            </div>
-        `
-    });
-    
-    // Final
-    steps.push({
-        intro: `
-            <div style="text-align: center;">
-                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎯</div>
-                <h2>¡Todo Claro!</h2>
-                <p style="margin-top: 1rem;">Ahora sabes cómo seguir tus aplicaciones.</p>
-                <div style="margin-top: 1.5rem; padding: 1.25rem; background: #eff6ff; border-radius: 12px; border-left: 4px solid #2563eb;">
-                    <p style="font-weight: 600; color: #2563eb; margin: 0; font-size: 0.9375rem;">
-                        📲 Revisa esta página regularmente para ver si te contactaron
-                    </p>
-                </div>
-            </div>
-        `
+        intro: '<div style="text-align:center"><div style="font-size:2.5rem;margin-bottom:0.5rem">🎯</div><h2>¡Listo!</h2><p style="margin:0.5rem 0;font-size:0.8125rem"><strong>Tips:</strong> Responde rápido, personaliza tu mensaje, aplica a varias ofertas.</p></div>'
     });
     
     intro.setOptions({
