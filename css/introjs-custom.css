@@ -298,38 +298,77 @@
    ============================================ */
 @media (max-width: 640px) {
     .introjs-tooltip {
-        max-width: 95vw !important;
+        max-width: 90vw !important;
         min-width: 280px !important;
+        /* FIX iOS: Asegurar que el tooltip no quede cortado */
+        max-height: calc(100vh - 120px) !important;
+        max-height: calc(100dvh - 120px) !important; /* Dynamic viewport para iOS */
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        /* Margen seguro para safe areas */
+        margin: 10px !important;
     }
-    
+
     .introjs-tooltiptext {
-        padding: 1.5rem 1.25rem !important;
+        padding: 1.25rem 1rem !important;
         font-size: 0.9375rem !important;
+        /* FIX: Limitar altura para que botones siempre sean visibles */
+        max-height: calc(50vh - 80px) !important;
+        overflow-y: auto !important;
     }
-    
+
     .introjs-tooltiptext h2 {
         font-size: 1.25rem !important;
     }
-    
+
     .introjs-tooltiptext h3 {
         font-size: 1rem !important;
     }
-    
+
+    /* FIX iOS: Botones SIEMPRE visibles y accesibles */
     .introjs-tooltipbuttons {
-        flex-wrap: wrap !important;
+        flex-wrap: nowrap !important;
         gap: 0.5rem !important;
+        padding: 0.875rem 1rem !important;
+        /* FIX: Sticky en la parte inferior del tooltip */
+        position: sticky !important;
+        bottom: 0 !important;
+        background: white !important;
+        margin-top: auto !important;
+        /* Safe area para bottom */
+        padding-bottom: calc(0.875rem + env(safe-area-inset-bottom, 0)) !important;
+        /* Asegurar que los botones no se corten */
+        min-height: 60px !important;
+        z-index: 1 !important;
     }
-    
+
     .introjs-button {
-        padding: 0.75rem 1.25rem !important;
-        font-size: 0.9375rem !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        /* FIX: Touch target mínimo 44px */
+        min-height: 44px !important;
+        min-width: 44px !important;
+        flex-shrink: 0 !important;
     }
-    
+
+    /* FIX: Skip button más compacto en móvil */
     .introjs-skipbutton {
-        width: 100% !important;
+        width: auto !important;
         text-align: center !important;
-        margin-bottom: 0.5rem !important;
-        order: -1 !important;
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8125rem !important;
+        order: 0 !important;
+    }
+
+    /* FIX: Botones de navegación con más espacio */
+    .introjs-nextbutton,
+    .introjs-donebutton {
+        flex: 1 !important;
+        max-width: none !important;
+    }
+
+    .introjs-prevbutton {
+        flex: 0 0 auto !important;
     }
 }
 
@@ -380,6 +419,143 @@
 
 .introjs-tooltip {
     z-index: 10000001 !important;
+}
+
+/* ============================================
+   FIX iOS SAFARI - SAFE AREAS Y VIEWPORT
+   ============================================ */
+
+/* Asegurar que el tooltip se posicione correctamente en iOS */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .introjs-tooltip {
+        /* Considerar safe areas de iOS */
+        margin-top: max(10px, env(safe-area-inset-top)) !important;
+        margin-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    }
+
+    .introjs-tooltipbuttons {
+        padding-bottom: max(1rem, calc(0.875rem + env(safe-area-inset-bottom))) !important;
+    }
+}
+
+/* Fix para viewport dinámico de iOS (100dvh) */
+@supports (height: 100dvh) {
+    @media (max-width: 768px) {
+        .introjs-tooltip {
+            max-height: calc(85dvh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0)) !important;
+        }
+    }
+}
+
+/* Fix específico para iPhone con Dynamic Island/Notch */
+@media (max-width: 430px) {
+    .introjs-tooltip {
+        /* Posición más conservadora */
+        position: fixed !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        top: auto !important;
+        bottom: calc(20px + env(safe-area-inset-bottom, 0)) !important;
+        max-width: calc(100vw - 32px) !important;
+        max-height: 70vh !important;
+        max-height: 70dvh !important;
+    }
+
+    /* Cuando hay un elemento seleccionado, tooltip arriba o abajo */
+    .introjs-tooltip.introjs-top,
+    .introjs-tooltip.introjs-bottom,
+    .introjs-tooltip.introjs-left,
+    .introjs-tooltip.introjs-right {
+        position: absolute !important;
+        left: auto !important;
+        transform: none !important;
+        bottom: auto !important;
+    }
+
+    .introjs-tooltiptext {
+        max-height: 45vh !important;
+        max-height: 45dvh !important;
+    }
+
+    .introjs-tooltipbuttons {
+        border-radius: 0 0 16px 16px !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    /* Botones más compactos en pantallas pequeñas */
+    .introjs-button {
+        padding: 0.625rem 0.875rem !important;
+        font-size: 0.8125rem !important;
+    }
+
+    .introjs-skipbutton {
+        padding: 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Fix para orientación landscape en móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+    .introjs-tooltip {
+        max-height: 85vh !important;
+        max-height: 85dvh !important;
+    }
+
+    .introjs-tooltiptext {
+        max-height: 50vh !important;
+        padding: 1rem !important;
+    }
+
+    .introjs-tooltipbuttons {
+        padding: 0.5rem 1rem !important;
+        min-height: 48px !important;
+    }
+}
+
+/* ============================================
+   FIX: FLOATING LAYER PARA iOS
+   ============================================ */
+.introjs-floatingElement {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-width: calc(100vw - 32px) !important;
+    max-height: calc(100vh - 100px) !important;
+    max-height: calc(100dvh - 100px) !important;
+}
+
+/* ============================================
+   FIX: TOOLTIPS SIN ELEMENTO TARGET (floating)
+   ============================================ */
+.introjs-tooltip:not([data-targetid]) {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+@media (max-width: 640px) {
+    .introjs-tooltip:not([data-targetid]) {
+        top: auto !important;
+        bottom: calc(20px + env(safe-area-inset-bottom, 0)) !important;
+        transform: translateX(-50%) !important;
+    }
+}
+
+/* ============================================
+   FIX: ESTADO ONBOARDING ACTIVO
+   ============================================ */
+body.onboarding-activo {
+    /* Asegurar que el body no tenga padding extra del bottom-nav */
+    padding-bottom: 0 !important;
+}
+
+body.onboarding-activo .bottom-nav {
+    transform: translateY(100%) !important;
+    pointer-events: none !important;
 }
 
 /* ============================================

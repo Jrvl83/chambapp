@@ -8,6 +8,25 @@
  * Explica cómo revisar el estado de sus postulaciones
  */
 
+// FIX iOS: Funciones para manejar bottom nav durante onboarding
+function ocultarBottomNavAplicacionesTrabajador() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = 'translateY(100%)';
+        bottomNav.style.pointerEvents = 'none';
+        document.body.classList.add('onboarding-activo');
+    }
+}
+
+function mostrarBottomNavAplicacionesTrabajador() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = '';
+        bottomNav.style.pointerEvents = '';
+        document.body.classList.remove('onboarding-activo');
+    }
+}
+
 function iniciarOnboardingAplicacionesTrabajador() {
     // Verificar si ya vio el tour
     const yaVioTour = localStorage.getItem('chambapp-onboarding-aplicaciones-trabajador');
@@ -29,8 +48,14 @@ function iniciarOnboardingAplicacionesTrabajador() {
 }
 
 function mostrarTourAplicacionesTrabajador() {
+    // FIX iOS: Ocultar bottom nav en móvil
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+        ocultarBottomNavAplicacionesTrabajador();
+    }
+
     const intro = introJs();
-    
+
     const steps = [
         {
             intro: `
@@ -165,15 +190,19 @@ function mostrarTourAplicacionesTrabajador() {
     
     intro.oncomplete(() => {
         localStorage.setItem('chambapp-onboarding-aplicaciones-trabajador', 'true');
+        // FIX iOS: Restaurar bottom nav
+        mostrarBottomNavAplicacionesTrabajador();
         if (typeof toastSuccess === 'function') {
             toastSuccess('¡Ya sabes cómo seguir tus aplicaciones! 📋');
         }
     });
-    
+
     intro.onexit(() => {
         localStorage.setItem('chambapp-onboarding-aplicaciones-trabajador', 'true');
+        // FIX iOS: Restaurar bottom nav
+        mostrarBottomNavAplicacionesTrabajador();
     });
-    
+
     intro.start();
 }
 

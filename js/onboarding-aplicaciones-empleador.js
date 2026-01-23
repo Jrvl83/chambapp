@@ -8,6 +8,25 @@
  * Explica cómo gestionar aplicaciones recibidas
  */
 
+// FIX iOS: Funciones para manejar bottom nav durante onboarding
+function ocultarBottomNavAplicaciones() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = 'translateY(100%)';
+        bottomNav.style.pointerEvents = 'none';
+        document.body.classList.add('onboarding-activo');
+    }
+}
+
+function mostrarBottomNavAplicaciones() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = '';
+        bottomNav.style.pointerEvents = '';
+        document.body.classList.remove('onboarding-activo');
+    }
+}
+
 function iniciarOnboardingAplicaciones() {
     // Verificar si ya vio el tour
     const yaVioTour = localStorage.getItem('chambapp-onboarding-aplicaciones');
@@ -29,8 +48,14 @@ function iniciarOnboardingAplicaciones() {
 }
 
 function mostrarTourAplicaciones() {
+    // FIX iOS: Ocultar bottom nav en móvil
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+        ocultarBottomNavAplicaciones();
+    }
+
     const intro = introJs();
-    
+
     const steps = [
         {
             intro: `
@@ -113,15 +138,19 @@ function mostrarTourAplicaciones() {
     
     intro.oncomplete(() => {
         localStorage.setItem('chambapp-onboarding-aplicaciones', 'true');
+        // FIX iOS: Restaurar bottom nav
+        mostrarBottomNavAplicaciones();
         if (typeof toastSuccess === 'function') {
             toastSuccess('¡Ya sabes cómo gestionar aplicaciones! 👥');
         }
     });
-    
+
     intro.onexit(() => {
         localStorage.setItem('chambapp-onboarding-aplicaciones', 'true');
+        // FIX iOS: Restaurar bottom nav
+        mostrarBottomNavAplicaciones();
     });
-    
+
     intro.start();
 }
 

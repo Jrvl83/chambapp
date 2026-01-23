@@ -30,6 +30,57 @@ const ONBOARDING_CONFIG = {
 };
 
 // ============================================
+// FIX iOS: MANEJO SEGURO DE OVERFLOW
+// ============================================
+let scrollPositionBeforeOnboarding = 0;
+
+function bloquearScrollSeguro() {
+    // Guardar posición actual del scroll
+    scrollPositionBeforeOnboarding = window.pageYOffset || document.documentElement.scrollTop;
+
+    // FIX iOS: Usar position fixed en lugar de overflow hidden
+    // Esto evita el problema de Safari iOS con overflow hidden
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPositionBeforeOnboarding}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+}
+
+function desbloquearScrollSeguro() {
+    // FIX iOS: Restaurar el scroll correctamente
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+
+    // Restaurar posición del scroll
+    window.scrollTo(0, scrollPositionBeforeOnboarding);
+}
+
+// ============================================
+// FIX: OCULTAR BOTTOM NAV DURANTE ONBOARDING
+// ============================================
+function ocultarBottomNavDuranteOnboarding() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = 'translateY(100%)';
+        bottomNav.style.pointerEvents = 'none';
+        document.body.classList.add('onboarding-activo');
+    }
+}
+
+function mostrarBottomNavDespuesOnboarding() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = '';
+        bottomNav.style.pointerEvents = '';
+        document.body.classList.remove('onboarding-activo');
+    }
+}
+
+// ============================================
 // INICIAR ONBOARDING
 // ============================================
 function iniciarOnboarding() {
@@ -126,7 +177,12 @@ function esperarDashboardCargado(callback) {
 // ============================================
 function iniciarTourTrabajador() {
     const isMobile = window.innerWidth < 768;
-    
+
+    // FIX iOS: Ocultar bottom nav durante el onboarding
+    if (isMobile) {
+        ocultarBottomNavDuranteOnboarding();
+    }
+
     // Paso 1: Bienvenida
     const introBienvenida = introJs();
     introBienvenida.setOptions({
@@ -159,11 +215,19 @@ function iniciarTourTrabajador() {
 function tourTrabajadorMobile() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
-    if (sidebar && overlay) {
+
+    // FIX iOS: Solo mostrar sidebar si existe y no hay bottom-nav
+    const tieneBottomNav = document.body.classList.contains('has-bottom-nav');
+
+    if (sidebar && overlay && !tieneBottomNav) {
         sidebar.classList.add('active');
         overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        bloquearScrollSeguro();
+    } else if (tieneBottomNav) {
+        // Con bottom-nav, ir directo al tour del dashboard
+        console.log('Bottom nav detectado, saltando tour de sidebar');
+        tourTrabajadorDashboard();
+        return;
     }
     
     setTimeout(function() {
@@ -194,7 +258,7 @@ function tourTrabajadorMobile() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                desbloquearScrollSeguro();
             }
             tourTrabajadorDashboard();
             return;
@@ -215,7 +279,7 @@ function tourTrabajadorMobile() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                desbloquearScrollSeguro();
             }
             
             setTimeout(function() {
@@ -227,7 +291,7 @@ function tourTrabajadorMobile() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                desbloquearScrollSeguro();
             }
             recordarMasTarde();
         });
@@ -348,7 +412,12 @@ function tourTrabajadorDashboard() {
 // ============================================
 function iniciarTourEmpleador() {
     const isMobile = window.innerWidth < 768;
-    
+
+    // FIX iOS: Ocultar bottom nav durante el onboarding
+    if (isMobile) {
+        ocultarBottomNavDuranteOnboarding();
+    }
+
     const introBienvenida = introJs();
     introBienvenida.setOptions({
         steps: [{
@@ -380,11 +449,19 @@ function iniciarTourEmpleador() {
 function tourEmpleadorMobile() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
-    if (sidebar && overlay) {
+
+    // FIX iOS: Solo mostrar sidebar si existe y no hay bottom-nav
+    const tieneBottomNav = document.body.classList.contains('has-bottom-nav');
+
+    if (sidebar && overlay && !tieneBottomNav) {
         sidebar.classList.add('active');
         overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        bloquearScrollSeguro();
+    } else if (tieneBottomNav) {
+        // Con bottom-nav, ir directo al tour del dashboard
+        console.log('Bottom nav detectado, saltando tour de sidebar');
+        tourEmpleadorDashboard();
+        return;
     }
     
     setTimeout(function() {
@@ -415,7 +492,7 @@ function tourEmpleadorMobile() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                desbloquearScrollSeguro();
             }
             tourEmpleadorDashboard();
             return;
@@ -436,7 +513,7 @@ function tourEmpleadorMobile() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                desbloquearScrollSeguro();
             }
             
             setTimeout(function() {
@@ -448,7 +525,7 @@ function tourEmpleadorMobile() {
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                desbloquearScrollSeguro();
             }
             recordarMasTarde();
         });
@@ -594,11 +671,15 @@ function validarPasos(steps) {
 // ============================================
 function finalizarOnboarding() {
     marcarComoCompletado();
-    
+
+    // FIX iOS: Restaurar bottom nav y scroll
+    mostrarBottomNavDespuesOnboarding();
+    desbloquearScrollSeguro();
+
     if (typeof toastSuccess === 'function') {
         toastSuccess('¡Bienvenido a ChambApp! 🎉');
     }
-    
+
     console.log('Onboarding completado exitosamente');
 }
 
@@ -610,6 +691,11 @@ function marcarComoCompletado() {
 function recordarMasTarde() {
     const ahora = Date.now();
     localStorage.setItem(ONBOARDING_CONFIG.storageKeys.remindLater, ahora.toString());
+
+    // FIX iOS: Restaurar bottom nav y scroll al salir
+    mostrarBottomNavDespuesOnboarding();
+    desbloquearScrollSeguro();
+
     console.log('Recordatorio configurado para ' + ONBOARDING_CONFIG.recordatorioHoras + 'h');
 }
 

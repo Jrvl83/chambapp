@@ -8,6 +8,25 @@
  * Explica cada paso del formulario multi-paso
  */
 
+// FIX iOS: Funciones para manejar bottom nav durante onboarding
+function ocultarBottomNavPublicar() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = 'translateY(100%)';
+        bottomNav.style.pointerEvents = 'none';
+        document.body.classList.add('onboarding-activo');
+    }
+}
+
+function mostrarBottomNavPublicar() {
+    const bottomNav = document.querySelector('.bottom-nav');
+    if (bottomNav) {
+        bottomNav.style.transform = '';
+        bottomNav.style.pointerEvents = '';
+        document.body.classList.remove('onboarding-activo');
+    }
+}
+
 function iniciarOnboardingPublicar() {
     // Verificar si ya vio el tour
     const yaVioTour = localStorage.getItem('chambapp-onboarding-publicar');
@@ -29,8 +48,14 @@ function iniciarOnboardingPublicar() {
 }
 
 function mostrarTourPublicar() {
+    // FIX iOS: Ocultar bottom nav en móvil
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+        ocultarBottomNavPublicar();
+    }
+
     const intro = introJs();
-    
+
     intro.setOptions({
         steps: [
             {
@@ -135,15 +160,19 @@ function mostrarTourPublicar() {
     
     intro.oncomplete(() => {
         localStorage.setItem('chambapp-onboarding-publicar', 'true');
+        // FIX iOS: Restaurar bottom nav
+        mostrarBottomNavPublicar();
         if (typeof toastSuccess === 'function') {
             toastSuccess('¡Ahora completa tu primera oferta! 💼');
         }
     });
-    
+
     intro.onexit(() => {
         localStorage.setItem('chambapp-onboarding-publicar', 'true');
+        // FIX iOS: Restaurar bottom nav
+        mostrarBottomNavPublicar();
     });
-    
+
     intro.start();
 }
 
