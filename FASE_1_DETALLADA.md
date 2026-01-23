@@ -1,17 +1,17 @@
 # 🎯 FASE 1: EXPERIENCIA WOW - DETALLADO
 
-**45 Tareas para Producto Excepcional**
-**Duración:** 12-13 semanas (~3 meses)
-**Progreso Actual:** 58% (26/45 tareas completadas)
+**49 Tareas para Producto Excepcional**
+**Duración:** 14-15 semanas (~3.5 meses)
+**Progreso Actual:** 53% (26/49 tareas completadas)
 
 ---
 
 ## 📊 PROGRESO FASE 1
 
 ```
-✅ COMPLETADAS: █████████████████████░░░░░░░ 26/45 (58%)
-⏸️ DIFERIDAS:   ███░░░░░░░░░░░░░░░░░░░░░░░░░ 5/45 (11%)
-⏳ PENDIENTES:  ██████████░░░░░░░░░░░░░░░░░░ 14/45 (31%)
+✅ COMPLETADAS: ███████████████░░░░░░░░░░░░░ 26/49 (53%)
+⏸️ DIFERIDAS:   ██░░░░░░░░░░░░░░░░░░░░░░░░░░ 5/49 (10%)
+⏳ PENDIENTES:  ██████████░░░░░░░░░░░░░░░░░░ 18/49 (37%)
 ```
 
 ### Sprints (1 semana cada uno):
@@ -26,10 +26,11 @@
   > ✅ UX: Bottom Navigation PWA (22 Ene 2026)
   > ✅ UX: Dashboard diferenciado por rol (22 Ene 2026)
   > ✅ Task 24 completada (22 Ene 2026)
-- **Sprint 6:** ⏳ Tasks 27-30 (Notificaciones)
-- **Sprint 7-8:** 🔄 Tasks 31-36 (UX/UI Polish) - PARCIALMENTE COMPLETADO
-- **Sprint 9:** ⏳ Tasks 37-39 (Performance/PWA)
+- **Sprint 6:** ⏳ Tasks 27-30 (Notificaciones Push)
+- **Sprint 7-8:** ⏳ Tasks 31-36 (UX/UI Polish)
+- **Sprint 9:** ⏳ Tasks 45-48 (Panel Admin) - NUEVO
 - **Sprint 10-11:** ⏳ Tasks 40-44 (Testing/QA)
+- **Sprint 12:** ⏳ Tasks 37-39 (PWA) - AL FINAL
 - **Diferido:** ⏸️ Tasks 18-20, 22 (Chat In-App) - WhatsApp cubre necesidad inicial
 
 ---
@@ -1098,69 +1099,156 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 
 ---
 
-## 🟢 PRIORIDAD 9: PERFORMANCE Y PWA (Semana 6-7)
+## 🟠 PRIORIDAD 9: PANEL DE ADMINISTRACIÓN (Semana 7-8)
 
-### Task 37: Optimización Performance
+> **NUEVO (23 Ene 2026):** Panel admin nivel 3 con configuraciones dinámicas, gestión de usuarios y analytics. Se implementa ANTES del testing para tener visibilidad durante las pruebas con usuarios reales.
+
+### Task 45: Setup Admin + Configuraciones Dinámicas
 **Tiempo:** 2-3 días | **Estado:** ⏳ Pendiente
 
-**Subtareas:**
-- [ ] Minify CSS/JS (build process)
-- [ ] Compress imágenes WebP (convertir todas)
-- [ ] Lazy load todo below the fold
-- [ ] CDN para assets estáticos (jsDelivr o Cloudflare)
-- [ ] Caché agresivo (Service Worker estrategias)
-- [ ] Reduce Firebase reads:
-  - Batch queries
-  - Pagination
-  - Use cache when possible
-- [ ] Lighthouse Performance score >90
-- [ ] First Contentful Paint <1.5s
-- [ ] Time to Interactive <3s
-- [ ] Largest Contentful Paint <2.5s
+**Objetivo:** Base del panel admin con configuraciones editables
 
-**Por qué:** Speed = retention
+**Subtareas:**
+- [ ] Crear página `/admin.html` protegida
+- [ ] Agregar campo `rol: 'admin'` en Firestore para usuarios autorizados
+- [ ] Reglas Firestore: solo admins pueden leer/escribir `config/`
+- [ ] Colección `config/categorias` con categorías dinámicas:
+  ```javascript
+  {
+    id: "electricidad",
+    nombre: "Electricidad",
+    icono: "⚡",
+    color: "#f59e0b",
+    activo: true,
+    orden: 1
+  }
+  ```
+- [ ] CRUD de categorías (agregar, editar, desactivar)
+- [ ] Colección `config/limites` para límites free/premium:
+  ```javascript
+  {
+    aplicacionesMesFree: 5,
+    aplicacionesMesPremium: 999,
+    ofertasMesFree: 3,
+    ofertasMesPremium: 999
+  }
+  ```
+- [ ] UI para editar límites
+- [ ] Migrar código hardcodeado para leer de Firestore
+- [ ] Cache local de configuraciones (localStorage + refresh periódico)
+
+**Archivos a crear:**
+```
+- admin.html
+- js/admin/admin.js
+- js/admin/config-manager.js
+- css/admin.css
+```
+
+**Por qué:** Elimina necesidad de modificar código para cambios de configuración
 
 ---
 
-### Task 38: Conversión a PWA
+### Task 46: Gestión de Usuarios
+**Tiempo:** 2-3 días | **Estado:** ⏳ Pendiente
+
+**Objetivo:** Ver y gestionar usuarios desde el admin
+
+**Subtareas:**
+- [ ] Lista de usuarios con paginación (50 por página)
+- [ ] Búsqueda por nombre, email, teléfono
+- [ ] Filtros: tipo (trabajador/empleador), estado (activo/suspendido), premium
+- [ ] Ver detalle de usuario:
+  - Datos básicos
+  - Ofertas publicadas (empleador)
+  - Aplicaciones realizadas (trabajador)
+  - Calificación promedio
+  - Fecha registro, último acceso
+- [ ] Acciones:
+  - Suspender cuenta (soft ban)
+  - Reactivar cuenta
+  - Marcar como premium (manual)
+  - Eliminar cuenta (soft delete)
+- [ ] Log de acciones admin (quién hizo qué, cuándo)
+- [ ] Modal confirmación para acciones destructivas
+
+**Por qué:** Control sobre usuarios problemáticos y gestión de cuentas
+
+---
+
+### Task 47: Dashboard Analytics
+**Tiempo:** 3-4 días | **Estado:** ⏳ Pendiente
+
+**Objetivo:** Métricas en tiempo real del uso de la app
+
+**Subtareas:**
+- [ ] KPIs principales (cards en la parte superior):
+  - Total usuarios registrados
+  - Usuarios activos (últimos 7 días)
+  - Ofertas activas
+  - Aplicaciones este mes
+  - Tasa de conversión (aplicaciones → aceptados)
+- [ ] Gráfico: Registros por día (últimos 30 días)
+- [ ] Gráfico: Ofertas publicadas por día
+- [ ] Gráfico: Aplicaciones por día
+- [ ] Top 5 categorías más usadas
+- [ ] Top 5 distritos con más ofertas
+- [ ] Usuarios por tipo (pie chart: trabajadores vs empleadores)
+- [ ] Colección `analytics/daily/{fecha}` para agregar datos diarios
+- [ ] Cloud Function para calcular métricas diarias (cron cada noche)
+- [ ] Filtro de rango de fechas
+
+**Librerías sugeridas:**
+- Chart.js o ApexCharts para gráficos
+- Lightweight, no requiere framework
+
+**Por qué:** Visibilidad del estado de la app y toma de decisiones basada en datos
+
+---
+
+### Task 48: Sistema de Reportes y Moderación
 **Tiempo:** 2 días | **Estado:** ⏳ Pendiente
 
-**Subtareas:**
-- [ ] Crear `manifest.json` completo
-- [ ] Icons todos los tamaños: 72, 96, 128, 144, 152, 192, 384, 512
-- [ ] Generar icons desde logo (usar PWA Asset Generator)
-- [ ] Service Worker básico (precache assets)
-- [ ] Offline fallback page
-- [ ] Install prompt custom (no usar browser default)
-- [ ] Splash screen branded
-- [ ] Testing instalación iOS (Safari)
-- [ ] Testing instalación Android (Chrome)
-- [ ] Lighthouse PWA score 100
+**Objetivo:** Gestionar contenido reportado por usuarios
 
-**Por qué:** Instalable = app feel
+**Subtareas:**
+- [ ] Botón "Reportar" en ofertas y perfiles (para usuarios)
+- [ ] Modal con razones predefinidas:
+  - Contenido inapropiado
+  - Información falsa
+  - Spam
+  - Otro (texto libre)
+- [ ] Colección `reportes/{id}`:
+  ```javascript
+  {
+    tipo: "oferta" | "usuario",
+    targetId: "id_oferta_o_usuario",
+    reportadoPor: "uid",
+    razon: "spam",
+    descripcion: "...",
+    estado: "pendiente" | "revisado" | "accion_tomada",
+    fechaReporte: timestamp,
+    revisadoPor: null | "admin_uid",
+    fechaRevision: null | timestamp,
+    accionTomada: null | "eliminado" | "advertencia" | "ignorado"
+  }
+  ```
+- [ ] Vista admin: Lista de reportes pendientes
+- [ ] Acciones desde admin:
+  - Ver contenido reportado
+  - Marcar como revisado
+  - Tomar acción (eliminar oferta, suspender usuario)
+  - Ignorar reporte
+- [ ] Badge contador de reportes pendientes en sidebar admin
+- [ ] Notificación email al admin cuando hay nuevo reporte (opcional)
+
+**Por qué:** Mantener calidad del contenido y confianza de usuarios
 
 ---
 
-### Task 39: Modo Offline Básico
-**Tiempo:** 2-3 días | **Estado:** ⏳ Pendiente
+## 🟢 PRIORIDAD 10: TESTING Y QA (Semana 9-10)
 
-**Subtareas:**
-- [ ] Service Worker estrategias:
-  - Network-first: datos dinámicos (ofertas, mensajes)
-  - Cache-first: assets estáticos (CSS, JS, imágenes)
-  - Stale-while-revalidate: imágenes perfil
-- [ ] Caché páginas principales (dashboard, perfil)
-- [ ] Mostrar ofertas cacheadas cuando offline
-- [ ] Banner: "Sin conexión. Mostrando contenido guardado"
-- [ ] Queue acciones offline (enviar mensaje) → sync después
-- [ ] Background sync (cuando vuelve online)
-- [ ] Testing modo avión
-
-**Por qué:** Reliability conexiones malas Perú
-
----
-
-## 🟢 PRIORIDAD 10: TESTING Y QA (Semana 7-8)
+> **NOTA:** El testing se realiza DESPUÉS del panel admin para poder monitorear métricas durante las pruebas.
 
 ### Task 40: Testing Cross-Browser
 **Tiempo:** 2-3 días | **Estado:** ⏳ Pendiente
@@ -1252,6 +1340,70 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 
 ---
 
+## 🟢 PRIORIDAD 11: PERFORMANCE Y PWA (Semana 11 - AL FINAL)
+
+> **IMPORTANTE (23 Ene 2026):** PWA se implementa AL FINAL cuando toda la funcionalidad y UX/UI estén completos. Esto evita problemas de caché del Service Worker durante el desarrollo.
+
+### Task 37: Optimización Performance
+**Tiempo:** 2-3 días | **Estado:** ⏳ Pendiente
+
+**Subtareas:**
+- [ ] Minify CSS/JS (build process)
+- [ ] Compress imágenes WebP (convertir todas)
+- [ ] Lazy load todo below the fold
+- [ ] CDN para assets estáticos (jsDelivr o Cloudflare)
+- [ ] Caché agresivo (Service Worker estrategias)
+- [ ] Reduce Firebase reads:
+  - Batch queries
+  - Pagination
+  - Use cache when possible
+- [ ] Lighthouse Performance score >90
+- [ ] First Contentful Paint <1.5s
+- [ ] Time to Interactive <3s
+- [ ] Largest Contentful Paint <2.5s
+
+**Por qué:** Speed = retention
+
+---
+
+### Task 38: Conversión a PWA
+**Tiempo:** 2 días | **Estado:** ⏳ Pendiente
+
+**Subtareas:**
+- [ ] Crear `manifest.json` completo
+- [ ] Icons todos los tamaños: 72, 96, 128, 144, 152, 192, 384, 512
+- [ ] Generar icons desde logo (usar PWA Asset Generator)
+- [ ] Service Worker básico (precache assets)
+- [ ] Offline fallback page
+- [ ] Install prompt custom (no usar browser default)
+- [ ] Splash screen branded
+- [ ] Testing instalación iOS (Safari)
+- [ ] Testing instalación Android (Chrome)
+- [ ] Lighthouse PWA score 100
+
+**Por qué:** Instalable = app feel
+
+---
+
+### Task 39: Modo Offline Básico
+**Tiempo:** 2-3 días | **Estado:** ⏳ Pendiente
+
+**Subtareas:**
+- [ ] Service Worker estrategias:
+  - Network-first: datos dinámicos (ofertas, mensajes)
+  - Cache-first: assets estáticos (CSS, JS, imágenes)
+  - Stale-while-revalidate: imágenes perfil
+- [ ] Caché páginas principales (dashboard, perfil)
+- [ ] Mostrar ofertas cacheadas cuando offline
+- [ ] Banner: "Sin conexión. Mostrando contenido guardado"
+- [ ] Queue acciones offline (enviar mensaje) → sync después
+- [ ] Background sync (cuando vuelve online)
+- [ ] Testing modo avión
+
+**Por qué:** Reliability conexiones malas Perú
+
+---
+
 ## 📊 RESUMEN FASE 1
 
 ### Por Categoría
@@ -1263,23 +1415,24 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 | Geolocalización | 5 | 1.5 semanas | ✅ Completado (19 Ene 2026) |
 | Aceptar/Rechazar + WhatsApp | 1 | 1 día | ✅ Completado (19 Ene 2026) |
 | Calificaciones | 5 (+1 extra) | 1 semana | ✅ Completado (21 Ene 2026) |
+| Búsqueda Avanzada | 2 | 3 días | ✅ Parcial (Tasks 23-24 listas) |
 | Mensajería In-App | 5 | 1.5 semanas | ⏸️ Diferido (WhatsApp cubre) |
-| Búsqueda Avanzada | 4 | 1 semana | ⏳ Pendiente |
 | Notificaciones | 4 | 1 semana | ⏳ Pendiente |
 | UX/UI Polish | 6 | 2 semanas | ⏳ Pendiente |
-| Performance/PWA | 3 | 1 semana | ⏳ Pendiente |
+| **Panel Admin (NUEVO)** | 4 | 1.5 semanas | ⏳ Pendiente |
 | Testing/QA | 5 | 2 semanas | ⏳ Pendiente |
+| Performance/PWA | 3 | 1 semana | ⏳ Pendiente (AL FINAL) |
 
-**TOTAL:** 45 tareas | **12-13 semanas** (~3 meses)
+**TOTAL:** 49 tareas | **14-15 semanas** (~3.5 meses)
 
 ---
 
 ### Progreso Actual
 
 ```
-COMPLETADAS: 24/45 (53%)
-DIFERIDAS:   5/45 (11%)
-PENDIENTES:  16/45 (36%)
+COMPLETADAS: 26/49 (53%)
+DIFERIDAS:   5/49 (10%)
+PENDIENTES:  18/49 (37%)
 ```
 
 ---
@@ -1293,33 +1446,22 @@ PENDIENTES:  16/45 (36%)
 - ✅ **Task 21:** Aceptar/Rechazar Postulaciones + WhatsApp (19 Ene 2026)
 - ✅ **Task 13:** Sistema de Calificaciones base (20 Ene 2026)
 - ✅ **Tasks 14-17:** Sistema de Calificaciones completo (21 Ene 2026)
-  - Task 14: Vista de reseñas recibidas para trabajador
-  - Task 15: Calificación bidireccional (trabajador → empleador)
-  - Task 16: Historial completo de calificaciones
-  - Task 17: Responder a calificaciones recibidas
-  - Extra: Rating visible en postulaciones para empleador
-- ✅ **Task 23:** Filtros Avanzados Dashboard (22 Ene 2026)
-  - Dropdowns custom con navegación por teclado
-  - Multiselect de categorías con checkboxes
-  - Range slider dual para salario
-  - Sistema de chips removibles
-  - Persistencia en localStorage
+- ✅ **Tasks 23-24:** Filtros Avanzados Dashboard (22 Ene 2026)
+- ✅ **UX:** Bottom Navigation + Dashboard por rol (22 Ene 2026)
+- ✅ **FIX:** Onboarding iOS Safari (23 Ene 2026)
 
-### Opciones para Siguiente Sprint:
-🎯 **Recomendado: Notificaciones Push o PWA**
-- Tasks 24-26 (Ordenamiento, Guardar Búsquedas, Alertas) - Diferidas por bajo impacto inicial
-- **Task 27-30:** Notificaciones Push - Alto impacto para usuarios
-- **Task 37-39:** PWA - App instalable sin Play Store
-
-### Próximos Sprints Sugeridos:
-- **Sprint 6:** Tasks 27-30 (Notificaciones Push)
-- **Sprint 7:** Tasks 37-39 (PWA - App instalable)
-- **Sprint 8-9:** Tasks 31-36 (UX/UI Polish)
-- **Sprint 10-11:** Tasks 40-44 (Testing/QA)
+### Orden de Ejecución (Actualizado 23 Ene 2026):
+| Orden | Sprint | Tasks | Descripción |
+|-------|--------|-------|-------------|
+| 1 | 6 | 27-30 | **Notificaciones Push** |
+| 2 | 7-8 | 31-36 | **UX/UI Polish** |
+| 3 | 9 | 45-48 | **Panel Admin** (config, usuarios, analytics, reportes) |
+| 4 | 10-11 | 40-44 | **Testing/QA** |
+| 5 | 12 | 37-39 | **PWA** (AL FINAL, cuando todo esté listo) |
 
 ### Diferido:
 - ⏸️ **Tasks 18-20, 22:** Chat In-App (WhatsApp cubre necesidad)
-- ⏸️ **Tasks 24-26:** Búsqueda Avanzada Premium (poco impacto con pocas ofertas)
+- ⏸️ **Tasks 25-26:** Búsqueda Avanzada Premium (poco impacto con pocas ofertas)
 
 ---
 
@@ -1343,9 +1485,9 @@ PENDIENTES:  16/45 (36%)
 
 ---
 
-**Última actualización:** 22 Enero 2026
+**Última actualización:** 23 Enero 2026
 **Autor:** Joel (ChambApp Founder)
-**Próxima revisión:** Al completar Notificaciones Push o PWA
+**Próxima revisión:** Al completar Notificaciones Push
 
 ---
 
