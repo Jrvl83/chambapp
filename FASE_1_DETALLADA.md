@@ -2,16 +2,16 @@
 
 **49 Tareas para Producto Excepcional**
 **Duración:** 14-15 semanas (~3.5 meses)
-**Progreso Actual:** 53% (26/49 tareas completadas)
+**Progreso Actual:** 57% (28/49 tareas completadas)
 
 ---
 
 ## 📊 PROGRESO FASE 1
 
 ```
-✅ COMPLETADAS: ███████████████░░░░░░░░░░░░░ 26/49 (53%)
+✅ COMPLETADAS: ████████████████░░░░░░░░░░░░ 28/49 (57%)
 ⏸️ DIFERIDAS:   ██░░░░░░░░░░░░░░░░░░░░░░░░░░ 5/49 (10%)
-⏳ PENDIENTES:  ██████████░░░░░░░░░░░░░░░░░░ 18/49 (37%)
+⏳ PENDIENTES:  ████████░░░░░░░░░░░░░░░░░░░░ 16/49 (33%)
 ```
 
 ### Sprints (1 semana cada uno):
@@ -26,7 +26,9 @@
   > ✅ UX: Bottom Navigation PWA (22 Ene 2026)
   > ✅ UX: Dashboard diferenciado por rol (22 Ene 2026)
   > ✅ Task 24 completada (22 Ene 2026)
-- **Sprint 6:** ⏳ Tasks 27-30 (Notificaciones Push)
+- **Sprint 6:** 🔄 Tasks 27-30 (Notificaciones Push) - EN PROGRESO
+  > ✅ Task 27 completada (26 Ene 2026) - Setup FCM + Cloud Functions desplegadas
+  > ✅ Task 28 completada (26 Ene 2026) - 2 tipos de notificaciones implementadas
 - **Sprint 7-8:** ⏳ Tasks 31-36 (UX/UI Polish)
 - **Sprint 9:** ⏳ Tasks 45-48 (Panel Admin) - NUEVO
 - **Sprint 10-11:** ⏳ Tasks 40-44 (Testing/QA)
@@ -772,67 +774,96 @@ Contactan por WhatsApp → Trabajo → Marcar Completado → [Calificación]
 
 ## 🟡 PRIORIDAD 7: NOTIFICACIONES PUSH (Semana 5)
 
-### Task 27: Setup Firebase Cloud Messaging
-**Tiempo:** 1 día | **Estado:** ⏳ Pendiente
+### ✅ Task 27: Setup Firebase Cloud Messaging
+**Tiempo:** 1 día | **Estado:** ✅ Completado (26 Ene 2026)
 
-**Subtareas:**
-- [ ] Configurar FCM en Firebase Console
-- [ ] Generar server key (para Cloud Functions)
-- [ ] Crear `/firebase-messaging-sw.js` (service worker)
-- [ ] Request permission navegador (botón en settings)
-- [ ] Obtener y guardar FCM token en Firestore usuario
-- [ ] Actualizar token si cambia (token refresh)
-- [ ] Testing en Chrome, Firefox, Edge
-- [ ] Testing móvil Android (Chrome)
-- [ ] Safari iOS (usar APNs)
+**Subtareas Completadas:**
+- [x] Configurar FCM en Firebase Console
+- [x] Generar VAPID key para Web Push
+- [x] Crear `/firebase-messaging-sw.js` (service worker)
+- [x] Crear módulo `js/notifications/fcm-init.js`
+- [x] Funciones: initializeFCM, requestNotificationPermission
+- [x] Funciones: verificarEstadoNotificaciones, eliminarTokenFCM
+- [x] Obtener y guardar FCM token en Firestore usuario
+- [x] Toast notificación en foreground con sonido
+- [x] Estilos `css/notifications.css` (banner + toast)
+- [x] Cloud Functions desplegadas en us-central1
+- [x] manifest.json con gcm_sender_id
+
+**Archivos Creados:**
+```
+- firebase-messaging-sw.js (Service Worker FCM)
+- js/notifications/fcm-init.js (Módulo cliente)
+- css/notifications.css (Estilos UI)
+- manifest.json (PWA config)
+- firebase.json (Firebase CLI config)
+- .firebaserc (Proyecto chambapp-7785b)
+- functions/index.js (Cloud Functions)
+- functions/package.json (Dependencias)
+```
+
+**Pendiente para integración completa:**
+- [ ] Importar fcm-init.js en dashboard.html
+- [ ] Crear iconos PWA (assets/icons/)
 
 **Por qué:** Base técnica notificaciones
 
 ---
 
-### Task 28: Tipos de Notificaciones
-**Tiempo:** 2 días | **Estado:** ⏳ Pendiente
+### ✅ Task 28: Tipos de Notificaciones
+**Tiempo:** 2 días | **Estado:** ✅ Completado (26 Ene 2026)
 
-**Subtareas:**
-- [ ] Nuevo mensaje recibido
-- [ ] Aplicante nuevo a tu oferta
-- [ ] Empleador te contactó
-- [ ] Nueva oferta que match (alertas)
+**Subtareas Completadas:**
+- [x] **notificarNuevaPostulacion** - Empleador recibe cuando alguien aplica
+- [x] **notificarPostulacionAceptada** - Trabajador recibe cuando lo aceptan
+- [x] Guardar historial en `usuarios/{uid}/notificaciones/`
+- [x] Verificar si usuario tiene notificaciones activas
+- [x] Verificar si usuario tiene token FCM válido
+
+**Pendientes (futuras iteraciones):**
+- [ ] Nuevo mensaje recibido (requiere chat in-app)
+- [ ] Nueva oferta que match (alertas premium)
 - [ ] Oferta favorita expira en 24h
 - [ ] Recordatorio completar perfil (si <70%)
-- [ ] Notificación upgrade premium (1 vez/semana max)
-- [ ] Cada tipo tiene:
-  - Título
-  - Body
-  - Icono
-  - Click action (URL a abrir)
 
-**Cloud Function:**
+**Cloud Functions Implementadas (functions/index.js):**
 ```javascript
-exports.enviarNotificacion = functions.https.onCall(async (data) => {
-  const { userId, tipo, payload } = data;
-  
-  // Obtener FCM token del usuario
-  const userDoc = await admin.firestore()
-    .collection('usuarios').doc(userId).get();
-  const fcmToken = userDoc.data().fcmToken;
-  
-  // Construir mensaje
-  const message = {
-    notification: {
-      title: getTitulo(tipo),
-      body: getBody(tipo, payload),
-      icon: '/assets/icon-192.png'
-    },
-    token: fcmToken
-  };
-  
-  // Enviar
-  await admin.messaging().send(message);
-});
+// 1. Nueva Postulación → Notifica Empleador
+exports.notificarNuevaPostulacion = functions
+    .region('us-central1')
+    .firestore.document('aplicaciones/{aplicacionId}')
+    .onCreate(async (snap, context) => {
+        // Obtiene token FCM del empleador
+        // Envía: "Nueva postulación: {nombre} se postuló a {oferta}"
+        // Guarda en historial de notificaciones
+    });
+
+// 2. Postulación Aceptada → Notifica Trabajador
+exports.notificarPostulacionAceptada = functions
+    .region('us-central1')
+    .firestore.document('aplicaciones/{aplicacionId}')
+    .onUpdate(async (change, context) => {
+        // Solo si estado cambió a 'aceptado'
+        // Envía: "¡Te aceptaron! {empleador} aceptó tu postulación"
+        // Guarda en historial de notificaciones
+    });
 ```
 
-**Por qué:** Engagement hooks
+**Schema Notificación Guardada:**
+```javascript
+usuarios/{uid}/notificaciones/{id}
+{
+    tipo: 'nueva_postulacion' | 'postulacion_aceptada',
+    titulo: 'string',
+    cuerpo: 'string',
+    leida: false,
+    url: '/mis-aplicaciones.html',
+    datos: { aplicacionId, ofertaTitulo, ... },
+    fechaCreacion: serverTimestamp()
+}
+```
+
+**Por qué:** Engagement hooks automáticos
 
 ---
 
@@ -1417,7 +1448,7 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 | Calificaciones | 5 (+1 extra) | 1 semana | ✅ Completado (21 Ene 2026) |
 | Búsqueda Avanzada | 2 | 3 días | ✅ Parcial (Tasks 23-24 listas) |
 | Mensajería In-App | 5 | 1.5 semanas | ⏸️ Diferido (WhatsApp cubre) |
-| Notificaciones | 4 | 1 semana | ⏳ Pendiente |
+| Notificaciones | 4 | 1 semana | 🔄 En Progreso (2/4 completadas) |
 | UX/UI Polish | 6 | 2 semanas | ⏳ Pendiente |
 | **Panel Admin (NUEVO)** | 4 | 1.5 semanas | ⏳ Pendiente |
 | Testing/QA | 5 | 2 semanas | ⏳ Pendiente |
@@ -1430,9 +1461,9 @@ exports.enviarNotificacion = functions.https.onCall(async (data) => {
 ### Progreso Actual
 
 ```
-COMPLETADAS: 26/49 (53%)
+COMPLETADAS: 28/49 (57%)
 DIFERIDAS:   5/49 (10%)
-PENDIENTES:  18/49 (37%)
+PENDIENTES:  16/49 (33%)
 ```
 
 ---
@@ -1450,6 +1481,8 @@ PENDIENTES:  18/49 (37%)
 - ✅ **UX:** Bottom Navigation + Dashboard por rol (22 Ene 2026)
 - ✅ **FIX:** Onboarding iOS Safari (23 Ene 2026)
 - ✅ **FIX:** Estadísticas trabajador - campo aplicanteId (23 Ene 2026)
+- ✅ **Task 27:** Setup FCM + Cloud Functions desplegadas (26 Ene 2026)
+- ✅ **Task 28:** Notificaciones nueva postulación y aceptación (26 Ene 2026)
 
 ### Orden de Ejecución (Actualizado 23 Ene 2026):
 | Orden | Sprint | Tasks | Descripción |
@@ -1486,9 +1519,9 @@ PENDIENTES:  18/49 (37%)
 
 ---
 
-**Última actualización:** 23 Enero 2026
+**Última actualización:** 26 Enero 2026
 **Autor:** Joel (ChambApp Founder)
-**Próxima revisión:** Al completar Notificaciones Push
+**Próxima revisión:** Al completar Tasks 29-30 (Centro Notificaciones + Settings)
 
 ---
 

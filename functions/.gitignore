@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Local Firebase configs
+.runtimeconfig.json
+
+# Logs
+*.log
+
+# Environment
+.env

@@ -7,6 +7,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
+import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 
 // Usar window.firebaseConfig (arquitectura original)
 const app = initializeApp(window.firebaseConfig);
@@ -215,6 +216,11 @@ onAuthStateChanged(auth, async (user) => {
 
             // Ocultar loading
             ocultarLoading();
+
+            // ========================================
+            // NOTIFICACIONES PUSH (Task 27)
+            // ========================================
+            inicializarNotificacionesPush(user.uid);
 
             // Verificar si hay parámetro ?oferta= en la URL (viene del mapa)
             verificarParametroOferta();
@@ -1391,5 +1397,135 @@ window.enviarPostulacion = async function(ofertaId) {
         }
         btnEnviar.disabled = false;
         btnEnviar.innerHTML = textoOriginal;
+    }
+};
+
+// ========================================
+// NOTIFICACIONES PUSH (Task 27)
+// ========================================
+
+/**
+ * Inicializa el sistema de notificaciones push
+ * Se ejecuta despues de que el usuario esta autenticado
+ */
+async function inicializarNotificacionesPush(userId) {
+    // Esperar 3 segundos para no interferir con la carga inicial
+    setTimeout(async () => {
+        try {
+            const estado = await verificarEstadoNotificaciones(db, userId);
+            console.log('[Notif] Estado actual:', estado);
+
+            // Si el usuario ya denego permanentemente, no insistir
+            if (estado.permisoBrowser === 'denied') {
+                console.log('[Notif] Usuario denego notificaciones permanentemente');
+                return;
+            }
+
+            // Inicializar FCM (registra service worker y configura listeners)
+            await initializeFCM(app, db, userId);
+
+            // Si ya tiene token, todo listo
+            if (estado.tieneToken) {
+                console.log('[Notif] Usuario ya tiene token FCM activo');
+                return;
+            }
+
+            // Si no ha respondido aun (default), mostrar prompt
+            if (estado.permisoBrowser === 'default') {
+                mostrarPromptNotificaciones();
+            }
+
+        } catch (error) {
+            console.warn('[Notif] Error inicializando notificaciones:', error);
+        }
+    }, 3000);
+}
+
+/**
+ * Muestra el banner para solicitar permiso de notificaciones
+ */
+function mostrarPromptNotificaciones() {
+    // Solo mostrar una vez por dia
+    const ultimoPrompt = localStorage.getItem('chambapp-notif-prompt-date');
+    const hoy = new Date().toDateString();
+
+    if (ultimoPrompt === hoy) {
+        console.log('[Notif] Prompt ya mostrado hoy');
+        return;
+    }
+
+    localStorage.setItem('chambapp-notif-prompt-date', hoy);
+
+    // Crear banner
+    const banner = document.createElement('div');
+    banner.id = 'notif-prompt-banner';
+    banner.className = 'notif-prompt-banner';
+    banner.innerHTML = `
+        <div class="notif-prompt-content">
+            <span class="notif-icon">🔔</span>
+            <div class="notif-text">
+                <strong>Activa las notificaciones</strong>
+                <p>Recibe alertas cuando te contacten o acepten tu postulacion</p>
+            </div>
+            <div class="notif-actions">
+                <button class="btn btn-primary btn-sm" onclick="activarNotificaciones()">Activar</button>
+                <button class="btn btn-secondary btn-sm" onclick="cerrarPromptNotif()">Despues</button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    // Animar entrada despues de un frame
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            banner.classList.add('visible');
+        });
+    });
+}
+
+/**
+ * Activa las notificaciones cuando el usuario acepta
+ */
+window.activarNotificaciones = async function() {
+    const banner = document.getElementById('notif-prompt-banner');
+    if (banner) {
+        banner.classList.remove('visible');
+        setTimeout(() => banner.remove(), 300);
+    }
+
+    if (!usuarioActual) {
+        console.error('[Notif] Usuario no autenticado');
+        return;
+    }
+
+    try {
+        const token = await requestNotificationPermission(db, usuarioActual.uid);
+
+        if (token) {
+            if (typeof toastSuccess === 'function') {
+                toastSuccess('Notificaciones activadas correctamente');
+            }
+        } else {
+            if (typeof toastError === 'function') {
+                toastError('No se pudieron activar las notificaciones');
+            }
+        }
+    } catch (error) {
+        console.error('[Notif] Error activando:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al activar notificaciones');
+        }
+    }
+};
+
+/**
+ * Cierra el banner de notificaciones
+ */
+window.cerrarPromptNotif = function() {
+    const banner = document.getElementById('notif-prompt-banner');
+    if (banner) {
+        banner.classList.remove('visible');
+        setTimeout(() => banner.remove(), 300);
     }
 };
