@@ -67,10 +67,26 @@
   - Muestra todas las reseñas recibidas por el trabajador
   - "Sin calificaciones aún" si el trabajador es nuevo
 
-### Próxima Tarea Crítica
-**Tasks 18-20, 22-23:** Chat In-App (DIFERIDO - WhatsApp cubre la necesidad)
+### Estado Actual (26 Ene 2026 - Fin de sesión)
+**Notificaciones Push:** Configuradas y desplegadas, pendiente prueba con 2 dispositivos
 
-> **Nota:** Flujo completo funcionando: Postulación → Aceptar → WhatsApp → Completado → ⭐ Calificar (bidireccional) → ★ Perfiles actualizados
+**Probado:**
+- ✅ Banner de activación aparece correctamente
+- ✅ Notificaciones se activan en iPhone Safari (PWA instalada)
+- ✅ Token FCM se guarda en Firestore
+- ⏳ Pendiente: Probar flujo completo con 2 cuentas (trabajador postula → empleador recibe notif)
+
+**Para continuar mañana:**
+1. Conseguir dispositivo Android
+2. Crear/usar cuenta de empleador con notificaciones activadas
+3. Desde cuenta trabajador: postular a una oferta del empleador
+4. Verificar que empleador reciba notificación push
+5. Empleador acepta → verificar que trabajador reciba notificación
+
+### Próxima Tarea Crítica
+**Tasks 29-30:** Centro de Notificaciones In-App + Settings (después de validar push)
+
+> **Nota:** Flujo completo funcionando: Postulación → Notif Empleador → Aceptar → Notif Trabajador → WhatsApp → Completado → ⭐ Calificar
 
 ### Pendiente Menor (Sprint UX/UI Polish)
 - Fix warning onboarding `.stats-grid`
