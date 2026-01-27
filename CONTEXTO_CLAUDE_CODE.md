@@ -1,7 +1,7 @@
 # CONTEXTO CLAUDE CODE - CHAMBAPP
 
 **Archivo de Inicialización para Claude Code**
-**Actualizado:** 21 Enero 2026
+**Actualizado:** 26 Enero 2026
 **Lee este archivo al inicio de cada sesión**
 
 ---
@@ -10,12 +10,36 @@
 
 ### Progreso General
 - **Fase Actual:** Fase 1 - Experiencia WOW
-- **Progreso Fase 1:** 55% completo (24/44 tareas)
-- **Progreso Total:** ~14% del proyecto (24/176 tareas)
-- **Tiempo Invertido:** ~2 meses
-- **Tiempo Restante:** 4-5 meses hasta lanzamiento
+- **Progreso Fase 1:** 57% completo (28/49 tareas)
+- **Progreso Total:** ~16% del proyecto (28/176 tareas)
+- **Tiempo Invertido:** ~2.5 meses
+- **Tiempo Restante:** 3-4 meses hasta lanzamiento
 
 ### Últimas Tareas Completadas
+**Tasks 27-28:** Notificaciones Push con Firebase Cloud Messaging (26 Ene 2026)
+- **Task 27:** Setup Firebase Cloud Messaging
+  - Firebase CLI configurado (proyecto chambapp-7785b)
+  - Service Worker FCM (`firebase-messaging-sw.js`)
+  - Módulo cliente FCM (`js/notifications/fcm-init.js`)
+  - VAPID key configurada
+  - Estilos para banner y toast (`css/notifications.css`)
+  - Manifest PWA (`manifest.json`)
+  - Iconos PWA placeholder (8 tamaños)
+- **Task 28:** Tipos de Notificaciones (Cloud Functions)
+  - `notificarNuevaPostulacion`: Trigger al crear aplicación → notifica empleador
+  - `notificarPostulacionAceptada`: Trigger al aceptar → notifica trabajador
+  - Historial guardado en `usuarios/{uid}/notificaciones/`
+  - Cloud Functions desplegadas en us-central1
+
+**Tasks 23-24:** Filtros Avanzados Dashboard (22 Ene 2026)
+- Componente `FiltrosAvanzados` modular
+- Multiselect categorías, range slider salario
+- Chips removibles, persistencia localStorage
+
+**UX Mejoras:** Bottom Navigation + Dashboard por rol (22 Ene 2026)
+- Bottom nav móvil estilo apps nativas
+- Vista empleador compacta con timeline actividad
+
 **Tasks 14-17 + Mejora Rating:** Sistema de Calificaciones Expandido (21 Ene 2026)
 - **Task 14:** Vista de reseñas recibidas para trabajador
   - Nueva pestaña "Reseñas" en perfil trabajador
@@ -59,9 +83,10 @@
 ### Stack Tecnológico
 ```
 Frontend:  HTML5, CSS3, JavaScript ES6+ (vanilla, no frameworks)
-Backend:   Firebase (Auth + Firestore + Storage + Functions)
-Hosting:   GitHub Pages (jrvl83.github.io/chambapp)
-APIs:      Google Maps, Geocoding, Places
+Backend:   Firebase (Auth + Firestore + Storage + Cloud Functions)
+Hosting:   Firebase Hosting (chambapp-7785b.web.app) - Principal
+           GitHub Pages (jrvl83.github.io/chambapp) - Backup
+APIs:      Google Maps, Geocoding, Places, Firebase Cloud Messaging
 Payments:  Culqi (pendiente integración)
 ```
 
@@ -84,45 +109,54 @@ chambapp/
 ├── perfil-empleador.html
 ├── mis-aplicaciones.html
 ├── mis-aplicaciones-trabajador.html
-├── mapa-ofertas.html (nuevo Task 12)
-├── historial-calificaciones.html (nuevo Task 16)
+├── mapa-ofertas.html
+├── historial-calificaciones.html
+├── manifest.json (PWA - Task 27)
+├── firebase-messaging-sw.js (Service Worker FCM - Task 27)
+├── firebase.json (Firebase CLI config)
+├── .firebaserc (Firebase project config)
 ├── css/
 │   ├── design-system.css
 │   ├── components.css
 │   ├── accessibility.css
 │   ├── toast.css
-│   ├── publicar-oferta.css (actualizado Task 10)
-│   ├── mapa-ofertas.css (nuevo Task 12)
-│   ├── historial-calificaciones.css (nuevo Task 16)
+│   ├── filtros-avanzados.css (Task 23-24)
+│   ├── bottom-nav.css (UX mejora)
+│   ├── dashboard-empleador.css (UX mejora)
+│   ├── notifications.css (Task 27)
 │   └── ...
 ├── js/
 │   ├── config/
 │   │   ├── firebase-config.js
-│   │   ├── firebase-init.js
-│   │   └── api-keys.js
+│   │   └── firebase-init.js
 │   ├── auth/
 │   │   ├── login.js
 │   │   └── register.js
 │   ├── dashboard/
-│   │   └── dashboard.js
+│   │   └── dashboard.js (integra FCM - Task 27)
+│   ├── components/
+│   │   ├── filtros-avanzados.js (Task 23-24)
+│   │   └── bottom-nav.js (UX mejora)
+│   ├── notifications/
+│   │   └── fcm-init.js (Task 27)
 │   ├── utils/
 │   │   ├── geolocation.js
 │   │   ├── distance.js
 │   │   ├── google-maps.js
-│   │   ├── ubigeo-api.js
-│   │   └── migrar-ofertas.js (nuevo Task 10)
-│   ├── publicar-oferta.js (actualizado Task 10)
-│   ├── mapa-ofertas.js (nuevo Task 12)
-│   ├── historial-calificaciones.js (nuevo Task 16)
+│   │   └── ubigeo-api.js
 │   ├── toast.js
 │   └── onboarding.js
+├── assets/
+│   └── icons/ (PWA icons - 8 tamaños)
+├── functions/ (Cloud Functions - Task 28)
+│   ├── index.js (notificarNuevaPostulacion, notificarPostulacionAceptada)
+│   └── package.json
 ├── data/
 │   ├── ubigeo_departamento.json
 │   ├── ubigeo_provincia.json
 │   └── ubigeo_distrito.json
 └── docs/
-    ├── PLAN_PRUEBAS_TASK10.md
-    └── PLAN_PRUEBAS_TASKS14-17.md (nuevo)
+    └── ...
 ```
 
 ---
@@ -366,15 +400,17 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 - **Ene 2026:** Badge ubicación dinámico trabajadores
 - **Ene 2026:** Firebase Plan Blaze activado
 - **14 Ene 2026:** Task 10 completada - Geocoding Ofertas
-- **14 Ene 2026:** Compatibilidad iOS mejorada (9 archivos HTML)
 - **14 Ene 2026:** Task 11 completada - Búsqueda por Distancia
-- **14 Ene 2026:** Fix bug coordenadas distritos duplicados (Miraflores, Comas, etc.)
 - **19 Ene 2026:** Task 12 completada - Mapa Interactivo Ofertas
 - **19 Ene 2026:** Task 21 completada - Aceptar/Rechazar + WhatsApp
-- **19 Ene 2026:** Migración a Nueva Places API (AutocompleteSuggestion)
 - **20 Ene 2026:** Task 13 completada - Sistema de Calificaciones
-- **21 Ene 2026:** Tasks 14-17 completadas - Sistema de Calificaciones expandido (bidireccional, historial, respuestas)
-- **21 Ene 2026:** Rating del trabajador visible en postulaciones + Modal detalle calificaciones
+- **21 Ene 2026:** Tasks 14-17 completadas - Sistema de Calificaciones expandido
+- **22 Ene 2026:** Tasks 23-24 completadas - Filtros Avanzados Dashboard
+- **22 Ene 2026:** UX Mejoras - Bottom Navigation + Dashboard por rol
+- **23 Ene 2026:** Fix iOS Safari onboarding + Estadísticas trabajador
+- **26 Ene 2026:** Tasks 27-28 completadas - Notificaciones Push FCM
+- **26 Ene 2026:** Firebase Hosting configurado como hosting principal
+- **26 Ene 2026:** Cloud Functions desplegadas (notificaciones automáticas)
 
 ---
 
@@ -386,15 +422,41 @@ cd C:\Users\JOEL\Documents\Proyectos\Chambapp
 npx serve
 ```
 
-### Migrar ofertas existentes (una vez):
-```javascript
-import('./js/utils/migrar-ofertas.js').then(m => m.migrarOfertas());
+### Desplegar a producción (Firebase Hosting):
+```bash
+firebase deploy --only hosting
+```
+
+### Desplegar Cloud Functions:
+```bash
+firebase deploy --only functions
+```
+
+### Ver logs de Cloud Functions:
+```bash
+firebase functions:log
+```
+
+### Commit y push a GitHub:
+```bash
+git add . && git commit -m "mensaje" && git push origin main
 ```
 
 ---
 
-**Última actualización:** 21 Enero 2026
-**Versión:** 1.7
+## URLS DE PRODUCCIÓN
+
+| Servicio | URL |
+|----------|-----|
+| **App (Principal)** | https://chambapp-7785b.web.app |
+| **GitHub Pages (Backup)** | https://jrvl83.github.io/chambapp |
+| **Firebase Console** | https://console.firebase.google.com/project/chambapp-7785b |
+| **GitHub Repo** | https://github.com/Jrvl83/chambapp |
+
+---
+
+**Última actualización:** 26 Enero 2026
+**Versión:** 1.8
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 

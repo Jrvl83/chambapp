@@ -1,7 +1,7 @@
 # 🗺️ ROADMAP COMPLETO - CHAMBAPP
 
 **176 Tareas en 4 Fases | 6 meses hasta lanzamiento**
-**Actualizado:** 19 Enero 2026
+**Actualizado:** 26 Enero 2026
 
 ---
 
@@ -10,9 +10,9 @@
 ```
 PROGRESO GENERAL
 
-███░░░░░░░░░░░░░░░░░░░░░░ 11% (19/176 tareas)
+████░░░░░░░░░░░░░░░░░░░░░ 16% (28/176 tareas)
 
-Fase 1: ██████████████░░░░░░░░░░░░░░ 43% (19/44)
+Fase 1: ████████████████░░░░░░░░░░░░ 57% (28/49)
 Fase 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
 Fase 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
 Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44)
@@ -22,20 +22,21 @@ Fase 4: ░░░░░░░░░░░░░░░░░░░░░░░░
 
 ## 🎯 FASES DEL PROYECTO
 
-### 📦 FASE 1: EXPERIENCIA WOW (44 tareas | 3 meses)
-**Estado:** 🔄 En Progreso (43%)
+### 📦 FASE 1: EXPERIENCIA WOW (49 tareas | 3 meses)
+**Estado:** 🔄 En Progreso (57%)
 **Objetivo:** Producto excepcional con features core
 
 **Categorías:**
-- ✅ Fundamentos Técnicos (3 tareas)
-- ✅ Perfiles Completos (4 tareas)
+- ✅ Fundamentos Técnicos (3 tareas) - COMPLETADO
+- ✅ Perfiles Completos (4 tareas) - COMPLETADO
 - ✅ Geolocalización (5 tareas) - COMPLETADO
 - ✅ Aceptar/Rechazar + WhatsApp (Task 21) - COMPLETADO
-- 🎯 Calificaciones (Tasks 13-17) - SIGUIENTE
-- ⏸️ Mensajería In-App (Tasks 18-20, 22-23) - DIFERIDO (WhatsApp primero)
-- ⏳ Búsqueda Avanzada (4 tareas)
-- ⏳ Notificaciones Push (4 tareas)
-- ⏳ UX/UI Polish Global (6 tareas)
+- ✅ Calificaciones (Tasks 13-17) - COMPLETADO
+- ✅ Filtros Avanzados (Tasks 23-24) - COMPLETADO
+- ✅ UX Mejoras (Bottom Nav, Dashboard por rol) - COMPLETADO
+- 🔄 Notificaciones Push (Tasks 27-30) - EN PROGRESO (2/4)
+- ⏸️ Mensajería In-App (Tasks 18-20, 22) - DIFERIDO (WhatsApp primero)
+- ⏳ Panel Admin (Tasks 45-48)
 - ⏳ Performance y PWA (3 tareas)
 - ⏳ Testing y QA (5 tareas)
 
@@ -164,40 +165,65 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 | 2 | Perfiles Completos | 4 | 100% | ✅ |
 | 3 | Geolocalización | 5 | 100% | ✅ |
 | 4 | Aceptar/Rechazar + WhatsApp (Task 21) | 1 | 100% | ✅ |
-| 5 | Calificaciones | 5 | 0% | 🎯 SIGUIENTE |
-| 6 | Mensajería In-App | 5 | 0% | ⏸️ DIFERIDO |
-| 7 | Búsqueda Avanzada | 4 | 0% | ⏳ |
-| 8 | Notificaciones | 4 | 0% | ⏳ |
-| 9 | UX/UI Polish | 6 | 0% | ⏳ |
-| 10 | Performance/PWA | 3 | 0% | ⏳ |
-| 11 | Testing/QA | 5 | 0% | ⏳ |
+| 5 | Calificaciones (Tasks 13-17) | 5 | 100% | ✅ |
+| 6 | Filtros Avanzados (Tasks 23-24) | 2 | 100% | ✅ |
+| 7 | UX Mejoras (Bottom Nav, Dashboard) | 2 | 100% | ✅ |
+| 8 | Notificaciones Push (Tasks 27-30) | 4 | 50% | 🔄 EN PROGRESO |
+| 9 | Mensajería In-App | 5 | 0% | ⏸️ DIFERIDO |
+| 10 | Panel Admin (Tasks 45-48) | 4 | 0% | ⏳ |
+| 11 | Performance/PWA | 3 | 0% | ⏳ |
+| 12 | Testing/QA | 5 | 0% | ⏳ |
 
-**Total Fase 1:** 19/44 completadas (43%)
+**Total Fase 1:** 28/49 completadas (57%)
 
-### Tareas Completadas (1-12, 21):
+### Tareas Completadas (28 tareas):
+
+**Fundamentos (1-3):**
 1. ✅ Estructura archivos JS separados
 2. ✅ Sistema design tokens CSS
 3. ✅ Componentes reutilizables UI
+
+**Perfiles (4-7):**
 4. ✅ Estructura Firestore perfiles
 5. ✅ Upload fotos/imágenes
 6. ✅ Página perfil trabajador
 7. ✅ Editor perfil interactivo
+
+**Geolocalización (8-12):**
 8. ✅ Integración Google Maps API
 9. ✅ Permiso ubicación usuario + badge
 10. ✅ Geocoding ofertas (14 Ene 2026)
 11. ✅ Búsqueda por distancia (14 Ene 2026)
 12. ✅ Mapa interactivo ofertas (19 Ene 2026)
-21. ✅ Aceptar/Rechazar + WhatsApp (19 Ene 2026) - Incluye migración Nueva Places API
 
-### Próximas Tareas (ORDEN ACTUALIZADO 19 Ene):
-13. 🎯 **Estructura Firestore Calificaciones** (SIGUIENTE)
-14. 🎯 Sistema de Estrellas Interactivo
-15. 🎯 Modal Calificar Trabajo
-16. 🎯 Promedio en Perfil Trabajador
-17. 🎯 Historial de Calificaciones
+**Calificaciones (13-17):**
+13. ✅ Estructura Firestore Calificaciones (20 Ene 2026)
+14. ✅ Sistema de Estrellas Interactivo (21 Ene 2026)
+15. ✅ Calificación bidireccional (21 Ene 2026)
+16. ✅ Historial de Calificaciones (21 Ene 2026)
+17. ✅ Responder a calificaciones (21 Ene 2026)
 
-> **Nota:** Flujo completo ya funcional: Postulación → Aceptar/Rechazar → WhatsApp → Completado
-> Task 13-17 (Calificaciones) es el siguiente bloque crítico.
+**Gestión Postulaciones (21):**
+21. ✅ Aceptar/Rechazar + WhatsApp (19 Ene 2026)
+
+**Filtros y UX (23-24 + mejoras):**
+23. ✅ Filtros Avanzados Dashboard (22 Ene 2026)
+24. ✅ Componente FiltrosAvanzados modular (22 Ene 2026)
+- ✅ Bottom Navigation móvil (22 Ene 2026)
+- ✅ Dashboard por rol empleador/trabajador (22 Ene 2026)
+- ✅ Fix iOS Safari onboarding (23 Ene 2026)
+
+**Notificaciones Push (27-28):**
+27. ✅ Setup Firebase Cloud Messaging (26 Ene 2026)
+28. ✅ Cloud Functions notificaciones (26 Ene 2026)
+
+### Próximas Tareas:
+29. 🎯 **Centro de Notificaciones In-App** (SIGUIENTE)
+30. 🎯 Settings de Notificaciones
+45-48. ⏳ Panel Admin (diferido)
+
+> **Nota:** Flujo completo funcionando con notificaciones:
+> Postulación → Notif Empleador → Aceptar → Notif Trabajador → WhatsApp → Completado → ⭐ Calificar
 
 ---
 
@@ -442,6 +468,11 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 - **14 Ene 2026:** Geocoding ofertas + Búsqueda por distancia
 - **19 Ene 2026:** Mapa interactivo ofertas (Sprint Geolocalización COMPLETADO)
 - **19 Ene 2026:** Aceptar/Rechazar + WhatsApp + Migración Nueva Places API
+- **20-21 Ene 2026:** Sistema Calificaciones completo (bidireccional)
+- **22 Ene 2026:** Filtros Avanzados + Bottom Navigation + Dashboard por rol
+- **23 Ene 2026:** Fix iOS Safari + Estadísticas trabajador
+- **26 Ene 2026:** Notificaciones Push FCM (Tasks 27-28)
+- **26 Ene 2026:** Firebase Hosting como plataforma principal
 
 ### 🎯 Por Completar:
 - **Feb 2026:** Fase 1 completa (MVP funcional)
@@ -501,8 +532,9 @@ LANZAMIENTO PÚBLICO: Abril-Mayo 2026
 
 ### Links Útiles:
 - Repo: github.com/Jrvl83/chambapp
-- Producción: jrvl83.github.io/chambapp
-- Firebase Console: console.firebase.google.com
+- **Producción (Principal):** chambapp-7785b.web.app
+- Producción (Backup): jrvl83.github.io/chambapp
+- Firebase Console: console.firebase.google.com/project/chambapp-7785b
 - Google Cloud: console.cloud.google.com
 
 ---
@@ -515,7 +547,7 @@ Este documento se actualiza:
 - ✅ Al alcanzar hitos críticos
 - ✅ Mensualmente (mínimo)
 
-**Última actualización:** 19 Enero 2026
+**Última actualización:** 26 Enero 2026
 **Próxima revisión:** Al completar Fase 1 (Febrero 2026)
 
 ---
