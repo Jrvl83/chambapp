@@ -71,6 +71,8 @@ export async function initializeFCM(app, db, userId) {
  */
 export async function requestNotificationPermission(db, userId) {
     try {
+        console.log('[FCM] Iniciando solicitud de permiso...');
+
         // Detectar iOS
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
@@ -85,12 +87,6 @@ export async function requestNotificationPermission(db, userId) {
                 reason: 'ios_not_pwa',
                 message: 'En iPhone, primero agrega ChambApp a tu pantalla de inicio (compartir → Agregar a inicio)'
             };
-        }
-
-        // Verificar que messaging este inicializado
-        if (!messaging) {
-            console.error('[FCM] Messaging no inicializado. Llama initializeFCM primero.');
-            return { success: false, token: null, reason: 'not_initialized' };
         }
 
         // Verificar VAPID key
@@ -110,9 +106,10 @@ export async function requestNotificationPermission(db, userId) {
             };
         }
 
-        // Solicitar permiso
+        // Solicitar permiso PRIMERO (antes de verificar messaging)
+        console.log('[FCM] Solicitando permiso al navegador...');
         const permission = await Notification.requestPermission();
-        console.log('[FCM] Permiso de notificaciones:', permission);
+        console.log('[FCM] Respuesta del navegador:', permission);
 
         if (permission !== 'granted') {
             console.log('[FCM] Permiso denegado por el usuario');
@@ -124,29 +121,97 @@ export async function requestNotificationPermission(db, userId) {
             };
         }
 
-        // Esperar a que el service worker este listo
-        const registration = await navigator.serviceWorker.ready;
+        // Si messaging no esta inicializado, inicializarlo ahora
+        if (!messaging) {
+            console.log('[FCM] Messaging no inicializado, inicializando ahora...');
+            // Obtener la app de Firebase desde el contexto global
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+            const { getMessaging: getMsg } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+
+            // Usar la config global
+            const app = initializeApp(window.firebaseConfig, 'fcm-app-' + Date.now());
+            messaging = getMsg(app);
+            console.log('[FCM] Messaging inicializado dinamicamente');
+        }
+
+        // Registrar service worker si no esta registrado
+        console.log('[FCM] Verificando service worker...');
+        let registration;
+
+        try {
+            // Primero intentar obtener el SW existente
+            registration = await navigator.serviceWorker.getRegistration('/firebase-messaging-sw.js');
+
+            if (!registration) {
+                console.log('[FCM] Registrando service worker...');
+                registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                console.log('[FCM] Service Worker registrado:', registration.scope);
+            } else {
+                console.log('[FCM] Service Worker ya registrado:', registration.scope);
+            }
+
+            // Esperar a que este activo
+            if (registration.installing) {
+                console.log('[FCM] Esperando instalacion del SW...');
+                await new Promise(resolve => {
+                    registration.installing.addEventListener('statechange', function() {
+                        if (this.state === 'activated') {
+                            resolve();
+                        }
+                    });
+                });
+            }
+
+            // Asegurar que el SW este listo
+            await navigator.serviceWorker.ready;
+            console.log('[FCM] Service Worker listo');
+
+        } catch (swError) {
+            console.error('[FCM] Error con Service Worker:', swError);
+            return {
+                success: false,
+                token: null,
+                reason: 'sw_error',
+                message: 'Error al configurar el servicio. Intenta recargar la pagina.'
+            };
+        }
 
         // Obtener token FCM
-        const token = await getToken(messaging, {
-            vapidKey: VAPID_KEY,
-            serviceWorkerRegistration: registration
-        });
+        console.log('[FCM] Obteniendo token FCM...');
+        try {
+            const token = await getToken(messaging, {
+                vapidKey: VAPID_KEY,
+                serviceWorkerRegistration: registration
+            });
 
-        if (token) {
-            console.log('[FCM] Token obtenido:', token.substring(0, 30) + '...');
+            if (token) {
+                console.log('[FCM] Token obtenido exitosamente:', token.substring(0, 30) + '...');
 
-            // Guardar token en Firestore
-            await guardarTokenEnFirestore(db, userId, token);
+                // Guardar token en Firestore
+                await guardarTokenEnFirestore(db, userId, token);
 
-            return { success: true, token: token, reason: 'success' };
-        } else {
-            console.warn('[FCM] No se pudo obtener el token');
-            return { success: false, token: null, reason: 'no_token' };
+                return { success: true, token: token, reason: 'success' };
+            } else {
+                console.warn('[FCM] getToken retorno null');
+                return {
+                    success: false,
+                    token: null,
+                    reason: 'no_token',
+                    message: 'No se pudo obtener el token. Intenta recargar la pagina.'
+                };
+            }
+        } catch (tokenError) {
+            console.error('[FCM] Error obteniendo token:', tokenError);
+            return {
+                success: false,
+                token: null,
+                reason: 'token_error',
+                message: 'Error al obtener token: ' + tokenError.message
+            };
         }
 
     } catch (error) {
-        console.error('[FCM] Error solicitando permiso:', error);
+        console.error('[FCM] Error general:', error);
         return {
             success: false,
             token: null,

@@ -1504,21 +1504,35 @@ window.activarNotificaciones = async function() {
 
         if (result.success) {
             if (typeof toastSuccess === 'function') {
-                toastSuccess('Notificaciones activadas correctamente');
+                toastSuccess('¡Notificaciones activadas! Te avisaremos cuando haya novedades.');
             }
         } else {
             // Mostrar mensaje especifico segun la razon
             let mensaje = 'No se pudieron activar las notificaciones';
 
-            if (result.reason === 'ios_not_pwa') {
-                mensaje = result.message;
-                // Mostrar modal con instrucciones para iOS
-                mostrarModalInstruccionesiOS();
-            } else if (result.reason === 'already_denied') {
-                mensaje = result.message;
-            } else if (result.reason === 'denied') {
-                mensaje = 'Haz clic en "Permitir" cuando el navegador te lo solicite';
+            switch (result.reason) {
+                case 'ios_not_pwa':
+                    mensaje = result.message;
+                    mostrarModalInstruccionesiOS();
+                    break;
+                case 'already_denied':
+                    mensaje = result.message;
+                    break;
+                case 'denied':
+                    mensaje = 'Debes tocar "Permitir" cuando el navegador te lo solicite';
+                    break;
+                case 'sw_error':
+                    mensaje = result.message || 'Error al configurar el servicio. Recarga la pagina.';
+                    break;
+                case 'token_error':
+                case 'no_token':
+                    mensaje = result.message || 'Error obteniendo token. Intenta de nuevo.';
+                    break;
+                default:
+                    mensaje = result.message || 'Error al activar notificaciones';
             }
+
+            console.log('[Notif] Razon del fallo:', result.reason, result.message);
 
             if (typeof toastError === 'function') {
                 toastError(mensaje);
