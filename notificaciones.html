@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0066FF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Notificaciones - ChambApp</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/notificaciones.css">
+    <link rel="stylesheet" href="css/bottom-nav.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">💼 ChambApp</div>
+            <a href="dashboard.html" class="btn-volver">← Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <h1>🔔 Notificaciones</h1>
+                <p>Mantente al tanto de tu actividad</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-marcar-todas" onclick="marcarTodasLeidas()" style="display: none;">
+                    ✓ Marcar todas como leidas
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="notif-stats">
+            <div class="notif-stat">
+                <span class="notif-stat-number" id="total-notif">0</span>
+                <span class="notif-stat-label">Total</span>
+            </div>
+            <div class="notif-stat notif-stat-unread">
+                <span class="notif-stat-number" id="no-leidas">0</span>
+                <span class="notif-stat-label">Sin leer</span>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="notif-filters">
+            <button class="notif-filter-btn active" data-filter="todas" onclick="filtrarNotificaciones('todas')">
+                Todas
+            </button>
+            <button class="notif-filter-btn" data-filter="no-leidas" onclick="filtrarNotificaciones('no-leidas')">
+                Sin leer
+            </button>
+            <button class="notif-filter-btn" data-filter="leidas" onclick="filtrarNotificaciones('leidas')">
+                Leidas
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-screen" class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando notificaciones...</p>
+        </div>
+
+        <!-- Lista de Notificaciones -->
+        <div class="notif-list" id="notif-list" style="display: none;">
+            <!-- Se llena dinamicamente -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon">🔔</div>
+            <h3>No tienes notificaciones</h3>
+            <p>Cuando alguien se postule a tus ofertas o te acepten, te avisaremos aqui.</p>
+            <a href="dashboard.html" class="btn btn-primary">Ir al Dashboard</a>
+        </div>
+
+        <!-- Empty Filter State -->
+        <div class="empty-state" id="empty-filter-state" style="display: none;">
+            <div class="empty-icon">📭</div>
+            <h3>No hay notificaciones con este filtro</h3>
+            <button class="btn btn-secondary" onclick="filtrarNotificaciones('todas')">Ver todas</button>
+        </div>
+    </div>
+
+    <!-- Modal Confirmacion Eliminar -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-eliminar">
+            <div class="modal-header">
+                <h3>Eliminar notificacion</h3>
+                <button class="modal-close" onclick="cerrarModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estas seguro de que quieres eliminar esta notificacion?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-danger" id="btn-confirmar-eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottom-nav"></nav>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Firebase -->
+    <script src="js/config/firebase-config.js"></script>
+    <script type="module" src="js/notificaciones.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/components/bottom-nav.js"></script>
+</body>
+</html>

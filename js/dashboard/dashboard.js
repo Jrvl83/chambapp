@@ -5,7 +5,7 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 
@@ -221,6 +221,9 @@ onAuthStateChanged(auth, async (user) => {
             // NOTIFICACIONES PUSH (Task 27)
             // ========================================
             inicializarNotificacionesPush(user.uid);
+
+            // Task 29: Escuchar notificaciones no leidas para badge
+            escucharNotificacionesNoLeidas(user.uid);
 
             // Verificar si hay parámetro ?oferta= en la URL (viene del mapa)
             verificarParametroOferta();
@@ -1439,6 +1442,48 @@ async function inicializarNotificacionesPush(userId) {
             console.warn('[Notif] Error inicializando notificaciones:', error);
         }
     }, 3000);
+}
+
+/**
+ * Task 29: Escucha notificaciones no leidas y actualiza badge en sidebar
+ */
+function escucharNotificacionesNoLeidas(userId) {
+    const notifRef = collection(db, 'usuarios', userId, 'notificaciones');
+    const q = query(notifRef, where('leida', '==', false));
+
+    onSnapshot(q, (snapshot) => {
+        const noLeidas = snapshot.size;
+        actualizarBadgeNotificaciones(noLeidas);
+    }, (error) => {
+        console.warn('[Notif] Error escuchando notificaciones:', error);
+    });
+}
+
+/**
+ * Actualiza el badge de notificaciones en el sidebar y bottom nav
+ */
+function actualizarBadgeNotificaciones(cantidad) {
+    // Badge del sidebar
+    const badgeSidebar = document.getElementById('notif-badge');
+    if (badgeSidebar) {
+        if (cantidad > 0) {
+            badgeSidebar.textContent = cantidad > 99 ? '99+' : cantidad;
+            badgeSidebar.style.display = 'flex';
+        } else {
+            badgeSidebar.style.display = 'none';
+        }
+    }
+
+    // Badge del bottom nav
+    const badgeBottomNav = document.getElementById('bottom-nav-notif-badge');
+    if (badgeBottomNav) {
+        if (cantidad > 0) {
+            badgeBottomNav.textContent = cantidad > 99 ? '99+' : cantidad;
+            badgeBottomNav.style.display = 'flex';
+        } else {
+            badgeBottomNav.style.display = 'none';
+        }
+    }
 }
 
 /**
