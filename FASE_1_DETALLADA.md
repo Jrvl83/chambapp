@@ -2,16 +2,16 @@
 
 **49 Tareas para Producto Excepcional**
 **Duración:** 14-15 semanas (~3.5 meses)
-**Progreso Actual:** 57% (28/49 tareas completadas)
+**Progreso Actual:** 59% (29/49 tareas completadas)
 
 ---
 
 ## 📊 PROGRESO FASE 1
 
 ```
-✅ COMPLETADAS: ████████████████░░░░░░░░░░░░ 28/49 (57%)
-⏸️ DIFERIDAS:   ██░░░░░░░░░░░░░░░░░░░░░░░░░░ 5/49 (10%)
-⏳ PENDIENTES:  ████████░░░░░░░░░░░░░░░░░░░░ 16/49 (33%)
+✅ COMPLETADAS: █████████████████░░░░░░░░░░░ 29/49 (59%)
+⏸️ DIFERIDAS:   ███░░░░░░░░░░░░░░░░░░░░░░░░░ 6/49 (12%)
+⏳ PENDIENTES:  ███████░░░░░░░░░░░░░░░░░░░░░ 14/49 (29%)
 ```
 
 ### Sprints (1 semana cada uno):
@@ -26,14 +26,16 @@
   > ✅ UX: Bottom Navigation PWA (22 Ene 2026)
   > ✅ UX: Dashboard diferenciado por rol (22 Ene 2026)
   > ✅ Task 24 completada (22 Ene 2026)
-- **Sprint 6:** 🔄 Tasks 27-30 (Notificaciones Push) - EN PROGRESO
+- **Sprint 6:** ✅ Tasks 27-29 (Notificaciones Push + Centro In-App) - COMPLETADO
   > ✅ Task 27 completada (26 Ene 2026) - Setup FCM + Cloud Functions desplegadas
   > ✅ Task 28 completada (26 Ene 2026) - 2 tipos de notificaciones implementadas
+  > ✅ Task 29 completada (27 Ene 2026) - Centro de Notificaciones In-App
 - **Sprint 7-8:** ⏳ Tasks 31-36 (UX/UI Polish)
 - **Sprint 9:** ⏳ Tasks 45-48 (Panel Admin) - NUEVO
 - **Sprint 10-11:** ⏳ Tasks 40-44 (Testing/QA)
 - **Sprint 12:** ⏳ Tasks 37-39 (PWA) - AL FINAL
 - **Diferido:** ⏸️ Tasks 18-20, 22 (Chat In-App) - WhatsApp cubre necesidad inicial
+- **Diferido:** ⏸️ Task 30 (Settings Notificaciones) - No crítico con solo 2 tipos
 
 ---
 
@@ -867,31 +869,41 @@ usuarios/{uid}/notificaciones/{id}
 
 ---
 
-### Task 29: Centro de Notificaciones In-App
-**Tiempo:** 2 días | **Estado:** ⏳ Pendiente
+### ✅ Task 29: Centro de Notificaciones In-App
+**Tiempo:** 1 día | **Estado:** ✅ Completado (27 Ene 2026)
 
-**Subtareas:**
-- [ ] Crear `/notificaciones.html`
-- [ ] Colección Firestore `notificaciones/{userId}/items/{id}`
-- [ ] Lista últimas 30 notificaciones:
-  - Icono según tipo
+**Subtareas Completadas:**
+- [x] Crear `/notificaciones.html`
+- [x] Subcolección Firestore `usuarios/{uid}/notificaciones/{id}`
+- [x] Lista notificaciones con:
+  - Icono según tipo (👤 postulación, 🎉 aceptación)
   - Título y descripción
-  - Timestamp relativo
-  - Badge "no leída"
-- [ ] Badge contador no leídas (navbar icono campanita)
-- [ ] Marcar como leída al hacer click
-- [ ] Botón "Marcar todas como leídas"
-- [ ] Eliminar notificación individual
-- [ ] Empty state bonito
-- [ ] Real-time updates (`onSnapshot`)
-- [ ] Link acción asociada (ej: click mensaje → ir a chat)
+  - Timestamp relativo ("Hace X minutos/horas/días")
+  - Indicador visual "no leída" (borde azul + punto)
+- [x] Badge contador no leídas en sidebar y bottom-nav
+- [x] Marcar como leída al hacer click
+- [x] Botón "Marcar todas como leídas"
+- [x] Eliminar notificación individual con confirmación
+- [x] Empty states (sin notificaciones / sin resultados de filtro)
+- [x] Real-time updates (`onSnapshot`)
+- [x] Click en notificación → navega a URL asociada
+- [x] Filtros: Todas / Sin leer / Leídas
+- [x] Reglas Firestore para subcolección notificaciones
+
+**Archivos Creados:**
+```
+- notificaciones.html
+- js/notificaciones.js
+- css/notificaciones.css
+- firestore.rules
+```
 
 **Por qué:** Hub central notificaciones
 
 ---
 
 ### Task 30: Settings Notificaciones
-**Tiempo:** 1-2 días | **Estado:** ⏳ Pendiente
+**Tiempo:** 1-2 días | **Estado:** ⏸️ Diferido
 
 **Subtareas:**
 - [ ] Crear sección en `/settings.html`: "Notificaciones"
@@ -1483,19 +1495,23 @@ PENDIENTES:  16/49 (33%)
 - ✅ **FIX:** Estadísticas trabajador - campo aplicanteId (23 Ene 2026)
 - ✅ **Task 27:** Setup FCM + Cloud Functions desplegadas (26 Ene 2026)
 - ✅ **Task 28:** Notificaciones nueva postulación y aceptación (26 Ene 2026)
+- ✅ **Task 29:** Centro de Notificaciones In-App (27 Ene 2026)
+- ✅ **FIX:** Compatibilidad notificaciones Android Chrome (27 Ene 2026)
+- ✅ **Reglas Firestore** configuradas y desplegadas (27 Ene 2026)
 
-### Orden de Ejecución (Actualizado 23 Ene 2026):
+### Orden de Ejecución (Actualizado 27 Ene 2026):
 | Orden | Sprint | Tasks | Descripción |
 |-------|--------|-------|-------------|
-| 1 | 6 | 27-30 | **Notificaciones Push** |
-| 2 | 7-8 | 31-36 | **UX/UI Polish** |
-| 3 | 9 | 45-48 | **Panel Admin** (config, usuarios, analytics, reportes) |
-| 4 | 10-11 | 40-44 | **Testing/QA** |
-| 5 | 12 | 37-39 | **PWA** (AL FINAL, cuando todo esté listo) |
+| ✅ | 6 | 27-29 | **Notificaciones Push + Centro In-App** - COMPLETADO |
+| 1 | 7-8 | 31-36 | **UX/UI Polish** |
+| 2 | 9 | 45-48 | **Panel Admin** (config, usuarios, analytics, reportes) |
+| 3 | 10-11 | 40-44 | **Testing/QA** |
+| 4 | 12 | 37-39 | **PWA** (AL FINAL, cuando todo esté listo) |
 
 ### Diferido:
 - ⏸️ **Tasks 18-20, 22:** Chat In-App (WhatsApp cubre necesidad)
 - ⏸️ **Tasks 25-26:** Búsqueda Avanzada Premium (poco impacto con pocas ofertas)
+- ⏸️ **Task 30:** Settings Notificaciones (no crítico con solo 2 tipos)
 
 ---
 
@@ -1519,9 +1535,9 @@ PENDIENTES:  16/49 (33%)
 
 ---
 
-**Última actualización:** 26 Enero 2026
+**Última actualización:** 27 Enero 2026
 **Autor:** Joel (ChambApp Founder)
-**Próxima revisión:** Al completar Tasks 29-30 (Centro Notificaciones + Settings)
+**Próxima revisión:** Al completar Sprint 7-8 (UX/UI Polish)
 
 ---
 

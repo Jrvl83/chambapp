@@ -1,7 +1,7 @@
 # CONTEXTO CLAUDE CODE - CHAMBAPP
 
 **Archivo de Inicialización para Claude Code**
-**Actualizado:** 26 Enero 2026
+**Actualizado:** 27 Enero 2026
 **Lee este archivo al inicio de cada sesión**
 
 ---
@@ -10,12 +10,22 @@
 
 ### Progreso General
 - **Fase Actual:** Fase 1 - Experiencia WOW
-- **Progreso Fase 1:** 57% completo (28/49 tareas)
-- **Progreso Total:** ~16% del proyecto (28/176 tareas)
+- **Progreso Fase 1:** 59% completo (29/49 tareas)
+- **Progreso Total:** ~17% del proyecto (29/176 tareas)
 - **Tiempo Invertido:** ~2.5 meses
 - **Tiempo Restante:** 3-4 meses hasta lanzamiento
 
 ### Últimas Tareas Completadas
+**Task 29:** Centro de Notificaciones In-App (27 Ene 2026)
+- Nueva página `/notificaciones.html`
+- Lista de notificaciones en tiempo real (onSnapshot)
+- Filtros: Todas / Sin leer / Leídas
+- Acciones: Marcar como leída, marcar todas, eliminar
+- Badge de contador en sidebar y bottom-nav
+- Bottom-nav actualizado: "Mensajes" → "Alertas" (🔔)
+- Reglas Firestore para subcolección `usuarios/{uid}/notificaciones`
+- Tiempo relativo (hace X minutos/horas/días)
+
 **Tasks 27-28:** Notificaciones Push con Firebase Cloud Messaging (26 Ene 2026)
 - **Task 27:** Setup Firebase Cloud Messaging
   - Firebase CLI configurado (proyecto chambapp-7785b)
@@ -67,26 +77,26 @@
   - Muestra todas las reseñas recibidas por el trabajador
   - "Sin calificaciones aún" si el trabajador es nuevo
 
-### Estado Actual (26 Ene 2026 - Fin de sesión)
-**Notificaciones Push:** Configuradas y desplegadas, pendiente prueba con 2 dispositivos
+### Estado Actual (27 Ene 2026)
+**Sistema de Notificaciones:** COMPLETO Y FUNCIONANDO ✅
 
-**Probado:**
-- ✅ Banner de activación aparece correctamente
-- ✅ Notificaciones se activan en iPhone Safari (PWA instalada)
-- ✅ Token FCM se guarda en Firestore
-- ⏳ Pendiente: Probar flujo completo con 2 cuentas (trabajador postula → empleador recibe notif)
+**Probado y validado:**
+- ✅ Notificaciones push en Android Chrome
+- ✅ Notificaciones push en iPhone Safari (PWA instalada)
+- ✅ Flujo completo: Trabajador postula → Empleador recibe notif push
+- ✅ Flujo completo: Empleador acepta → Trabajador recibe notif push
+- ✅ Centro de notificaciones in-app funcionando
+- ✅ Badge de contador actualiza en tiempo real
 
-**Para continuar mañana:**
-1. Conseguir dispositivo Android
-2. Crear/usar cuenta de empleador con notificaciones activadas
-3. Desde cuenta trabajador: postular a una oferta del empleador
-4. Verificar que empleador reciba notificación push
-5. Empleador acepta → verificar que trabajador reciba notificación
+### Próximas Tareas
+**Task 30:** Settings de Notificaciones - DIFERIDA (no crítica con solo 2 tipos de notif)
 
-### Próxima Tarea Crítica
-**Tasks 29-30:** Centro de Notificaciones In-App + Settings (después de validar push)
+**Opciones para continuar:**
+1. **Tasks 31-36:** UX/UI Polish (micro-interacciones, empty states, loading states)
+2. **Tasks 45-48:** Panel de Administración (config, usuarios, analytics)
+3. **Tasks 25-26:** Búsqueda Avanzada Premium (guardar búsquedas, alertas)
 
-> **Nota:** Flujo completo funcionando: Postulación → Notif Empleador → Aceptar → Notif Trabajador → WhatsApp → Completado → ⭐ Calificar
+> **Flujo completo funcionando:** Postulación → Notif Empleador → Aceptar → Notif Trabajador → WhatsApp → Completado → ⭐ Calificar
 
 ### Pendiente Menor (Sprint UX/UI Polish)
 - Fix warning onboarding `.stats-grid`
@@ -427,6 +437,9 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 - **26 Ene 2026:** Tasks 27-28 completadas - Notificaciones Push FCM
 - **26 Ene 2026:** Firebase Hosting configurado como hosting principal
 - **26 Ene 2026:** Cloud Functions desplegadas (notificaciones automáticas)
+- **27 Ene 2026:** Task 29 completada - Centro de Notificaciones In-App
+- **27 Ene 2026:** Reglas Firestore configuradas y desplegadas
+- **27 Ene 2026:** Fix compatibilidad notificaciones Android Chrome
 
 ---
 
@@ -471,8 +484,8 @@ git add . && git commit -m "mensaje" && git push origin main
 
 ---
 
-**Última actualización:** 26 Enero 2026
-**Versión:** 1.8
+**Última actualización:** 27 Enero 2026
+**Versión:** 1.9
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 
