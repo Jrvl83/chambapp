@@ -67,20 +67,47 @@ export async function initializeFCM(app, db, userId) {
  * Solicita permiso de notificaciones y obtiene el token FCM
  * @param {Object} db - Instancia de Firestore
  * @param {string} userId - UID del usuario
- * @returns {string|null} Token FCM o null si falla
+ * @returns {Object} { success: boolean, token: string|null, reason: string }
  */
 export async function requestNotificationPermission(db, userId) {
     try {
+        // Detectar iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                            window.navigator.standalone === true;
+
+        // iOS requiere PWA instalada
+        if (isIOS && !isStandalone) {
+            console.log('[FCM] iOS detectado sin PWA instalada');
+            return {
+                success: false,
+                token: null,
+                reason: 'ios_not_pwa',
+                message: 'En iPhone, primero agrega ChambApp a tu pantalla de inicio (compartir → Agregar a inicio)'
+            };
+        }
+
         // Verificar que messaging este inicializado
         if (!messaging) {
             console.error('[FCM] Messaging no inicializado. Llama initializeFCM primero.');
-            return null;
+            return { success: false, token: null, reason: 'not_initialized' };
         }
 
         // Verificar VAPID key
         if (VAPID_KEY === 'REEMPLAZAR_CON_TU_VAPID_KEY') {
             console.error('[FCM] VAPID key no configurada. Edita js/notifications/fcm-init.js');
-            return null;
+            return { success: false, token: null, reason: 'no_vapid_key' };
+        }
+
+        // Verificar si ya fue denegado antes
+        if (Notification.permission === 'denied') {
+            console.log('[FCM] Permiso ya fue denegado anteriormente');
+            return {
+                success: false,
+                token: null,
+                reason: 'already_denied',
+                message: 'Las notificaciones fueron bloqueadas. Ve a la configuración del navegador para habilitarlas.'
+            };
         }
 
         // Solicitar permiso
@@ -89,7 +116,12 @@ export async function requestNotificationPermission(db, userId) {
 
         if (permission !== 'granted') {
             console.log('[FCM] Permiso denegado por el usuario');
-            return null;
+            return {
+                success: false,
+                token: null,
+                reason: 'denied',
+                message: 'Debes permitir las notificaciones cuando el navegador te lo solicite.'
+            };
         }
 
         // Esperar a que el service worker este listo
@@ -107,15 +139,20 @@ export async function requestNotificationPermission(db, userId) {
             // Guardar token en Firestore
             await guardarTokenEnFirestore(db, userId, token);
 
-            return token;
+            return { success: true, token: token, reason: 'success' };
         } else {
             console.warn('[FCM] No se pudo obtener el token');
-            return null;
+            return { success: false, token: null, reason: 'no_token' };
         }
 
     } catch (error) {
         console.error('[FCM] Error solicitando permiso:', error);
-        return null;
+        return {
+            success: false,
+            token: null,
+            reason: 'error',
+            message: error.message
+        };
     }
 }
 

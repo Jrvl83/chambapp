@@ -1500,15 +1500,28 @@ window.activarNotificaciones = async function() {
     }
 
     try {
-        const token = await requestNotificationPermission(db, usuarioActual.uid);
+        const result = await requestNotificationPermission(db, usuarioActual.uid);
 
-        if (token) {
+        if (result.success) {
             if (typeof toastSuccess === 'function') {
                 toastSuccess('Notificaciones activadas correctamente');
             }
         } else {
+            // Mostrar mensaje especifico segun la razon
+            let mensaje = 'No se pudieron activar las notificaciones';
+
+            if (result.reason === 'ios_not_pwa') {
+                mensaje = result.message;
+                // Mostrar modal con instrucciones para iOS
+                mostrarModalInstruccionesiOS();
+            } else if (result.reason === 'already_denied') {
+                mensaje = result.message;
+            } else if (result.reason === 'denied') {
+                mensaje = 'Haz clic en "Permitir" cuando el navegador te lo solicite';
+            }
+
             if (typeof toastError === 'function') {
-                toastError('No se pudieron activar las notificaciones');
+                toastError(mensaje);
             }
         }
     } catch (error) {
@@ -1518,6 +1531,39 @@ window.activarNotificaciones = async function() {
         }
     }
 };
+
+/**
+ * Muestra modal con instrucciones para iOS
+ */
+function mostrarModalInstruccionesiOS() {
+    const modalBody = document.getElementById('modal-body');
+    if (!modalBody) return;
+
+    modalBody.innerHTML = `
+        <div style="text-align: center; padding: 1rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">Instala ChambApp</h2>
+            <p style="color: var(--gray); margin-bottom: 1.5rem;">
+                Para recibir notificaciones en iPhone, necesitas agregar ChambApp a tu pantalla de inicio:
+            </p>
+            <ol style="text-align: left; color: var(--dark); line-height: 2;">
+                <li>Toca el boton <strong>Compartir</strong> (📤) en Safari</li>
+                <li>Desplazate y selecciona <strong>"Agregar a inicio"</strong></li>
+                <li>Toca <strong>"Agregar"</strong></li>
+                <li>Abre ChambApp desde tu pantalla de inicio</li>
+            </ol>
+            <button class="btn btn-primary" onclick="cerrarModal()" style="margin-top: 1.5rem; width: 100%;">
+                Entendido
+            </button>
+        </div>
+    `;
+
+    const modalOverlay = document.getElementById('modal-overlay');
+    if (modalOverlay) {
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
 
 /**
  * Cierra el banner de notificaciones
