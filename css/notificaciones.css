@@ -3,6 +3,61 @@
    Centro de notificaciones in-app
    ============================================ */
 
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+    background: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.logo-img {
+    height: 32px;
+    width: auto;
+}
+
+.logo-text {
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-volver {
+    padding: 0.5rem 1rem;
+    background: var(--gray, #64748b);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.btn-volver:hover {
+    background: #475569;
+    transform: translateY(-1px);
+}
+
 /* Container */
 .container {
     max-width: 800px;
@@ -453,16 +508,3 @@
     }
 }
 
-/* Header volver */
-.btn-volver {
-    color: white;
-    text-decoration: none;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transition: background 0.2s ease;
-}
-
-.btn-volver:hover {
-    background: rgba(255, 255, 255, 0.1);
-}

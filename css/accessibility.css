@@ -14,7 +14,7 @@ textarea:focus,
 .nav-item:focus,
 .btn:focus,
 .menu-toggle:focus {
-    outline: 3px solid #2563eb;
+    outline: 3px solid #0066FF;
     outline-offset: 3px;
     border-radius: 4px;
 }
@@ -22,7 +22,7 @@ textarea:focus,
 /* Focus para checkboxes y radios */
 input[type="checkbox"]:focus,
 input[type="radio"]:focus {
-    outline: 3px solid #2563eb;
+    outline: 3px solid #0066FF;
     outline-offset: 2px;
 }
 
@@ -34,7 +34,7 @@ input[type="radio"]:focus {
     left: -9999px;
     z-index: 999;
     padding: 1rem 1.5rem;
-    background: #2563eb;
+    background: #0066FF;
     color: white;
     text-decoration: none;
     font-weight: 600;
@@ -239,7 +239,7 @@ label[for] {
 }
 
 .modal-content .modal-close:focus {
-    outline: 3px solid #2563eb;
+    outline: 3px solid #0066FF;
     outline-offset: 2px;
 }
 
@@ -277,7 +277,7 @@ li,
 .nav-item:hover,
 .nav-item:focus {
     background: var(--light, #f1f5f9);
-    color: var(--primary, #2563eb);
+    color: var(--primary, #0066FF);
 }
 
 /* ============================================
@@ -310,7 +310,7 @@ input:valid:not(:placeholder-shown) {
 }
 
 *:focus-visible {
-    outline: 3px solid #2563eb;
+    outline: 3px solid #0066FF;
     outline-offset: 3px;
 }
 

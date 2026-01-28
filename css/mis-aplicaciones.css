@@ -11,8 +11,10 @@
 }
 
 :root {
-    --primary: #2563eb;
-    --secondary: #10b981;
+    --primary: #0066FF;
+    --primary-dark: #0052CC;
+    --secondary: #00C48C;
+    --accent: #FF6B00;
     --danger: #ef4444;
     --warning: #f59e0b;
     --dark: #1e293b;
@@ -25,7 +27,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--light);
     color: var(--dark);
 }
@@ -226,7 +228,7 @@ body {
 }
 
 .oferta-grupo-header {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     padding: 1.25rem 1.5rem;
     color: white;
 }
@@ -681,7 +683,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: var(--primary-dark);
     transform: translateY(-1px);
 }
 
@@ -1056,7 +1058,7 @@ body {
 .trabajador-avatar {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1165,7 +1167,7 @@ body {
 .calificacion-comentario textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
 }
 
 .char-count {

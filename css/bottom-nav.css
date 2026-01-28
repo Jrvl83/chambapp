@@ -181,7 +181,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.35);
     margin-bottom: 0;
     margin-top: -12px;
     transition: all var(--transition-fast);
@@ -189,7 +189,7 @@
 
 .bottom-nav-item.nav-add:hover .bottom-nav-icon {
     transform: scale(1.08);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.45);
 }
 
 .bottom-nav-item.nav-add:active .bottom-nav-icon {
@@ -291,7 +291,7 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: rgba(37, 99, 235, 0.15);
+    background: rgba(0, 102, 255, 0.15);
     border-radius: var(--radius-full);
     transform: translate(-50%, -50%);
     transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;

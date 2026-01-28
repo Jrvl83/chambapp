@@ -175,7 +175,7 @@
 .oferta-card-compacta:hover {
     border-color: var(--primary);
     background: var(--white);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1);
 }
 
 .oferta-card-compacta-header {

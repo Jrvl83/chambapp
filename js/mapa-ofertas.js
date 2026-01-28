@@ -34,7 +34,7 @@ const MARKER_ICONS = {
     default: {
         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
-                <path fill="#2563eb" d="M16 0C7.163 0 0 7.163 0 16c0 12 16 24 16 24s16-12 16-24c0-8.837-7.163-16-16-16z"/>
+                <path fill="#0066FF" d="M16 0C7.163 0 0 7.163 0 16c0 12 16 24 16 24s16-12 16-24c0-8.837-7.163-16-16-16z"/>
                 <circle fill="#fff" cx="16" cy="14" r="6"/>
             </svg>
         `),
@@ -244,7 +244,7 @@ function crearMarkers() {
                         icon: {
                             url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
                                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
-                                    <circle fill="#2563eb" cx="25" cy="25" r="24"/>
+                                    <circle fill="#0066FF" cx="25" cy="25" r="24"/>
                                     <text x="25" y="30" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">${count}</text>
                                 </svg>
                             `),

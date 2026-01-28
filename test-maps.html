@@ -55,17 +55,17 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.4);
         }
 
         .btn-secondary {
-            background: #10b981;
+            background: #00C48C;
             color: white;
         }
 
@@ -82,8 +82,8 @@
         }
 
         .info {
-            background: rgba(37, 99, 235, 0.05);
-            border-left: 4px solid #2563eb;
+            background: rgba(0, 102, 255, 0.05);
+            border-left: 4px solid #0066FF;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
@@ -267,7 +267,7 @@
                     icon: {
                         path: google.maps.SymbolPath.CIRCLE,
                         scale: 10,
-                        fillColor: '#2563eb',
+                        fillColor: '#0066FF',
                         fillOpacity: 1,
                         strokeColor: 'white',
                         strokeWeight: 3
@@ -381,7 +381,7 @@
                         Punto 2: ${punto2.nombre}<br>
                         Coordenadas: ${punto2.lat}, ${punto2.lng}
                     </div>
-                    <p style="margin-top: 1rem; font-size: 1.25rem; color: #2563eb; font-weight: 600;">
+                    <p style="margin-top: 1rem; font-size: 1.25rem; color: #0066FF; font-weight: 600;">
                         📏 Distancia: ${distanciaFormateada}
                     </p>
                     <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.875rem;">
@@ -414,7 +414,7 @@
                     const linea = new google.maps.Polyline({
                         path: [punto1, punto2],
                         geodesic: true,
-                        strokeColor: '#2563eb',
+                        strokeColor: '#0066FF',
                         strokeOpacity: 0.8,
                         strokeWeight: 3,
                         map: map

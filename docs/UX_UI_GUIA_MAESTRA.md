@@ -1,8 +1,8 @@
 # UX/UI GUIA MAESTRA - CHAMBAPP
 
 **Documento de Identidad Visual y Mejoras UX**
-**Versión:** 1.0
-**Fecha:** 27 Enero 2026
+**Versión:** 1.1
+**Fecha:** 28 Enero 2026
 **Autor:** Análisis de Experto UX/UI
 
 ---
@@ -23,25 +23,25 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 - Soporte para safe-area (notch iPhone)
 - Colores de categorías bien diferenciados
 
-### 1.2 Problemas Detectados
+### 1.2 Problemas Detectados (Actualizado 28 Ene 2026)
 
-#### Inconsistencia de Colores
-| Archivo | Primary Color |
-|---------|---------------|
-| `index.html` (landing) | `#0066FF` |
-| `design-system.css` (app) | `#2563eb` |
+#### ✅ RESUELTO: Inconsistencia de Colores
+~~| Archivo | Primary Color |~~
+~~|---------|---------------|~~
+~~| `index.html` (landing) | `#0066FF` |~~
+~~| `design-system.css` (app) | `#2563eb` |~~
 
-**Impacto:** El usuario percibe dos "marcas" diferentes entre landing y app.
+**Estado:** SOLUCIONADO - Paleta unificada #0066FF en 15 CSS, 4 HTML y 1 JS (28 Ene 2026)
 
-#### Falta de Personalidad de Marca
-- No hay logo oficial
-- Uso de emojis como iconos (💼, 🔧, ⭐) - funcional pero no profesional
-- No hay ilustraciones o elementos gráficos distintivos
+#### ✅ RESUELTO: Falta de Personalidad de Marca
+- ~~No hay logo oficial~~ → Logo oficial creado e integrado (27 Ene)
+- Uso de emojis como iconos (💼, 🔧, ⭐) - funcional pero no profesional (PENDIENTE)
+- No hay ilustraciones o elementos gráficos distintivos (PENDIENTE)
 
-#### Tipografía Inconsistente
-- Landing usa Poppins + Inter
-- App usa system fonts (-apple-system)
-- No hay jerarquía visual clara
+#### ✅ RESUELTO: Tipografía Inconsistente
+- ~~Landing usa Poppins + Inter~~
+- ~~App usa system fonts (-apple-system)~~
+- **Estado:** SOLUCIONADO - Poppins + Inter en toda la app (28 Ene 2026)
 
 #### UX Móvil Mejorable
 - Algunos touch targets muy pequeños en listas

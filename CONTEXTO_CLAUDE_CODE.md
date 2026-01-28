@@ -1,7 +1,7 @@
 # CONTEXTO CLAUDE CODE - CHAMBAPP
 
 **Archivo de Inicialización para Claude Code**
-**Actualizado:** 27 Enero 2026
+**Actualizado:** 28 Enero 2026
 **Lee este archivo al inicio de cada sesión**
 
 ---
@@ -16,6 +16,17 @@
 - **Tiempo Restante:** 3-4 meses hasta lanzamiento
 
 ### Últimas Tareas Completadas
+**Unificación Paleta de Colores:** (28 Ene 2026)
+- Paleta unificada en TODOS los archivos CSS (15 archivos)
+- Primary: `#0066FF` (antes #2563eb)
+- Primary Dark: `#0052CC` (antes #1d4ed8)
+- Secondary: `#00C48C` (antes #10b981)
+- Accent: `#FF6B00`
+- Sombras actualizadas: `rgba(0, 102, 255, ...)` (antes rgba(37, 99, 235, ...))
+- Estilos inline en HTML actualizados (login, perfil-empleador, perfil-trabajador, test-maps)
+- Fix notificaciones.html: Header y logo con estilos correctos
+- Tipografía Inter añadida a todos los CSS
+
 **UX/UI Branding:** Logo e Identidad Visual (27 Ene 2026)
 - Documento `docs/UX_UI_GUIA_MAESTRA.md` con identidad de marca completa
 - Logo oficial creado con NanoBanana (Logo 1 - C con apretón de manos)
@@ -86,9 +97,10 @@
   - Muestra todas las reseñas recibidas por el trabajador
   - "Sin calificaciones aún" si el trabajador es nuevo
 
-### Estado Actual (27 Ene 2026)
+### Estado Actual (28 Ene 2026)
 **Sistema de Notificaciones:** COMPLETO Y FUNCIONANDO ✅
 **Branding:** Logo e identidad visual implementados ✅
+**Paleta de Colores:** UNIFICADA EN TODA LA APP ✅
 
 **Probado y validado:**
 - ✅ Notificaciones push en Android Chrome
@@ -98,12 +110,14 @@
 - ✅ Centro de notificaciones in-app funcionando
 - ✅ Badge de contador actualiza en tiempo real
 - ✅ Logo oficial integrado en todas las páginas
+- ✅ Íconos PWA generados (8 tamaños) + favicon
+- ✅ Colores unificados en 15 CSS + 4 HTML + 1 JS
 
-### Próximas Tareas (Para Mañana)
+### Próximas Tareas
 **UX/UI Polish - Continuar:**
-1. **Generar íconos PWA** - Redimensionar logo-icono.png a tamaños requeridos (72, 96, 128, 144, 152, 192, 384, 512)
-2. **Actualizar favicon** - Cambiar por el nuevo logo
-3. **Tasks 31-36:** Micro-interacciones, empty states, loading states, accesibilidad
+1. **Tasks 31-32:** Micro-interacciones y animaciones
+2. **Tasks 33-36:** Empty states mejorados, loading states, accesibilidad
+3. Reemplazar emojis por íconos SVG (sidebar, stats, categorías)
 
 **Opciones adicionales:**
 - **Tasks 45-48:** Panel de Administración (config, usuarios, analytics)
@@ -365,11 +379,13 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 
 ### Design Tokens (Usar siempre)
 ```css
-/* Colores */
---primary: #2563eb;      /* Azul confianza */
---success: #16a34a;      /* Verde éxito */
---warning: #f59e0b;      /* Amarillo atención */
---danger: #dc2626;       /* Rojo urgencia */
+/* Colores ChambApp - ACTUALIZADOS 28 Ene 2026 */
+--primary: #0066FF;        /* Azul ChambApp */
+--primary-dark: #0052CC;   /* Hover/gradientes */
+--secondary: #00C48C;      /* Verde éxito */
+--accent: #FF6B00;         /* Naranja acción */
+--warning: #f59e0b;        /* Amarillo atención */
+--danger: #ef4444;         /* Rojo urgencia */
 
 /* Espaciado (8px grid) */
 --spacing-xs: 4px;
@@ -377,6 +393,10 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 --spacing-md: 16px;
 --spacing-lg: 24px;
 --spacing-xl: 32px;
+
+/* Tipografía */
+--font-display: 'Poppins', sans-serif;  /* Títulos */
+--font-body: 'Inter', sans-serif;       /* Cuerpo */
 ```
 
 ### Principios Core
@@ -458,6 +478,10 @@ Postulación → Aceptar/Rechazar → WhatsApp → Trabajo → Completado → �
 - **27 Ene 2026:** Fix compatibilidad notificaciones Android Chrome
 - **27 Ene 2026:** UX_UI_GUIA_MAESTRA.md creada - Identidad visual completa
 - **27 Ene 2026:** Logo oficial integrado en todas las páginas
+- **28 Ene 2026:** Íconos PWA generados (8 tamaños) + favicon desde logo oficial
+- **28 Ene 2026:** Rediseño visual UX/UI dashboard (stat cards, ofertas cards, animaciones)
+- **28 Ene 2026:** Paleta de colores unificada en toda la app (15 CSS, 4 HTML, 1 JS)
+- **28 Ene 2026:** Fix header notificaciones.html (logo gigante)
 
 ---
 
@@ -502,8 +526,8 @@ git add . && git commit -m "mensaje" && git push origin main
 
 ---
 
-**Última actualización:** 27 Enero 2026 (sesión tarde)
-**Versión:** 2.0
+**Última actualización:** 28 Enero 2026
+**Versión:** 2.1
 **Proyecto:** ChambApp - Marketplace de Trabajos Perú
 **Fundador:** Joel (jrvl83)
 

@@ -12,8 +12,8 @@
 
 /* Aliases para compatibilidad con codigo existente */
 :root {
-    --primary-color: var(--primary, #2563eb);
-    --secondary-color: var(--secondary, #10b981);
+    --primary-color: var(--primary, #0066FF);
+    --secondary-color: var(--secondary, #00C48C);
 }
 
 body {
