@@ -418,7 +418,11 @@ window.solicitarUbicacion = async function() {
 function actualizarHeaderUsuario(usuario) {
     const userName = document.getElementById('user-name');
     if (userName) {
-        userName.innerHTML = `👤 ${usuario.nombre || 'Usuario'}`;
+        // Extraer primer nombre para móvil
+        const nombreCompleto = usuario.nombre || 'Usuario';
+        const primerNombre = nombreCompleto.split(' ')[0];
+        userName.innerHTML = `Hola, ${primerNombre}`;
+        userName.title = nombreCompleto; // Tooltip con nombre completo
     }
 }
 
@@ -468,13 +472,6 @@ function personalizarPorTipo(tipo) {
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Ver Candidatos';
         if (navPerfil) navPerfil.href = 'perfil-empleador.html';
         if (bottomNavProfile) bottomNavProfile.href = 'perfil-empleador.html';
-
-        // Actualizar saludo empleador
-        const saludo = document.getElementById('empleador-saludo');
-        if (saludo && usuarioData) {
-            const nombre = usuarioData.nombre ? usuarioData.nombre.split(' ')[0] : '';
-            saludo.textContent = `👋 Hola${nombre ? ', ' + nombre : ''}!`;
-        }
     }
 
     // ✅ Actualizar Bottom Navigation (PWA mobile)
@@ -698,20 +695,30 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
         const badgeText = numPendientes > 0 ? `🔔 ${numPendientes} nuevas` :
                          (numAplicaciones > 0 ? `${numAplicaciones} postulaciones` : 'Sin postulaciones');
 
+        // Usar mismo componente visual que trabajador (homologado)
+        const categoriaDisplay = oferta.categoria
+            ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1)
+            : 'Otros';
+
         grid.innerHTML += `
-            <div class="oferta-card-compacta" onclick="window.location.href='mis-aplicaciones.html'">
-                <div class="oferta-card-compacta-header">
-                    <h3 class="oferta-card-compacta-titulo">${oferta.titulo}</h3>
-                    <span class="oferta-card-compacta-badge ${badgeClass}">${badgeText}</span>
-                </div>
-                <div class="oferta-card-compacta-meta">
-                    <span>📍 ${ubicacionTexto}</span>
-                    <span>💰 ${oferta.salario}</span>
-                </div>
-                <div class="oferta-card-compacta-actions">
-                    <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
-                        👥 Ver Candidatos
-                    </a>
+            <div class="oferta-card" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
+                <div class="oferta-categoria-bar ${oferta.categoria || 'otros'}"></div>
+                <div class="oferta-card-body">
+                    <div class="oferta-header">
+                        <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
+                        <span class="oferta-fecha">${formatearFecha(oferta.fechaCreacion)}</span>
+                    </div>
+                    <h3 class="oferta-titulo">${oferta.titulo}</h3>
+                    <div class="oferta-detalles">
+                        <span class="detalle">📍 ${ubicacionTexto}</span>
+                        <span class="detalle detalle-salario">💰 ${oferta.salario}</span>
+                    </div>
+                    <div class="oferta-footer">
+                        <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
+                        <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
+                            👥 Ver Candidatos
+                        </a>
+                    </div>
                 </div>
             </div>
         `;
@@ -1127,7 +1134,7 @@ function renderizarOfertasFiltradas(ofertas) {
     }
 
     ofertasGrid.innerHTML = ofertas.map(item =>
-        crearOfertaCard(item.data, item.id, item.distanciaKm)
+        crearOfertaCardTrabajador(item.data, item.id, item.distanciaKm)
     ).join('');
 }
 

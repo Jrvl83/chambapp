@@ -205,12 +205,6 @@
                  ======================================== -->
             <div id="dashboard-empleador" class="dashboard-view" style="display: none;">
 
-                <!-- Greeting Header -->
-                <div class="empleador-greeting">
-                    <h1 id="empleador-saludo">👋 Hola!</h1>
-                    <p class="empleador-subtitulo">Gestiona tus ofertas y candidatos</p>
-                </div>
-
                 <!-- Alerta de Pendientes -->
                 <div class="alerta-pendientes" id="alerta-pendientes" style="display: none;">
                     <div class="alerta-icon">🔔</div>
@@ -222,19 +216,28 @@
                     </a>
                 </div>
 
-                <!-- Quick Stats Empleador -->
-                <div class="empleador-stats">
-                    <div class="empleador-stat">
-                        <span class="empleador-stat-number" id="emp-ofertas-activas">0</span>
-                        <span class="empleador-stat-label">Ofertas Activas</span>
+                <!-- Quick Stats Empleador - Mismo estilo que trabajador -->
+                <div class="stats-grid">
+                    <div class="stat-card" tabindex="0">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-info">
+                            <h3 id="emp-ofertas-activas">0</h3>
+                            <p>Ofertas Activas</p>
+                        </div>
                     </div>
-                    <div class="empleador-stat">
-                        <span class="empleador-stat-number" id="emp-total-aplicaciones">0</span>
-                        <span class="empleador-stat-label">Postulaciones</span>
+                    <div class="stat-card" tabindex="0">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="emp-total-aplicaciones">0</h3>
+                            <p>Postulaciones</p>
+                        </div>
                     </div>
-                    <div class="empleador-stat">
-                        <span class="empleador-stat-number" id="emp-contrataciones">0</span>
-                        <span class="empleador-stat-label">Contratados</span>
+                    <div class="stat-card" tabindex="0">
+                        <div class="stat-icon">🤝</div>
+                        <div class="stat-info">
+                            <h3 id="emp-contrataciones">0</h3>
+                            <p>Contratados</p>
+                        </div>
                     </div>
                 </div>
 
@@ -247,8 +250,8 @@
                         </a>
                     </div>
 
-                    <div class="empleador-ofertas-grid" id="empleador-ofertas-grid">
-                        <!-- Cards de ofertas compactas -->
+                    <div class="ofertas-grid" id="empleador-ofertas-grid">
+                        <!-- Cards de ofertas - mismo estilo que trabajador -->
                     </div>
 
                     <div class="empleador-empty" id="empleador-ofertas-empty" style="display: none;">

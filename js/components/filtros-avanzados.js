@@ -673,8 +673,9 @@ class FiltrosAvanzados {
         // Ubicacion del usuario (para filtro distancia)
         this.userLocation = null;
 
-        // Collapsed state
-        this.isCollapsed = false;
+        // Collapsed state - colapsado por defecto en móvil
+        this.isCollapsed = window.innerWidth <= 768;
+        this.isMobile = window.innerWidth <= 768;
 
         this.init();
     }
@@ -686,6 +687,12 @@ class FiltrosAvanzados {
         this.bindEvents();
         this.updateChips();
         this.updateFilterCount();
+
+        // Aplicar estado inicial colapsado en móvil
+        if (this.isCollapsed) {
+            this.elements.body.classList.add('collapsed');
+            this.elements.toggle.setAttribute('aria-expanded', 'false');
+        }
     }
 
     render() {
@@ -765,6 +772,13 @@ class FiltrosAvanzados {
                         <div class="dropdown-custom" id="dropdown-ordenar"></div>
                     </div>
                 </div>
+
+                <!-- Botón Aplicar (visible solo en móvil via CSS) -->
+                <div class="filtros-row filtros-aplicar-row">
+                    <button class="btn btn-primary btn-aplicar-filtros" id="btn-aplicar-filtros" type="button">
+                        ✓ Aplicar Filtros
+                    </button>
+                </div>
             </div>
 
             <div class="filtros-chips" id="filtros-chips"></div>
@@ -786,7 +800,8 @@ class FiltrosAvanzados {
             chips: this.container.querySelector('#filtros-chips'),
             resultados: this.container.querySelector('#filtros-resultados'),
             badge: this.container.querySelector('#filtros-count'),
-            distanciaGrupo: this.container.querySelector('#filtro-distancia-grupo')
+            distanciaGrupo: this.container.querySelector('#filtro-distancia-grupo'),
+            btnAplicar: this.container.querySelector('#btn-aplicar-filtros')
         };
     }
 
@@ -859,6 +874,11 @@ class FiltrosAvanzados {
         // Limpiar todo
         this.elements.limpiar.addEventListener('click', () => this.clearAll());
 
+        // Aplicar filtros (cierra el bottom sheet en móvil)
+        if (this.elements.btnAplicar) {
+            this.elements.btnAplicar.addEventListener('click', () => this.closeSheet());
+        }
+
         // Busqueda con debounce
         const debouncedSearch = debounce(() => {
             this.state.busqueda = this.elements.busqueda.value.trim();
@@ -884,12 +904,56 @@ class FiltrosAvanzados {
         }, this.options.debounceMs);
 
         this.elements.ubicacion.addEventListener('input', debouncedUbicacion);
+
+        // Cerrar bottom sheet al hacer clic en overlay (móvil)
+        this.container.addEventListener('click', (e) => {
+            // Si se hace clic en el pseudo-elemento (overlay)
+            if (e.target === this.container && !this.isCollapsed && this.isMobile) {
+                this.closeSheet();
+            }
+        });
+
+        // Manejar resize de ventana
+        window.addEventListener('resize', debounce(() => {
+            const wasMobile = this.isMobile;
+            this.isMobile = window.innerWidth <= 768;
+
+            // Si cambió de móvil a desktop o viceversa
+            if (wasMobile !== this.isMobile) {
+                if (!this.isMobile) {
+                    // Pasó a desktop: expandir filtros, quitar clases móvil
+                    this.isCollapsed = false;
+                    this.elements.body.classList.remove('collapsed');
+                    this.container.classList.remove('sheet-open');
+                    document.body.style.overflow = '';
+                } else {
+                    // Pasó a móvil: colapsar filtros
+                    this.isCollapsed = true;
+                    this.elements.body.classList.add('collapsed');
+                }
+                this.elements.toggle.setAttribute('aria-expanded', !this.isCollapsed);
+            }
+        }, 150));
     }
 
     toggleCollapse() {
         this.isCollapsed = !this.isCollapsed;
         this.elements.body.classList.toggle('collapsed', this.isCollapsed);
         this.elements.toggle.setAttribute('aria-expanded', !this.isCollapsed);
+
+        // Manejar bottom sheet en móvil
+        if (this.isMobile) {
+            this.container.classList.toggle('sheet-open', !this.isCollapsed);
+
+            // Bloquear scroll del body cuando el sheet está abierto
+            document.body.style.overflow = this.isCollapsed ? '' : 'hidden';
+        }
+    }
+
+    closeSheet() {
+        if (!this.isCollapsed) {
+            this.toggleCollapse();
+        }
     }
 
     onFilterChange() {
