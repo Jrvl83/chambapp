@@ -8,22 +8,23 @@
        COLORES PRINCIPALES
        ============================================ */
     
-    /* Primary (Azul) - Acciones principales */
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-light: #dbeafe;
-    --primary-dark: #1e40af;
-    
-    /* Secondary (Verde) - Éxito, confirmaciones */
-    --secondary: #10b981;
-    --secondary-hover: #059669;
-    --secondary-light: #d1fae5;
-    --secondary-dark: #047857;
-    
-    /* Accent (Naranja) - Destacados, premium */
-    --accent: #f59e0b;
-    --accent-hover: #d97706;
-    --accent-light: #fef3c7;
+    /* PRIMARY - Azul ChambApp (Confianza, Profesionalismo) */
+    --primary: #0066FF;
+    --primary-hover: #0052CC;
+    --primary-light: #E6F2FF;
+    --primary-dark: #003D99;
+
+    /* SECONDARY - Verde Éxito (Logro, Dinero, Crecimiento) */
+    --secondary: #00C48C;
+    --secondary-hover: #00A876;
+    --secondary-light: #E6FFF6;
+    --secondary-dark: #008F66;
+
+    /* ACCENT - Naranja Energía (Acción, Urgencia, Destacar) */
+    --accent: #FF6B00;
+    --accent-hover: #E05F00;
+    --accent-light: #FFF3E6;
+    --accent-dark: #CC5500;
     
     /* Danger (Rojo) - Errores, eliminar */
     --danger: #ef4444;
@@ -63,17 +64,56 @@
     --border: var(--gray-200);
     
     /* ============================================
-       COLORES DE CATEGORÍAS (8 colores)
+       COLORES DE CATEGORÍAS (Optimizados UX)
        ============================================ */
-    --cat-construccion: #f97316;
-    --cat-limpieza: #8b5cf6;
-    --cat-gasfiteria: #0ea5e9;
-    --cat-electricidad: #eab308;
-    --cat-jardineria: #22c55e;
-    --cat-carpinteria: #f59e0b;
-    --cat-pintura: #6366f1;
-    --cat-mecanica: #6b7280;
-    --cat-otros: #64748b; /* Mejorado de #94a3b8 para contraste */
+    --cat-construccion: #F97316;  /* Naranja ladrillo */
+    --cat-electricidad: #FBBF24;  /* Amarillo eléctrico */
+    --cat-gasfiteria: #0EA5E9;    /* Azul agua */
+    --cat-limpieza: #A855F7;      /* Morado limpio */
+    --cat-jardineria: #22C55E;    /* Verde naturaleza */
+    --cat-carpinteria: #D97706;   /* Marrón madera */
+    --cat-pintura: #EC4899;       /* Rosa/Magenta */
+    --cat-mecanica: #64748B;      /* Gris metal */
+    --cat-otros: #6B7280;         /* Gris neutro */
+
+    /* ============================================
+       TIPOGRAFÍA
+       ============================================ */
+    --font-display: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Escala tipográfica */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-lg: 1.125rem;   /* 18px */
+    --text-xl: 1.25rem;    /* 20px */
+    --text-2xl: 1.5rem;    /* 24px */
+    --text-3xl: 1.875rem;  /* 30px */
+    --text-4xl: 2.25rem;   /* 36px */
+
+    /* ============================================
+       BORDES Y SOMBRAS
+       ============================================ */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* ============================================
+       TRANSICIONES
+       ============================================ */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.2s ease;
+    --transition-slow: 0.3s ease
     
     /* ============================================
        SISTEMA DE ESPACIADO (8px grid)

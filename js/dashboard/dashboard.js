@@ -813,21 +813,27 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
            <button class='btn btn-secondary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>`
         : `<button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>`;
 
+    // Capitalizar categoría para mostrar
+    const categoriaDisplay = oferta.categoria ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1) : 'Otros';
+
     return `
         <div class='oferta-card'>
-            <div class='oferta-header'>
-                <span class='oferta-categoria ${oferta.categoria}'>${oferta.categoria}</span>
-                <span class='oferta-fecha'>${formatearFecha(oferta.fechaCreacion)}</span>
-            </div>
-            <h3 class='oferta-titulo'>${oferta.titulo}</h3>
-            <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 120)}...</p>
-            <div class='oferta-detalles'>
-                <span class='detalle'>💰 ${oferta.salario}</span>
-                <span class='detalle'>📍 ${ubicacionTexto}</span>
-                ${distanciaBadge}
-            </div>
-            <div class='oferta-footer'>
-                ${footerHTML}
+            <div class='oferta-categoria-bar ${oferta.categoria || 'otros'}'></div>
+            <div class='oferta-card-body'>
+                <div class='oferta-header'>
+                    <span class='oferta-categoria ${oferta.categoria || 'otros'}'>${categoriaDisplay}</span>
+                    <span class='oferta-fecha'>${formatearFecha(oferta.fechaCreacion)}</span>
+                </div>
+                <h3 class='oferta-titulo'>${oferta.titulo}</h3>
+                <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 100) || ''}...</p>
+                <div class='oferta-detalles'>
+                    <span class='detalle detalle-salario'>💰 ${oferta.salario}</span>
+                    <span class='detalle'>📍 ${ubicacionTexto}</span>
+                    ${distanciaBadge}
+                </div>
+                <div class='oferta-footer'>
+                    ${footerHTML}
+                </div>
             </div>
         </div>
     `;
