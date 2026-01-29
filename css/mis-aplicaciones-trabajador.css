@@ -231,11 +231,11 @@ body {
     color: var(--secondary);
 }
 
-.stat-card.stat-exito {
+.stat-card.stat-completado {
     border-left-color: var(--completado);
 }
 
-.stat-card.stat-exito .stat-number {
+.stat-card.stat-completado .stat-number {
     color: var(--completado);
 }
 

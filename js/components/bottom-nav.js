@@ -96,21 +96,39 @@
     // NAVIGATION UPDATES
     // ============================================
     function updateNavigationForRole() {
-        if (!bottomNavAdd) return;
+        const bottomNavExplore = document.getElementById('bottom-nav-explore');
 
-        const icon = bottomNavAdd.querySelector('.bottom-nav-icon');
-        const label = bottomNavAdd.querySelector('.bottom-nav-label');
+        // Actualizar botón central (Add)
+        if (bottomNavAdd) {
+            const iconAdd = bottomNavAdd.querySelector('.bottom-nav-icon');
+            const labelAdd = bottomNavAdd.querySelector('.bottom-nav-label');
 
-        if (userRole === 'trabajador') {
-            // Trabajador: buscar chambas
-            bottomNavAdd.href = 'mapa-ofertas.html';
-            if (icon) icon.textContent = '🔍';
-            if (label) label.textContent = 'Buscar';
-        } else {
-            // Empleador: publicar ofertas
-            bottomNavAdd.href = 'publicar-oferta.html';
-            if (icon) icon.textContent = '➕';
-            if (label) label.textContent = 'Publicar';
+            if (userRole === 'trabajador') {
+                bottomNavAdd.href = 'mis-aplicaciones-trabajador.html';
+                if (iconAdd) iconAdd.textContent = '📋';
+                if (labelAdd) labelAdd.textContent = 'Postulaciones';
+            } else {
+                bottomNavAdd.href = 'publicar-oferta.html';
+                if (iconAdd) iconAdd.textContent = '➕';
+                if (labelAdd) labelAdd.textContent = 'Publicar';
+            }
+        }
+
+        // Actualizar botón Explorar según rol
+        if (bottomNavExplore) {
+            const iconExplore = bottomNavExplore.querySelector('.bottom-nav-icon');
+            const labelExplore = bottomNavExplore.querySelector('.bottom-nav-label');
+
+            if (userRole === 'trabajador') {
+                bottomNavExplore.href = 'mapa-ofertas.html';
+                if (iconExplore) iconExplore.textContent = '🔍';
+                if (labelExplore) labelExplore.textContent = 'Explorar';
+            } else {
+                // Empleador: ver candidatos
+                bottomNavExplore.href = 'mis-aplicaciones.html';
+                if (iconExplore) iconExplore.textContent = '👥';
+                if (labelExplore) labelExplore.textContent = 'Candidatos';
+            }
         }
     }
 

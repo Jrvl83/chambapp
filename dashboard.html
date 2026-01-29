@@ -154,29 +154,29 @@
                  ======================================== -->
             <div id="dashboard-trabajador" class="dashboard-view" style="display: none;">
 
-                <!-- Stats Cards Trabajador -->
+                <!-- Stats Cards Trabajador (Clickeables) -->
                 <div class="stats-grid">
-                    <div class="stat-card" tabindex="0">
+                    <a href="mapa-ofertas.html" class="stat-card stat-card-link">
                         <div class="stat-icon" id="stat-icon-t1">📋</div>
                         <div class="stat-info">
                             <h3 id="stat-number-t1">0</h3>
                             <p id="stat-label-t1">Ofertas Disponibles</p>
                         </div>
-                    </div>
-                    <div class="stat-card" tabindex="0">
+                    </a>
+                    <a href="mis-aplicaciones-trabajador.html" class="stat-card stat-card-link">
                         <div class="stat-icon" id="stat-icon-t2">💼</div>
                         <div class="stat-info">
                             <h3 id="stat-number-t2">0</h3>
                             <p id="stat-label-t2">Mis Aplicaciones</p>
                         </div>
-                    </div>
-                    <div class="stat-card" tabindex="0">
+                    </a>
+                    <a href="historial-calificaciones.html" class="stat-card stat-card-link">
                         <div class="stat-icon" id="stat-icon-t3">🤝</div>
                         <div class="stat-info">
                             <h3 id="stat-number-t3">0</h3>
                             <p id="stat-label-t3">Trabajos Completados</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Ofertas Section -->
@@ -212,23 +212,23 @@
                     </a>
                 </div>
 
-                <!-- Quick Stats Empleador - Mismo estilo que trabajador -->
+                <!-- Quick Stats Empleador (Clickeables) -->
                 <div class="stats-grid">
-                    <div class="stat-card" tabindex="0">
+                    <a href="#seccion-mis-ofertas" class="stat-card stat-card-link">
                         <div class="stat-icon">📋</div>
                         <div class="stat-info">
                             <h3 id="emp-ofertas-activas">0</h3>
                             <p>Ofertas Activas</p>
                         </div>
-                    </div>
-                    <div class="stat-card" tabindex="0">
+                    </a>
+                    <a href="mis-aplicaciones.html" class="stat-card stat-card-link">
                         <div class="stat-icon">👥</div>
                         <div class="stat-info">
                             <h3 id="emp-total-aplicaciones">0</h3>
                             <p>Postulaciones</p>
                         </div>
-                    </div>
-                    <div class="stat-card" tabindex="0">
+                    </a>
+                    <div class="stat-card">
                         <div class="stat-icon">🤝</div>
                         <div class="stat-info">
                             <h3 id="emp-contrataciones">0</h3>
@@ -238,7 +238,7 @@
                 </div>
 
                 <!-- Mis Ofertas -->
-                <section class="empleador-section">
+                <section class="empleador-section" id="seccion-mis-ofertas">
                     <div class="empleador-section-header">
                         <h2>Mis Ofertas</h2>
                         <a href="publicar-oferta.html" class="btn btn-primary">
@@ -289,7 +289,7 @@
                 <span class="bottom-nav-icon">🏠</span>
                 <span class="bottom-nav-label">Inicio</span>
             </a>
-            <a href="mapa-ofertas.html" class="bottom-nav-item" data-page="explore">
+            <a href="mapa-ofertas.html" class="bottom-nav-item" data-page="explore" id="bottom-nav-explore">
                 <span class="bottom-nav-icon">🔍</span>
                 <span class="bottom-nav-label">Explorar</span>
             </a>

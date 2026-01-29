@@ -49,6 +49,17 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 - ~~Logo gigante en páginas secundarias~~ → Corregido con estilos centralizados (28 Ene)
 - ~~Botón redundante "Ver Mapa" en dashboard~~ → Eliminado, se usa footer (28 Ene)
 
+#### ✅ RESUELTO: Stats y Navegación Mejorados (28 Ene)
+- **Stats clickeables en dashboard:** Los stats ahora son enlaces que llevan a las páginas correspondientes
+  - Trabajador: Ofertas → Explorar, Aplicaciones → Mis postulaciones, Completados → Historial
+  - Empleador: Ofertas Activas → scroll a sección, Postulaciones → Ver candidatos
+- **Footer adaptable por rol:**
+  - Trabajador: Explorar (🔍) + Postulaciones (📋)
+  - Empleador: Candidatos (👥) + Publicar (➕)
+- **Estadísticas de postulaciones corregidas:** Los cajones ahora coinciden con los filtros
+  - Antes: "Aceptados" sumaba aceptados + completados (confuso)
+  - Ahora: "Aceptados" = por hacer, "Completados" = terminados (consistente)
+
 #### UX Móvil Mejorable
 - Algunos touch targets muy pequeños en listas
 - Falta feedback táctil en algunas interacciones
@@ -57,6 +68,18 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 #### Empty States Genéricos
 - Mensaje de "No hay datos" sin guía de acción
 - Falta ilustraciones que humanicen la experiencia
+
+#### Páginas Pendientes por Crear
+- [ ] **Historial de Contratados (Empleador)** - Página para que empleadores vean su historial de trabajadores contratados. Actualmente `historial-calificaciones.html` solo funciona para trabajadores. El stat "Contratados" en el dashboard empleador no tiene enlace por esta razón.
+
+  **Especificación funcional:**
+  - **Header:** Mostrar calificación promedio del empleador (estrellas). Al hacer clic, ver detalle de calificaciones recibidas de trabajadores.
+  - **Lista de contrataciones:** Cada item debe mostrar:
+    - Nombre de la chamba/oferta
+    - Datos del trabajador (foto, nombre, contacto)
+    - Calificación dada al trabajador (estrellas)
+    - Si aún no se calificó → mostrar badge "Pendiente de calificar" con botón para calificar
+  - **Ordenamiento:** Más recientes primero, con pendientes de calificar destacados arriba
 
 ---
 

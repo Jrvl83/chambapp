@@ -116,11 +116,8 @@ function actualizarEstadisticas(aplicaciones, pendientes, aceptados, completados
 
     document.getElementById('total-aplicaciones').textContent = total;
     document.getElementById('pendientes').textContent = pendientes;
-    document.getElementById('aceptados').textContent = aceptados + completados;
-
-    // Calcular tasa de éxito (aceptados + completados / total)
-    const tasaExito = total > 0 ? Math.round(((aceptados + completados) / total) * 100) : 0;
-    document.getElementById('tasa-exito').textContent = `${tasaExito}%`;
+    document.getElementById('aceptados').textContent = aceptados;
+    document.getElementById('completados').textContent = completados;
 }
 
 // ============================================
