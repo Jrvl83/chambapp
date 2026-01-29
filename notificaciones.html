@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/notificaciones.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
+    <link rel="stylesheet" href="css/header-simple.css">
 </head>
 <body>
     <!-- Header -->
@@ -38,7 +39,7 @@
                 <img src="/assets/logo/logo-icono.png" alt="ChambApp" class="logo-img">
                 <span class="logo-text">ChambApp</span>
             </a>
-            <a href="dashboard.html" class="btn-volver">← Dashboard</a>
+            <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
         </div>
     </header>
 
@@ -126,7 +127,30 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav" id="bottom-nav"></nav>
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Navegacion principal movil">
+        <div class="bottom-nav-items">
+            <a href="dashboard.html" class="bottom-nav-item" data-page="home">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-label">Inicio</span>
+            </a>
+            <a href="mapa-ofertas.html" class="bottom-nav-item" data-page="explore">
+                <span class="bottom-nav-icon">🔍</span>
+                <span class="bottom-nav-label">Explorar</span>
+            </a>
+            <a href="publicar-oferta.html" class="bottom-nav-item nav-add" data-page="add" id="bottom-nav-add">
+                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-label">Publicar</span>
+            </a>
+            <a href="notificaciones.html" class="bottom-nav-item active" data-page="notifications" aria-current="page">
+                <span class="bottom-nav-icon">🔔</span>
+                <span class="bottom-nav-label">Alertas</span>
+            </a>
+            <a href="perfil-trabajador.html" class="bottom-nav-item" data-page="profile">
+                <span class="bottom-nav-icon">👤</span>
+                <span class="bottom-nav-label">Perfil</span>
+            </a>
+        </div>
+    </nav>
 
     <!-- Toast Container -->
     <div id="toast-container"></div>

@@ -1,7 +1,7 @@
 # UX/UI GUIA MAESTRA - CHAMBAPP
 
 **Documento de Identidad Visual y Mejoras UX**
-**Versión:** 1.1
+**Versión:** 1.2
 **Fecha:** 28 Enero 2026
 **Autor:** Análisis de Experto UX/UI
 
@@ -42,6 +42,12 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 - ~~Landing usa Poppins + Inter~~
 - ~~App usa system fonts (-apple-system)~~
 - **Estado:** SOLUCIONADO - Poppins + Inter en toda la app (28 Ene 2026)
+
+#### ✅ RESUELTO: Headers y Footers Inconsistentes
+- ~~Headers diferentes en Perfil, Alertas y Explorar~~ → Homologados con `header-simple.css` (28 Ene)
+- ~~Footer faltante en página de Alertas~~ → Bottom-nav agregado (28 Ene)
+- ~~Logo gigante en páginas secundarias~~ → Corregido con estilos centralizados (28 Ene)
+- ~~Botón redundante "Ver Mapa" en dashboard~~ → Eliminado, se usa footer (28 Ene)
 
 #### UX Móvil Mejorable
 - Algunos touch targets muy pequeños en listas
@@ -229,6 +235,50 @@ H1: "Encuentra tu chamba ideal" (Poppins Bold)
 ### 5.2 Alternativa Inmediata
 
 Usar Heroicons (https://heroicons.com/) o Phosphor Icons (https://phosphoricons.com/) que son gratuitos y consistentes.
+
+---
+
+## 5.5 HEADER SIMPLE (Páginas Secundarias)
+
+### Componente Centralizado
+El header de páginas secundarias (Perfil, Alertas, Explorar) está centralizado en `css/header-simple.css`.
+
+```css
+/* Estructura del Header Simple */
+.header {
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-volver {
+    padding: 0.5rem 1rem;
+    background: #64748b;
+    color: white;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+```
+
+### Páginas que usan Header Simple
+| Página | Archivo CSS |
+|--------|-------------|
+| perfil-trabajador.html | header-simple.css |
+| perfil-empleador.html | header-simple.css (inline) |
+| notificaciones.html | header-simple.css |
+| mapa-ofertas.html | header-simple.css |
 
 ---
 
@@ -583,6 +633,6 @@ Cada empty state debe tener:
 
 ---
 
-**Última actualización:** 27 Enero 2026
+**Última actualización:** 28 Enero 2026
 **Próxima revisión:** Al completar Sprint 8
 

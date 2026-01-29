@@ -3,67 +3,43 @@
    Centro de notificaciones in-app
    ============================================ */
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #0066FF;
+    --primary-dark: #0052CC;
+    --secondary: #00C48C;
+    --accent: #FF6B00;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --dark: #1e293b;
+    --gray: #64748b;
+    --light: #f1f5f9;
+    --white: #ffffff;
+    --border: #e2e8f0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
 /* ============================================
-   HEADER
+   HEADER - Usa estilos de components.css
    ============================================ */
-.header {
-    background: var(--white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 1.25rem;
-}
-
-.logo-img {
-    height: 32px;
-    width: auto;
-}
-
-.logo-text {
-    font-family: 'Poppins', sans-serif;
-}
-
-.btn-volver {
-    padding: 0.5rem 1rem;
-    background: var(--gray, #64748b);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    transition: all 0.2s ease;
-}
-
-.btn-volver:hover {
-    background: #475569;
-    transform: translateY(-1px);
-}
 
 /* Container */
 .container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
-    padding-bottom: 100px; /* Espacio para bottom nav */
+    padding: 2rem;
 }
 
 /* Page Header */

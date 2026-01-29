@@ -22,13 +22,13 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
 
-    <link rel="stylesheet" href="css/dashboard-main.css">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/mapa-ofertas.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
+    <link rel="stylesheet" href="css/header-simple.css">
 </head>
 <body>
 
@@ -38,21 +38,13 @@
     </a>
 
     <!-- Header -->
-    <header class="dashboard-header">
+    <header class="header">
         <div class="header-content">
-            <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
             <a href="dashboard.html" class="logo">
                 <img src="/assets/logo/logo-icono.png" alt="ChambApp" class="logo-img">
                 <span class="logo-text">ChambApp</span>
             </a>
-            <div class="user-menu">
-                <span class="user-name" id="user-name">Cargando...</span>
-                <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
-            </div>
+            <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
         </div>
     </header>
 
@@ -151,40 +143,6 @@
             </div>
         </main>
     </div>
-
-    <!-- Sidebar menu movil (reutilizado del dashboard) -->
-    <aside class="sidebar" id="sidebar" aria-label="Menu principal">
-        <button class="sidebar-close" id="sidebar-close" onclick="toggleMenu()" aria-label="Cerrar menu">&times;</button>
-        <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item">
-                <span class="icon">&#127968;</span>
-                <span>Inicio</span>
-            </a>
-            <a href="mapa-ofertas.html" class="nav-item active">
-                <span class="icon">&#128506;</span>
-                <span>Mapa de Ofertas</span>
-            </a>
-            <a href="publicar-oferta.html" class="nav-item" id="nav-publicar">
-                <span class="icon">&#10133;</span>
-                <span>Publicar Oferta</span>
-            </a>
-            <a href="mis-aplicaciones.html" class="nav-item" id="nav-trabajadores">
-                <span class="icon">&#128101;</span>
-                <span id="nav-trabajadores-text">Ver Candidatos</span>
-            </a>
-            <div class="nav-item" tabindex="0">
-                <span class="icon">&#128172;</span>
-                <span>Mensajes</span>
-            </div>
-            <a href="perfil-trabajador.html" class="nav-item" id="nav-perfil">
-                <span class="icon">&#9881;</span>
-                <span>Mi Perfil</span>
-            </a>
-        </nav>
-    </aside>
-
-    <!-- Overlay sidebar movil -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
 
     <!-- Bottom Navigation (Mobile PWA) -->
     <nav class="bottom-nav" id="bottom-nav" aria-label="Navegacion principal movil">

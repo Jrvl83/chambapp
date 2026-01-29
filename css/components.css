@@ -5,6 +5,66 @@
    ============================================ */
 
 /* ============================================
+   0. LOGO
+   ============================================ */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.logo-img {
+    height: 32px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark, #1e293b);
+}
+
+/* ============================================
+   0.5 HEADER SIMPLE (páginas secundarias)
+   ============================================ */
+.header {
+    background: var(--white, #ffffff);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-volver {
+    padding: 0.625rem 1.25rem;
+    background: var(--gray, #64748b);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-volver:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
+
+/* ============================================
    1. BOTONES
    ============================================ */
 
