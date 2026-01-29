@@ -489,7 +489,7 @@ Cada empty state debe tener:
 | Sin ofertas cercanas | "No hay chambas por aquí... aún" | "Estamos creciendo cada día. Amplía tu búsqueda o vuelve pronto." | "Ampliar búsqueda" |
 | Sin postulaciones | "Tu bandeja está vacía" | "Las chambas que te interesan aparecerán aquí." | "Explorar chambas" |
 | Sin notificaciones | "Todo tranquilo por acá" | "Cuando haya novedades, te avisamos al toque." | "Ir al inicio" |
-| Sin trabajadores aplicando | "Nadie ha postulado aún" | "Tu oferta es nueva. Compártela para más alcance." | "Compartir oferta" |
+| Sin trabajadores aplicando | "Nadie ha postulado aún" | "Tal vez tu oferta necesita algunos ajustes para ser más atractiva." | "Editar oferta" |
 | Error de conexión | "Sin conexión" | "Revisa tu internet e intenta de nuevo." | "Reintentar" |
 
 ---
