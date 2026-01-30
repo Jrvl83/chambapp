@@ -40,11 +40,14 @@ Revisar y limpiar el código existente para cumplir con las REGLAS_DESARROLLO.md
 
 **Nota:** Los `style="display: none;"` son funcionales para JS y son aceptables.
 
-### 1.3 Verificar Uso de Variables
-Buscar valores hardcodeados que deberían usar variables:
+### 1.3 Verificar Uso de Variables ⏸️ DIFERIDO
+**Análisis:** 413 colores hex + 733 valores px hardcodeados en 20 archivos CSS.
+**Decisión:** Diferido por alcance. Se aplicará gradualmente en futuras ediciones de archivos.
 - [ ] Colores: `#0066FF`, `#ffffff`, etc. → `var(--primary)`, `var(--white)`
 - [ ] Espaciado: `16px`, `1rem`, etc. → `var(--space-md)`
 - [ ] Bordes: `8px`, `12px` → `var(--radius-md)`, `var(--radius-lg)`
+
+**Regla:** En futuras ediciones de CSS, usar variables del design-system.css.
 
 ---
 
@@ -117,13 +120,13 @@ Priorizar correcciones con mayor impacto.
 
 ## 5. ORDEN DE EJECUCIÓN
 
-### Fase 1: CSS (Prioridad Alta) - EN PROGRESO
+### Fase 1: CSS (Prioridad Alta) - COMPLETADO (parcial)
 1. ✅ Eliminar CSS duplicado
-2. 🔄 Mover estilos inline a archivos CSS (parcial)
-3. [ ] Reemplazar valores hardcodeados por variables
+2. ✅ Mover estilos inline a archivos CSS (los restantes son display:none funcionales)
+3. ⏸️ Reemplazar valores hardcodeados por variables (diferido - se aplicará gradualmente)
 
-### Fase 2: JavaScript (Prioridad Media) - PENDIENTE
-1. [ ] Limpiar console.logs y código muerto
+### Fase 2: JavaScript (Prioridad Media) - EN PROGRESO
+1. 🔄 Limpiar console.logs y código muerto
 2. [ ] (Opcional) Modularizar archivos largos
 
 ### Fase 3: HTML/Accesibilidad (Prioridad Media) - PENDIENTE
@@ -154,6 +157,9 @@ Priorizar correcciones con mayor impacto.
 | 30/01/26 | Eliminados CSS duplicados (spinner, skeleton) de dashboard-main.css y mapa-ofertas.css |
 | 30/01/26 | Modal ubicación movido de estilos inline a clases CSS |
 | 30/01/26 | Inventario de console.logs realizado (100+ encontrados) |
+| 30/01/26 | Documentación reorganizada y consolidada |
+| 30/01/26 | Fase 1.3 diferida (413 colores + 733 px values - alcance muy grande) |
+| 30/01/26 | Iniciada Fase 2: Limpieza de console.logs |
 
 ---
 

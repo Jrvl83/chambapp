@@ -73,12 +73,6 @@ async function geocodificar(coords) {
         
         const data = await response.json();
         
-        // 🔍 Logging detallado para debugging
-        console.log('Geocoding API status:', data.status);
-        if (data.error_message) {
-            console.error('Geocoding API error:', data.error_message);
-        }
-        
         if (data.status === 'OK' && data.results[0]) {
             const result = data.results[0];
             const addressComponents = result.address_components;
@@ -109,8 +103,6 @@ async function geocodificar(coords) {
                 timestamp: new Date().toISOString()
             };
         } else {
-            console.error('Geocoding fallo con status:', data.status);
-            
             // Fallback: Guardar coordenadas sin error
             return {
                 lat: coords.lat,
@@ -122,9 +114,7 @@ async function geocodificar(coords) {
                 timestamp: new Date().toISOString()
             };
         }
-    } catch (error) {
-        console.error('Error en geocodificacion:', error);
-        
+    } catch {
         // Fallback en caso de error de red
         return {
             lat: coords.lat,
@@ -145,7 +135,6 @@ async function guardarUbicacion(uid, ubicacion) {
             ubicacion: ubicacion,
             ubicacionActualizada: serverTimestamp()
         });
-        console.log('Ubicacion guardada en Firestore');
     } catch (error) {
         console.error('Error guardando ubicacion:', error);
         throw error;
@@ -160,8 +149,7 @@ async function obtenerUbicacionGuardada(uid) {
             return data.ubicacion || null;
         }
         return null;
-    } catch (error) {
-        console.error('Error obteniendo ubicacion guardada:', error);
+    } catch {
         return null;
     }
 }
@@ -172,8 +160,7 @@ async function actualizarUbicacionSilenciosa(uid) {
         const ubicacion = await geocodificar(coords);
         await guardarUbicacion(uid, ubicacion);
         return ubicacion;
-    } catch (error) {
-        console.warn('No se pudo actualizar ubicacion en background:', error);
+    } catch {
         return null;
     }
 }
@@ -246,7 +233,6 @@ onAuthStateChanged(auth, async (user) => {
 async function verificarUbicacion(uid, tipoUsuario) {
     // Solo para trabajadores
     if (tipoUsuario !== 'trabajador') {
-        console.log('Empleador - no requiere ubicacion');
         return;
     }
     
@@ -255,21 +241,19 @@ async function verificarUbicacion(uid, tipoUsuario) {
         
         if (!ubicacionGuardada) {
             // Primera vez - mostrar modal
-            console.log('Primera vez - mostrando modal ubicacion');
             setTimeout(() => {
                 mostrarModalUbicacion();
             }, 2000);
         } else {
             // Ya tiene ubicación guardada
-            console.log('Ubicacion guardada:', ubicacionGuardada);
             mostrarBadgeUbicacion(ubicacionGuardada);
             
             // Actualizar en background después de 3 segundos
             actualizarUbicacionEnBackground(uid);
         }
         
-    } catch (error) {
-        console.error('Error verificando ubicacion:', error);
+    } catch {
+        // Error verificando ubicacion
     }
 }
 
@@ -281,12 +265,11 @@ async function actualizarUbicacionEnBackground(uid) {
             
             if (nuevaUbicacion) {
                 mostrarBadgeUbicacion(nuevaUbicacion);
-                console.log('Badge actualizado automáticamente');
             }
         }, 30 * 60 * 1000); // 30 minutos
-        
-    } catch (error) {
-        console.warn('Error actualizando ubicacion en background:', error);
+
+    } catch {
+        // Error actualizando ubicacion en background
     }
 }
 
@@ -298,7 +281,6 @@ function mostrarBadgeUbicacion(ubicacion) {
             lng: ubicacion.lng,
             distrito: ubicacion.distrito
         };
-        console.log('📍 Ubicacion usuario guardada para distancias:', ubicacionUsuario);
 
         // Task 24: Notificar al componente de filtros avanzados
         if (filtrosAvanzadosComponent) {
@@ -479,7 +461,6 @@ function personalizarPorTipo(tipo) {
         BottomNav.setUserRole(tipo);
     }
 
-    console.log('✅ Dashboard personalizado para:', tipo);
 }
 
 function ocultarLoading() {
@@ -861,19 +842,14 @@ function verificarParametroOferta() {
     // Leer de sessionStorage (viene del mapa de ofertas)
     const ofertaId = sessionStorage.getItem('abrirOferta');
 
-    console.log('verificarParametroOferta - ofertaId desde sessionStorage:', ofertaId);
-
     if (ofertaId) {
         // Limpiar inmediatamente para que no se abra de nuevo
         sessionStorage.removeItem('abrirOferta');
 
-        console.log('Abriendo oferta:', ofertaId);
         // Pequeño delay para asegurar que el DOM esté listo
         setTimeout(() => {
             if (typeof window.verDetalle === 'function') {
                 window.verDetalle(ofertaId);
-            } else {
-                console.error('Funcion verDetalle no disponible');
             }
         }, 500);
     }
@@ -974,7 +950,6 @@ function inicializarFiltrosAvanzados() {
         aplicarFiltrosAvanzados(estadoInicial);
     }
 
-    console.log('✅ Filtros avanzados inicializados');
 }
 
 function parsearSalario(salarioStr) {
@@ -1178,7 +1153,6 @@ window.limpiarFiltros = function() {
 };
 
 window.verDetalle = async function(id) {
-    console.log('Ver detalle:', id);
     try {
         const docRef = doc(db, 'ofertas', id);
         const docSnap = await getDoc(docRef);
@@ -1429,11 +1403,9 @@ async function inicializarNotificacionesPush(userId) {
     setTimeout(async () => {
         try {
             const estado = await verificarEstadoNotificaciones(db, userId);
-            console.log('[Notif] Estado actual:', estado);
 
             // Si el usuario ya denego permanentemente, no insistir
             if (estado.permisoBrowser === 'denied') {
-                console.log('[Notif] Usuario denego notificaciones permanentemente');
                 return;
             }
 
@@ -1442,7 +1414,6 @@ async function inicializarNotificacionesPush(userId) {
 
             // Si ya tiene token, todo listo
             if (estado.tieneToken) {
-                console.log('[Notif] Usuario ya tiene token FCM activo');
                 return;
             }
 
@@ -1451,8 +1422,8 @@ async function inicializarNotificacionesPush(userId) {
                 mostrarPromptNotificaciones();
             }
 
-        } catch (error) {
-            console.warn('[Notif] Error inicializando notificaciones:', error);
+        } catch {
+            // Error inicializando notificaciones
         }
     }, 3000);
 }
@@ -1467,8 +1438,8 @@ function escucharNotificacionesNoLeidas(userId) {
     onSnapshot(q, (snapshot) => {
         const noLeidas = snapshot.size;
         actualizarBadgeNotificaciones(noLeidas);
-    }, (error) => {
-        console.warn('[Notif] Error escuchando notificaciones:', error);
+    }, () => {
+        // Error escuchando notificaciones
     });
 }
 
@@ -1508,7 +1479,6 @@ function mostrarPromptNotificaciones() {
     const hoy = new Date().toDateString();
 
     if (ultimoPrompt === hoy) {
-        console.log('[Notif] Prompt ya mostrado hoy');
         return;
     }
 
@@ -1589,8 +1559,6 @@ window.activarNotificaciones = async function() {
                 default:
                     mensaje = result.message || 'Error al activar notificaciones';
             }
-
-            console.log('[Notif] Razon del fallo:', result.reason, result.message);
 
             if (typeof toastError === 'function') {
                 toastError(mensaje);

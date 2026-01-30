@@ -24,8 +24,6 @@ let uploadingPortfolio = false;
 // ============================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        console.log('✅ Usuario autenticado:', user.uid);
-        
         const usuarioStr = localStorage.getItem('usuarioChambApp');
         if (!usuarioStr) {
             toastError('Debes iniciar sesión');
@@ -44,9 +42,8 @@ onAuthStateChanged(auth, async (user) => {
         await cargarPerfil();
         inicializarTabs();
         inicializarEventos();
-        
+
     } else {
-        console.log('❌ No hay usuario autenticado');
         toastError('Debes iniciar sesión');
         setTimeout(() => window.location.href = 'login.html', 1000);
     }
@@ -62,9 +59,7 @@ async function cargarPerfil() {
         
         if (docSnap.exists()) {
             perfilData = docSnap.data();
-            console.log('✅ Perfil cargado:', perfilData);
         } else {
-            console.log('⚠️ No existe perfil, creando uno nuevo');
             perfilData = {
                 email: usuario.email,
                 nombre: usuario.nombre || '',
@@ -73,7 +68,6 @@ async function cargarPerfil() {
             };
             
             await setDoc(userDocRef, perfilData, { merge: true });
-            console.log('✅ Perfil inicial creado');
         }
         
         cargarDatosPersonales();
@@ -86,7 +80,7 @@ async function cargarPerfil() {
         cargarResenasRecibidas();
         
     } catch (error) {
-        console.error('❌ Error al cargar perfil:', error);
+        console.error('Error al cargar perfil:', error);
         if (typeof toastError === 'function') {
             toastError('Error al cargar el perfil');
         }
@@ -311,8 +305,6 @@ async function guardarPerfil() {
         const usuarioActualizado = { ...usuario, ...datosActualizados };
         localStorage.setItem('usuarioChambApp', JSON.stringify(usuarioActualizado));
         
-        console.log('✅ Perfil guardado exitosamente');
-        
         if (typeof toastSuccess === 'function') {
             toastSuccess('¡Perfil actualizado exitosamente! 🎉');
         } else {
@@ -324,7 +316,7 @@ async function guardarPerfil() {
         cargarDatosPersonales();
         
     } catch (error) {
-        console.error('❌ Error al guardar perfil:', error);
+        console.error('Error al guardar perfil:', error);
         if (typeof toastError === 'function') {
             toastError('Error al guardar el perfil');
         } else {
@@ -341,8 +333,7 @@ async function subirFoto() {
         if (!fotoFile || uploadingFoto) return null;
         
         uploadingFoto = true;
-        console.log('📤 Subiendo foto de perfil...');
-        
+
         // Crear referencia con timestamp para evitar cache
         const timestamp = Date.now();
         const storageRef = ref(storage, `perfiles/${auth.currentUser.uid}/foto-perfil-${timestamp}.jpg`);
@@ -352,17 +343,14 @@ async function subirFoto() {
         
         // Obtener URL de descarga
         const downloadURL = await getDownloadURL(storageRef);
-        
-        console.log('✅ Foto subida exitosamente:', downloadURL);
-        
+
         // Limpiar foto anterior si existe
         if (perfilData.fotoPerfilURL && perfilData.fotoPerfilURL.includes('firebasestorage')) {
             try {
                 const oldRef = ref(storage, perfilData.fotoPerfilURL);
                 await deleteObject(oldRef);
-                console.log('🗑️ Foto anterior eliminada');
-            } catch (error) {
-                console.log('⚠️ No se pudo eliminar foto anterior:', error);
+            } catch {
+                // Error eliminando foto anterior
             }
         }
         
@@ -372,7 +360,7 @@ async function subirFoto() {
         return downloadURL;
         
     } catch (error) {
-        console.error('❌ Error al subir foto:', error);
+        console.error('Error al subir foto:', error);
         uploadingFoto = false;
         
         if (typeof toastError === 'function') {
@@ -429,9 +417,7 @@ async function subirFotosPortfolio() {
         
         // Actualizar estado local
         perfilData.portfolioURLs = portfolioURLs;
-        
-        console.log('✅ Portfolio actualizado:', portfolioURLs);
-        
+
         if (typeof toastSuccess === 'function') {
             toastSuccess('¡Fotos agregadas al portfolio! 🎉');
         }
@@ -446,7 +432,7 @@ async function subirFotosPortfolio() {
         uploadingPortfolio = false;
         
     } catch (error) {
-        console.error('❌ Error al subir portfolio:', error);
+        console.error('Error al subir portfolio:', error);
         uploadingPortfolio = false;
         
         if (typeof toastError === 'function') {
@@ -470,9 +456,8 @@ async function eliminarFotoPortfolio(index) {
             try {
                 const storageRef = ref(storage, urlToDelete);
                 await deleteObject(storageRef);
-                console.log('🗑️ Foto eliminada de Storage');
-            } catch (error) {
-                console.log('⚠️ No se pudo eliminar de Storage:', error);
+            } catch {
+                // Error eliminando de Storage
             }
         }
         
@@ -493,7 +478,7 @@ async function eliminarFotoPortfolio(index) {
         calcularCompletitud();
         
     } catch (error) {
-        console.error('❌ Error al eliminar foto:', error);
+        console.error('Error al eliminar foto:', error);
         if (typeof toastError === 'function') {
             toastError('Error al eliminar la foto');
         }
@@ -549,7 +534,6 @@ async function optimizarImagen(file, maxWidth = 1920, maxHeight = 1920, quality 
                 canvas.toBlob(
                     (blob) => {
                         if (blob) {
-                            console.log(`📐 Optimización: ${Math.round(file.size / 1024)}KB → ${Math.round(blob.size / 1024)}KB`);
                             resolve(blob);
                         } else {
                             reject(new Error('Error al convertir imagen'));
@@ -595,16 +579,10 @@ function validarArchivo(file) {
     
     // Si es HEIC en desktop, mostrar mensaje informativo
     if (isHEIC && file.type === '') {
-        console.log('⚠️ Archivo HEIC detectado en desktop');
         return {
             valid: false,
             error: 'Archivos HEIC (iPhone) no soportados en desktop. Por favor:\n• Usa tu iPhone para subir, o\n• Convierte a JPG primero, o\n• Envíate la foto por WhatsApp/email (convierte automáticamente)'
         };
-    }
-    
-    // Si tiene extensión válida pero tipo vacío (otros casos), es válido
-    if (file.type === '' && tieneExtensionValida && !isHEIC) {
-        console.log('✅ Archivo con extensión válida detectado:', nombreArchivo);
     }
     
     // Límite aumentado a 15MB para archivo original
@@ -665,7 +643,7 @@ async function previsualizarFoto(event) {
         reader.readAsDataURL(optimizedBlob);
         
     } catch (error) {
-        console.error('❌ Error al procesar imagen:', error);
+        console.error('Error al procesar imagen:', error);
         if (typeof toastError === 'function') {
             toastError('Error al procesar la imagen');
         }
@@ -732,7 +710,7 @@ async function previsualizarPortfolio(event) {
         }
         
     } catch (error) {
-        console.error('❌ Error al procesar imágenes:', error);
+        console.error('Error al procesar imágenes:', error);
         if (typeof toastError === 'function') {
             toastError('Error al procesar las imágenes');
         }
@@ -1339,5 +1317,3 @@ window.eliminarHabilidad = eliminarHabilidad;
 window.abrirModalResponder = abrirModalResponder;
 window.cerrarModalResponder = cerrarModalResponder;
 window.enviarRespuesta = enviarRespuesta;
-
-console.log('✅ Perfil Trabajador con Storage cargado correctamente');

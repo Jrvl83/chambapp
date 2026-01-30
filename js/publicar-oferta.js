@@ -41,7 +41,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const ofertaId = urlParams.get('id');
 const modoEdicion = !!ofertaId;
 
-console.log(modoEdicion ? `馃摑 Modo Edici贸n - ID: ${ofertaId}` : '鉃?Modo Crear Nueva');
+// Modo: Edición o Crear Nueva
 
 // ============================================
 // VARIABLES GLOBALES
@@ -108,7 +108,6 @@ async function cargarGoogleMapsAPI() {
         window.initGoogleMapsPublicar = () => {
             googleMapsLoaded = true;
             googleMapsLoading = false;
-            console.log('✅ Google Maps API cargada para publicar-oferta');
             resolve();
         };
 
@@ -163,8 +162,6 @@ async function inicializarMapaPreview() {
 
         // Marcar como cargado
         contenedorMapa.classList.add('loaded');
-
-        console.log('✅ Mapa preview inicializado');
 
     } catch (error) {
         console.error('❌ Error al inicializar mapa preview:', error);
@@ -234,10 +231,8 @@ async function inicializarAutocomplete() {
             }
         });
 
-        console.log('✅ Autocomplete (Nueva Places API) inicializado');
-
     } catch (error) {
-        console.error('❌ Error al inicializar autocomplete:', error);
+        console.error('Error al inicializar autocomplete:', error);
         mostrarInputFallback();
     }
 }
@@ -262,8 +257,7 @@ async function buscarSugerencias(query) {
         } else {
             ocultarSugerencias();
         }
-    } catch (error) {
-        console.error('Error al buscar sugerencias:', error);
+    } catch {
         ocultarSugerencias();
     }
 }
@@ -322,9 +316,6 @@ async function seleccionarSugerencia(index) {
             fields: ['formattedAddress', 'location', 'addressComponents']
         });
 
-        console.log('📍 Place seleccionado:', place);
-        console.log('📍 Address Components:', place.addressComponents);
-
         // Actualizar input con la dirección formateada
         const inputDireccion = document.getElementById('direccion-exacta');
         if (inputDireccion) {
@@ -366,11 +357,8 @@ async function seleccionarSugerencia(index) {
             toastSuccess('Ubicación seleccionada correctamente');
         }
 
-        console.log('✅ Direccion seleccionada:', place.formattedAddress);
-        console.log('✅ Coordenadas:', lat, lng);
-
     } catch (error) {
-        console.error('❌ Error al obtener detalles:', error);
+        console.error('Error al obtener detalles:', error);
         if (typeof toastError === 'function') {
             toastError('Error al procesar la dirección');
         }
@@ -382,11 +370,8 @@ async function seleccionarSugerencia(index) {
 // ============================================
 async function autocompletarUbigeo(addressComponents, coordenadas = null) {
     if (!addressComponents || addressComponents.length === 0) {
-        console.warn('⚠️ No hay address components para autocompletar');
         return;
     }
-
-    console.log('📍 Address Components recibidos:', addressComponents);
 
     // Extraer información de los componentes
     let departamento = '';
@@ -398,8 +383,6 @@ async function autocompletarUbigeo(addressComponents, coordenadas = null) {
     for (const component of addressComponents) {
         const types = component.types || [];
         const nombre = component.longText || component.long_name || component.shortText || component.short_name || '';
-
-        console.log('Component:', { types, nombre });
 
         // Código postal - guardar para inferir distrito
         if (types.includes('postal_code')) {
@@ -446,12 +429,9 @@ async function autocompletarUbigeo(addressComponents, coordenadas = null) {
     if (codigoPostal && (distrito.toLowerCase() === 'lima' || !distrito)) {
         const distritoInferido = obtenerDistritoPorCodigoPostal(codigoPostal);
         if (distritoInferido && distritoInferido.toLowerCase() !== 'lima') {
-            console.log(`📍 Distrito inferido por código postal ${codigoPostal}:`, distritoInferido);
             distrito = distritoInferido;
         }
     }
-
-    console.log('📍 Ubigeo extraído (inicial):', { departamento, provincia, distrito, codigoPostal });
 
     // Intentar seleccionar departamento y provincia
     if (departamento) {
@@ -470,7 +450,6 @@ async function autocompletarUbigeo(addressComponents, coordenadas = null) {
 
                         // Si no se encontró y tenemos coordenadas, usar reverse geocoding
                         if (!distOk && coordenadasSeleccionadas) {
-                            console.log('🔄 Distrito no encontrado, usando reverse geocoding...');
                             const distritoReverso = await obtenerDistritoPorCoordenadas(
                                 coordenadasSeleccionadas.lat,
                                 coordenadasSeleccionadas.lng
@@ -481,7 +460,6 @@ async function autocompletarUbigeo(addressComponents, coordenadas = null) {
                         }
                     } else if (coordenadasSeleccionadas) {
                         // Si no tenemos distrito, intentar obtenerlo por reverse geocoding
-                        console.log('🔄 No hay distrito, usando reverse geocoding...');
                         const distritoReverso = await obtenerDistritoPorCoordenadas(
                             coordenadasSeleccionadas.lat,
                             coordenadasSeleccionadas.lng
@@ -506,8 +484,6 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
             location: { lat, lng }
         });
 
-        console.log('🔍 Reverse geocoding results:', response.results);
-
         if (response.results && response.results.length > 0) {
             // Estrategia 1: Buscar resultado con tipo "sublocality_level_1" (más específico para distritos en Lima)
             for (const result of response.results) {
@@ -517,7 +493,6 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
                         if (component.types.includes('sublocality_level_1') || component.types.includes('sublocality')) {
                             const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
                             if (distrito.toLowerCase() !== 'lima') {
-                                console.log('📍 Distrito (sublocality) encontrado:', distrito);
                                 return distrito;
                             }
                         }
@@ -534,7 +509,6 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
                             component.types.includes('administrative_area_level_3')) {
                             const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
                             if (distrito.toLowerCase() !== 'lima') {
-                                console.log('📍 Distrito (neighborhood/political) encontrado:', distrito);
                                 return distrito;
                             }
                         }
@@ -548,7 +522,6 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
                     if (component.types.includes('administrative_area_level_3')) {
                         const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
                         if (distrito.toLowerCase() !== 'lima') {
-                            console.log('📍 Distrito (admin_level_3) encontrado:', distrito);
                             return distrito;
                         }
                     }
@@ -561,7 +534,6 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
                     if (component.types.includes('locality')) {
                         const distrito = component.long_name.replace(/^(Distrito de|Distrito)\s*/i, '').trim();
                         if (distrito.toLowerCase() !== 'lima') {
-                            console.log('📍 Distrito (locality) encontrado:', distrito);
                             return distrito;
                         }
                     }
@@ -575,7 +547,6 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
                         const codigoPostal = component.long_name;
                         const distritoInferido = obtenerDistritoPorCodigoPostal(codigoPostal);
                         if (distritoInferido) {
-                            console.log('📍 Distrito inferido por código postal:', distritoInferido);
                             return distritoInferido;
                         }
                     }
@@ -583,13 +554,11 @@ async function obtenerDistritoPorCoordenadas(lat, lng) {
             }
 
             // Si todo falla, devolver Lima
-            console.log('⚠️ No se pudo determinar distrito específico, usando Lima');
             return 'Lima';
         }
 
         return null;
-    } catch (error) {
-        console.error('Error en reverse geocoding:', error);
+    } catch {
         return null;
     }
 }
@@ -741,12 +710,10 @@ async function seleccionarDepartamento(nombreDepto) {
             selectDepto.value = option.value;
             // Disparar evento change para cargar provincias
             selectDepto.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log('✅ Departamento seleccionado:', option.text);
             return true;
         }
     }
 
-    console.warn('⚠️ No se encontró departamento:', nombreDepto);
     return false;
 }
 
@@ -766,12 +733,10 @@ async function seleccionarProvincia(nombreProv) {
             selectProv.value = option.value;
             // Disparar evento change para cargar distritos
             selectProv.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log('✅ Provincia seleccionada:', option.text);
             return true;
         }
     }
 
-    console.warn('⚠️ No se encontró provincia:', nombreProv);
     return false;
 }
 
@@ -791,12 +756,10 @@ async function seleccionarDistrito(nombreDist) {
             selectDist.value = option.value;
             // Disparar evento change
             selectDist.dispatchEvent(new Event('change', { bubbles: true }));
-            console.log('✅ Distrito seleccionado:', option.text);
             return true;
         }
     }
 
-    console.warn('⚠️ No se encontró distrito:', nombreDist);
     return false;
 }
 
@@ -827,7 +790,6 @@ function mostrarInputFallback() {
             class="fallback-input"
         >
     `;
-    console.warn('⚠️ Usando input de fallback sin autocompletado');
 }
 
 // ============================================
@@ -847,7 +809,6 @@ function validarCoordenadasPeru(lat, lng) {
 // ============================================
 function actualizarMapaPreview(lat, lng, texto = '') {
     if (!mapaPreview || !marcadorPreview) {
-        console.warn('⚠️ Mapa no inicializado');
         return;
     }
 
@@ -869,8 +830,6 @@ function actualizarMapaPreview(lat, lng, texto = '') {
         infoContainer.style.display = 'flex';
         textoUbicacion.textContent = texto || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
     }
-
-    console.log('📍 Mapa actualizado:', lat, lng);
 }
 
 // ============================================
@@ -894,11 +853,9 @@ async function inicializarUbicacion() {
             option.dataset.name = dept.name;
             selectDepartamento.appendChild(option);
         });
-        
-        console.log('鉁?Departamentos cargados:', departamentos.length);
-        
+
     } catch (error) {
-        console.error('鉂?Error al cargar departamentos:', error);
+        console.error('Error al cargar departamentos:', error);
         const selectDepartamento = document.getElementById('departamento');
         selectDepartamento.innerHTML = '<option value="">Error al cargar - Reintentar</option>';
         
@@ -953,11 +910,9 @@ window.cargarProvincias = async function() {
             option.dataset.name = prov.name;
             selectProvincia.appendChild(option);
         });
-        
-        console.log('鉁?Provincias cargadas:', provincias.length);
-        
+
     } catch (error) {
-        console.error('鉂?Error al cargar provincias:', error);
+        console.error('Error al cargar provincias:', error);
         selectProvincia.innerHTML = '<option value="">Error al cargar</option>';
         
         if (typeof toastError === 'function') {
@@ -1008,11 +963,9 @@ window.cargarDistritos = async function() {
             option.dataset.name = dist.name;
             selectDistrito.appendChild(option);
         });
-        
-        console.log('鉁?Distritos cargados:', distritos.length);
-        
+
     } catch (error) {
-        console.error('鉂?Error al cargar distritos:', error);
+        console.error('Error al cargar distritos:', error);
         selectDistrito.innerHTML = '<option value="">Error al cargar</option>';
         
         if (typeof toastError === 'function') {
@@ -1040,8 +993,6 @@ window.seleccionarDistrito = async function() {
         nombre: selectedOption.dataset.name || selectedOption.textContent
     };
 
-    console.log('✅ Distrito seleccionado:', distritoSeleccionado.nombre);
-
     // Obtener coordenadas del distrito y actualizar mapa
     try {
         // Pasar departamento y provincia para búsqueda precisa (evita confusión entre distritos con mismo nombre)
@@ -1066,8 +1017,8 @@ window.seleccionarDistrito = async function() {
             // Actualizar mapa preview
             actualizarMapaPreview(coords.lat, coords.lng, textoUbicacion);
         }
-    } catch (error) {
-        console.warn('⚠️ No se pudieron obtener coordenadas del distrito:', error);
+    } catch {
+        // Error obteniendo coordenadas del distrito
     }
 };
 
@@ -1093,7 +1044,6 @@ async function obtenerUbicacionCompleta() {
 
     // Validar que las coordenadas esten en Peru
     if (coordenadas && !validarCoordenadasPeru(coordenadas.lat, coordenadas.lng)) {
-        console.warn('⚠️ Coordenadas fuera de Peru, usando centro de Lima');
         coordenadas = { lat: -12.0464, lng: -77.0428 };
     }
 
@@ -1223,9 +1173,7 @@ async function cargarOfertaParaEditar(id) {
         if (typeof toastSuccess === 'function') {
             toastSuccess('Oferta cargada correctamente');
         }
-        
-        console.log('鉁?Oferta cargada para edici贸n:', oferta.titulo);
-        
+
     } catch (error) {
         console.error('Error al cargar oferta:', error);
         if (loadingToast) loadingToast.remove();
@@ -1546,9 +1494,7 @@ formOferta.addEventListener('submit', async (e) => {
             if (typeof toastSuccess === 'function') {
                 toastSuccess('隆Oferta actualizada exitosamente! 馃捑');
             }
-            
-            console.log('鉁?Oferta actualizada:', ofertaId);
-            
+
         } else {
             // CREAR NUEVA OFERTA
             const nuevaOferta = {
@@ -1567,8 +1513,6 @@ formOferta.addEventListener('submit', async (e) => {
             if (typeof toastSuccess === 'function') {
                 toastSuccess('隆Oferta publicada exitosamente! 馃帀');
             }
-            
-            console.log('鉁?Oferta creada');
         }
         
         // Redirigir al dashboard
@@ -1603,10 +1547,7 @@ setTimeout(async () => {
     try {
         await inicializarMapaPreview();
         await inicializarAutocomplete();
-    } catch (error) {
-        console.warn('⚠️ No se pudo cargar Google Maps:', error.message);
+    } catch {
         // El formulario sigue funcionando sin el mapa
     }
 }, 500);
-
-console.log('✅ Formulario multi-paso con UBIGEO y Google Maps cargado correctamente');
