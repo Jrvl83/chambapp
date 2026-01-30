@@ -651,6 +651,14 @@ Cada empty state debe tener:
 | 3-4 | Auditoría y fixes de accesibilidad | PENDIENTE |
 | 4-5 | Dark mode (si hay tiempo) | PENDIENTE |
 
+### Refactorización (Pre-Sprint 8 continuación)
+| Tarea | Estado |
+|-------|--------|
+| Eliminar CSS duplicado | ✅ COMPLETADO (30 Ene) |
+| Mover estilos inline a CSS | 🔄 EN PROGRESO |
+| Limpiar console.logs | PENDIENTE |
+| Auditoría Lighthouse | PENDIENTE |
+
 ---
 
 ## 13. MÉTRICAS DE ÉXITO
