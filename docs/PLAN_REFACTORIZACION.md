@@ -60,16 +60,16 @@ Revisar y limpiar el código existente para cumplir con las REGLAS_DESARROLLO.md
 | mis-aplicaciones.js | ~1100 | Dividir en módulos | Baja |
 | perfil-trabajador.js | ~1200 | Dividir en módulos | Baja |
 
-### 2.2 Limpiar Console.logs ✅ PARCIALMENTE COMPLETADO
+### 2.2 Limpiar Console.logs ✅ COMPLETADO
 **Archivos limpiados:**
 | Archivo | Antes | Después | Estado |
 |---------|-------|---------|--------|
 | publicar-oferta.js | 33 logs | 0 logs | ✅ Limpio |
 | perfil-trabajador.js | 17 logs | 5 errors | ✅ Limpio |
 | dashboard.js | 25+ logs | 8 errors | ✅ Limpio |
-| perfil-empleador.js | 12 logs | - | ⏳ Pendiente |
-| onboarding.js | 11 logs | - | ⏳ Pendiente |
-| mapa-ofertas.js | 7 logs | - | ⏳ Pendiente |
+| perfil-empleador.js | 12 logs | 4 errors | ✅ Limpio |
+| onboarding.js | 21 logs | 0 logs | ✅ Limpio |
+| mapa-ofertas.js | 9 logs | 10 errors | ✅ Limpio |
 
 **Nota:** Se mantienen console.error para manejo de errores reales.
 
@@ -124,8 +124,8 @@ Priorizar correcciones con mayor impacto.
 2. ✅ Mover estilos inline a archivos CSS (los restantes son display:none funcionales)
 3. ⏸️ Reemplazar valores hardcodeados por variables (diferido - se aplicará gradualmente)
 
-### Fase 2: JavaScript (Prioridad Media) - EN PROGRESO
-1. ✅ Limpiar console.logs (3/6 archivos principales limpiados)
+### Fase 2: JavaScript (Prioridad Media) - ✅ COMPLETADO
+1. ✅ Limpiar console.logs (6/6 archivos principales limpiados)
 2. [ ] (Opcional) Modularizar archivos largos
 
 ### Fase 3: HTML/Accesibilidad (Prioridad Media) - PENDIENTE
@@ -158,7 +158,7 @@ Priorizar correcciones con mayor impacto.
 | 30/01/26 | Inventario de console.logs realizado (100+ encontrados) |
 | 30/01/26 | Documentación reorganizada y consolidada |
 | 30/01/26 | Fase 1.3 diferida (413 colores + 733 px values - alcance muy grande) |
-| 30/01/26 | Fase 2: Limpiados ~75 console.logs de 3 archivos principales |
+| 30/01/26 | Fase 2: Limpiados ~120 console.logs de 6 archivos principales ✅ |
 
 ---
 
