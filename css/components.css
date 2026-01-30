@@ -844,6 +844,231 @@ input[type="radio"] {
     height: 100px;
 }
 
+/* Skeleton para aplicacion/candidato card */
+.skeleton-aplicacion {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.skeleton-aplicacion-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.skeleton-avatar-lg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.skeleton-aplicacion-info {
+    flex: 1;
+}
+
+.skeleton-aplicacion-info .skeleton-text {
+    margin-bottom: var(--space-xs);
+}
+
+.skeleton-aplicacion-info .skeleton-text:last-child {
+    width: 60%;
+    margin-bottom: 0;
+}
+
+.skeleton-aplicacion-body {
+    margin-bottom: var(--space-md);
+}
+
+.skeleton-aplicacion-body .skeleton-text {
+    margin-bottom: var(--space-xs);
+}
+
+.skeleton-aplicacion-actions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.skeleton-btn {
+    height: 36px;
+    width: 100px;
+    border-radius: var(--radius-md);
+}
+
+/* Skeleton para notificacion */
+.skeleton-notificacion {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: white;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+}
+
+.skeleton-notif-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.skeleton-notif-content {
+    flex: 1;
+}
+
+.skeleton-notif-content .skeleton-text:first-child {
+    height: 14px;
+    width: 80%;
+    margin-bottom: var(--space-xs);
+}
+
+.skeleton-notif-content .skeleton-text:last-child {
+    height: 12px;
+    width: 40%;
+}
+
+/* Skeleton para oferta card */
+.skeleton-oferta {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.skeleton-oferta-bar {
+    height: 4px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    margin: calc(var(--space-lg) * -1);
+    margin-bottom: var(--space-md);
+}
+
+.skeleton-oferta-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+}
+
+.skeleton-badge {
+    height: 24px;
+    width: 80px;
+    border-radius: var(--radius-full);
+}
+
+.skeleton-date {
+    height: 14px;
+    width: 60px;
+}
+
+.skeleton-oferta-title {
+    height: 20px;
+    width: 70%;
+    margin-bottom: var(--space-sm);
+}
+
+.skeleton-oferta-desc {
+    height: 14px;
+    width: 100%;
+    margin-bottom: var(--space-xs);
+}
+
+.skeleton-oferta-desc:last-of-type {
+    width: 80%;
+}
+
+/* Skeleton para perfil */
+.skeleton-perfil-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.skeleton-perfil-info {
+    flex: 1;
+}
+
+.skeleton-perfil-name {
+    height: 28px;
+    width: 60%;
+    margin-bottom: var(--space-sm);
+}
+
+.skeleton-perfil-email {
+    height: 16px;
+    width: 40%;
+}
+
+/* Skeleton para calificacion */
+.skeleton-calificacion {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.skeleton-estrellas {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+}
+
+.skeleton-estrella {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+
+/* Loading container con mensaje - Estilo igual al mapa */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    padding: var(--space-2xl);
+    gap: 1rem;
+}
+
+.loading-state p {
+    font-size: 0.9375rem;
+    color: var(--gray-500);
+    margin: 0;
+}
+
+/* Spinner - Mismo estilo que el mapa */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--gray-200, #e2e8f0);
+    border-top-color: var(--primary, #0066FF);
+    border-radius: 50%;
+    animation: spinner 1s linear infinite;
+}
+
+.spinner-small {
+    width: 24px;
+    height: 24px;
+    border-width: 3px;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* ============================================
    8. DIVIDERS
    ============================================ */

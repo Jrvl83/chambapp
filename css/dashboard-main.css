@@ -327,18 +327,49 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================
-   🔴 MEJORA #2: SKELETON LOADING
+   🔴 MEJORA #2: LOADING SCREEN CENTRADO
    ============================================ */
+.loading-screen-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 1.5rem;
+}
+
+.loading-screen-centered p {
+    color: var(--gray, #64748b);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top-color: var(--primary, #0066FF);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Skeleton (para otras páginas) */
 .skeleton {
-    animation: skeleton-loading 1.5s infinite;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
     background: linear-gradient(
         90deg,
-        #f0f0f0 0%,
-        #e0e0e0 50%,
-        #f0f0f0 100%
+        #e2e8f0 0%,
+        #cbd5e1 50%,
+        #e2e8f0 100%
     );
     background-size: 200% 100%;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 @keyframes skeleton-loading {
@@ -347,18 +378,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .skeleton-stat {
-    height: 120px;
-    margin-bottom: 1rem;
+    height: 100px;
+    margin-bottom: 0;
 }
 
 .skeleton-card {
-    height: 280px;
+    height: 200px;
     margin-bottom: 1rem;
 }
 
 .skeleton-text {
     height: 20px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     width: 100%;
 }
 

@@ -532,52 +532,57 @@ Cada empty state debe tener:
 
 ## 9. LOADING STATES (Task 34)
 
+> **Estado:** ✅ IMPLEMENTADO (30 Enero 2026)
+>
+> **Archivos actualizados:**
+> - `css/components.css` - Nuevos estilos de skeleton
+> - `mis-aplicaciones.html`, `mis-aplicaciones-trabajador.html`
+> - `notificaciones.html`, `historial-calificaciones.html`
+> - `perfil-trabajador.html`, `perfil-empleador.html`
+>
+> **Skeletons implementados:**
+> - `.skeleton-aplicacion` - Cards de candidatos/postulaciones
+> - `.skeleton-notificacion` - Items de notificaciones
+> - `.skeleton-calificacion` - Cards de calificaciones
+> - `.skeleton-avatar`, `.skeleton-avatar-lg` - Avatares
+
 ### 9.1 Skeletons Contextuales
 
 ```css
-/* Skeleton para card de oferta */
-.skeleton-offer {
-    height: 160px;
-    border-radius: 16px;
-    background: linear-gradient(
-        90deg,
-        var(--gray-100) 0%,
-        var(--gray-200) 50%,
-        var(--gray-100) 100%
-    );
+/* Skeleton base con shimmer */
+.skeleton {
+    background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
     background-size: 200% 100%;
-    animation: skeleton-shimmer 1.5s infinite;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
 }
 
-@keyframes skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
+/* Skeleton para aplicación/candidato */
+.skeleton-aplicacion { /* Card completa con header, body, actions */ }
+.skeleton-avatar { width: 48px; height: 48px; border-radius: 50%; }
+.skeleton-badge { height: 24px; width: 80px; border-radius: 9999px; }
+.skeleton-btn { height: 36px; width: 100px; }
 
-/* Skeleton para perfil */
-.skeleton-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-}
+/* Skeleton para notificación */
+.skeleton-notificacion { /* Icono + contenido */ }
+.skeleton-notif-icon { width: 40px; height: 40px; }
 
-/* Skeleton para stats */
-.skeleton-stat {
-    width: 100%;
-    height: 100px;
-    border-radius: 12px;
-}
+/* Skeleton para calificación */
+.skeleton-calificacion { /* Estrellas + texto */ }
+.skeleton-estrella { width: 20px; height: 20px; }
 ```
 
-### 9.2 Mensajes de Carga Contextuales
+### 9.2 Mensajes de Carga Contextuales (Tono Neutro)
 
-| Acción | Mensaje |
-|--------|---------|
-| Cargando ofertas | "Buscando chambas cerca de ti..." |
-| Cargando perfil | "Preparando tu perfil..." |
-| Enviando postulación | "Enviando tu postulación..." |
-| Guardando cambios | "Guardando..." |
-| Subiendo foto | "Subiendo tu foto..." |
+| Página/Acción | Mensaje |
+|---------------|---------|
+| Candidatos | "Cargando candidatos..." |
+| Postulaciones | "Cargando postulaciones..." |
+| Notificaciones | "Cargando notificaciones..." |
+| Calificaciones | "Cargando calificaciones..." |
+| Mapa | "Cargando mapa de ofertas..." |
+| Perfil | "Cargando perfil..." |
+| Enviar postulación | "⏳ Enviando..." |
+| Guardar cambios | "💾 Guardando..." |
 
 ---
 
@@ -639,12 +644,12 @@ Cada empty state debe tener:
 | 4-5 | Empty states con copy mejorado (tono neutro/formal) | ✅ COMPLETADO (30 Ene) |
 
 ### Sprint 8: Pulido (Tasks 33-36)
-| Día | Tarea |
-|-----|-------|
-| 1-2 | Error states y validaciones mejoradas |
-| 2-3 | Loading states contextuales (skeletons) |
-| 3-4 | Auditoría y fixes de accesibilidad |
-| 4-5 | Dark mode (si hay tiempo) |
+| Día | Tarea | Estado |
+|-----|-------|--------|
+| 1-2 | Error states y validaciones mejoradas | PENDIENTE |
+| 2-3 | Loading states contextuales (skeletons) | ✅ COMPLETADO (30 Ene) |
+| 3-4 | Auditoría y fixes de accesibilidad | PENDIENTE |
+| 4-5 | Dark mode (si hay tiempo) | PENDIENTE |
 
 ---
 
