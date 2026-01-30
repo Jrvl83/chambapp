@@ -328,12 +328,252 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 > Actualizar esta sección cuando se identifique deuda técnica
 
-| Fecha | Archivo | Problema | Prioridad |
-|-------|---------|----------|-----------|
-| 30/01/26 | components.css + dashboard-main.css | CSS duplicado (.skeleton, .spinner) | Alta |
-| 30/01/26 | Varios HTML | Estilos inline | Media |
-| 30/01/26 | dashboard.js | 1500+ líneas, necesita modularizar | Media |
-| 30/01/26 | General | Auditoría Lighthouse pendiente | Alta |
+| Fecha | Archivo | Problema | Prioridad | Estado |
+|-------|---------|----------|-----------|--------|
+| 30/01/26 | components.css + dashboard-main.css | CSS duplicado | Alta | ✅ Resuelto |
+| 30/01/26 | Varios HTML | Estilos inline | Media | ✅ Resuelto |
+| 30/01/26 | 6 archivos JS | Console.logs debug | Media | ✅ Resuelto |
+| 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | Pendiente |
+| 30/01/26 | General | Auditoría Lighthouse | Alta | Pendiente |
+| 30/01/26 | General | Meta tags SEO/OG | Media | Pendiente |
+
+---
+
+## 11. TESTING
+
+### 11.1 Checklist de Pruebas Manuales
+Antes de cada deploy, verificar en dispositivo real o emulador:
+
+**Flujos críticos:**
+- [ ] Registro nuevo usuario (trabajador y empleador)
+- [ ] Login/Logout
+- [ ] Publicar oferta (empleador)
+- [ ] Postular a oferta (trabajador)
+- [ ] Aceptar/Rechazar postulación
+- [ ] Contacto WhatsApp funciona
+- [ ] Calificaciones se guardan
+
+**Dispositivos:**
+- [ ] Chrome Android
+- [ ] Safari iOS
+- [ ] Chrome Desktop
+- [ ] Firefox Desktop
+
+### 11.2 Pruebas de Regresión
+Después de cambios importantes, verificar que features existentes no se rompieron.
+
+---
+
+## 12. MANEJO DE ERRORES Y FALLBACKS
+
+### 12.1 Estrategia de Errores
+```javascript
+// SIEMPRE mostrar feedback al usuario
+try {
+    const resultado = await operacionRiesgosa();
+    toastSuccess('Operación exitosa');
+} catch (error) {
+    console.error('Contexto del error:', error);
+    toastError('Mensaje amigable para el usuario');
+}
+```
+
+### 12.2 Fallbacks Requeridos
+| Servicio | Fallback |
+|----------|----------|
+| Firebase Auth | Mostrar pantalla de error + botón reintentar |
+| Firestore | Mostrar datos en caché si existen |
+| Google Maps | Mostrar mensaje "Mapa no disponible" + dirección en texto |
+| Storage (fotos) | Mostrar avatar/imagen placeholder |
+| FCM (notificaciones) | App funciona sin notificaciones |
+
+### 12.3 Mensajes de Error
+- **Ser específico:** "No se pudo guardar la foto" vs "Error"
+- **Dar solución:** "Verifica tu conexión e intenta de nuevo"
+- **No mostrar errores técnicos** al usuario (solo en console.error)
+
+---
+
+## 13. MANEJO DE ESTADO
+
+### 13.1 Dónde Guardar Datos
+| Tipo de dato | Dónde | Ejemplo |
+|--------------|-------|---------|
+| Sesión usuario | localStorage | `usuarioChambApp` |
+| Preferencias UI | localStorage | `tema`, `filtros` |
+| Datos temporales | sessionStorage | `ofertaEnEdicion` |
+| Datos persistentes | Firestore | perfiles, ofertas, aplicaciones |
+| Caché de consultas | Variable JS | `todasLasOfertas` |
+
+### 13.2 Convenciones de Keys
+```javascript
+// localStorage keys - usar prefijo chambapp-
+localStorage.setItem('chambapp-usuario', JSON.stringify(usuario));
+localStorage.setItem('chambapp-tema', 'dark');
+localStorage.setItem('chambapp-onboarding-completed', 'true');
+```
+
+### 13.3 Sincronización
+- Al iniciar sesión: cargar datos de Firestore → localStorage
+- Al cerrar sesión: limpiar localStorage
+- Cambios importantes: guardar en Firestore inmediatamente
+
+---
+
+## 14. PWA Y OFFLINE
+
+### 14.1 Service Worker
+- `firebase-messaging-sw.js` maneja notificaciones push
+- Caché de assets estáticos (CSS, JS, imágenes)
+
+### 14.2 Qué Funciona Offline
+| Feature | Offline | Notas |
+|---------|---------|-------|
+| Ver ofertas cargadas | ✅ | Si ya se cargaron |
+| Publicar oferta | ❌ | Requiere conexión |
+| Postular | ❌ | Requiere conexión |
+| Ver perfil propio | ✅ | Desde localStorage |
+| Editar perfil | ❌ | Requiere conexión |
+
+### 14.3 Detectar Conexión
+```javascript
+// Verificar estado de conexión
+if (!navigator.onLine) {
+    toastWarning('Sin conexión. Algunas funciones no disponibles.');
+}
+
+// Escuchar cambios
+window.addEventListener('online', () => toastSuccess('Conexión restaurada'));
+window.addEventListener('offline', () => toastWarning('Sin conexión'));
+```
+
+---
+
+## 15. IMÁGENES Y ASSETS
+
+### 15.1 Formatos y Tamaños
+| Tipo | Formato | Tamaño máximo | Dimensiones |
+|------|---------|---------------|-------------|
+| Foto perfil | JPEG | 500KB optimizado | 800x800px |
+| Portfolio | JPEG | 500KB optimizado | 1920x1920px |
+| Logo | PNG | - | SVG preferido |
+| Iconos PWA | PNG | - | Múltiples tamaños |
+
+### 15.2 Optimización Automática
+```javascript
+// Ya implementado en perfil-trabajador.js y perfil-empleador.js
+const optimizedBlob = await optimizarImagen(file, maxWidth, maxHeight, quality);
+```
+
+### 15.3 Lazy Loading
+```html
+<!-- Imágenes below-the-fold -->
+<img src="foto.jpg" alt="Descripción" loading="lazy">
+```
+
+---
+
+## 16. SEO Y COMPARTIR
+
+### 16.1 Meta Tags Requeridos
+```html
+<head>
+    <title>ChambApp - Encuentra trabajo en Perú</title>
+    <meta name="description" content="Marketplace de trabajos temporales...">
+
+    <!-- Open Graph (Facebook, WhatsApp) -->
+    <meta property="og:title" content="ChambApp">
+    <meta property="og:description" content="Encuentra chambas cerca de ti">
+    <meta property="og:image" content="/assets/logo/og-image.png">
+    <meta property="og:url" content="https://chambapp-7785b.web.app">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+```
+
+### 16.2 URLs Amigables
+- Usar IDs cortos cuando sea posible
+- Evitar parámetros innecesarios en URLs públicas
+
+---
+
+## 17. ANALYTICS Y MONITOREO
+
+### 17.1 Eventos a Trackear
+| Evento | Cuándo | Datos |
+|--------|--------|-------|
+| `registro_completado` | Usuario completa registro | tipo (trabajador/empleador) |
+| `oferta_publicada` | Empleador publica oferta | categoría |
+| `postulacion_enviada` | Trabajador postula | categoría oferta |
+| `postulacion_aceptada` | Empleador acepta | - |
+| `contacto_whatsapp` | Click en botón WhatsApp | contexto |
+| `calificacion_enviada` | Usuario califica | estrellas |
+
+### 17.2 Implementación (Firebase Analytics)
+```javascript
+// Ejemplo de evento
+firebase.analytics().logEvent('postulacion_enviada', {
+    categoria: 'construccion',
+    ubicacion: 'Lima'
+});
+```
+
+### 17.3 Monitoreo de Errores
+- Errores críticos → console.error + considerar Firebase Crashlytics
+- Revisar Firebase Console periódicamente
+
+---
+
+## 18. VERSIONADO
+
+### 18.1 Semantic Versioning
+```
+MAJOR.MINOR.PATCH
+
+v1.0.0 - Primera versión estable
+v1.1.0 - Nueva feature (filtros avanzados)
+v1.1.1 - Bugfix (corrección menor)
+v2.0.0 - Cambio breaking (nuevo modelo de datos)
+```
+
+### 18.2 Dónde Documentar Versión
+- `package.json` → campo "version"
+- `manifest.json` → referencia
+- Tag en Git → `git tag v1.0.0`
+
+### 18.3 Changelog
+Mantener registro de cambios importantes en `docs/CHANGELOG.md` (crear cuando sea necesario).
+
+---
+
+## 19. RATE LIMITING Y SPAM
+
+### 19.1 Protecciones Cliente
+```javascript
+// Debounce en búsquedas
+let debounceTimer;
+input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => buscar(), 300);
+});
+
+// Deshabilitar botón después de click
+btn.disabled = true;
+await enviarFormulario();
+btn.disabled = false;
+```
+
+### 19.2 Protecciones Firebase
+- Firestore Rules: limitar escrituras por usuario
+- Cloud Functions: rate limiting en endpoints sensibles
+
+### 19.3 Límites de Negocio
+| Acción | Límite Free | Límite Premium |
+|--------|-------------|----------------|
+| Postulaciones/mes | 5 | Ilimitado |
+| Mensajes/día | 10 | Ilimitado |
+| Ofertas activas | 3 | 10 |
 
 ---
 
