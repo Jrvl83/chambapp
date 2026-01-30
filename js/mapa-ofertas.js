@@ -92,16 +92,13 @@ function cargarMarkerClusterer() {
             // Esperar un momento para que la libreria se inicialice
             setTimeout(() => {
                 if (window.markerClusterer && window.markerClusterer.MarkerClusterer) {
-                    console.log('MarkerClusterer cargado correctamente');
                     resolve();
                 } else {
-                    console.warn('MarkerClusterer no disponible, continuando sin clustering');
                     resolve(); // Resolver de todas formas para no bloquear
                 }
             }, 100);
         };
         script.onerror = () => {
-            console.warn('Error cargando MarkerClusterer, continuando sin clustering');
             resolve(); // Resolver de todas formas
         };
         document.head.appendChild(script);
@@ -136,7 +133,6 @@ async function inicializarMapa() {
         const loading = document.getElementById('mapa-loading');
         if (loading) loading.classList.add('oculto');
 
-        console.log('Mapa inicializado correctamente');
 
         // Cargar ofertas
         await cargarOfertas();
@@ -196,7 +192,6 @@ async function cargarOfertas() {
             }
         });
 
-        console.log(`${todasLasOfertas.length} ofertas con coordenadas cargadas`);
 
         // Aplicar filtros iniciales
         aplicarFiltrosMapa();
@@ -823,7 +818,6 @@ async function cargarAplicacionesUsuario(userId) {
         );
         const snapshot = await getDocs(q);
         aplicacionesUsuario = snapshot.docs.map(doc => doc.data().ofertaId);
-        console.log('Aplicaciones del usuario cargadas:', aplicacionesUsuario.length);
     } catch (error) {
         console.error('Error cargando aplicaciones:', error);
     }
@@ -1125,7 +1119,6 @@ onAuthStateChanged(auth, async (user) => {
 
             // Solo trabajadores pueden ver el mapa de ofertas
             if (usuarioData.tipo === 'empleador') {
-                console.log('Empleadores no tienen acceso al mapa de ofertas');
                 window.location.href = 'dashboard.html';
                 return;
             }
@@ -1142,7 +1135,6 @@ onAuthStateChanged(auth, async (user) => {
             // Obtener ubicacion guardada
             ubicacionUsuario = await obtenerUbicacionGuardada(user.uid);
             if (ubicacionUsuario) {
-                console.log('Ubicacion del usuario:', ubicacionUsuario);
             }
 
             // Cargar aplicaciones del usuario (para saber si ya postuló)
@@ -1158,4 +1150,3 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-console.log('Modulo mapa-ofertas.js cargado');

@@ -87,7 +87,6 @@ function iniciarOnboarding() {
     // Verificar si ya completo el tour
     const yaCompleto = localStorage.getItem(ONBOARDING_CONFIG.storageKeys.completed);
     if (yaCompleto === 'true') {
-        console.log('Usuario ya completo el onboarding');
         return;
     }
     
@@ -99,7 +98,6 @@ function iniciarOnboarding() {
         const horasPasadas = (ahora - timestampRecordatorio) / (1000 * 60 * 60);
         
         if (horasPasadas < ONBOARDING_CONFIG.recordatorioHoras) {
-            console.log('Recordatorio en ' + Math.round(ONBOARDING_CONFIG.recordatorioHoras - horasPasadas) + 'h');
             return;
         } else {
             localStorage.removeItem(ONBOARDING_CONFIG.storageKeys.remindLater);
@@ -108,24 +106,20 @@ function iniciarOnboarding() {
     
     // Verificar que Intro.js este cargado
     if (typeof introJs === 'undefined') {
-        console.error('Intro.js no esta cargado');
         return;
     }
-    
+
     // Obtener datos del usuario
     const usuarioData = localStorage.getItem('usuarioChambApp');
     if (!usuarioData) {
-        console.warn('No hay datos de usuario para onboarding');
         return;
     }
-    
+
     const usuario = JSON.parse(usuarioData);
-    console.log('Iniciando onboarding para:', usuario.tipo);
-    
+
     // Verificar si usuario ya interactuo
     const yaInteractuo = sessionStorage.getItem('usuario-ya-interactuo');
     if (yaInteractuo) {
-        console.log('Usuario ya interactuo, skip onboarding');
         marcarComoCompletado();
         return;
     }
@@ -162,9 +156,7 @@ function esperarDashboardCargado(callback) {
             clearInterval(verificarCarga);
             
             if (dashboardVisible) {
-                console.log('Dashboard cargado, iniciando onboarding');
             } else {
-                console.warn('Timeout esperando dashboard, iniciando onboarding de todas formas');
             }
             
             callback();
@@ -225,7 +217,6 @@ function tourTrabajadorMobile() {
         bloquearScrollSeguro();
     } else if (tieneBottomNav) {
         // Con bottom-nav, ir directo al tour del dashboard
-        console.log('Bottom nav detectado, saltando tour de sidebar');
         tourTrabajadorDashboard();
         return;
     }
@@ -255,7 +246,6 @@ function tourTrabajadorMobile() {
         const stepsValidos = validarPasos(steps);
         
         if (stepsValidos.length === 0) {
-            console.warn('No hay pasos validos en menu mobile, saltando al dashboard');
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
@@ -327,7 +317,6 @@ function tourTrabajadorDesktop() {
     const stepsValidos = validarPasos(steps);
     
     if (stepsValidos.length === 0) {
-        console.warn('No hay pasos validos en desktop, saltando al dashboard');
         tourTrabajadorDashboard();
         return;
     }
@@ -463,7 +452,6 @@ function tourEmpleadorMobile() {
         bloquearScrollSeguro();
     } else if (tieneBottomNav) {
         // Con bottom-nav, ir directo al tour del dashboard
-        console.log('Bottom nav detectado, saltando tour de sidebar');
         tourEmpleadorDashboard();
         return;
     }
@@ -493,7 +481,6 @@ function tourEmpleadorMobile() {
         const stepsValidos = validarPasos(steps);
         
         if (stepsValidos.length === 0) {
-            console.warn('No hay pasos validos en menu mobile empleador, saltando al dashboard');
             if (sidebar && overlay) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
@@ -565,7 +552,6 @@ function tourEmpleadorDesktop() {
     const stepsValidos = validarPasos(steps);
     
     if (stepsValidos.length === 0) {
-        console.warn('No hay pasos validos en desktop empleador, saltando al dashboard');
         tourEmpleadorDashboard();
         return;
     }
@@ -649,7 +635,6 @@ function validarPasos(steps) {
         const elemento = document.querySelector(step.element);
         
         if (!elemento) {
-            console.warn('Elemento no encontrado: ' + step.element);
             return false;
         }
         
@@ -660,7 +645,6 @@ function validarPasos(steps) {
         );
         
         if (!esVisible) {
-            console.warn('Elemento no visible: ' + step.element);
             return false;
         }
         
@@ -668,7 +652,6 @@ function validarPasos(steps) {
     });
     
     // FIX: Log de pasos validos
-    console.log('Pasos validos: ' + stepsValidos.length + ' de ' + steps.length);
     
     return stepsValidos;
 }
@@ -687,7 +670,6 @@ function finalizarOnboarding() {
         toastSuccess('¡Bienvenido a ChambApp! 🎉');
     }
 
-    console.log('Onboarding completado exitosamente');
 }
 
 function marcarComoCompletado() {
@@ -703,7 +685,6 @@ function recordarMasTarde() {
     mostrarBottomNavDespuesOnboarding();
     desbloquearScrollSeguro();
 
-    console.log('Recordatorio configurado para ' + ONBOARDING_CONFIG.recordatorioHoras + 'h');
 }
 
 // ============================================
@@ -738,4 +719,3 @@ window.tourTrabajador = iniciarTourTrabajador;
 window.tourEmpleador = iniciarTourEmpleador;
 window.reiniciarOnboarding = reiniciarOnboarding;
 
-console.log('Onboarding ChambApp OPTIMIZADO cargado correctamente');

@@ -20,8 +20,6 @@ let uploadingFoto = false;
 // ============================================
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        console.log('✅ Usuario autenticado:', user.uid);
-        
         const usuarioStr = localStorage.getItem('usuarioChambApp');
         if (!usuarioStr) {
             toastError('Debes iniciar sesión');
@@ -40,7 +38,6 @@ onAuthStateChanged(auth, async (user) => {
         await cargarPerfil();
         
     } else {
-        console.log('❌ No hay usuario autenticado');
         toastError('Debes iniciar sesión');
         setTimeout(() => window.location.href = 'login.html', 1000);
     }
@@ -56,9 +53,7 @@ async function cargarPerfil() {
         
         if (docSnap.exists()) {
             perfilData = docSnap.data();
-            console.log('✅ Perfil cargado:', perfilData);
         } else {
-            console.log('⚠️ No existe perfil, creando uno nuevo');
             perfilData = {
                 email: usuario.email,
                 nombre: usuario.nombre || '',
@@ -67,13 +62,12 @@ async function cargarPerfil() {
             };
             
             await setDoc(userDocRef, perfilData, { merge: true });
-            console.log('✅ Perfil inicial creado');
         }
         
         cargarDatosPersonales();
         
     } catch (error) {
-        console.error('❌ Error al cargar perfil:', error);
+        console.error('Error al cargar perfil:', error);
         if (typeof toastError === 'function') {
             toastError('Error al cargar el perfil');
         }
@@ -132,7 +126,6 @@ async function optimizarImagen(file, maxWidth = 800, maxHeight = 800, quality = 
                 canvas.toBlob(
                     (blob) => {
                         if (blob) {
-                            console.log(`📐 Optimización: ${Math.round(file.size / 1024)}KB → ${Math.round(blob.size / 1024)}KB`);
                             resolve(blob);
                         } else {
                             reject(new Error('Error al convertir imagen'));
@@ -228,7 +221,7 @@ async function previsualizarFoto(event) {
         reader.readAsDataURL(optimizedBlob);
         
     } catch (error) {
-        console.error('❌ Error al procesar imagen:', error);
+        console.error('Error al procesar imagen:', error);
         if (typeof toastError === 'function') {
             toastError('Error al procesar la imagen');
         }
@@ -244,23 +237,19 @@ async function subirFoto() {
         if (!fotoFile || uploadingFoto) return null;
         
         uploadingFoto = true;
-        console.log('📤 Subiendo foto de perfil...');
-        
+
         const timestamp = Date.now();
         const storageRef = ref(storage, `perfiles/${auth.currentUser.uid}/foto-perfil-${timestamp}.jpg`);
         
         await uploadBytes(storageRef, fotoFile);
         const downloadURL = await getDownloadURL(storageRef);
-        
-        console.log('✅ Foto subida exitosamente:', downloadURL);
-        
+
         if (perfilData.fotoPerfilURL && perfilData.fotoPerfilURL.includes('firebasestorage')) {
             try {
                 const oldRef = ref(storage, perfilData.fotoPerfilURL);
                 await deleteObject(oldRef);
-                console.log('🗑️ Foto anterior eliminada');
-            } catch (error) {
-                console.log('⚠️ No se pudo eliminar foto anterior:', error);
+            } catch {
+                // Error eliminando foto anterior
             }
         }
         
@@ -270,7 +259,7 @@ async function subirFoto() {
         return downloadURL;
         
     } catch (error) {
-        console.error('❌ Error al subir foto:', error);
+        console.error('Error al subir foto:', error);
         uploadingFoto = false;
         
         if (typeof toastError === 'function') {
@@ -326,9 +315,7 @@ async function guardarPerfil() {
         
         const usuarioActualizado = { ...usuario, ...datosActualizados };
         localStorage.setItem('usuarioChambApp', JSON.stringify(usuarioActualizado));
-        
-        console.log('✅ Perfil guardado exitosamente');
-        
+
         if (typeof toastSuccess === 'function') {
             toastSuccess('¡Perfil actualizado exitosamente! 🎉');
         } else {
@@ -343,7 +330,7 @@ async function guardarPerfil() {
         btnGuardar.textContent = '💾 Guardar Cambios';
         
     } catch (error) {
-        console.error('❌ Error al guardar perfil:', error);
+        console.error('Error al guardar perfil:', error);
         if (typeof toastError === 'function') {
             toastError('Error al guardar el perfil');
         } else {
@@ -362,5 +349,3 @@ async function guardarPerfil() {
 // ============================================
 window.guardarPerfil = guardarPerfil;
 window.previsualizarFoto = previsualizarFoto;
-
-console.log('✅ Perfil Empleador cargado correctamente');
