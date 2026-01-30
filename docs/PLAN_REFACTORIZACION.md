@@ -128,9 +128,10 @@ Priorizar correcciones con mayor impacto.
 1. ✅ Limpiar console.logs (6/6 archivos principales limpiados)
 2. [ ] (Opcional) Modularizar archivos largos
 
-### Fase 3: HTML/Accesibilidad (Prioridad Media) - PENDIENTE
-1. [ ] Agregar alt, labels, aria-labels faltantes
-2. [ ] Verificar semántica
+### Fase 3: HTML/Accesibilidad (Prioridad Media) - ✅ AUDITORÍA INICIAL OK
+1. ✅ Auditoría rápida: imágenes tienen alt, 18 aria-labels existentes
+2. [ ] Verificar semántica (pendiente revisión manual)
+3. [ ] Correr Lighthouse para auditoría completa
 
 ### Fase 4: Performance (Prioridad Alta) - PENDIENTE
 1. [ ] Correr Lighthouse
@@ -159,6 +160,8 @@ Priorizar correcciones con mayor impacto.
 | 30/01/26 | Documentación reorganizada y consolidada |
 | 30/01/26 | Fase 1.3 diferida (413 colores + 733 px values - alcance muy grande) |
 | 30/01/26 | Fase 2: Limpiados ~120 console.logs de 6 archivos principales ✅ |
+| 30/01/26 | Fase 3: Auditoría inicial OK (imgs con alt, aria-labels presentes) |
+| 30/01/26 | Organización repo: favicons a assets/icons/, docs archivados |
 
 ---
 
