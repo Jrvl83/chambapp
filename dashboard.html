@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="css/bottom-nav.css">
     <link rel="stylesheet" href="css/dashboard-empleador.css">
     <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/animations.css">
 
     <!-- Intro.js Onboarding - Carga condicional -->
     <script>
@@ -130,7 +131,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content" id="main-content">
+        <main class="main-content page-content" id="main-content">
     
             <!-- Loading Screen -->
             <div id="loading-screen">
@@ -155,22 +156,22 @@
             <div id="dashboard-trabajador" class="dashboard-view" style="display: none;">
 
                 <!-- Stats Cards Trabajador (Clickeables) -->
-                <div class="stats-grid">
-                    <a href="mapa-ofertas.html" class="stat-card stat-card-link">
+                <div class="stats-grid stagger-fast">
+                    <a href="mapa-ofertas.html" class="stat-card stat-card-link touchable hover-lift">
                         <div class="stat-icon" id="stat-icon-t1">📋</div>
                         <div class="stat-info">
                             <h3 id="stat-number-t1">0</h3>
                             <p id="stat-label-t1">Ofertas Disponibles</p>
                         </div>
                     </a>
-                    <a href="mis-aplicaciones-trabajador.html" class="stat-card stat-card-link">
+                    <a href="mis-aplicaciones-trabajador.html" class="stat-card stat-card-link touchable hover-lift">
                         <div class="stat-icon" id="stat-icon-t2">💼</div>
                         <div class="stat-info">
                             <h3 id="stat-number-t2">0</h3>
                             <p id="stat-label-t2">Mis Aplicaciones</p>
                         </div>
                     </a>
-                    <a href="historial-calificaciones.html" class="stat-card stat-card-link">
+                    <a href="historial-calificaciones.html" class="stat-card stat-card-link touchable hover-lift">
                         <div class="stat-icon" id="stat-icon-t3">🤝</div>
                         <div class="stat-info">
                             <h3 id="stat-number-t3">0</h3>
@@ -190,7 +191,7 @@
                         <!-- Componente se inicializa via JavaScript -->
                     </div>
 
-                    <div class="ofertas-grid" id="ofertas-grid-trabajador">
+                    <div class="ofertas-grid stagger-children" id="ofertas-grid-trabajador">
                         <!-- Ofertas se cargan dinámicamente -->
                     </div>
                 </section>
@@ -213,22 +214,22 @@
                 </div>
 
                 <!-- Quick Stats Empleador (Clickeables) -->
-                <div class="stats-grid">
-                    <a href="#seccion-mis-ofertas" class="stat-card stat-card-link">
+                <div class="stats-grid stagger-fast">
+                    <a href="#seccion-mis-ofertas" class="stat-card stat-card-link touchable hover-lift">
                         <div class="stat-icon">📋</div>
                         <div class="stat-info">
                             <h3 id="emp-ofertas-activas">0</h3>
                             <p>Ofertas Activas</p>
                         </div>
                     </a>
-                    <a href="mis-aplicaciones.html" class="stat-card stat-card-link">
+                    <a href="mis-aplicaciones.html" class="stat-card stat-card-link touchable hover-lift">
                         <div class="stat-icon">👥</div>
                         <div class="stat-info">
                             <h3 id="emp-total-aplicaciones">0</h3>
                             <p>Postulaciones</p>
                         </div>
                     </a>
-                    <div class="stat-card">
+                    <div class="stat-card hover-lift">
                         <div class="stat-icon">🤝</div>
                         <div class="stat-info">
                             <h3 id="emp-contrataciones">0</h3>
@@ -241,21 +242,21 @@
                 <section class="empleador-section" id="seccion-mis-ofertas">
                     <div class="empleador-section-header">
                         <h2>Mis Ofertas</h2>
-                        <a href="publicar-oferta.html" class="btn btn-primary">
+                        <a href="publicar-oferta.html" class="btn btn-primary touchable">
                             ➕ Nueva Oferta
                         </a>
                     </div>
 
-                    <div class="ofertas-grid" id="empleador-ofertas-grid">
+                    <div class="ofertas-grid stagger-children" id="empleador-ofertas-grid">
                         <!-- Cards de ofertas - mismo estilo que trabajador -->
                     </div>
 
-                    <div class="empleador-empty" id="empleador-ofertas-empty" style="display: none;">
+                    <div class="empleador-empty scale-in" id="empleador-ofertas-empty" style="display: none;">
                         <div class="empty-icon">📝</div>
-                        <h3>No tienes ofertas publicadas</h3>
-                        <p>Publica tu primera oferta y encuentra trabajadores calificados</p>
-                        <a href="publicar-oferta.html" class="btn btn-primary">
-                            ➕ Publicar Primera Oferta
+                        <h3>Sin ofertas publicadas</h3>
+                        <p>Publica tu primera oferta para comenzar a recibir postulantes.</p>
+                        <a href="publicar-oferta.html" class="btn btn-primary touchable">
+                            ➕ Publicar Oferta
                         </a>
                     </div>
                 </section>
@@ -271,8 +272,8 @@
                         <!-- Timeline items -->
                     </div>
 
-                    <div class="empleador-empty" id="actividad-empty" style="display: none;">
-                        <p>No hay actividad reciente</p>
+                    <div class="empleador-empty scale-in" id="actividad-empty" style="display: none;">
+                        <p>Sin actividad reciente</p>
                     </div>
                 </section>
             </div>
@@ -285,24 +286,24 @@
     <!-- Bottom Navigation (Mobile PWA) -->
     <nav class="bottom-nav" id="bottom-nav" aria-label="Navegación principal móvil">
         <div class="bottom-nav-items">
-            <a href="dashboard.html" class="bottom-nav-item active" data-page="home" aria-current="page">
+            <a href="dashboard.html" class="bottom-nav-item active touchable-subtle" data-page="home" aria-current="page">
                 <span class="bottom-nav-icon">🏠</span>
                 <span class="bottom-nav-label">Inicio</span>
             </a>
-            <a href="mapa-ofertas.html" class="bottom-nav-item" data-page="explore" id="bottom-nav-explore">
+            <a href="mapa-ofertas.html" class="bottom-nav-item touchable-subtle" data-page="explore" id="bottom-nav-explore">
                 <span class="bottom-nav-icon">🔍</span>
                 <span class="bottom-nav-label">Explorar</span>
             </a>
-            <a href="publicar-oferta.html" class="bottom-nav-item nav-add" data-page="add" id="bottom-nav-add">
+            <a href="publicar-oferta.html" class="bottom-nav-item nav-add touchable-subtle" data-page="add" id="bottom-nav-add">
                 <span class="bottom-nav-icon">➕</span>
                 <span class="bottom-nav-label">Publicar</span>
             </a>
-            <a href="notificaciones.html" class="bottom-nav-item" data-page="notifications" id="bottom-nav-notif">
+            <a href="notificaciones.html" class="bottom-nav-item touchable-subtle" data-page="notifications" id="bottom-nav-notif">
                 <span class="bottom-nav-icon">🔔</span>
                 <span class="bottom-nav-label">Alertas</span>
                 <span class="bottom-nav-badge" id="bottom-nav-notif-badge" style="display: none;">0</span>
             </a>
-            <a href="perfil-trabajador.html" class="bottom-nav-item" data-page="profile">
+            <a href="perfil-trabajador.html" class="bottom-nav-item touchable-subtle" data-page="profile">
                 <span class="bottom-nav-icon">👤</span>
                 <span class="bottom-nav-label">Perfil</span>
             </a>

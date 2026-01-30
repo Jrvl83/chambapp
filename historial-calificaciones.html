@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/historial-calificaciones.css">
+    <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
     <!-- Header -->
@@ -37,7 +38,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container page-content">
         <!-- Page Header -->
         <div class="page-header">
             <h1>⭐ Historial de Calificaciones</h1>
@@ -91,10 +92,10 @@
         <div id="calificaciones-container" class="calificaciones-list" style="display: none;"></div>
 
         <!-- Empty state -->
-        <div id="empty-state" class="empty-state" style="display: none;">
+        <div id="empty-state" class="empty-state scale-in" style="display: none;">
             <div class="empty-icon">📋</div>
-            <h2 id="empty-titulo">No hay calificaciones</h2>
-            <p id="empty-mensaje">Completa trabajos para recibir calificaciones</p>
+            <h2 id="empty-titulo">Sin calificaciones</h2>
+            <p id="empty-mensaje">Completa trabajos para recibir calificaciones de los empleadores.</p>
         </div>
     </div>
 

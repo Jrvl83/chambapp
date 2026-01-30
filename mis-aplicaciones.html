@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="css/mis-aplicaciones.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
 
+    <link rel="stylesheet" href="css/animations.css">
+
     <!-- Intro.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
     <link rel="stylesheet" href="css/introjs-custom.css">
@@ -41,7 +43,7 @@
         <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
     </header>
 
-    <div class="container">
+    <div class="container page-content">
         <div class="page-header">
             <h1>👥 Ver Candidatos</h1>
             <p>Gestiona las postulaciones a tus ofertas de trabajo</p>
@@ -94,14 +96,14 @@
             <p>Cargando postulaciones...</p>
         </div>
 
-        <div id="aplicaciones-container" class="aplicaciones-list" style="display: none;"></div>
+        <div id="aplicaciones-container" class="aplicaciones-list stagger-children" style="display: none;"></div>
 
-        <div id="empty-state" class="empty-state" style="display: none;">
+        <div id="empty-state" class="empty-state scale-in" style="display: none;">
             <div class="icon">📭</div>
-            <h2>No hay aplicaciones aún</h2>
-            <p>Cuando alguien aplique a tus ofertas, aparecerán aquí.</p>
-            <a href="publicar-oferta.html" class="btn btn-primary" style="margin-top: 1rem;">
-                ➕ Publicar una Oferta
+            <h2>Sin postulaciones</h2>
+            <p>Aún no hay candidatos para tus ofertas. Publica una nueva oferta o edita las existentes para atraer más postulantes.</p>
+            <a href="publicar-oferta.html" class="btn btn-primary touchable" style="margin-top: 1rem;">
+                ➕ Publicar Oferta
             </a>
         </div>
     </div>

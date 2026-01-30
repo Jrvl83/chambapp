@@ -402,6 +402,24 @@ El header de páginas secundarias (Perfil, Alertas, Explorar) está centralizado
 
 ## 7. MICRO-INTERACCIONES (Task 31)
 
+> **Estado:** ✅ IMPLEMENTADO (30 Enero 2026)
+>
+> **Archivo creado:** `css/animations.css`
+>
+> **Clases implementadas:**
+> - `.touchable` / `.touchable-subtle` - Tap feedback para elementos interactivos
+> - `.tap-ripple` - Efecto ripple en tap
+> - `.success-animation` / `.success-glow` - Animaciones de éxito
+> - `.heart-animation` / `.favorite-animation` - Animaciones para favoritos
+> - `.page-content` / `.page-fade` - Transiciones de entrada de página
+> - `.stagger-children` / `.stagger-fast` - Entrada secuencial de listas
+> - `.hover-lift` / `.hover-scale` / `.hover-glow` - Estados hover mejorados
+> - `.error-shake` / `.bounce-in` / `.attention-pulse` - Feedback visual
+> - `.loading-dots` / `.progress-indeterminate` - Estados de carga
+> - Soporte para `prefers-reduced-motion` (accesibilidad)
+>
+> **Páginas actualizadas:** dashboard, mis-aplicaciones, mis-aplicaciones-trabajador, notificaciones, mapa-ofertas, publicar-oferta, historial-calificaciones, perfil-trabajador, perfil-empleador, login, register, index
+
 ### 7.1 Animaciones de Feedback
 
 ```css
@@ -474,23 +492,41 @@ El header de páginas secundarias (Perfil, Alertas, Explorar) está centralizado
 
 ## 8. EMPTY STATES (Task 32)
 
+> **Estado:** ✅ IMPLEMENTADO (30 Enero 2026)
+>
+> **Tono elegido:** Neutro y formal (no coloquial/peruano)
+>
+> **Archivos actualizados:**
+> - `mis-aplicaciones.html`, `mis-aplicaciones-trabajador.html`
+> - `notificaciones.html`, `dashboard.html`
+> - `historial-calificaciones.html`
+> - `js/dashboard/dashboard.js`, `js/mapa-ofertas.js`
+> - `js/mis-aplicaciones.js`, `js/mis-aplicaciones-trabajador.js`
+>
+> **Cambios realizados:**
+> - Reemplazado "chamba" por "oferta" en toda la app
+> - Tono profesional y directo
+> - Agregadas animaciones `.scale-in` a empty states
+> - CTAs claros con clase `.touchable`
+
 ### 8.1 Diseño de Empty States
 
 Cada empty state debe tener:
-1. **Ilustración** - Simple, amigable, relacionada al contexto
-2. **Título** - Claro, en tono ChambApp
-3. **Descripción** - Explica qué hacer
+1. **Icono** - Emoji relacionado al contexto
+2. **Título** - Claro, directo, comienza con "Sin..."
+3. **Descripción** - Explica qué hacer, tono neutro
 4. **CTA** - Acción clara
 
-### 8.2 Ejemplos de Copy
+### 8.2 Ejemplos de Copy (Tono Neutro/Formal)
 
 | Situación | Título | Descripción | CTA |
 |-----------|--------|-------------|-----|
-| Sin ofertas cercanas | "No hay chambas por aquí... aún" | "Estamos creciendo cada día. Amplía tu búsqueda o vuelve pronto." | "Ampliar búsqueda" |
-| Sin postulaciones | "Tu bandeja está vacía" | "Las chambas que te interesan aparecerán aquí." | "Explorar chambas" |
-| Sin notificaciones | "Todo tranquilo por acá" | "Cuando haya novedades, te avisamos al toque." | "Ir al inicio" |
-| Sin trabajadores aplicando | "Nadie ha postulado aún" | "Tal vez tu oferta necesita algunos ajustes para ser más atractiva." | "Editar oferta" |
-| Error de conexión | "Sin conexión" | "Revisa tu internet e intenta de nuevo." | "Reintentar" |
+| Sin ofertas disponibles | "Sin ofertas disponibles" | "No hay ofertas de trabajo en este momento. Prueba explorando el mapa o vuelve más tarde." | "Explorar Mapa" |
+| Sin postulaciones (trabajador) | "Sin postulaciones" | "Aún no has postulado a ninguna oferta. Explora las ofertas disponibles y postula a las que te interesen." | "Explorar Ofertas" |
+| Sin notificaciones | "Sin notificaciones" | "No tienes notificaciones en este momento. Te avisaremos cuando haya novedades." | "Ir al Inicio" |
+| Sin candidatos (empleador) | "Sin postulaciones" | "Aún no hay candidatos para tus ofertas. Publica una nueva oferta o edita las existentes para atraer más postulantes." | "Publicar Oferta" |
+| Sin resultados filtro | "Sin resultados" | "No se encontraron ofertas con los filtros seleccionados. Prueba con otros criterios." | - |
+| Error de conexión | "Error al cargar" | "Verifica tu conexión e intenta nuevamente." | "Reintentar" |
 
 ---
 
@@ -595,12 +631,12 @@ Cada empty state debe tener:
 ## 12. HOJA DE RUTA DE IMPLEMENTACIÓN
 
 ### Sprint 7: Fundamentos (Tasks 31-32)
-| Día | Tarea |
-|-----|-------|
-| 1-2 | Unificar paleta de colores en toda la app |
-| 2-3 | Implementar tipografía consistente (Poppins + Inter) |
-| 3-4 | Micro-interacciones básicas (tap, hover, transitions) |
-| 4-5 | Empty states con ilustraciones y copy mejorado |
+| Día | Tarea | Estado |
+|-----|-------|--------|
+| 1-2 | Unificar paleta de colores en toda la app | ✅ COMPLETADO |
+| 2-3 | Implementar tipografía consistente (Poppins + Inter) | ✅ COMPLETADO |
+| 3-4 | Micro-interacciones básicas (tap, hover, transitions) | ✅ COMPLETADO (30 Ene) |
+| 4-5 | Empty states con copy mejorado (tono neutro/formal) | ✅ COMPLETADO (30 Ene) |
 
 ### Sprint 8: Pulido (Tasks 33-36)
 | Día | Tarea |
@@ -656,6 +692,6 @@ Cada empty state debe tener:
 
 ---
 
-**Última actualización:** 28 Enero 2026
+**Última actualización:** 30 Enero 2026
 **Próxima revisión:** Al completar Sprint 8
 

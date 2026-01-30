@@ -587,11 +587,11 @@ function mostrarEmptyStateTrabajador() {
     if (!grid) return;
 
     grid.innerHTML = `
-        <div class='empty-state'>
+        <div class='empty-state scale-in'>
             <div class='empty-state-icon'>🔍</div>
-            <h3>No hay chambas disponibles</h3>
-            <p>Aún no hay ofertas de trabajo publicadas. ¡Vuelve pronto!</p>
-            <a href='mapa-ofertas.html' class='btn btn-primary' style='margin-top: 1rem;'>
+            <h3>Sin ofertas disponibles</h3>
+            <p>No hay ofertas de trabajo en este momento. Prueba explorando el mapa o vuelve más tarde.</p>
+            <a href='mapa-ofertas.html' class='btn btn-primary touchable' style='margin-top: 1rem;'>
                 🗺️ Explorar Mapa
             </a>
         </div>
@@ -701,7 +701,7 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
             : 'Otros';
 
         grid.innerHTML += `
-            <div class="oferta-card" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
+            <div class="oferta-card touchable hover-lift" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
                 <div class="oferta-categoria-bar ${oferta.categoria || 'otros'}"></div>
                 <div class="oferta-card-body">
                     <div class="oferta-header">
@@ -824,7 +824,7 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
     const categoriaDisplay = oferta.categoria ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1) : 'Otros';
 
     return `
-        <div class='oferta-card'>
+        <div class='oferta-card touchable hover-lift'>
             <div class='oferta-categoria-bar ${oferta.categoria || 'otros'}'></div>
             <div class='oferta-card-body'>
                 <div class='oferta-header'>
@@ -1124,10 +1124,10 @@ function renderizarOfertasFiltradas(ofertas) {
 
     if (ofertas.length === 0) {
         ofertasGrid.innerHTML = `
-            <div class='empty-state'>
+            <div class='empty-state scale-in'>
                 <div class='empty-state-icon'>🔍</div>
-                <h3>No se encontraron ofertas</h3>
-                <p>Intenta con otros filtros o amplía tu búsqueda</p>
+                <h3>Sin resultados</h3>
+                <p>No se encontraron ofertas con los filtros seleccionados. Prueba con otros criterios.</p>
             </div>
         `;
         return;
@@ -1210,8 +1210,8 @@ window.verDetalle = async function(id) {
                 `;
             } else {
                 botonAccion = `
-                    <button class="btn btn-primary" onclick="mostrarFormularioPostulacion('${id}')" style="flex: 1;">
-                        📝 Postular a esta chamba
+                    <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacion('${id}')" style="flex: 1;">
+                        📝 Postular a esta oferta
                     </button>
                 `;
             }
@@ -1312,7 +1312,7 @@ window.mostrarFormularioPostulacion = async function(ofertaId) {
                 </label>
                 <textarea
                     id="mensaje-postulacion"
-                    placeholder="Preséntate brevemente y explica por qué eres el candidato ideal para esta chamba..."
+                    placeholder="Preséntate brevemente y explica por qué eres el candidato ideal para esta oferta..."
                     style="width: 100%; min-height: 120px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; resize: vertical; font-family: inherit;"
                 ></textarea>
                 <p style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">

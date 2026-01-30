@@ -1,0 +1,504 @@
+/* ============================================
+   ANIMATIONS.CSS - Micro-interacciones ChambApp
+   Task 31: Tap feedback, Success animations,
+            Page transitions, Stagger lists
+   Fecha: 30 Enero 2026
+   ============================================ */
+
+/* ============================================
+   1. TAP FEEDBACK - Elementos Tocables
+   ============================================ */
+
+/* Clase base para elementos interactivos */
+.touchable {
+    transition: transform var(--transition-fast, 150ms) ease,
+                opacity var(--transition-fast, 150ms) ease;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+.touchable:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+}
+
+/* Variante más sutil para elementos pequeños */
+.touchable-subtle:active {
+    transform: scale(0.98);
+    opacity: 0.95;
+}
+
+/* Tap feedback con ripple effect */
+.tap-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.tap-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tap-ripple:active::after {
+    width: 200%;
+    height: 200%;
+    opacity: 1;
+}
+
+/* Ripple para fondos oscuros */
+.tap-ripple-dark::after {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   2. SUCCESS ANIMATIONS
+   ============================================ */
+
+/* Pop de entrada exitosa */
+@keyframes success-pop {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-animation {
+    animation: success-pop 0.4s ease-out;
+}
+
+/* Checkmark animado */
+@keyframes checkmark-draw {
+    0% {
+        stroke-dashoffset: 50;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.checkmark-animated {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: checkmark-draw 0.4s ease-out 0.2s forwards;
+}
+
+/* Glow de éxito */
+@keyframes success-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 196, 140, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(0, 196, 140, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 196, 140, 0);
+    }
+}
+
+.success-glow {
+    animation: success-glow 0.6s ease-out;
+}
+
+/* ============================================
+   3. LIKE / FAVORITE ANIMATION
+   ============================================ */
+
+@keyframes heart-beat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.2);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    75% {
+        transform: scale(1.1);
+    }
+}
+
+.heart-animation {
+    animation: heart-beat 0.4s ease-in-out;
+}
+
+/* Bounce para favoritos/guardados */
+@keyframes favorite-bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.25); }
+    50% { transform: scale(0.9); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.favorite-animation {
+    animation: favorite-bounce 0.5s ease-out;
+}
+
+/* ============================================
+   4. PAGE TRANSITIONS
+   ============================================ */
+
+/* Entrada de página - Fade + Slide up */
+@keyframes page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-content {
+    animation: page-enter 0.3s ease-out;
+}
+
+/* Entrada más sutil */
+@keyframes page-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.page-fade {
+    animation: page-fade-in 0.25s ease-out;
+}
+
+/* Slide desde la derecha (navegación forward) */
+@keyframes slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-right {
+    animation: slide-in-right 0.3s ease-out;
+}
+
+/* Slide desde la izquierda (navegación back) */
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-left {
+    animation: slide-in-left 0.3s ease-out;
+}
+
+/* Scale in para modales y popups */
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.scale-in {
+    animation: scale-in 0.2s ease-out;
+}
+
+/* ============================================
+   5. STAGGER PARA LISTAS
+   ============================================ */
+
+/* Item de lista con stagger */
+@keyframes stagger-item {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stagger-item {
+    opacity: 0;
+    animation: stagger-item 0.3s ease-out forwards;
+}
+
+/* Delays para stagger manual (hasta 10 items) */
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.stagger-item:nth-child(8) { animation-delay: 0.4s; }
+.stagger-item:nth-child(9) { animation-delay: 0.45s; }
+.stagger-item:nth-child(10) { animation-delay: 0.5s; }
+
+/* Contenedor que aplica stagger a hijos directos */
+.stagger-children > * {
+    opacity: 0;
+    animation: stagger-item 0.3s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger-children > *:nth-child(10) { animation-delay: 0.5s; }
+
+/* Stagger más rápido */
+.stagger-fast > * {
+    opacity: 0;
+    animation: stagger-item 0.2s ease-out forwards;
+}
+
+.stagger-fast > *:nth-child(1) { animation-delay: 0.03s; }
+.stagger-fast > *:nth-child(2) { animation-delay: 0.06s; }
+.stagger-fast > *:nth-child(3) { animation-delay: 0.09s; }
+.stagger-fast > *:nth-child(4) { animation-delay: 0.12s; }
+.stagger-fast > *:nth-child(5) { animation-delay: 0.15s; }
+.stagger-fast > *:nth-child(6) { animation-delay: 0.18s; }
+.stagger-fast > *:nth-child(7) { animation-delay: 0.21s; }
+.stagger-fast > *:nth-child(8) { animation-delay: 0.24s; }
+.stagger-fast > *:nth-child(9) { animation-delay: 0.27s; }
+.stagger-fast > *:nth-child(10) { animation-delay: 0.3s; }
+
+/* ============================================
+   6. HOVER STATES MEJORADOS
+   ============================================ */
+
+/* Card con hover lift */
+.hover-lift {
+    transition: transform var(--transition-base, 250ms) ease,
+                box-shadow var(--transition-base, 250ms) ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover con scale sutil */
+.hover-scale {
+    transition: transform var(--transition-fast, 150ms) ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* Hover con glow */
+.hover-glow {
+    transition: box-shadow var(--transition-base, 250ms) ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.15);
+}
+
+/* ============================================
+   7. FEEDBACK VISUAL ADICIONAL
+   ============================================ */
+
+/* Pulse para llamar atención */
+@keyframes attention-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.attention-pulse {
+    animation: attention-pulse 2s ease-in-out infinite;
+}
+
+/* Shake para errores */
+@keyframes error-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+.error-shake {
+    animation: error-shake 0.4s ease-out;
+}
+
+/* Bounce de entrada */
+@keyframes bounce-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.bounce-in {
+    animation: bounce-in 0.5s ease-out;
+}
+
+/* ============================================
+   8. LOADING STATES MEJORADOS
+   ============================================ */
+
+/* Dots loading */
+@keyframes loading-dots {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.loading-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.loading-dots span {
+    width: 8px;
+    height: 8px;
+    background: var(--primary, #0066FF);
+    border-radius: 50%;
+    animation: loading-dots 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: 0s; }
+.loading-dots span:nth-child(2) { animation-delay: 0.16s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.32s; }
+
+/* Progress bar animado */
+@keyframes progress-indeterminate {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(400%);
+    }
+}
+
+.progress-indeterminate {
+    position: relative;
+    overflow: hidden;
+    height: 4px;
+    background: var(--gray-200, #e5e7eb);
+    border-radius: 2px;
+}
+
+.progress-indeterminate::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    background: var(--primary, #0066FF);
+    border-radius: 2px;
+    animation: progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+   9. ACCESIBILIDAD - Reduced Motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .touchable:active {
+        transform: none;
+    }
+
+    .hover-lift:hover {
+        transform: none;
+    }
+
+    .hover-scale:hover {
+        transform: none;
+    }
+}
+
+/* ============================================
+   10. UTILIDADES DE ANIMACION
+   ============================================ */
+
+/* Delays de animación */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Duraciones */
+.duration-fast { animation-duration: 150ms; }
+.duration-base { animation-duration: 250ms; }
+.duration-slow { animation-duration: 350ms; }
+
+/* Fill modes */
+.fill-forwards { animation-fill-mode: forwards; }
+.fill-both { animation-fill-mode: both; }
+
+/* Easing functions */
+.ease-out { animation-timing-function: ease-out; }
+.ease-in-out { animation-timing-function: ease-in-out; }
+.ease-spring { animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }

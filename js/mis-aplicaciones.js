@@ -216,8 +216,8 @@ function mostrarAplicaciones(aplicaciones) {
         container.style.display = 'none';
         emptyState.style.display = 'block';
         emptyState.querySelector('h2').textContent = filtroEstadoActual
-            ? `No hay aplicaciones ${filtroEstadoActual}s`
-            : 'No hay aplicaciones aún';
+            ? `Sin postulaciones ${filtroEstadoActual}s`
+            : 'Sin postulaciones';
         return;
     }
 
@@ -311,7 +311,7 @@ function crearAplicacionCard(aplicacion) {
     } else if (estado === 'aceptado') {
         // Botones para estado aceptado: WhatsApp, Llamar, Marcar Completado
         const mensajeWhatsApp = encodeURIComponent(
-            `Hola ${nombre}, te contacto por la chamba "${aplicacion.ofertaTitulo}" en ChambApp. ¡Tu postulación fue aceptada!`
+            `Hola ${nombre}, te contacto por la oferta "${aplicacion.ofertaTitulo}" en ChambApp. Tu postulación fue aceptada.`
         );
         const telefonoLimpio = telefono ? telefono.replace(/\D/g, '') : '';
         const telefonoWhatsApp = telefonoLimpio.startsWith('51') ? telefonoLimpio : `51${telefonoLimpio}`;
@@ -383,7 +383,7 @@ function crearAplicacionCard(aplicacion) {
            </div>`;
 
     return `
-        <div class="aplicacion-card estado-${estado}">
+        <div class="aplicacion-card estado-${estado} touchable hover-lift">
             <div class="aplicacion-header">
                 <div class="aplicacion-trabajador">
                     <div class="aplicacion-avatar">👤</div>

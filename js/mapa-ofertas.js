@@ -600,8 +600,8 @@ window.verDetalleOferta = async function(ofertaId) {
             `;
         } else {
             botonAccion = `
-                <button class="btn btn-primary" onclick="mostrarFormularioPostulacionMapa('${ofertaId}')">
-                    📝 Postular a esta chamba
+                <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacionMapa('${ofertaId}')">
+                    📝 Postular a esta oferta
                 </button>
             `;
         }
@@ -715,7 +715,7 @@ window.mostrarFormularioPostulacionMapa = async function(ofertaId) {
                 </label>
                 <textarea
                     id="mensaje-postulacion-mapa"
-                    placeholder="Presentate brevemente y explica por que eres el candidato ideal para esta chamba..."
+                    placeholder="Preséntate brevemente y explica por qué eres el candidato ideal para esta oferta..."
                     style="width: 100%; min-height: 120px; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; resize: vertical; font-family: inherit;"
                 ></textarea>
                 <p style="font-size: 0.875rem; color: var(--gray); margin-top: 0.5rem;">
@@ -838,9 +838,9 @@ function actualizarListaSidebar() {
 
     if (ofertasFiltradas.length === 0) {
         listaContenido.innerHTML = `
-            <div class="mapa-empty-state">
+            <div class="mapa-empty-state scale-in">
                 <div class="icono">&#128269;</div>
-                <p>No hay ofertas en esta area</p>
+                <p>Sin ofertas en esta área. Prueba ampliando la búsqueda.</p>
             </div>
         `;
         return;
@@ -1057,10 +1057,10 @@ function mostrarErrorMapa() {
     const loading = document.getElementById('mapa-loading');
     if (loading) {
         loading.innerHTML = `
-            <div class="mapa-empty-state">
+            <div class="mapa-empty-state scale-in">
                 <div class="icono">&#9888;</div>
-                <p>Error al cargar el mapa</p>
-                <button class="btn btn-primary" onclick="location.reload()">Reintentar</button>
+                <p>Error al cargar el mapa. Verifica tu conexión.</p>
+                <button class="btn btn-primary touchable" onclick="location.reload()">Reintentar</button>
             </div>
         `;
     }

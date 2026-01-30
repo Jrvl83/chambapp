@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="css/mis-aplicaciones-trabajador.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
 
+    <link rel="stylesheet" href="css/animations.css">
+
     <!-- Intro.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
     <link rel="stylesheet" href="css/introjs-custom.css">
@@ -46,7 +48,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container page-content">
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-title">
@@ -134,15 +136,15 @@
         </div>
 
         <!-- Aplicaciones Container -->
-        <div id="aplicaciones-container" class="aplicaciones-grid" style="display: none;"></div>
+        <div id="aplicaciones-container" class="aplicaciones-grid stagger-children" style="display: none;"></div>
 
         <!-- Empty State -->
-        <div id="empty-state" class="empty-state" style="display: none;">
+        <div id="empty-state" class="empty-state scale-in" style="display: none;">
             <div class="empty-icon">📭</div>
-            <h2>No has postulado a ninguna chamba aún</h2>
-            <p>Cuando postules a una oferta, aparecerá aquí para que puedas seguir su estado.</p>
-            <a href="dashboard.html" class="btn btn-primary">
-                🔍 Buscar Chambas
+            <h2>Sin postulaciones</h2>
+            <p>Aún no has postulado a ninguna oferta. Explora las ofertas disponibles y postula a las que te interesen.</p>
+            <a href="dashboard.html" class="btn btn-primary touchable">
+                🔍 Explorar Ofertas
             </a>
         </div>
     </div>

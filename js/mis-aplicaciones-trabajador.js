@@ -102,8 +102,8 @@ async function cargarAplicaciones() {
         console.error('❌ Error al cargar aplicaciones:', error);
         document.getElementById('loading-screen').innerHTML = `
             <div class="empty-icon">❌</div>
-            <h2>Error al cargar aplicaciones</h2>
-            <p>${error.message}</p>
+            <h2>Error al cargar</h2>
+            <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
         `;
     }
 }
@@ -269,7 +269,7 @@ function crearAplicacionCard(aplicacion) {
     }
 
     return `
-        <div class="aplicacion-card ${config.clase}">
+        <div class="aplicacion-card ${config.clase} touchable hover-lift">
             <div class="aplicacion-header">
                 <div class="aplicacion-info">
                     <div class="aplicacion-titulo">${aplicacion.ofertaTitulo}</div>

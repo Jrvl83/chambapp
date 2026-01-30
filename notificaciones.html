@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="css/notificaciones.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
     <link rel="stylesheet" href="css/header-simple.css">
+    <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
     <!-- Header -->
@@ -43,7 +44,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container page-content">
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-title">
@@ -94,18 +95,19 @@
         </div>
 
         <!-- Empty State -->
-        <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-state scale-in" id="empty-state" style="display: none;">
             <div class="empty-icon">🔔</div>
-            <h3>No tienes notificaciones</h3>
-            <p>Cuando alguien se postule a tus ofertas o te acepten, te avisaremos aqui.</p>
-            <a href="dashboard.html" class="btn btn-primary">Ir al Dashboard</a>
+            <h3>Sin notificaciones</h3>
+            <p>No tienes notificaciones en este momento. Te avisaremos cuando haya novedades.</p>
+            <a href="dashboard.html" class="btn btn-primary touchable">Ir al Inicio</a>
         </div>
 
         <!-- Empty Filter State -->
-        <div class="empty-state" id="empty-filter-state" style="display: none;">
+        <div class="empty-state scale-in" id="empty-filter-state" style="display: none;">
             <div class="empty-icon">📭</div>
-            <h3>No hay notificaciones con este filtro</h3>
-            <button class="btn btn-secondary" onclick="filtrarNotificaciones('todas')">Ver todas</button>
+            <h3>Sin resultados</h3>
+            <p>No hay notificaciones que coincidan con este filtro.</p>
+            <button class="btn btn-secondary touchable" onclick="filtrarNotificaciones('todas')">Ver todas</button>
         </div>
     </div>
 
