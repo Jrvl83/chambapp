@@ -308,54 +308,44 @@
     </div>
 
     <!-- ✅ MODAL UBICACIÓN (Task 9 Parte 2) -->
-    <div id="modal-ubicacion" class="modal-overlay" role="dialog" aria-modal="true">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header" style="background: #dbeafe; padding: 1.5rem; border-radius: 12px 12px 0 0;">
-                <h2 style="margin: 0; font-size: 1.5rem; color: #1e40af;">
-                    📍 Activar Ubicación
-                </h2>
+    <div id="modal-ubicacion" class="modal-overlay modal-ubicacion" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-ubicacion-header">
+                <h2>📍 Activar Ubicación</h2>
             </div>
-            <div class="modal-body" style="padding: 2rem;">
-                <p style="font-size: 1.1rem; color: #374151; margin-bottom: 1.5rem; line-height: 1.6;">
+            <div class="modal-ubicacion-body">
+                <p class="modal-ubicacion-intro">
                     Para mostrarte <strong>ofertas cercanas</strong>, necesitamos conocer tu ubicación.
                 </p>
-                
-                <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-                    <p style="font-size: 0.9rem; color: #6b7280; margin: 0;">
+
+                <div class="modal-ubicacion-privacy">
+                    <p>
                         🔒 <strong>Tu privacidad es importante:</strong><br>
-                        Solo guardamos tu distrito para mostrarte trabajos cercanos. 
+                        Solo guardamos tu distrito para mostrarte trabajos cercanos.
                         No compartimos tu ubicación exacta.
                     </p>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="color: #10b981; font-size: 1.2rem;">✓</span>
-                        <span style="color: #374151;">Ver ofertas cerca de ti</span>
+                <div class="modal-ubicacion-beneficios">
+                    <div class="modal-ubicacion-beneficio">
+                        <span class="check">✓</span>
+                        <span>Ver ofertas cerca de ti</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="color: #10b981; font-size: 1.2rem;">✓</span>
-                        <span style="color: #374151;">Ahorra tiempo en traslados</span>
+                    <div class="modal-ubicacion-beneficio">
+                        <span class="check">✓</span>
+                        <span>Ahorra tiempo en traslados</span>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="color: #10b981; font-size: 1.2rem;">✓</span>
-                        <span style="color: #374151;">Encuentra chambas más rápido</span>
+                    <div class="modal-ubicacion-beneficio">
+                        <span class="check">✓</span>
+                        <span>Encuentra ofertas más rápido</span>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="padding: 1.5rem; border-top: 1px solid #e5e7eb; display: flex; gap: 1rem;">
-                <button 
-                    class="btn btn-secondary" 
-                    onclick="cerrarModalUbicacion()"
-                    style="flex: 1;"
-                >
+            <div class="modal-ubicacion-footer">
+                <button class="btn btn-secondary" onclick="cerrarModalUbicacion()">
                     Ahora no
                 </button>
-                <button 
-                    class="btn btn-primary" 
-                    onclick="solicitarUbicacion()"
-                    style="flex: 2;"
-                >
+                <button class="btn btn-primary" onclick="solicitarUbicacion()">
                     📍 Activar Ubicación
                 </button>
             </div>

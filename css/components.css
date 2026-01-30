@@ -1047,27 +1047,7 @@ input[type="radio"] {
     margin: 0;
 }
 
-/* Spinner - Mismo estilo que el mapa */
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid var(--gray-200, #e2e8f0);
-    border-top-color: var(--primary, #0066FF);
-    border-radius: 50%;
-    animation: spinner 1s linear infinite;
-}
-
-.spinner-small {
-    width: 24px;
-    height: 24px;
-    border-width: 3px;
-}
-
-@keyframes spinner {
-    to {
-        transform: rotate(360deg);
-    }
-}
+/* Nota: .spinner y @keyframes spinner ya están definidos arriba en este archivo */
 
 /* ============================================
    8. DIVIDERS
