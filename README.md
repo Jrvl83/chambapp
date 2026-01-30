@@ -1,6 +1,6 @@
 # ChambApp
 
-Aplicación para conectar trabajadores con empleadores en Perú.
+Marketplace de trabajos temporales para Perú. Conecta trabajadores con empleadores.
 
 ## URLs
 
@@ -18,14 +18,14 @@ Aplicación para conectar trabajadores con empleadores en Perú.
 
 ## Progreso
 
-**Fase 1:** 57% completada (28/49 tareas)
+**Fase 1:** 65% completada (32/49 tareas)
 
 ### Features Implementadas
 - Registro/Login con Firebase Auth
 - Perfiles trabajadores y empleadores
-- Publicar ofertas de trabajo
-- Geolocalización y mapa interactivo
-- Postulaciones con estados (pendiente/aceptado/rechazado/completado)
+- Publicar ofertas de trabajo con geolocalización
+- Mapa interactivo de ofertas
+- Postulaciones con estados
 - Contacto directo vía WhatsApp
 - Sistema de calificaciones bidireccional
 - Filtros avanzados
@@ -55,9 +55,10 @@ firebase deploy --only functions
 
 ## Documentación
 
-- `CONTEXTO_CLAUDE_CODE.md` - Estado actual y configuración
-- `FASE_1_DETALLADA.md` - Tareas detalladas Fase 1
-- `ROADMAP_COMPLETO.md` - Vista general del proyecto
+Ver carpeta `docs/`:
+- [docs/PROYECTO.md](docs/PROYECTO.md) - Estado del proyecto y roadmap
+- [docs/UX_UI_GUIA_MAESTRA.md](docs/UX_UI_GUIA_MAESTRA.md) - Guía de diseño
+- [docs/REGLAS_DESARROLLO.md](docs/REGLAS_DESARROLLO.md) - Estándares de código
 
 ## Licencia
 
@@ -66,4 +67,4 @@ Proyecto privado - Todos los derechos reservados.
 ---
 
 **Fundador:** Joel (jrvl83)
-**Última actualización:** 26 Enero 2026
+**Última actualización:** 30 Enero 2026
