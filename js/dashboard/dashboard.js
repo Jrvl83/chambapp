@@ -489,6 +489,7 @@ async function cargarOfertasTrabajador() {
     try {
         const q = query(
             collection(db, 'ofertas'),
+            where('estado', '==', 'activa'),
             orderBy('fechaCreacion', 'desc'),
             limit(20)
         );
@@ -503,9 +504,17 @@ async function cargarOfertasTrabajador() {
 
         ofertasGrid.innerHTML = '';
         todasLasOfertas = [];
+        const ahora = new Date();
 
         snapshot.forEach((docSnap) => {
             const oferta = docSnap.data();
+
+            // Verificar que la oferta no esté expirada
+            if (oferta.fechaExpiracion) {
+                const fechaExp = oferta.fechaExpiracion.toDate ? oferta.fechaExpiracion.toDate() : new Date(oferta.fechaExpiracion);
+                if (fechaExp < ahora) return; // Oferta expirada, no mostrar
+            }
+
             todasLasOfertas.push({ id: docSnap.id, data: oferta });
 
             // Task 11: Calcular distancia si es posible
@@ -532,13 +541,27 @@ async function cargarOfertasTrabajador() {
 
 async function cargarEstadisticasTrabajador(userUid) {
     try {
-        // 1. Ofertas disponibles
+        // 1. Ofertas disponibles (activas y no expiradas)
         const ofertasQuery = query(
             collection(db, 'ofertas'),
             where('estado', '==', 'activa')
         );
         const ofertasSnap = await getDocs(ofertasQuery);
-        document.getElementById('stat-number-t1').textContent = ofertasSnap.size;
+
+        // Filtrar ofertas no expiradas
+        const ahora = new Date();
+        let ofertasDisponibles = 0;
+        ofertasSnap.forEach(doc => {
+            const oferta = doc.data();
+            if (oferta.fechaExpiracion) {
+                const fechaExp = oferta.fechaExpiracion.toDate ? oferta.fechaExpiracion.toDate() : new Date(oferta.fechaExpiracion);
+                if (fechaExp > ahora) ofertasDisponibles++;
+            } else {
+                // Ofertas sin fechaExpiracion (legacy) se cuentan
+                ofertasDisponibles++;
+            }
+        });
+        document.getElementById('stat-number-t1').textContent = ofertasDisponibles;
 
         // 2. Mis aplicaciones
         // NOTA: El campo se llama 'aplicanteId' (no 'trabajadorId') en la colección aplicaciones

@@ -175,9 +175,17 @@ async function cargarOfertas() {
 
         const snapshot = await getDocs(q);
         todasLasOfertas = [];
+        const ahora = new Date();
 
         snapshot.forEach((docSnap) => {
             const oferta = docSnap.data();
+
+            // Verificar que la oferta no esté expirada
+            if (oferta.fechaExpiracion) {
+                const fechaExp = oferta.fechaExpiracion.toDate ? oferta.fechaExpiracion.toDate() : new Date(oferta.fechaExpiracion);
+                if (fechaExp < ahora) return; // Oferta expirada, no mostrar
+            }
+
             // Solo agregar ofertas con coordenadas
             if (oferta.ubicacion && typeof oferta.ubicacion === 'object' && oferta.ubicacion.coordenadas) {
                 const coords = oferta.ubicacion.coordenadas;

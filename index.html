@@ -1268,13 +1268,25 @@
                 const usuariosSnapshot = await getDocs(usuariosQuery);
                 const totalUsuarios = usuariosSnapshot.size;
                 
-                // Contar ofertas activas
+                // Contar ofertas activas (no expiradas)
                 const ofertasQuery = query(
                     collection(db, 'ofertas'),
                     where('estado', '==', 'activa')
                 );
                 const ofertasSnapshot = await getDocs(ofertasQuery);
-                const totalOfertas = ofertasSnapshot.size;
+
+                // Filtrar ofertas no expiradas
+                const ahora = new Date();
+                let totalOfertas = 0;
+                ofertasSnapshot.forEach(doc => {
+                    const oferta = doc.data();
+                    if (oferta.fechaExpiracion) {
+                        const fechaExp = oferta.fechaExpiracion.toDate ? oferta.fechaExpiracion.toDate() : new Date(oferta.fechaExpiracion);
+                        if (fechaExp > ahora) totalOfertas++;
+                    } else {
+                        totalOfertas++; // Ofertas legacy sin fechaExpiracion
+                    }
+                });
                 
                 // Actualizar UI
                 if (totalUsuarios > 0) {
@@ -1291,9 +1303,9 @@
                     document.getElementById('badgeText').textContent = 'Nuevas chambas cada día';
                 }
                 
-                // Cargar conteo por categoría
+                // Cargar conteo por categoría (solo no expiradas)
                 const categorias = ['construccion', 'electricidad', 'gasfiteria', 'limpieza', 'carpinteria', 'pintura', 'jardineria'];
-                
+
                 for (const cat of categorias) {
                     const catQuery = query(
                         collection(db, 'ofertas'),
@@ -1301,8 +1313,19 @@
                         where('estado', '==', 'activa')
                     );
                     const catSnapshot = await getDocs(catQuery);
-                    const catCount = catSnapshot.size;
-                    
+
+                    // Filtrar ofertas no expiradas
+                    let catCount = 0;
+                    catSnapshot.forEach(doc => {
+                        const oferta = doc.data();
+                        if (oferta.fechaExpiracion) {
+                            const fechaExp = oferta.fechaExpiracion.toDate ? oferta.fechaExpiracion.toDate() : new Date(oferta.fechaExpiracion);
+                            if (fechaExp > ahora) catCount++;
+                        } else {
+                            catCount++; // Ofertas legacy
+                        }
+                    });
+
                     const catElement = document.querySelector(`[data-category="${cat}"]`);
                     if (catElement && catCount > 0) {
                         catElement.textContent = `${catCount} chambas`;
