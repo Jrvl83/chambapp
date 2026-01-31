@@ -100,7 +100,7 @@ TOTAL:  18% del proyecto (32/176 tareas)
 |---|-------|-------------|-----------|--------|
 | G1 | Sistema de estados | Implementar estados: `activa` → `en_curso` → `completada` + `caducada` | Alta | ✅ PARCIAL |
 | G2 | Caducidad automática | Ofertas expiran en 14 días, Cloud Function diaria, opción renovar | Alta | Pendiente |
-| G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | Pendiente |
+| G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | ✅ HECHO |
 | G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | Pendiente |
 | G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | Pendiente |
 | G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | Pendiente |
@@ -278,19 +278,20 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 ### Resumen de lo completado (31/01/26)
 1. ✅ Plan de refactorización completado (Lighthouse: Perf 85, A11y 92, SEO 100)
 2. ✅ G1 parcial: Sistema de estados implementado
+3. ✅ G3: Conteo correcto implementado
 
-### Archivos modificados en G1
+### Archivos modificados
+**G1 - Sistema de estados:**
 - `js/publicar-oferta.js` - Agregado `fechaExpiracion` (14 días)
 - `js/mis-aplicaciones.js` - Estados `en_curso` y `completada`
 
-### Próximas tareas prioritarias
-1. **G3: Conteo correcto** - Modificar queries en:
-   - `js/dashboard/dashboard.js` (línea ~538)
-   - `js/mapa-ofertas.js` (línea ~171)
-   - `index.html` (script de stats)
-   - Query: `where('estado', '==', 'activa')` debe agregar `where('fechaExpiracion', '>', new Date())`
+**G3 - Filtrado de ofertas expiradas:**
+- `js/mapa-ofertas.js` - Filtro en cargarOfertas()
+- `js/dashboard/dashboard.js` - Filtro en estadísticas y listado
+- `index.html` - Filtro en conteo general y por categoría
 
-2. **G2: Cloud Function** - Crear función que marque ofertas como `caducada`:
+### Próximas tareas prioritarias
+1. **G2: Cloud Function** - Crear función que marque ofertas como `caducada`:
    - Ejecutar diariamente
    - Buscar ofertas con `estado: 'activa'` y `fechaExpiracion < ahora`
    - Cambiar a `estado: 'caducada'`
