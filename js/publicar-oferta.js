@@ -5,7 +5,7 @@
 
 // Firebase - Importar instancias centralizadas
 import { auth, db } from './config/firebase-init.js';
-import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { obtenerDepartamentos, obtenerProvincias, obtenerDistritos, obtenerCoordenadasDistrito } from './utils/ubigeo-api.js';
 import { GOOGLE_MAPS_API_KEY } from './config/api-keys.js';
 
@@ -1497,6 +1497,10 @@ formOferta.addEventListener('submit', async (e) => {
 
         } else {
             // CREAR NUEVA OFERTA
+            // Calcular fecha de expiración (14 días desde ahora)
+            const fechaExpiracion = new Date();
+            fechaExpiracion.setDate(fechaExpiracion.getDate() + 14);
+
             const nuevaOferta = {
                 ...ofertaData,
                 empleadorId: auth.currentUser?.uid || usuario.uid || 'demo',
@@ -1505,6 +1509,7 @@ formOferta.addEventListener('submit', async (e) => {
                 empleadorTelefono: usuario.telefono || '',
                 estado: 'activa',
                 fechaCreacion: serverTimestamp(),
+                fechaExpiracion: Timestamp.fromDate(fechaExpiracion),
                 aplicaciones: 0
             };
             

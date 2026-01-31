@@ -445,11 +445,26 @@ async function aceptarAplicacion(aplicacionId, nombreTrabajador) {
     if (!confirmar) return;
 
     try {
+        // Obtener la aplicación para conseguir el ofertaId
+        const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
+
+        // Actualizar estado de la aplicación
         const aplicacionRef = doc(db, 'aplicaciones', aplicacionId);
         await updateDoc(aplicacionRef, {
             estado: 'aceptado',
             fechaAceptacion: serverTimestamp()
         });
+
+        // Actualizar estado de la oferta a 'en_curso' (ya no acepta más postulaciones)
+        if (aplicacion && aplicacion.ofertaId) {
+            const ofertaRef = doc(db, 'ofertas', aplicacion.ofertaId);
+            await updateDoc(ofertaRef, {
+                estado: 'en_curso',
+                trabajadorAceptadoId: aplicacion.trabajadorId,
+                trabajadorAceptadoNombre: nombreTrabajador,
+                fechaAceptacion: serverTimestamp()
+            });
+        }
 
         if (typeof toastSuccess === 'function') {
             toastSuccess(`¡Postulación de ${nombreTrabajador} aceptada!`);
@@ -458,7 +473,6 @@ async function aceptarAplicacion(aplicacionId, nombreTrabajador) {
         }
 
         // Actualizar la UI
-        const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
         if (aplicacion) {
             aplicacion.estado = 'aceptado';
         }
@@ -523,11 +537,24 @@ async function marcarCompletado(aplicacionId, nombreTrabajador, tituloOferta) {
     if (!confirmar) return;
 
     try {
+        // Obtener la aplicación para conseguir el ofertaId
+        const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
+
+        // Actualizar estado de la aplicación
         const aplicacionRef = doc(db, 'aplicaciones', aplicacionId);
         await updateDoc(aplicacionRef, {
             estado: 'completado',
             fechaCompletado: serverTimestamp()
         });
+
+        // Actualizar estado de la oferta a 'completada'
+        if (aplicacion && aplicacion.ofertaId) {
+            const ofertaRef = doc(db, 'ofertas', aplicacion.ofertaId);
+            await updateDoc(ofertaRef, {
+                estado: 'completada',
+                fechaCompletado: serverTimestamp()
+            });
+        }
 
         if (typeof toastSuccess === 'function') {
             toastSuccess(`¡Trabajo completado! Ahora puedes calificar a ${nombreTrabajador}`);
@@ -536,7 +563,6 @@ async function marcarCompletado(aplicacionId, nombreTrabajador, tituloOferta) {
         }
 
         // Actualizar la UI
-        const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
         if (aplicacion) {
             aplicacion.estado = 'completado';
         }
