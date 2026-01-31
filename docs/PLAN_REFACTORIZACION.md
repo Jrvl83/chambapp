@@ -151,11 +151,11 @@ Correr Lighthouse en las páginas principales:
 5. [x] Ajustar color de `.section-label`: `var(--primary)` → `var(--primary-dark)`
 6. [x] Ajustar color de `.category-count`: `var(--gray-500)` → `var(--gray-700)`
 
-**Fase C: Performance (impacto alto, esfuerzo alto) - PENDIENTE**
-7. [ ] Minificar CSS (ahorro ~13KB)
-8. [ ] Minificar JS (ahorro ~76KB)
-9. [ ] Lazy loading de imágenes below-the-fold
-10. [ ] Optimizar carga de Google Maps API
+**Fase C: Performance (impacto alto, esfuerzo alto) - ✅ PARCIAL 31/01/26**
+7. ⏸️ Minificar CSS/JS - Diferido (Firebase Hosting ya aplica gzip)
+8. [x] Lazy loading de imágenes below-the-fold (index.html, perfil-trabajador.html)
+9. [x] Google Maps API - Ya optimizado (async + defer en carga dinámica)
+10. [ ] Agregar width/height explícitos a imágenes (menor impacto, CSS ya define)
 
 ---
 
@@ -210,6 +210,7 @@ Correr Lighthouse en las páginas principales:
 | 31/01/26 | **Quick Wins completados:** `<main>` en 12 páginas, meta descriptions en 12 páginas |
 | 31/01/26 | Creado `robots.txt` válido con reglas para páginas públicas/privadas |
 | 31/01/26 | **Fase B completada:** Contraste mejorado en `.section-label` y `.category-count` |
+| 31/01/26 | **Fase C parcial:** Lazy loading agregado, Google Maps ya optimizado |
 
 ---
 
