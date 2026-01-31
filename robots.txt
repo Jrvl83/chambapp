@@ -1,0 +1,23 @@
+# ChambApp - robots.txt
+# https://chambapp-7785b.web.app
+
+User-agent: *
+Allow: /
+
+# Páginas públicas (indexables)
+Allow: /index.html
+Allow: /login.html
+Allow: /register.html
+
+# Páginas que requieren autenticación (no indexar)
+Disallow: /dashboard.html
+Disallow: /perfil-trabajador.html
+Disallow: /perfil-empleador.html
+Disallow: /mis-aplicaciones.html
+Disallow: /mis-aplicaciones-trabajador.html
+Disallow: /publicar-oferta.html
+Disallow: /notificaciones.html
+Disallow: /historial-calificaciones.html
+
+# Sitemap
+Sitemap: https://chambapp-7785b.web.app/sitemap.xml

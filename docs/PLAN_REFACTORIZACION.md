@@ -2,7 +2,7 @@
 
 **Task:** Revisión y limpieza de código
 **Fecha:** 30 Enero 2026
-**Última actualización:** 30 Enero 2026
+**Última actualización:** 31 Enero 2026
 **Prioridad:** Alta (antes de continuar con nuevas features)
 
 ---
@@ -95,25 +95,67 @@ Buscar y eliminar:
 
 ---
 
-## 4. PERFORMANCE (LIGHTHOUSE)
+## 4. PERFORMANCE (LIGHTHOUSE) ✅ AUDITORÍA COMPLETADA
 
-### 4.1 Ejecutar Auditoría
+### 4.1 Ejecutar Auditoría ✅
 Correr Lighthouse en las páginas principales:
-- [ ] index.html (landing)
-- [ ] dashboard.html
-- [ ] mapa-ofertas.html
-- [ ] perfil-trabajador.html
+- [x] index.html (landing)
+- [x] dashboard.html
+- [x] mapa-ofertas.html
+- [x] perfil-trabajador.html
 
-### 4.2 Documentar Resultados
+**Fecha auditoría:** 31 Enero 2026
+**Reportes JSON guardados en:** `docs/lighthouse-*.json`
+
+### 4.2 Resultados
 | Página | Performance | Accessibility | Best Practices | SEO |
 |--------|-------------|---------------|----------------|-----|
-| index.html | ? | ? | ? | ? |
-| dashboard.html | ? | ? | ? | ? |
-| mapa-ofertas.html | ? | ? | ? | ? |
-| perfil-trabajador.html | ? | ? | ? | ? |
+| index.html | 57 ❌ | 88 ❌ | 100 ✅ | 92 ✅ |
+| dashboard.html | 61 ❌ | 94 ✅ | 100 ✅ | 83 ❌ |
+| mapa-ofertas.html | 60 ❌ | 94 ✅ | 100 ✅ | 83 ❌ |
+| perfil-trabajador.html | 55 ❌ | 94 ✅ | 100 ✅ | 83 ❌ |
 
-### 4.3 Corregir Issues Críticos
-Priorizar correcciones con mayor impacto.
+**Objetivos:** Performance ≥80, Accessibility ≥90, Best Practices ≥90, SEO ≥90
+
+### 4.3 Issues Críticos Identificados
+
+#### Performance (TODAS las páginas - Prioridad ALTA)
+| Issue | Impacto | Solución |
+|-------|---------|----------|
+| LCP muy alto (hasta 16.9s) | Alto | Optimizar carga inicial, lazy loading |
+| Network payload 2.8MB | Alto | Minificar JS/CSS, comprimir imágenes |
+| JS/CSS sin minificar | Medio | Configurar build con minificación |
+| Imágenes sin width/height | Medio | Agregar atributos explícitos |
+
+#### Accessibility (index.html - Prioridad MEDIA)
+| Issue | Elementos afectados | Solución |
+|-------|---------------------|----------|
+| Contraste insuficiente | `.section-label`, `.category-count` | Oscurecer colores de texto |
+| Falta `<main>` landmark | Todas las páginas | Envolver contenido en `<main>` |
+
+#### SEO (dashboard, mapa, perfil - Prioridad MEDIA)
+| Issue | Solución |
+|-------|----------|
+| Falta meta description | Agregar `<meta name="description">` |
+| robots.txt inválido | Revisar/crear robots.txt correcto |
+
+### 4.4 Plan de Corrección (Priorizado)
+
+**Fase A: Quick Wins (impacto alto, esfuerzo bajo) - ✅ COMPLETADO 31/01/26**
+1. [x] Agregar `<main>` landmark a todas las páginas (12/12)
+2. [x] Agregar meta description a páginas internas (12/12)
+3. [x] Crear robots.txt válido
+4. [ ] Agregar width/height a imágenes (pendiente)
+
+**Fase B: Contraste (impacto medio) - ✅ COMPLETADO 31/01/26**
+5. [x] Ajustar color de `.section-label`: `var(--primary)` → `var(--primary-dark)`
+6. [x] Ajustar color de `.category-count`: `var(--gray-500)` → `var(--gray-700)`
+
+**Fase C: Performance (impacto alto, esfuerzo alto) - PENDIENTE**
+7. [ ] Minificar CSS (ahorro ~13KB)
+8. [ ] Minificar JS (ahorro ~76KB)
+9. [ ] Lazy loading de imágenes below-the-fold
+10. [ ] Optimizar carga de Google Maps API
 
 ---
 
@@ -133,9 +175,9 @@ Priorizar correcciones con mayor impacto.
 2. [ ] Verificar semántica (pendiente revisión manual)
 3. [ ] Correr Lighthouse para auditoría completa
 
-### Fase 4: Performance (Prioridad Alta) - PENDIENTE
-1. [ ] Correr Lighthouse
-2. [ ] Corregir issues críticos
+### Fase 4: Performance (Prioridad Alta) - ✅ AUDITORÍA COMPLETADA
+1. ✅ Correr Lighthouse (31/01/26)
+2. [ ] Corregir issues críticos (ver sección 4.4)
 
 ---
 
@@ -143,8 +185,8 @@ Priorizar correcciones con mayor impacto.
 
 - [x] No hay CSS duplicado entre archivos
 - [x] No hay estilos inline de diseño en HTML (los restantes son display:none funcionales)
-- [ ] Lighthouse Accessibility > 90
-- [ ] Lighthouse Performance > 80
+- [ ] Lighthouse Accessibility > 90 (actual: 88-94, index.html necesita mejoras)
+- [ ] Lighthouse Performance > 80 (actual: 55-61, TODAS necesitan mejoras)
 - [x] Console.logs de debug eliminados (archivos principales)
 - [ ] Código cumple con REGLAS_DESARROLLO.md
 
@@ -162,6 +204,12 @@ Priorizar correcciones con mayor impacto.
 | 30/01/26 | Fase 2: Limpiados ~120 console.logs de 6 archivos principales ✅ |
 | 30/01/26 | Fase 3: Auditoría inicial OK (imgs con alt, aria-labels presentes) |
 | 30/01/26 | Organización repo: favicons a assets/icons/, docs archivados |
+| 31/01/26 | **Auditoría Lighthouse completada** - 4 páginas analizadas |
+| 31/01/26 | Resultados: Performance 55-61, Accessibility 88-94, BP 100, SEO 83-92 |
+| 31/01/26 | Identificados 10 issues críticos con plan de corrección priorizado |
+| 31/01/26 | **Quick Wins completados:** `<main>` en 12 páginas, meta descriptions en 12 páginas |
+| 31/01/26 | Creado `robots.txt` válido con reglas para páginas públicas/privadas |
+| 31/01/26 | **Fase B completada:** Contraste mejorado en `.section-label` y `.category-count` |
 
 ---
 

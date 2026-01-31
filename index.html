@@ -459,7 +459,7 @@
         .section-label {
             display: inline-block;
             background: var(--primary-light);
-            color: var(--primary);
+            color: var(--primary-dark); /* Mejorado para contraste WCAG 4.5:1 */
             font-size: 0.8125rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -662,7 +662,7 @@
         
         .category-count {
             font-size: 0.8125rem;
-            color: var(--gray-500);
+            color: var(--gray-700); /* Mejorado para contraste WCAG 4.5:1 */
             margin-top: 0.25rem;
         }
         
@@ -937,7 +937,7 @@
     </style>
 </head>
 <body>
-    
+    <main>
     <!-- HERO SECTION -->
     <section class="hero">
         <!-- Header -->
@@ -1239,7 +1239,8 @@
             © 2025 ChambApp. Conectando talento con oportunidades en Perú.
         </div>
     </footer>
-    
+    </main>
+
     <!-- STICKY CTA -->
     <div class="sticky-cta" id="stickyCTA">
         <a href="register.html" class="sticky-cta-btn">
