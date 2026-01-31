@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 30 Enero 2026
+**Última actualización:** 31 Enero 2026
 
 ---
 
@@ -87,6 +87,49 @@ TOTAL:  18% del proyecto (32/176 tareas)
 - Tasks 18-20, 22: Chat in-app (WhatsApp cubre la necesidad)
 - Task 25-26: Búsqueda avanzada premium
 - Task 30: Settings de notificaciones
+
+---
+
+## SPRINT: GESTIÓN DE OFERTAS (6 tareas) - NUEVO
+
+> **Objetivo:** Mejorar el ciclo de vida de las ofertas y la experiencia del empleador.
+
+### Tareas
+
+| # | Tarea | Descripción | Prioridad | Estado |
+|---|-------|-------------|-----------|--------|
+| G1 | Sistema de estados | Implementar estados: `activa` → `en_curso` → `completada` + `caducada` | Alta | Pendiente |
+| G2 | Caducidad automática | Ofertas expiran en 14 días, Cloud Function diaria, opción renovar | Alta | Pendiente |
+| G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | Pendiente |
+| G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | Pendiente |
+| G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | Pendiente |
+| G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | Pendiente |
+
+### Flujo de Estados
+
+```
+Empleador publica oferta
+        ↓
+    [ACTIVA] ← visible, trabajadores postulan (14 días máx)
+        │
+        ├── Empleador acepta postulación
+        │           ↓
+        │      [EN_CURSO] ← NO visible, trabajo asignado
+        │           ↓
+        │      Trabajo termina, ambos califican
+        │           ↓
+        │     [COMPLETADA] ← en historial, reutilizable
+        │
+        └── Pasan 14 días sin aceptar
+                    ↓
+               [CADUCADA] ← en historial, renovable (+14 días)
+```
+
+### Regla de Visibilidad
+```
+Ofertas visibles para trabajadores:
+→ estado === "activa" AND fechaExpiracion > ahora
+```
 
 ---
 
