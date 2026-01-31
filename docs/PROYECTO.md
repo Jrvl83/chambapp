@@ -98,12 +98,22 @@ TOTAL:  18% del proyecto (32/176 tareas)
 
 | # | Tarea | Descripción | Prioridad | Estado |
 |---|-------|-------------|-----------|--------|
-| G1 | Sistema de estados | Implementar estados: `activa` → `en_curso` → `completada` + `caducada` | Alta | Pendiente |
+| G1 | Sistema de estados | Implementar estados: `activa` → `en_curso` → `completada` + `caducada` | Alta | ✅ PARCIAL |
 | G2 | Caducidad automática | Ofertas expiran en 14 días, Cloud Function diaria, opción renovar | Alta | Pendiente |
 | G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | Pendiente |
 | G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | Pendiente |
 | G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | Pendiente |
 | G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | Pendiente |
+
+### Progreso G1 (31/01/26)
+**Implementado:**
+- ✅ `fechaExpiracion` se agrega al crear oferta (14 días)
+- ✅ Al aceptar postulación → oferta cambia a `en_curso`
+- ✅ Al marcar completado → oferta cambia a `completada`
+
+**Pendiente G1:**
+- [ ] Estado `caducada` (requiere Cloud Function G2)
+- [ ] Filtrar queries para excluir ofertas expiradas (G3)
 
 ### Flujo de Estados
 
@@ -260,5 +270,43 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ---
 
+## CONTEXTO PARA PRÓXIMA SESIÓN
+
+> **Última sesión:** 31 Enero 2026
+> **Sprint activo:** Gestión de Ofertas (G1-G6)
+
+### Resumen de lo completado (31/01/26)
+1. ✅ Plan de refactorización completado (Lighthouse: Perf 85, A11y 92, SEO 100)
+2. ✅ G1 parcial: Sistema de estados implementado
+
+### Archivos modificados en G1
+- `js/publicar-oferta.js` - Agregado `fechaExpiracion` (14 días)
+- `js/mis-aplicaciones.js` - Estados `en_curso` y `completada`
+
+### Próximas tareas prioritarias
+1. **G3: Conteo correcto** - Modificar queries en:
+   - `js/dashboard/dashboard.js` (línea ~538)
+   - `js/mapa-ofertas.js` (línea ~171)
+   - `index.html` (script de stats)
+   - Query: `where('estado', '==', 'activa')` debe agregar `where('fechaExpiracion', '>', new Date())`
+
+2. **G2: Cloud Function** - Crear función que marque ofertas como `caducada`:
+   - Ejecutar diariamente
+   - Buscar ofertas con `estado: 'activa'` y `fechaExpiracion < ahora`
+   - Cambiar a `estado: 'caducada'`
+
+3. **G4: Editar/Eliminar** - Agregar botones en dashboard del empleador
+
+4. **G5: Historial** - Nueva página `historial-ofertas.html`
+
+5. **G6: Fotos** - Reutilizar lógica de portfolio de trabajador
+
+### Notas técnicas
+- Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
+- Ofertas visibles: `estado === 'activa' AND fechaExpiracion > ahora`
+- Firebase Timestamp se importa de firestore.js
+
+---
+
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.0
+**Versión documento:** 3.1
