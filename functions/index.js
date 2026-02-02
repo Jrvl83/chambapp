@@ -196,3 +196,50 @@ exports.notificarPostulacionAceptada = functions
             return null;
         }
     });
+
+// ============================================
+// TAREA PROGRAMADA: Marcar Ofertas Caducadas
+// Schedule: Diariamente a las 00:00 hora Peru (UTC-5)
+// ============================================
+exports.marcarOfertasCaducadas = functions
+    .region('us-central1')
+    .pubsub.schedule('0 5 * * *')  // 00:00 Peru = 05:00 UTC
+    .timeZone('America/Lima')
+    .onRun(async (context) => {
+        console.log('Iniciando tarea: marcar ofertas caducadas');
+
+        try {
+            const ahora = admin.firestore.Timestamp.now();
+
+            // Query: ofertas activas con fecha expirada
+            const snapshot = await db.collection('ofertas')
+                .where('estado', '==', 'activa')
+                .where('fechaExpiracion', '<', ahora)
+                .get();
+
+            if (snapshot.empty) {
+                console.log('No hay ofertas para caducar');
+                return null;
+            }
+
+            console.log(`Ofertas a caducar: ${snapshot.size}`);
+
+            // Batch update (max 500 por batch)
+            const batch = db.batch();
+            snapshot.docs.forEach(doc => {
+                batch.update(doc.ref, {
+                    estado: 'caducada',
+                    fechaCaducidad: admin.firestore.FieldValue.serverTimestamp()
+                });
+            });
+
+            await batch.commit();
+            console.log(`${snapshot.size} ofertas marcadas como caducadas`);
+
+            return null;
+
+        } catch (error) {
+            console.error('Error marcando ofertas caducadas:', error);
+            return null;
+        }
+    });
