@@ -35,13 +35,15 @@ if (usuario.tipo !== 'empleador') {
 }
 
 // ============================================
-// DETECTAR MODO: CREAR O EDITAR
+// DETECTAR MODO: CREAR, EDITAR O REUTILIZAR
 // ============================================
 const urlParams = new URLSearchParams(window.location.search);
 const ofertaId = urlParams.get('id');
+const reutilizarId = urlParams.get('reutilizar');
 const modoEdicion = !!ofertaId;
+const modoReutilizar = !!reutilizarId;
 
-// Modo: Edición o Crear Nueva
+// Modo: Edición (actualiza), Reutilizar (carga datos pero crea nueva), o Crear Nueva
 
 // ============================================
 // VARIABLES GLOBALES
@@ -1082,6 +1084,8 @@ async function obtenerUbicacionCompleta() {
 // ============================================
 if (modoEdicion) {
     cargarOfertaParaEditar(ofertaId);
+} else if (modoReutilizar) {
+    cargarOfertaParaEditar(reutilizarId);
 }
 
 async function cargarOfertaParaEditar(id) {
@@ -1164,14 +1168,20 @@ async function cargarOfertaParaEditar(id) {
         document.getElementById('titulo-count').textContent = oferta.titulo?.length || 0;
         document.getElementById('descripcion-count').textContent = oferta.descripcion?.length || 0;
         
-        // Cambiar textos del formulario
-        document.querySelector('.step-header h2').textContent = '鉁忥笍 Editar Oferta';
-        document.querySelector('.step-header p').textContent = 'Actualiza la informaci贸n de tu oferta';
-        btnSubmit.innerHTML = '馃捑 Guardar Cambios';
-        
+        // Cambiar textos del formulario segun modo
+        if (modoReutilizar) {
+            document.querySelector('.step-header h2').textContent = '🔄 Reutilizar Oferta';
+            document.querySelector('.step-header p').textContent = 'Publica nueva oferta basada en una anterior';
+            btnSubmit.innerHTML = '🚀 Publicar Oferta';
+        } else {
+            document.querySelector('.step-header h2').textContent = '✏️ Editar Oferta';
+            document.querySelector('.step-header p').textContent = 'Actualiza la información de tu oferta';
+            btnSubmit.innerHTML = '💾 Guardar Cambios';
+        }
+
         if (loadingToast) loadingToast.remove();
         if (typeof toastSuccess === 'function') {
-            toastSuccess('Oferta cargada correctamente');
+            toastSuccess(modoReutilizar ? 'Datos cargados. Modifica y publica.' : 'Oferta cargada');
         }
 
     } catch (error) {
