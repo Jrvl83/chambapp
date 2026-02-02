@@ -5,7 +5,7 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 
@@ -719,9 +719,17 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
                     </div>
                     <div class="oferta-footer">
                         <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
-                        <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
-                            👥 Ver Candidatos
-                        </a>
+                        <div class="oferta-actions">
+                            <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); editarOferta('${id}')" title="Editar oferta">
+                                ✏️
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); eliminarOferta('${id}', '${oferta.titulo.replace(/'/g, "\\'")}')" title="Eliminar oferta">
+                                🗑️
+                            </button>
+                            <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
+                                👥 Candidatos
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1636,5 +1644,89 @@ window.cerrarPromptNotif = function() {
     if (banner) {
         banner.classList.remove('visible');
         setTimeout(() => banner.remove(), 300);
+    }
+};
+
+// ========================================
+// FUNCIONES EDITAR/ELIMINAR OFERTAS (G4)
+// ========================================
+
+/**
+ * Redirige al formulario de edición de oferta
+ */
+window.editarOferta = function(ofertaId) {
+    window.location.href = `publicar-oferta.html?id=${ofertaId}`;
+};
+
+/**
+ * Muestra modal de confirmación para eliminar oferta
+ */
+window.eliminarOferta = function(ofertaId, titulo) {
+    const modalBody = document.getElementById('modal-body');
+    modalBody.innerHTML = `
+        <div style="text-align: center; padding: 1rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <h3 style="margin-bottom: 0.5rem; color: var(--dark);">¿Eliminar oferta?</h3>
+            <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+                "${titulo}"<br>
+                <small>Esta acción no se puede deshacer.</small>
+            </p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-secondary" onclick="cerrarModal()" style="flex: 1;">
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" onclick="confirmarEliminarOferta('${ofertaId}')" style="flex: 1;">
+                    🗑️ Eliminar
+                </button>
+            </div>
+        </div>
+    `;
+    document.getElementById('modal-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+/**
+ * Confirma y ejecuta la eliminación de la oferta
+ */
+window.confirmarEliminarOferta = async function(ofertaId) {
+    const btn = event.target;
+    const textoOriginal = btn.innerHTML;
+
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Eliminando...';
+
+        // Eliminar la oferta
+        await deleteDoc(doc(db, 'ofertas', ofertaId));
+
+        // Eliminar aplicaciones relacionadas
+        const appsQuery = query(
+            collection(db, 'aplicaciones'),
+            where('ofertaId', '==', ofertaId)
+        );
+        const appsSnap = await getDocs(appsQuery);
+
+        for (const docSnap of appsSnap.docs) {
+            await deleteDoc(docSnap.ref);
+        }
+
+        if (typeof toastSuccess === 'function') {
+            toastSuccess('Oferta eliminada exitosamente');
+        }
+
+        cerrarModal();
+
+        // Recargar dashboard
+        if (usuarioData && usuarioActual) {
+            await cargarDashboardEmpleador(usuarioData, usuarioActual.uid);
+        }
+
+    } catch (error) {
+        console.error('Error eliminando oferta:', error);
+        if (typeof toastError === 'function') {
+            toastError('Error al eliminar la oferta');
+        }
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
     }
 };

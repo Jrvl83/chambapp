@@ -874,6 +874,13 @@ a.stat-card-link:focus-visible {
     padding-top: 1rem;
     border-top: 1px solid var(--border);
     align-items: center;
+    justify-content: space-between;
+}
+
+.oferta-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 /* ============================================

@@ -101,7 +101,7 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | G1 | Sistema de estados | Implementar estados: `activa` → `en_curso` → `completada` + `caducada` | Alta | ✅ HECHO |
 | G2 | Caducidad automática | Ofertas expiran en 14 días, Cloud Function diaria, opción renovar | Alta | ✅ HECHO |
 | G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | ✅ HECHO |
-| G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | Pendiente |
+| G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | ✅ HECHO |
 | G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | Pendiente |
 | G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | Pendiente |
 
@@ -280,6 +280,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 2. ✅ G1: Sistema de estados completo
 3. ✅ G2: Cloud Function `marcarOfertasCaducadas` (ejecuta diariamente 00:00 Lima)
 4. ✅ G3: Conteo correcto implementado
+5. ✅ G4: Editar/Eliminar ofertas en dashboard empleador
 
 ### Archivos modificados
 **G1 - Sistema de estados:**
@@ -294,12 +295,14 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - `js/dashboard/dashboard.js` - Filtro en estadísticas y listado
 - `index.html` - Filtro en conteo general y por categoría
 
+**G4 - Editar/Eliminar ofertas:**
+- `js/dashboard/dashboard.js` - Botones y funciones editarOferta/eliminarOferta
+- `css/dashboard-main.css` - Estilos .oferta-actions
+
 ### Próximas tareas prioritarias
-1. **G4: Editar/Eliminar** - Agregar botones en dashboard del empleador
+1. **G5: Historial** - Nueva página `historial-ofertas.html`
 
-2. **G5: Historial** - Nueva página `historial-ofertas.html`
-
-3. **G6: Fotos** - Reutilizar lógica de portfolio de trabajador
+2. **G6: Fotos** - Reutilizar lógica de portfolio de trabajador
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
