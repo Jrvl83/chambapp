@@ -148,6 +148,16 @@
                 if (labelExplore) labelExplore.textContent = 'Candidatos';
             }
         }
+
+        // Actualizar botón Perfil según rol
+        const bottomNavProfile = bottomNav.querySelector('[data-page="profile"]');
+        if (bottomNavProfile) {
+            if (userRole === 'trabajador') {
+                bottomNavProfile.href = 'perfil-trabajador.html';
+            } else {
+                bottomNavProfile.href = 'perfil-empleador.html';
+            }
+        }
     }
 
     // ============================================
