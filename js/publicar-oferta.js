@@ -1080,7 +1080,80 @@ async function obtenerUbicacionCompleta() {
 }
 
 // ============================================
-// CARGAR DATOS SI EST脕 EN MODO EDICI脫N
+// PRECARGAR UBICACION EN MODO EDICION
+// ============================================
+async function precargarUbicacion(ubicacion) {
+    try {
+        const selectDepartamento = document.getElementById('departamento');
+        const selectProvincia = document.getElementById('provincia');
+        const selectDistrito = document.getElementById('distrito');
+
+        // Buscar y seleccionar departamento por nombre
+        if (ubicacion.departamento) {
+            for (let option of selectDepartamento.options) {
+                if (option.text.toLowerCase() === ubicacion.departamento.toLowerCase()) {
+                    selectDepartamento.value = option.value;
+                    await cargarProvincias();
+                    break;
+                }
+            }
+        }
+
+        // Esperar un momento para que se carguen las provincias
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Buscar y seleccionar provincia por nombre
+        if (ubicacion.provincia) {
+            for (let option of selectProvincia.options) {
+                if (option.text.toLowerCase() === ubicacion.provincia.toLowerCase()) {
+                    selectProvincia.value = option.value;
+                    await cargarDistritos();
+                    break;
+                }
+            }
+        }
+
+        // Esperar un momento para que se carguen los distritos
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Buscar y seleccionar distrito por nombre
+        if (ubicacion.distrito) {
+            for (let option of selectDistrito.options) {
+                if (option.text.toLowerCase() === ubicacion.distrito.toLowerCase()) {
+                    selectDistrito.value = option.value;
+                    // Disparar el evento change para actualizar el mapa
+                    selectDistrito.dispatchEvent(new Event('change'));
+                    break;
+                }
+            }
+        }
+
+        // Cargar direccion exacta/referencia si existe
+        if (ubicacion.direccionExacta) {
+            document.getElementById('referencia').value = ubicacion.direccionExacta;
+        } else if (ubicacion.referencia) {
+            document.getElementById('referencia').value = ubicacion.referencia;
+        }
+
+        // Si hay coordenadas, mostrar en el mapa
+        if (ubicacion.coordenadas && ubicacion.coordenadas.lat && ubicacion.coordenadas.lng) {
+            coordenadasSeleccionadas = ubicacion.coordenadas;
+            if (mapaPreview && marcadorPreview) {
+                const pos = { lat: ubicacion.coordenadas.lat, lng: ubicacion.coordenadas.lng };
+                mapaPreview.setCenter(pos);
+                mapaPreview.setZoom(15);
+                marcadorPreview.setPosition(pos);
+                marcadorPreview.setVisible(true);
+            }
+        }
+
+    } catch (error) {
+        console.error('Error precargando ubicacion:', error);
+    }
+}
+
+// ============================================
+// CARGAR DATOS SI ESTÁ EN MODO EDICIÓN
 // ============================================
 if (modoEdicion) {
     cargarOfertaParaEditar(ofertaId);
@@ -1125,17 +1198,13 @@ async function cargarOfertaParaEditar(id) {
         document.getElementById('categoria').value = oferta.categoria || '';
         document.getElementById('descripcion').value = oferta.descripcion || '';
         
-        // Ubicaci贸n - Si es formato antiguo (string), usar campo de texto
-        // Si es formato nuevo (objeto), usar combos
+        // Ubicacion - cargar en combos y campos
         if (typeof oferta.ubicacion === 'string') {
             // Formato antiguo - mostrar en campo de referencia
             document.getElementById('referencia').value = oferta.ubicacion;
         } else if (oferta.ubicacion && typeof oferta.ubicacion === 'object') {
-            // Formato nuevo - cargar en combos (requiere esperar a que carguen)
-            // Por ahora usar texto_completo como referencia
-            if (oferta.ubicacion.referencia) {
-                document.getElementById('referencia').value = oferta.ubicacion.referencia;
-            }
+            // Formato nuevo - precargar combos
+            await precargarUbicacion(oferta.ubicacion);
         }
         
         document.getElementById('salario').value = oferta.salario || '';
