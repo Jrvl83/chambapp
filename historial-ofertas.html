@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0066FF">
+    <meta name="description" content="Historial de ofertas publicadas en ChambApp. Revisa el estado de tus ofertas.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+
+    <title>Historial de Ofertas - ChambApp</title>
+
+    <link rel="manifest" href="/manifest.json">
+
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/bottom-nav.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/historial-ofertas.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-simple">
+        <a href="dashboard.html" class="header-back" aria-label="Volver al dashboard">
+            ← <span>Dashboard</span>
+        </a>
+        <h1 class="header-title">Historial de Ofertas</h1>
+        <div class="header-spacer"></div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-mini">
+                    <span class="stat-mini-number" id="stat-total">0</span>
+                    <span class="stat-mini-label">Total</span>
+                </div>
+                <div class="stat-mini stat-activa">
+                    <span class="stat-mini-number" id="stat-activas">0</span>
+                    <span class="stat-mini-label">Activas</span>
+                </div>
+                <div class="stat-mini stat-en-curso">
+                    <span class="stat-mini-number" id="stat-en-curso">0</span>
+                    <span class="stat-mini-label">En curso</span>
+                </div>
+                <div class="stat-mini stat-completada">
+                    <span class="stat-mini-number" id="stat-completadas">0</span>
+                    <span class="stat-mini-label">Completadas</span>
+                </div>
+                <div class="stat-mini stat-caducada">
+                    <span class="stat-mini-number" id="stat-caducadas">0</span>
+                    <span class="stat-mini-label">Caducadas</span>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-simple">
+                <select id="filtro-estado" class="filtro-select" aria-label="Filtrar por estado">
+                    <option value="">Todos los estados</option>
+                    <option value="activa">Activas</option>
+                    <option value="en_curso">En curso</option>
+                    <option value="completada">Completadas</option>
+                    <option value="caducada">Caducadas</option>
+                </select>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading-state" class="loading-state">
+                <div class="spinner"></div>
+                <p>Cargando ofertas...</p>
+            </div>
+
+            <!-- Lista de ofertas -->
+            <div id="ofertas-list" class="ofertas-list" style="display: none;"></div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📭</div>
+                <h3>Sin ofertas publicadas</h3>
+                <p>Publica tu primera oferta para encontrar trabajadores.</p>
+                <a href="publicar-oferta.html" class="btn btn-primary">
+                    ➕ Publicar Oferta
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">&times;</button>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Navegacion principal">
+        <div class="bottom-nav-items">
+            <a href="historial-ofertas.html" class="bottom-nav-item active" data-page="home">
+                <span class="bottom-nav-icon">📋</span>
+                <span class="bottom-nav-label">Historial</span>
+            </a>
+            <a href="mis-aplicaciones.html" class="bottom-nav-item" data-page="explore" id="bottom-nav-explore">
+                <span class="bottom-nav-icon">👥</span>
+                <span class="bottom-nav-label">Candidatos</span>
+            </a>
+            <a href="publicar-oferta.html" class="bottom-nav-item nav-add" data-page="add" id="bottom-nav-add">
+                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-label">Publicar</span>
+            </a>
+            <a href="notificaciones.html" class="bottom-nav-item" data-page="notifications">
+                <span class="bottom-nav-icon">🔔</span>
+                <span class="bottom-nav-label">Alertas</span>
+            </a>
+            <a href="perfil-empleador.html" class="bottom-nav-item" data-page="profile">
+                <span class="bottom-nav-icon">👤</span>
+                <span class="bottom-nav-label">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/components/bottom-nav.js"></script>
+    <script type="module" src="js/historial-ofertas.js"></script>
+</body>
+</html>

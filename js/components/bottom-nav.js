@@ -97,6 +97,24 @@
     // ============================================
     function updateNavigationForRole() {
         const bottomNavExplore = document.getElementById('bottom-nav-explore');
+        const bottomNavHome = bottomNav.querySelector('[data-page="home"]');
+
+        // Actualizar botón Home según rol (reemplaza redundancia)
+        if (bottomNavHome) {
+            const iconHome = bottomNavHome.querySelector('.bottom-nav-icon');
+            const labelHome = bottomNavHome.querySelector('.bottom-nav-label');
+
+            if (userRole === 'trabajador') {
+                bottomNavHome.href = 'mis-aplicaciones-trabajador.html';
+                if (iconHome) iconHome.textContent = '📋';
+                if (labelHome) labelHome.textContent = 'Mis Apps';
+            } else {
+                // Empleador: historial de ofertas
+                bottomNavHome.href = 'historial-ofertas.html';
+                if (iconHome) iconHome.textContent = '📋';
+                if (labelHome) labelHome.textContent = 'Historial';
+            }
+        }
 
         // Actualizar botón central (Add)
         if (bottomNavAdd) {
@@ -104,9 +122,9 @@
             const labelAdd = bottomNavAdd.querySelector('.bottom-nav-label');
 
             if (userRole === 'trabajador') {
-                bottomNavAdd.href = 'mis-aplicaciones-trabajador.html';
-                if (iconAdd) iconAdd.textContent = '📋';
-                if (labelAdd) labelAdd.textContent = 'Postulaciones';
+                bottomNavAdd.href = 'mapa-ofertas.html';
+                if (iconAdd) iconAdd.textContent = '🔍';
+                if (labelAdd) labelAdd.textContent = 'Explorar';
             } else {
                 bottomNavAdd.href = 'publicar-oferta.html';
                 if (iconAdd) iconAdd.textContent = '➕';
@@ -120,9 +138,9 @@
             const labelExplore = bottomNavExplore.querySelector('.bottom-nav-label');
 
             if (userRole === 'trabajador') {
-                bottomNavExplore.href = 'mapa-ofertas.html';
-                if (iconExplore) iconExplore.textContent = '🔍';
-                if (labelExplore) labelExplore.textContent = 'Explorar';
+                bottomNavExplore.href = 'dashboard.html';
+                if (iconExplore) iconExplore.textContent = '🏠';
+                if (labelExplore) labelExplore.textContent = 'Inicio';
             } else {
                 // Empleador: ver candidatos
                 bottomNavExplore.href = 'mis-aplicaciones.html';
