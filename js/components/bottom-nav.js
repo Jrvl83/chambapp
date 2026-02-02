@@ -96,7 +96,7 @@
     // NAVIGATION UPDATES
     // ============================================
     function updateNavigationForRole() {
-        const bottomNavExplore = document.getElementById('bottom-nav-explore');
+        const bottomNavExplore = bottomNav.querySelector('[data-page="explore"]');
         const bottomNavHome = bottomNav.querySelector('[data-page="home"]');
 
         // Actualizar botón Home según rol (reemplaza redundancia)
