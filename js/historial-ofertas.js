@@ -148,7 +148,7 @@ function renderizarOfertas(ofertas) {
 
         const estadoBadge = getEstadoBadge(estadoReal);
         const acciones = getAccionesHTML(oferta.id, estadoReal, oferta.titulo);
-        const fechaCreacion = formatearFecha(oferta.fechaCreacion);
+        const fechaMostrar = formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion);
 
         const ubicacion = typeof oferta.ubicacion === 'object'
             ? (oferta.ubicacion.distrito || 'Sin ubicacion')
@@ -158,7 +158,7 @@ function renderizarOfertas(ofertas) {
             <div class="oferta-historial-card" data-estado="${estadoReal}">
                 <div class="oferta-historial-header">
                     <span class="estado-badge ${estadoReal}">${estadoBadge}</span>
-                    <span class="oferta-fecha">${fechaCreacion}</span>
+                    <span class="oferta-fecha">${fechaMostrar}</span>
                 </div>
                 <h3 class="oferta-titulo">${oferta.titulo}</h3>
                 <div class="oferta-meta">

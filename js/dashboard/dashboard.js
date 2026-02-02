@@ -711,7 +711,7 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
                     <div class="oferta-header">
                         <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
                         <div class="oferta-header-right">
-                            <span class="oferta-fecha">${formatearFecha(oferta.fechaCreacion)}</span>
+                            <span class="oferta-fecha">${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion)}</span>
                             <div class="oferta-menu-container">
                                 <button class="oferta-menu-btn" onclick="event.stopPropagation(); toggleOfertaMenu('${id}')" aria-label="Más opciones">
                                     ⋮
@@ -848,7 +848,7 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
             <div class='oferta-card-body'>
                 <div class='oferta-header'>
                     <span class='oferta-categoria ${oferta.categoria || 'otros'}'>${categoriaDisplay}</span>
-                    <span class='oferta-fecha'>${formatearFecha(oferta.fechaCreacion)}</span>
+                    <span class='oferta-fecha'>${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion)}</span>
                 </div>
                 <h3 class='oferta-titulo'>${oferta.titulo}</h3>
                 <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 100) || ''}...</p>
