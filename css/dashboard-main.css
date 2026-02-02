@@ -877,10 +877,88 @@ a.stat-card-link:focus-visible {
     justify-content: space-between;
 }
 
-.oferta-actions {
+/* Menú de opciones ⋮ para ofertas del empleador */
+.oferta-header-right {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
-    flex-wrap: wrap;
+}
+
+.oferta-menu-container {
+    position: relative;
+}
+
+.oferta-menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--gray-500);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.oferta-menu-btn:hover {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.oferta-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 140px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+}
+
+.oferta-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(4px);
+}
+
+.oferta-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: background 0.15s ease;
+    text-align: left;
+}
+
+.oferta-menu-item:first-child {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.oferta-menu-item:last-child {
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.oferta-menu-item:hover {
+    background: var(--gray-50);
+}
+
+.oferta-menu-item-danger {
+    color: var(--danger);
+}
+
+.oferta-menu-item-danger:hover {
+    background: #fef2f2;
 }
 
 /* ============================================

@@ -710,7 +710,22 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
                 <div class="oferta-card-body">
                     <div class="oferta-header">
                         <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
-                        <span class="oferta-fecha">${formatearFecha(oferta.fechaCreacion)}</span>
+                        <div class="oferta-header-right">
+                            <span class="oferta-fecha">${formatearFecha(oferta.fechaCreacion)}</span>
+                            <div class="oferta-menu-container">
+                                <button class="oferta-menu-btn" onclick="event.stopPropagation(); toggleOfertaMenu('${id}')" aria-label="Más opciones">
+                                    ⋮
+                                </button>
+                                <div class="oferta-menu" id="menu-${id}">
+                                    <button class="oferta-menu-item" onclick="event.stopPropagation(); editarOferta('${id}')">
+                                        ✏️ Editar
+                                    </button>
+                                    <button class="oferta-menu-item oferta-menu-item-danger" onclick="event.stopPropagation(); eliminarOferta('${id}', '${oferta.titulo.replace(/'/g, "\\'")}')">
+                                        🗑️ Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <h3 class="oferta-titulo">${oferta.titulo}</h3>
                     <div class="oferta-detalles">
@@ -719,17 +734,9 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
                     </div>
                     <div class="oferta-footer">
                         <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
-                        <div class="oferta-actions">
-                            <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); editarOferta('${id}')" title="Editar oferta">
-                                ✏️
-                            </button>
-                            <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); eliminarOferta('${id}', '${oferta.titulo.replace(/'/g, "\\'")}')" title="Eliminar oferta">
-                                🗑️
-                            </button>
-                            <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
-                                👥 Candidatos
-                            </a>
-                        </div>
+                        <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
+                            👥 Ver Candidatos
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1652,9 +1659,39 @@ window.cerrarPromptNotif = function() {
 // ========================================
 
 /**
+ * Abre/cierra el menú de opciones de una oferta
+ */
+window.toggleOfertaMenu = function(ofertaId) {
+    // Cerrar todos los demás menús primero
+    document.querySelectorAll('.oferta-menu.active').forEach(menu => {
+        if (menu.id !== `menu-${ofertaId}`) {
+            menu.classList.remove('active');
+        }
+    });
+
+    const menu = document.getElementById(`menu-${ofertaId}`);
+    if (menu) {
+        menu.classList.toggle('active');
+    }
+};
+
+// Cerrar menú al hacer click fuera
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.oferta-menu-container')) {
+        document.querySelectorAll('.oferta-menu.active').forEach(menu => {
+            menu.classList.remove('active');
+        });
+    }
+});
+
+/**
  * Redirige al formulario de edición de oferta
  */
 window.editarOferta = function(ofertaId) {
+    // Cerrar menú
+    document.querySelectorAll('.oferta-menu.active').forEach(menu => {
+        menu.classList.remove('active');
+    });
     window.location.href = `publicar-oferta.html?id=${ofertaId}`;
 };
 
@@ -1662,6 +1699,11 @@ window.editarOferta = function(ofertaId) {
  * Muestra modal de confirmación para eliminar oferta
  */
 window.eliminarOferta = function(ofertaId, titulo) {
+    // Cerrar menú
+    document.querySelectorAll('.oferta-menu.active').forEach(menu => {
+        menu.classList.remove('active');
+    });
+
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
