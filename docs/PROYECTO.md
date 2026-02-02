@@ -102,7 +102,7 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | G2 | Caducidad automática | Ofertas expiran en 14 días, Cloud Function diaria, opción renovar | Alta | ✅ HECHO |
 | G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | ✅ HECHO |
 | G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | ✅ HECHO |
-| G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | Pendiente |
+| G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | ✅ HECHO |
 | G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | Pendiente |
 
 ### Progreso G1 (31/01/26)
@@ -281,6 +281,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 3. ✅ G2: Cloud Function `marcarOfertasCaducadas` (ejecuta diariamente 00:00 Lima)
 4. ✅ G3: Conteo correcto implementado
 5. ✅ G4: Editar/Eliminar ofertas en dashboard empleador
+6. ✅ G5: Historial de ofertas + Bottom nav mejorado
 
 ### Archivos modificados
 **G1 - Sistema de estados:**
@@ -296,13 +297,17 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - `index.html` - Filtro en conteo general y por categoría
 
 **G4 - Editar/Eliminar ofertas:**
-- `js/dashboard/dashboard.js` - Botones y funciones editarOferta/eliminarOferta
-- `css/dashboard-main.css` - Estilos .oferta-actions
+- `js/dashboard/dashboard.js` - Menu ⋮ con opciones editar/eliminar
+- `css/dashboard-main.css` - Estilos .oferta-menu
+
+**G5 - Historial de ofertas:**
+- `historial-ofertas.html` - Nueva página
+- `js/historial-ofertas.js` - Lógica y acciones (renovar, eliminar)
+- `css/historial-ofertas.css` - Estilos
+- `js/components/bottom-nav.js` - Bottom nav diferenciado por rol
 
 ### Próximas tareas prioritarias
-1. **G5: Historial** - Nueva página `historial-ofertas.html`
-
-2. **G6: Fotos** - Reutilizar lógica de portfolio de trabajador
+1. **G6: Fotos** - Galería de imágenes al publicar oferta
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
