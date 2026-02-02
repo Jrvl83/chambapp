@@ -280,39 +280,51 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 2. ✅ G1: Sistema de estados completo
 3. ✅ G2: Cloud Function `marcarOfertasCaducadas` (ejecuta diariamente 00:00 Lima)
 4. ✅ G3: Conteo correcto implementado
-5. ✅ G4: Editar/Eliminar ofertas en dashboard empleador
-6. ✅ G5: Historial de ofertas + Bottom nav mejorado
+5. ✅ G4: Editar/Eliminar ofertas con menú ⋮
+6. ✅ G5: Historial de ofertas + Bottom nav diferenciado por rol
 
-### Archivos modificados
-**G1 - Sistema de estados:**
-- `js/publicar-oferta.js` - Agregado `fechaExpiracion` (14 días)
-- `js/mis-aplicaciones.js` - Estados `en_curso` y `completada`
+### Archivos modificados (sesión 02/02/26)
 
 **G2 - Caducidad automática:**
 - `functions/index.js` - Cloud Function scheduled `marcarOfertasCaducadas`
 
-**G3 - Filtrado de ofertas expiradas:**
-- `js/mapa-ofertas.js` - Filtro en cargarOfertas()
-- `js/dashboard/dashboard.js` - Filtro en estadísticas y listado
-- `index.html` - Filtro en conteo general y por categoría
-
 **G4 - Editar/Eliminar ofertas:**
-- `js/dashboard/dashboard.js` - Menu ⋮ con opciones editar/eliminar
-- `css/dashboard-main.css` - Estilos .oferta-menu
+- `js/dashboard/dashboard.js` - Menú ⋮ con opciones editar/eliminar
+- `css/dashboard-main.css` - Estilos .oferta-menu, .oferta-menu-item
+- `js/publicar-oferta.js` - Reseteo de fechaExpiracion al editar (+14 días)
 
 **G5 - Historial de ofertas:**
-- `historial-ofertas.html` - Nueva página
-- `js/historial-ofertas.js` - Lógica y acciones (renovar, eliminar)
-- `css/historial-ofertas.css` - Estilos
+- `historial-ofertas.html` - Nueva página para empleadores
+- `js/historial-ofertas.js` - Cargar ofertas, filtros, renovar, eliminar, reutilizar
+- `css/historial-ofertas.css` - Estilos cards con estados
 - `js/components/bottom-nav.js` - Bottom nav diferenciado por rol
+- `js/publicar-oferta.js` - Modo reutilizar oferta (?reutilizar=ID)
+
+**Fixes adicionales:**
+- `firestore.rules` - Verificación por email para eliminar ofertas antiguas
+- `js/components/bottom-nav.js` - Selector data-page en vez de ID
+- `js/components/bottom-nav.js` - Botón perfil según rol
+- `js/publicar-oferta.js` - Precarga ubicación completa en edición
+- `js/dashboard/dashboard.js` - Mostrar fechaActualizacion en cards
+- `js/historial-ofertas.js` - Mostrar fechaActualizacion en cards
+
+### Bottom Nav por Rol
+| Botón | Trabajador | Empleador |
+|-------|------------|-----------|
+| 1º | 📋 Mis Apps | 📋 Historial |
+| 2º | 🏠 Inicio | 👥 Candidatos |
+| 3º | 🔍 Explorar | ➕ Publicar |
+| 4º | 🔔 Alertas | 🔔 Alertas |
+| 5º | 👤 Perfil Trab. | 👤 Perfil Emp. |
 
 ### Próximas tareas prioritarias
-1. **G6: Fotos** - Galería de imágenes al publicar oferta
+1. **G6: Fotos** - Galería de imágenes al publicar oferta (máx 5)
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
 - Ofertas visibles: `estado === 'activa' AND fechaExpiracion > ahora`
-- Firebase Timestamp se importa de firestore.js
+- Al editar oferta: fechaExpiracion se resetea a +14 días
+- Cards muestran fechaActualizacion si existe, sino fechaCreacion
 
 ---
 
