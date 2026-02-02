@@ -1485,14 +1485,19 @@ formOferta.addEventListener('submit', async (e) => {
         
         if (modoEdicion) {
             // ACTUALIZAR OFERTA EXISTENTE
+            // Resetear fecha de expiración (+14 días desde ahora)
+            const nuevaFechaExpiracion = new Date();
+            nuevaFechaExpiracion.setDate(nuevaFechaExpiracion.getDate() + 14);
+
             const docRef = doc(db, 'ofertas', ofertaId);
             await updateDoc(docRef, {
                 ...ofertaData,
-                fechaActualizacion: serverTimestamp()
+                fechaActualizacion: serverTimestamp(),
+                fechaExpiracion: Timestamp.fromDate(nuevaFechaExpiracion)
             });
-            
+
             if (typeof toastSuccess === 'function') {
-                toastSuccess('隆Oferta actualizada exitosamente! 馃捑');
+                toastSuccess('¡Oferta actualizada! Visible por 14 días más');
             }
 
         } else {
