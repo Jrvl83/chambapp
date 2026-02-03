@@ -704,9 +704,16 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
             ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1)
             : 'Otros';
 
+        // Imagen principal (G6)
+        const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
+        const imagenHTML = tieneImagen
+            ? `<div class="oferta-imagen"><img src="${oferta.imagenesURLs[0]}" alt="${oferta.titulo}" loading="lazy"></div>`
+            : '';
+
         grid.innerHTML += `
-            <div class="oferta-card touchable hover-lift" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
+            <div class="oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
                 <div class="oferta-categoria-bar ${oferta.categoria || 'otros'}"></div>
+                ${imagenHTML}
                 <div class="oferta-card-body">
                     <div class="oferta-header">
                         <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
@@ -842,9 +849,16 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
     // Capitalizar categoría para mostrar
     const categoriaDisplay = oferta.categoria ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1) : 'Otros';
 
+    // Imagen principal (G6)
+    const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
+    const imagenHTML = tieneImagen
+        ? `<div class='oferta-imagen'><img src='${oferta.imagenesURLs[0]}' alt='${oferta.titulo}' loading='lazy'></div>`
+        : '';
+
     return `
-        <div class='oferta-card touchable hover-lift'>
+        <div class='oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}'>
             <div class='oferta-categoria-bar ${oferta.categoria || 'otros'}'></div>
+            ${imagenHTML}
             <div class='oferta-card-body'>
                 <div class='oferta-header'>
                     <span class='oferta-categoria ${oferta.categoria || 'otros'}'>${categoriaDisplay}</span>
@@ -1229,6 +1243,22 @@ window.verDetalle = async function(id) {
             }
         }
 
+        // Galería de fotos (G6)
+        let galeriaHTML = '';
+        if (oferta.imagenesURLs && oferta.imagenesURLs.length > 0) {
+            galeriaHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+                        ${oferta.imagenesURLs.map((url, i) => `
+                            <img src="${url}" alt="Foto ${i + 1}"
+                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; flex-shrink: 0;"
+                                onclick="window.open('${url}', '_blank')">
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         const modalBody = document.getElementById('modal-body');
         modalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 1.5rem;">
@@ -1237,6 +1267,8 @@ window.verDetalle = async function(id) {
                     ${oferta.categoria}
                 </span>
             </div>
+
+            ${galeriaHTML}
 
             <div style="margin-bottom: 1.5rem;">
                 <h3 style="margin-bottom: 0.5rem;">📝 Descripción</h3>

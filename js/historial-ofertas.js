@@ -154,19 +154,28 @@ function renderizarOfertas(ofertas) {
             ? (oferta.ubicacion.distrito || 'Sin ubicacion')
             : (oferta.ubicacion || 'Sin ubicacion');
 
+        // Imagen principal (G6)
+        const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
+        const imagenHTML = tieneImagen
+            ? `<div class="oferta-historial-imagen"><img src="${oferta.imagenesURLs[0]}" alt="${oferta.titulo}" loading="lazy"></div>`
+            : '';
+
         return `
-            <div class="oferta-historial-card" data-estado="${estadoReal}">
-                <div class="oferta-historial-header">
-                    <span class="estado-badge ${estadoReal}">${estadoBadge}</span>
-                    <span class="oferta-fecha">${fechaMostrar}</span>
-                </div>
-                <h3 class="oferta-titulo">${oferta.titulo}</h3>
-                <div class="oferta-meta">
-                    <span>📍 ${ubicacion}</span>
-                    <span>💰 ${oferta.salario || 'No especificado'}</span>
-                </div>
-                <div class="oferta-acciones">
-                    ${acciones}
+            <div class="oferta-historial-card ${tieneImagen ? 'con-imagen' : ''}" data-estado="${estadoReal}">
+                ${imagenHTML}
+                <div class="oferta-historial-content">
+                    <div class="oferta-historial-header">
+                        <span class="estado-badge ${estadoReal}">${estadoBadge}</span>
+                        <span class="oferta-fecha">${fechaMostrar}</span>
+                    </div>
+                    <h3 class="oferta-titulo">${oferta.titulo}</h3>
+                    <div class="oferta-meta">
+                        <span>📍 ${ubicacion}</span>
+                        <span>💰 ${oferta.salario || 'No especificado'}</span>
+                    </div>
+                    <div class="oferta-acciones">
+                        ${acciones}
+                    </div>
                 </div>
             </div>
         `;
