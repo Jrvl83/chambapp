@@ -516,11 +516,22 @@ async function cargarOfertasTrabajador() {
             }
 
             todasLasOfertas.push({ id: docSnap.id, data: oferta });
+        });
 
-            // Task 11: Calcular distancia si es posible
+        // Ordenar por fecha mas reciente (actualizacion o creacion)
+        todasLasOfertas.sort((a, b) => {
+            const fechaA = (a.data.fechaActualizacion || a.data.fechaCreacion);
+            const fechaB = (b.data.fechaActualizacion || b.data.fechaCreacion);
+            const tA = fechaA?.toDate?.() || new Date(fechaA);
+            const tB = fechaB?.toDate?.() || new Date(fechaB);
+            return tB - tA;
+        });
+
+        // Renderizar cards ordenadas
+        todasLasOfertas.forEach(item => {
             let distanciaKm = null;
-            if (ubicacionUsuario && oferta.ubicacion && typeof oferta.ubicacion === 'object' && oferta.ubicacion.coordenadas) {
-                const coords = oferta.ubicacion.coordenadas;
+            if (ubicacionUsuario && item.data.ubicacion && typeof item.data.ubicacion === 'object' && item.data.ubicacion.coordenadas) {
+                const coords = item.data.ubicacion.coordenadas;
                 if (coords.lat && coords.lng) {
                     distanciaKm = calcularDistancia(
                         ubicacionUsuario.lat,
@@ -530,8 +541,7 @@ async function cargarOfertasTrabajador() {
                     );
                 }
             }
-
-            ofertasGrid.innerHTML += crearOfertaCardTrabajador(oferta, docSnap.id, distanciaKm);
+            ofertasGrid.innerHTML += crearOfertaCardTrabajador(item.data, item.id, distanciaKm);
         });
 
     } catch (error) {
@@ -1016,9 +1026,9 @@ function parsearSalario(salarioStr) {
 
 function calcularDiasAtras(periodo) {
     const periodos = {
-        'ultimos7': 7,
-        'ultimos30': 30,
-        'ultimos90': 90
+        'hoy': 1,
+        'ultimos3': 3,
+        'ultimos7': 7
     };
     return periodos[periodo] || 365;
 }
@@ -1098,7 +1108,8 @@ function aplicarFiltrosAvanzados(estado) {
 
         // Filtro fecha publicación
         if (fechaPublicacion) {
-            const fechaOferta = oferta.fechaCreacion?.toDate?.() || new Date(oferta.fechaCreacion);
+            const fechaRaw = oferta.fechaActualizacion || oferta.fechaCreacion;
+            const fechaOferta = fechaRaw?.toDate?.() || new Date(fechaRaw);
             const diasAtras = calcularDiasAtras(fechaPublicacion);
             const fechaLimite = new Date();
             fechaLimite.setDate(fechaLimite.getDate() - diasAtras);
@@ -1140,8 +1151,13 @@ function ordenarOfertas(ofertas, criterio) {
             });
         case 'recientes':
         default:
-            // Ya viene ordenado de Firestore
-            return ofertas;
+            return ofertas.sort((a, b) => {
+                const fechaA = (a.data.fechaActualizacion || a.data.fechaCreacion);
+                const fechaB = (b.data.fechaActualizacion || b.data.fechaCreacion);
+                const tA = fechaA?.toDate?.() || new Date(fechaA);
+                const tB = fechaB?.toDate?.() || new Date(fechaB);
+                return tB - tA;
+            });
     }
 }
 
