@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 31 Enero 2026
+**Última actualización:** 03 Febrero 2026
 
 ---
 
@@ -272,7 +272,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 02 Febrero 2026
+> **Última sesión:** 02 Febrero 2026 (sesión 2)
 > **Sprint activo:** Gestión de Ofertas (G1-G6) - ✅ COMPLETADO
 
 ### Resumen de lo completado
@@ -282,37 +282,52 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 4. ✅ G3: Conteo correcto implementado
 5. ✅ G4: Editar/Eliminar ofertas con menú ⋮
 6. ✅ G5: Historial de ofertas + Bottom nav diferenciado por rol
-7. ✅ G6: Fotos en ofertas (galería de hasta 5 fotos)
+7. ✅ G6: Fotos en ofertas completo (upload, visualización en cards y modales)
 
-### Archivos modificados (sesión 02/02/26)
+### Archivos modificados (sesión 02/02/26 - sesión 2)
 
-**G6 - Fotos en ofertas:**
-- `publicar-oferta.html` - Sección de fotos en Step 2 y review en Step 4
-- `js/publicar-oferta.js` - Funciones de validación, optimización, preview y upload
-- `css/publicar-oferta.css` - Estilos para área de upload, preview grid, botones
+**G6 - Visualización de fotos:**
+- `js/dashboard/dashboard.js` - Imagen principal en cards, galería en modal detalle
+- `css/dashboard-main.css` - Estilos `.oferta-imagen` para cards
+- `js/historial-ofertas.js` - Imagen en cards de historial
+- `css/historial-ofertas.css` - Estilos cards con imagen (`.con-imagen`, `.oferta-historial-imagen`)
+- `js/mis-aplicaciones-trabajador.js` - Galería en modal "Ver Oferta"
+- `js/mapa-ofertas.js` - Galería en modal detalle del mapa
+- `storage.rules` - CREADO: Reglas para permitir uploads a `ofertas/{ofertaId}/`
 
-**G2 - Caducidad automática:**
-- `functions/index.js` - Cloud Function scheduled `marcarOfertasCaducadas`
+**Estandarización de Headers:**
+- `css/header-simple.css` - Archivo único para estilos de header
+- `css/components.css` - Eliminados estilos duplicados de header
+- `css/mis-aplicaciones.css` - Eliminados estilos duplicados de header
+- `css/mis-aplicaciones-trabajador.css` - Eliminados estilos duplicados de header
+- `css/historial-calificaciones.css` - Eliminados estilos duplicados de header
+- `css/perfil-trabajador.css` - Eliminados estilos responsive de header
+- `perfil-empleador.html` - Eliminados estilos inline de header y reset CSS
+- Múltiples HTML - Agregado import de `header-simple.css`, estructura `header-content`
 
-**G4 - Editar/Eliminar ofertas:**
-- `js/dashboard/dashboard.js` - Menú ⋮ con opciones editar/eliminar
-- `css/dashboard-main.css` - Estilos .oferta-menu, .oferta-menu-item
-- `js/publicar-oferta.js` - Reseteo de fechaExpiracion al editar (+14 días)
+### ⚠️ PENDIENTE: Investigar problema de headers
 
-**G5 - Historial de ofertas:**
-- `historial-ofertas.html` - Nueva página para empleadores
-- `js/historial-ofertas.js` - Cargar ofertas, filtros, renovar, eliminar, reutilizar
-- `css/historial-ofertas.css` - Estilos cards con estados
-- `js/components/bottom-nav.js` - Bottom nav diferenciado por rol
-- `js/publicar-oferta.js` - Modo reutilizar oferta (?reutilizar=ID)
+**Problema:** Los headers de `perfil-empleador.html` y `historial-ofertas.html` se ven ligeramente diferentes a las otras páginas (notificaciones, mis-aplicaciones), a pesar de usar el mismo `header-simple.css`.
 
-**Fixes adicionales:**
-- `firestore.rules` - Verificación por email para eliminar ofertas antiguas
-- `js/components/bottom-nav.js` - Selector data-page en vez de ID
-- `js/components/bottom-nav.js` - Botón perfil según rol
-- `js/publicar-oferta.js` - Precarga ubicación completa en edición
-- `js/dashboard/dashboard.js` - Mostrar fechaActualizacion en cards
-- `js/historial-ofertas.js` - Mostrar fechaActualizacion en cards
+**Observación del usuario:** Cuando navega entre páginas que funcionan bien (mis-aplicaciones ↔ notificaciones), el header no se refresca. En las páginas problemáticas, toda la página incluyendo header se refresca.
+
+**Intentos realizados:**
+1. ✅ Unificado todos los headers para usar `header-simple.css`
+2. ✅ Eliminados estilos duplicados de `components.css` y CSS específicos
+3. ✅ Eliminados estilos inline de `perfil-empleador.html`
+4. ✅ Agregado cache-bust `?v=2` a imports de `header-simple.css`
+5. ❌ El problema persiste
+
+**Posibles causas a investigar:**
+- Caché del navegador o Service Worker
+- Orden de carga de CSS en algunas páginas
+- Algún CSS adicional no detectado
+- Comportamiento de navegación SPA vs full reload
+
+**Archivos clave para investigar:**
+- `css/header-simple.css` - Fuente única de estilos de header
+- `perfil-empleador.html` - Tiene `<style>` inline (aunque ya limpiado)
+- `historial-ofertas.html` - Sin estilos inline
 
 ### Bottom Nav por Rol
 | Botón | Trabajador | Empleador |
@@ -323,7 +338,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | 4º | 🔔 Alertas | 🔔 Alertas |
 | 5º | 👤 Perfil Trab. | 👤 Perfil Emp. |
 
-### Sistema de Fotos (G6)
+### Sistema de Fotos (G6) - COMPLETO
 - Máximo 5 fotos por oferta
 - Tamaño máximo: 10MB por foto
 - Optimización automática: 1200x1200px, 85% calidad JPEG
@@ -331,11 +346,15 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - Campo Firestore: `imagenesURLs: string[]`
 - Modo edición: mantiene fotos existentes, permite agregar/eliminar
 - Modo reutilizar: no copia fotos (empieza limpio)
+- ✅ Fotos se muestran en cards (imagen principal 100x100)
+- ✅ Galería horizontal en modales de detalle (click abre en nueva pestaña)
+- ✅ PWA: Input `accept="image/*"` permite tomar fotos desde cámara
 
 ### Próximas tareas sugeridas
-1. **Mostrar fotos en cards** - Dashboard y mapa de ofertas (imagen principal)
-2. **Lightbox de fotos** - Ver galería completa en detalle de oferta
-3. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+1. **🔴 Investigar headers** - Resolver diferencia visual en perfil-empleador y historial-ofertas
+2. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+3. **Task 33** - Error states y validaciones
+4. **Tasks 37-39** - Performance y PWA
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`

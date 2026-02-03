@@ -366,6 +366,22 @@ async function verOfertaCompleta(ofertaId) {
 
         const oferta = docSnap.data();
 
+        // Galería de fotos (G6)
+        let galeriaHTML = '';
+        if (oferta.imagenesURLs && oferta.imagenesURLs.length > 0) {
+            galeriaHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+                        ${oferta.imagenesURLs.map((url, i) => `
+                            <img src="${url}" alt="Foto ${i + 1}"
+                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; flex-shrink: 0;"
+                                onclick="window.open('${url}', '_blank')">
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         const modalBody = `
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${oferta.titulo}</h2>
@@ -373,6 +389,8 @@ async function verOfertaCompleta(ofertaId) {
                     ${getCategoriaLabel(oferta.categoria)}
                 </span>
             </div>
+
+            ${galeriaHTML}
 
             <div style="margin-bottom: 1.5rem;">
                 <h3 style="color: var(--dark); margin-bottom: 0.75rem;">📝 Descripción</h3>

@@ -33,39 +33,8 @@ body {
 }
 
 /* ========================================
-   HEADER
+   HEADER - Usa header-simple.css
    ======================================== */
-.header {
-    background: var(--white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary);
-}
-
-.btn-volver {
-    padding: 0.5rem 1rem;
-    background: var(--gray);
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-
-.btn-volver:hover {
-    background: #475569;
-}
 
 /* ========================================
    CONTAINER Y PAGE HEADER
@@ -841,10 +810,6 @@ body {
     .container {
         padding: 0 1rem;
         margin: 1rem auto;
-    }
-
-    .header {
-        padding: 1rem;
     }
 
     .page-header {

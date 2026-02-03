@@ -609,6 +609,22 @@ window.verDetalleOferta = async function(ofertaId) {
             `;
         }
 
+        // Galería de fotos (G6)
+        let galeriaHTML = '';
+        if (ofertaData.imagenesURLs && ofertaData.imagenesURLs.length > 0) {
+            galeriaHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+                        ${ofertaData.imagenesURLs.map((url, i) => `
+                            <img src="${url}" alt="Foto ${i + 1}"
+                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; flex-shrink: 0;"
+                                onclick="window.open('${url}', '_blank')">
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         // Llenar el modal
         const modalBody = document.getElementById('modal-detalle-body');
         modalBody.innerHTML = `
@@ -616,6 +632,8 @@ window.verDetalleOferta = async function(ofertaId) {
                 <h2 class="detalle-titulo">${ofertaData.titulo}</h2>
                 <span class="detalle-categoria ${ofertaData.categoria}">${ofertaData.categoria || 'otros'}</span>
             </div>
+
+            ${galeriaHTML}
 
             <div class="detalle-seccion">
                 <h4>📝 Descripcion</h4>

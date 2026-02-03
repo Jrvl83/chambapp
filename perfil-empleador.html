@@ -30,88 +30,12 @@
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/header-simple.css?v=2">
 
     <style>
         /* Estilos específicos para perfil empleador */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0066FF;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --light: #f1f5f9;
-            --white: #ffffff;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--light);
-            color: var(--dark);
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        /* Header */
-        .header {
-            background: var(--white);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-
-        .logo-img {
-            height: 32px;
-            width: auto;
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .btn-volver {
-            padding: 0.625rem 1.25rem;
-            background: var(--gray);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s;
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-volver:hover {
-            background: #475569;
-            transform: translateY(-2px);
-        }
+        /* Usa design-system.css para estilos base */
+        /* Usa header-simple.css para el header */
 
         /* Container */
         .container {
@@ -314,10 +238,6 @@
         /* Responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
-            }
-
-            .header-content {
                 padding: 1rem;
             }
 

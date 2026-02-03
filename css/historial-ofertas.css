@@ -1,45 +1,8 @@
 /* ============================================
    HISTORIAL DE OFERTAS - CSS
    G5: Estilos para la página de historial
+   Usa header-simple.css para el header
    ============================================ */
-
-/* Header Simple */
-.header-simple {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-200);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-
-.header-back {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-.header-back:hover {
-    opacity: 0.8;
-}
-
-.header-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--gray-900);
-    margin: 0;
-}
-
-.header-spacer {
-    width: 80px;
-}
 
 /* Container */
 .container {
@@ -160,18 +123,6 @@
     flex: 1;
     padding: 1rem;
     min-width: 0;
-}
-
-/* Responsive - stack en móvil pequeño */
-@media (max-width: 400px) {
-    .oferta-historial-card.con-imagen {
-        flex-direction: column;
-    }
-
-    .oferta-historial-imagen {
-        width: 100%;
-        height: 120px;
-    }
 }
 
 .oferta-historial-header {
@@ -372,12 +323,19 @@
     padding: 1.5rem;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .header-back span {
-        display: none;
+/* Responsive - stack en móvil pequeño */
+@media (max-width: 400px) {
+    .oferta-historial-card.con-imagen {
+        flex-direction: column;
     }
 
+    .oferta-historial-imagen {
+        width: 100%;
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
     .stats-row {
         gap: 0.35rem;
     }

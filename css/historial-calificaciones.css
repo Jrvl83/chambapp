@@ -31,49 +31,8 @@ body {
 }
 
 /* ============================================
-   HEADER
+   HEADER - Usa header-simple.css
    ============================================ */
-.header {
-    background: var(--white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary);
-}
-
-.btn-volver {
-    padding: 0.625rem 1.25rem;
-    min-height: 44px;
-    background: var(--gray);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-volver:hover {
-    background: #475569;
-    transform: translateY(-2px);
-}
 
 /* ============================================
    CONTAINER
@@ -424,10 +383,6 @@ body {
    ============================================ */
 @media (max-width: 768px) {
     .container {
-        padding: 1rem;
-    }
-
-    .header-content {
         padding: 1rem;
     }
 
