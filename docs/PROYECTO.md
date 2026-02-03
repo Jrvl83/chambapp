@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 03 Febrero 2026 (sesión 2)
+**Última actualización:** 03 Febrero 2026 (sesión 3)
 
 ---
 
@@ -47,11 +47,12 @@ TOTAL:  18% del proyecto (32/176 tareas)
 - Postulaciones con estados (pendiente/aceptado/rechazado/completado)
 - Contacto directo vía WhatsApp
 - Sistema de calificaciones bidireccional (5 estrellas)
-- Filtros avanzados (categorías, salario, distancia, fecha)
+- Filtros avanzados con quick bar mobile + bottom sheet compacto
 - Notificaciones push (FCM)
 - Centro de notificaciones in-app
 - Bottom navigation móvil (estilo app nativa)
 - Dashboard diferenciado por rol
+- Cards compactas horizontales en móvil
 
 ---
 
@@ -72,7 +73,7 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | 34 | Loading states (spinner centrado) | 30 Ene |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 
-### Tareas Pendientes (11)
+### Tareas Pendientes (12)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
@@ -82,6 +83,7 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | 37-39 | Performance y PWA | Alta (al final) |
 | 40-44 | Testing y QA | Alta |
 | 45-48 | Panel de administración | Media |
+| OB1 | Revisar y arreglar onboarding de todas las páginas (centrado, forma, consistencia) | Alta |
 
 ### Tareas Diferidas (6)
 - Tasks 18-20, 22: Chat in-app (WhatsApp cubre la necesidad)
@@ -272,64 +274,69 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 03 Febrero 2026
-> **Sprint activo:** Gestión de Ofertas (G1-G6) - ✅ COMPLETADO
+> **Última sesión:** 03 Febrero 2026 (sesión 3)
+> **Sprint activo:** UX Mobile Polish
 
-### Resumen de lo completado
-1. ✅ Plan de refactorización completado (Lighthouse: Perf 85, A11y 92, SEO 100)
-2. ✅ G1-G6: Sprint Gestión de Ofertas completo
-3. ✅ **FIX: Headers inconsistentes resuelto** (sesión 03/02/26)
+### Resumen de lo completado (sesión 3 - 03/02/26)
+1. ✅ Cards compactas horizontales en móvil (thumbnail 80x80 izquierda, contenido derecha)
+2. ✅ **Filtros reestructurados para móvil:**
+   - Quick bar siempre visible: búsqueda + categorías + ordenar + botón ⚙️
+   - Bottom sheet compacto (~55vh): ubicación + distancia + salario (inputs numéricos) + fecha (chips)
+   - Dropdowns full-width en mobile, overlay real para bottom sheet
+   - Desktop sin cambios (CSS show/hide por breakpoint, controles duplicados con syncControls)
+3. ✅ Chips de fecha ajustados: Hoy / 3 días / 7 días / Todas (antes: 7/30/90 días sin sentido con caducidad de 14 días)
+4. ✅ Filtro de fecha usa `fechaActualizacion || fechaCreacion` (antes solo fechaCreacion)
+5. ✅ Ordenamiento "Más recientes" ordena explícitamente por fecha (antes confiaba en orden de Firestore)
+6. ✅ Carga inicial del dashboard ordena por fecha más reciente
 
-### ✅ RESUELTO: Headers inconsistentes (sesión 03/02/26)
-
-**Causa raíz encontrada:** `design-system.css` definía `body { font-family: var(--font-sans) }` que usa fuentes del **sistema** (no Inter). Las páginas que funcionaban bien (`notificaciones.css`, `mis-aplicaciones.css`, etc.) sobreescribían esto con `body { font-family: 'Inter'... }` + un `* { margin:0; padding:0; box-sizing:border-box }` reset. Las páginas problemáticas (`perfil-empleador`, `historial-ofertas`) NO tenían esas sobreescrituras, así que el header heredaba una fuente diferente (sistema vs Inter).
-
-**Solución aplicada:**
-1. `css/design-system.css` - Agregado `* { margin: 0; padding: 0; box-sizing: border-box }` reset y cambiado body font de `var(--font-sans)` a `var(--font-body)` (Inter) + `background: var(--light)`
-2. Eliminados resets `*`, `:root` duplicados y `body` redundantes de 8 CSS individuales:
-   - `css/notificaciones.css`
-   - `css/mis-aplicaciones.css`
-   - `css/mis-aplicaciones-trabajador.css`
-   - `css/perfil-trabajador.css`
-   - `css/historial-calificaciones.css`
-   - `css/mapa-ofertas.css`
-   - `css/publicar-oferta.css` (mantenido body background gradient)
-   - `css/dashboard-main.css` (mantenidos overrides de variables específicas)
-   - `css/styles.css`
+### Sesiones anteriores
+- **Sesión 2 (03/02/26):** Fix headers inconsistentes (centralizar CSS en design-system.css)
+- **Sesión 1:** Plan de refactorización + Sprint G1-G6 completo
 
 ### Bottom Nav por Rol
 | Botón | Trabajador | Empleador |
 |-------|------------|-----------|
-| 1º | 📋 Mis Apps | 📋 Historial |
-| 2º | 🏠 Inicio | 👥 Candidatos |
-| 3º | 🔍 Explorar | ➕ Publicar |
-| 4º | 🔔 Alertas | 🔔 Alertas |
-| 5º | 👤 Perfil Trab. | 👤 Perfil Emp. |
+| 1º | Mis Apps | Historial |
+| 2º | Inicio | Candidatos |
+| 3º | Explorar | Publicar |
+| 4º | Alertas | Alertas |
+| 5º | Perfil Trab. | Perfil Emp. |
 
-### Sistema de Fotos (G6) - COMPLETO
-- Máximo 5 fotos por oferta
-- Tamaño máximo: 10MB por foto
-- Optimización automática: 1200x1200px, 85% calidad JPEG
-- Storage path: `ofertas/{ofertaId}/foto-{timestamp}-{index}.jpg`
-- Campo Firestore: `imagenesURLs: string[]`
-- Modo edición: mantiene fotos existentes, permite agregar/eliminar
-- Modo reutilizar: no copia fotos (empieza limpio)
-- ✅ Fotos se muestran en cards (imagen principal 100x100)
-- ✅ Galería horizontal en modales de detalle (click abre en nueva pestaña)
-- ✅ PWA: Input `accept="image/*"` permite tomar fotos desde cámara
+### Filtros Mobile - Arquitectura
+```
+SIEMPRE VISIBLE (quick bar):
+[Buscar...          ] [⚙️]
+[Categorias ▼] [Ordenar ▼] [🔄]
+[chips activos scroll horizontal]
+
+BOTTOM SHEET (~55vh, al tocar ⚙️):
+  Ubicacion     Distancia
+  [input]       [dropdown]
+  Rango Salarial
+  [Min S/] — [Max S/]
+  Publicacion
+  (Hoy)(3d)(7d)(Todas)
+  [Ver X resultados]
+```
+- Controles duplicados mobile/desktop sincronizados via `syncControls()`
+- CSS show/hide: `.filtros-quick-bar`, `.filtros-mobile-only` (ocultos en desktop)
+- `.filtros-header`, `.filtros-desktop-only` (ocultos en mobile)
+- Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+1. **OB1** - Revisar y arreglar onboarding de todas las páginas (centrado, forma, consistencia)
 2. **Task 33** - Error states y validaciones
 3. **Tasks 37-39** - Performance y PWA
+4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
 - Ofertas visibles: `estado === 'activa' AND fechaExpiracion > ahora`
 - Al editar oferta: fechaExpiracion se resetea a +14 días
-- Cards muestran fechaActualizacion si existe, sino fechaCreacion
+- Ordenamiento y filtro de fecha usan `fechaActualizacion || fechaCreacion`
+- Cards móvil: layout horizontal con `data-categoria` para color de borde
 
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.2
+**Versión documento:** 3.3
