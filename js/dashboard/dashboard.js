@@ -711,7 +711,7 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
             : '';
 
         grid.innerHTML += `
-            <div class="oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
+            <div class="oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}" data-categoria="${oferta.categoria || 'otros'}" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
                 <div class="oferta-categoria-bar ${oferta.categoria || 'otros'}"></div>
                 ${imagenHTML}
                 <div class="oferta-card-body">
@@ -856,7 +856,7 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
         : '';
 
     return `
-        <div class='oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}'>
+        <div class='oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}' data-categoria='${oferta.categoria || 'otros'}'>
             <div class='oferta-categoria-bar ${oferta.categoria || 'otros'}'></div>
             ${imagenHTML}
             <div class='oferta-card-body'>
