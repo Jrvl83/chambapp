@@ -3,62 +3,16 @@
    ChambApp - WCAG AAA + Performance
    ============================================ */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 :root {
-    /* Colores ChambApp - Unificados */
-    --primary: #0066FF;
-    --primary-hover: #0052CC;
-    --primary-light: #E6F2FF;
-    --primary-dark: #003D99;
-    --secondary: #00C48C;
-    --secondary-light: #E6FFF6;
-    --accent: #FF6B00;
-    --accent-light: #FFF3E6;
+    /* Dashboard overrides */
+    --dark: #0F1419;
+    --gray-light: #94a3b8;
+    --gray-dark: #334155;
+    --light: #f7fafc;
     --danger: #FF3B3B;
     --danger-light: #FFEBEB;
     --warning: #FFBB00;
     --warning-light: #FFF8E6;
-    --dark: #0F1419;
-    --gray: #64748b;
-    --gray-light: #94a3b8;
-    --gray-dark: #334155;
-    --light: #f7fafc;
-    --white: #ffffff;
-    --border: #e2e8f0;
-
-    /* Categorías optimizadas */
-    --cat-construccion: #F97316;
-    --cat-electricidad: #FBBF24;
-    --cat-gasfiteria: #0EA5E9;
-    --cat-limpieza: #A855F7;
-    --cat-jardineria: #22C55E;
-    --cat-carpinteria: #D97706;
-    --cat-pintura: #EC4899;
-    --cat-mecanica: #64748B;
-    --cat-otros: #6B7280;
-
-    /* Tipografía */
-    --font-display: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-    /* Bordes y sombras */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-body {
-    font-family: var(--font-body);
-    background: var(--light);
-    color: var(--dark);
-    line-height: 1.6;
 }
 
 /* Títulos con Poppins */

@@ -3,23 +3,10 @@
    Usa variables de design-system.css
    ============================================ */
 
-/* Reset basico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 /* Aliases para compatibilidad con codigo existente */
 :root {
     --primary-color: var(--primary, #0066FF);
     --secondary-color: var(--secondary, #00C48C);
-}
-
-body {
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
-    line-height: var(--leading-relaxed, 1.6);
-    color: var(--dark);
 }
 
 .container {

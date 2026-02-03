@@ -272,62 +272,30 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 02 Febrero 2026 (sesión 2)
+> **Última sesión:** 03 Febrero 2026
 > **Sprint activo:** Gestión de Ofertas (G1-G6) - ✅ COMPLETADO
 
 ### Resumen de lo completado
 1. ✅ Plan de refactorización completado (Lighthouse: Perf 85, A11y 92, SEO 100)
-2. ✅ G1: Sistema de estados completo
-3. ✅ G2: Cloud Function `marcarOfertasCaducadas` (ejecuta diariamente 00:00 Lima)
-4. ✅ G3: Conteo correcto implementado
-5. ✅ G4: Editar/Eliminar ofertas con menú ⋮
-6. ✅ G5: Historial de ofertas + Bottom nav diferenciado por rol
-7. ✅ G6: Fotos en ofertas completo (upload, visualización en cards y modales)
+2. ✅ G1-G6: Sprint Gestión de Ofertas completo
+3. ✅ **FIX: Headers inconsistentes resuelto** (sesión 03/02/26)
 
-### Archivos modificados (sesión 02/02/26 - sesión 2)
+### ✅ RESUELTO: Headers inconsistentes (sesión 03/02/26)
 
-**G6 - Visualización de fotos:**
-- `js/dashboard/dashboard.js` - Imagen principal en cards, galería en modal detalle
-- `css/dashboard-main.css` - Estilos `.oferta-imagen` para cards
-- `js/historial-ofertas.js` - Imagen en cards de historial
-- `css/historial-ofertas.css` - Estilos cards con imagen (`.con-imagen`, `.oferta-historial-imagen`)
-- `js/mis-aplicaciones-trabajador.js` - Galería en modal "Ver Oferta"
-- `js/mapa-ofertas.js` - Galería en modal detalle del mapa
-- `storage.rules` - CREADO: Reglas para permitir uploads a `ofertas/{ofertaId}/`
+**Causa raíz encontrada:** `design-system.css` definía `body { font-family: var(--font-sans) }` que usa fuentes del **sistema** (no Inter). Las páginas que funcionaban bien (`notificaciones.css`, `mis-aplicaciones.css`, etc.) sobreescribían esto con `body { font-family: 'Inter'... }` + un `* { margin:0; padding:0; box-sizing:border-box }` reset. Las páginas problemáticas (`perfil-empleador`, `historial-ofertas`) NO tenían esas sobreescrituras, así que el header heredaba una fuente diferente (sistema vs Inter).
 
-**Estandarización de Headers:**
-- `css/header-simple.css` - Archivo único para estilos de header
-- `css/components.css` - Eliminados estilos duplicados de header
-- `css/mis-aplicaciones.css` - Eliminados estilos duplicados de header
-- `css/mis-aplicaciones-trabajador.css` - Eliminados estilos duplicados de header
-- `css/historial-calificaciones.css` - Eliminados estilos duplicados de header
-- `css/perfil-trabajador.css` - Eliminados estilos responsive de header
-- `perfil-empleador.html` - Eliminados estilos inline de header y reset CSS
-- Múltiples HTML - Agregado import de `header-simple.css`, estructura `header-content`
-
-### ⚠️ PENDIENTE: Investigar problema de headers
-
-**Problema:** Los headers de `perfil-empleador.html` y `historial-ofertas.html` se ven ligeramente diferentes a las otras páginas (notificaciones, mis-aplicaciones), a pesar de usar el mismo `header-simple.css`.
-
-**Observación del usuario:** Cuando navega entre páginas que funcionan bien (mis-aplicaciones ↔ notificaciones), el header no se refresca. En las páginas problemáticas, toda la página incluyendo header se refresca.
-
-**Intentos realizados:**
-1. ✅ Unificado todos los headers para usar `header-simple.css`
-2. ✅ Eliminados estilos duplicados de `components.css` y CSS específicos
-3. ✅ Eliminados estilos inline de `perfil-empleador.html`
-4. ✅ Agregado cache-bust `?v=2` a imports de `header-simple.css`
-5. ❌ El problema persiste
-
-**Posibles causas a investigar:**
-- Caché del navegador o Service Worker
-- Orden de carga de CSS en algunas páginas
-- Algún CSS adicional no detectado
-- Comportamiento de navegación SPA vs full reload
-
-**Archivos clave para investigar:**
-- `css/header-simple.css` - Fuente única de estilos de header
-- `perfil-empleador.html` - Tiene `<style>` inline (aunque ya limpiado)
-- `historial-ofertas.html` - Sin estilos inline
+**Solución aplicada:**
+1. `css/design-system.css` - Agregado `* { margin: 0; padding: 0; box-sizing: border-box }` reset y cambiado body font de `var(--font-sans)` a `var(--font-body)` (Inter) + `background: var(--light)`
+2. Eliminados resets `*`, `:root` duplicados y `body` redundantes de 8 CSS individuales:
+   - `css/notificaciones.css`
+   - `css/mis-aplicaciones.css`
+   - `css/mis-aplicaciones-trabajador.css`
+   - `css/perfil-trabajador.css`
+   - `css/historial-calificaciones.css`
+   - `css/mapa-ofertas.css`
+   - `css/publicar-oferta.css` (mantenido body background gradient)
+   - `css/dashboard-main.css` (mantenidos overrides de variables específicas)
+   - `css/styles.css`
 
 ### Bottom Nav por Rol
 | Botón | Trabajador | Empleador |
@@ -351,10 +319,9 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ PWA: Input `accept="image/*"` permite tomar fotos desde cámara
 
 ### Próximas tareas sugeridas
-1. **🔴 Investigar headers** - Resolver diferencia visual en perfil-empleador y historial-ofertas
-2. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
-3. **Task 33** - Error states y validaciones
-4. **Tasks 37-39** - Performance y PWA
+1. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+2. **Task 33** - Error states y validaciones
+3. **Tasks 37-39** - Performance y PWA
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
