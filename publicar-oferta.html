@@ -281,6 +281,31 @@
                         <div class="helper-text">
                             💰 <strong>Sugerencia:</strong> Ofertas con salario claro reciben 3x más aplicantes
                         </div>
+
+                        <!-- Fotos de la Oferta (G6) -->
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>📸 Fotos del Trabajo (Opcional - máx 5)</label>
+                            <input
+                                type="file"
+                                id="fotos-input"
+                                accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                                multiple
+                                style="display: none;"
+                            >
+                            <div class="fotos-upload-area" id="fotos-upload-area">
+                                <span class="fotos-upload-icon">📷</span>
+                                <span class="fotos-upload-text">Click para agregar fotos</span>
+                                <span class="fotos-upload-hint">JPG, PNG, WebP - Máx 10MB cada una</span>
+                            </div>
+                            <div id="fotos-preview" class="fotos-preview-grid"></div>
+                            <div id="fotos-count" class="fotos-count" style="display: none;">
+                                <span id="fotos-count-text">0/5 fotos</span>
+                                <button type="button" id="btn-agregar-mas-fotos" class="btn-link" style="display: none;">+ Agregar más</button>
+                            </div>
+                            <div class="helper-text">
+                                📷 Las ofertas con fotos reciben hasta 2x más postulaciones
+                            </div>
+                        </div>
                     </div>
 
                     <!-- PASO 3: Requisitos -->
@@ -407,6 +432,12 @@
                                     <span class="review-label">Habilidades:</span>
                                     <span class="review-value" id="review-habilidades">-</span>
                                 </div>
+                            </div>
+
+                            <!-- Fotos (G6) -->
+                            <div class="review-section" id="review-fotos-section" style="display: none;">
+                                <h4>Fotos del Trabajo</h4>
+                                <div id="review-fotos-grid" class="review-fotos-grid"></div>
                             </div>
 
                             <div class="info-box">

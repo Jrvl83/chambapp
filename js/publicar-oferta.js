@@ -4,8 +4,9 @@
 // ============================================
 
 // Firebase - Importar instancias centralizadas
-import { auth, db } from './config/firebase-init.js';
+import { auth, db, storage } from './config/firebase-init.js';
 import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { obtenerDepartamentos, obtenerProvincias, obtenerDistritos, obtenerCoordenadasDistrito } from './utils/ubigeo-api.js';
 import { GOOGLE_MAPS_API_KEY } from './config/api-keys.js';
 
@@ -80,6 +81,13 @@ const PERU_BOUNDS = {
     east: -68.6519,
     west: -81.3269
 };
+
+// Variables para fotos de ofertas (G6)
+let fotosFiles = [];              // Archivos nuevos seleccionados
+let fotosExistentes = [];         // URLs de fotos existentes (modo edición)
+let fotosAEliminar = [];          // URLs de fotos a eliminar al guardar
+const MAX_FOTOS = 5;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 // ============================================
 // CARGAR GOOGLE MAPS API CON PLACES
@@ -1153,6 +1161,338 @@ async function precargarUbicacion(ubicacion) {
 }
 
 // ============================================
+// FOTOS DE OFERTAS (G6)
+// ============================================
+
+// Inicializar eventos de fotos
+function inicializarFotos() {
+    const uploadArea = document.getElementById('fotos-upload-area');
+    const inputFotos = document.getElementById('fotos-input');
+    const btnAgregarMas = document.getElementById('btn-agregar-mas-fotos');
+
+    if (!uploadArea || !inputFotos) return;
+
+    // Click en área de upload
+    uploadArea.addEventListener('click', () => inputFotos.click());
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = Array.from(e.dataTransfer.files);
+        procesarFotosSeleccionadas(files);
+    });
+
+    // Input file change
+    inputFotos.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        procesarFotosSeleccionadas(files);
+        e.target.value = ''; // Reset para permitir seleccionar mismos archivos
+    });
+
+    // Botón agregar más
+    if (btnAgregarMas) {
+        btnAgregarMas.addEventListener('click', () => inputFotos.click());
+    }
+}
+
+// Procesar fotos seleccionadas
+async function procesarFotosSeleccionadas(files) {
+    const totalActual = fotosFiles.length + fotosExistentes.length;
+    const espacioDisponible = MAX_FOTOS - totalActual;
+
+    if (espacioDisponible <= 0) {
+        if (typeof toastWarning === 'function') {
+            toastWarning(`Máximo ${MAX_FOTOS} fotos por oferta`);
+        }
+        return;
+    }
+
+    // Filtrar archivos válidos
+    const archivosValidos = [];
+    for (const file of files) {
+        if (archivosValidos.length >= espacioDisponible) break;
+
+        const validacion = validarArchivoFoto(file);
+        if (validacion.valid) {
+            archivosValidos.push(file);
+        } else {
+            if (typeof toastError === 'function') {
+                toastError(validacion.error);
+            }
+        }
+    }
+
+    if (archivosValidos.length === 0) return;
+
+    // Mostrar mensaje de optimización
+    if (typeof toastInfo === 'function') {
+        toastInfo(`📸 Optimizando ${archivosValidos.length} foto(s)...`);
+    }
+
+    // Optimizar y agregar fotos
+    for (const file of archivosValidos) {
+        try {
+            const optimizada = await optimizarImagenFoto(file, 1200, 1200, 0.85);
+            const fileOptimizado = new File([optimizada], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+            fotosFiles.push({
+                file: fileOptimizado,
+                preview: URL.createObjectURL(optimizada)
+            });
+        } catch (error) {
+            console.error('Error optimizando foto:', error);
+        }
+    }
+
+    actualizarPreviewFotos();
+
+    if (typeof toastSuccess === 'function') {
+        toastSuccess(`${archivosValidos.length} foto(s) agregada(s)`);
+    }
+}
+
+// Validar archivo de foto
+function validarArchivoFoto(file) {
+    const extensionesValidas = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
+    const nombreArchivo = file.name.toLowerCase();
+    const tieneExtensionValida = extensionesValidas.some(ext => nombreArchivo.endsWith(ext));
+    const esTipoImagen = file.type.startsWith('image/') || file.type === '';
+
+    if (!esTipoImagen && !tieneExtensionValida) {
+        return {
+            valid: false,
+            error: 'Formato no válido. Usa JPG, PNG o WebP.'
+        };
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+        return {
+            valid: false,
+            error: `Archivo muy grande (máx ${MAX_FILE_SIZE / 1024 / 1024}MB)`
+        };
+    }
+
+    return { valid: true };
+}
+
+// Optimizar imagen
+function optimizarImagenFoto(file, maxWidth = 1200, maxHeight = 1200, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const img = new Image();
+
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+
+                // Calcular dimensiones manteniendo aspecto
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+
+                // Crear canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Convertir a blob JPEG
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject(new Error('Error al convertir imagen'));
+                        }
+                    },
+                    'image/jpeg',
+                    quality
+                );
+            };
+
+            img.onerror = () => reject(new Error('Error al cargar imagen'));
+            img.src = e.target.result;
+        };
+
+        reader.onerror = () => reject(new Error('Error al leer archivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
+// Actualizar preview de fotos
+function actualizarPreviewFotos() {
+    const previewContainer = document.getElementById('fotos-preview');
+    const countContainer = document.getElementById('fotos-count');
+    const countText = document.getElementById('fotos-count-text');
+    const btnAgregarMas = document.getElementById('btn-agregar-mas-fotos');
+    const uploadArea = document.getElementById('fotos-upload-area');
+
+    if (!previewContainer) return;
+
+    const totalFotos = fotosExistentes.length + fotosFiles.length;
+
+    // Mostrar/ocultar área de upload
+    if (totalFotos > 0) {
+        uploadArea.style.display = 'none';
+        countContainer.style.display = 'flex';
+        countText.textContent = `${totalFotos}/${MAX_FOTOS} fotos`;
+
+        if (totalFotos < MAX_FOTOS) {
+            btnAgregarMas.style.display = 'inline';
+        } else {
+            btnAgregarMas.style.display = 'none';
+            countContainer.classList.add('limit-reached');
+        }
+    } else {
+        uploadArea.style.display = 'block';
+        countContainer.style.display = 'none';
+        countContainer.classList.remove('limit-reached');
+    }
+
+    // Renderizar previews
+    previewContainer.innerHTML = '';
+
+    // Fotos existentes (modo edición)
+    fotosExistentes.forEach((url, index) => {
+        const item = document.createElement('div');
+        item.className = 'foto-preview-item';
+        item.innerHTML = `
+            <img src="${url}" alt="Foto ${index + 1}">
+            <button type="button" class="btn-remove-foto" onclick="removerFotoExistente(${index})">×</button>
+        `;
+        previewContainer.appendChild(item);
+    });
+
+    // Fotos nuevas
+    fotosFiles.forEach((foto, index) => {
+        const item = document.createElement('div');
+        item.className = 'foto-preview-item';
+        item.innerHTML = `
+            <img src="${foto.preview}" alt="Foto nueva ${index + 1}">
+            <button type="button" class="btn-remove-foto" onclick="removerFotoNueva(${index})">×</button>
+        `;
+        previewContainer.appendChild(item);
+    });
+}
+
+// Remover foto existente (marcar para eliminar)
+window.removerFotoExistente = function(index) {
+    const url = fotosExistentes[index];
+    fotosAEliminar.push(url);
+    fotosExistentes.splice(index, 1);
+    actualizarPreviewFotos();
+};
+
+// Remover foto nueva
+window.removerFotoNueva = function(index) {
+    // Revocar URL para liberar memoria
+    URL.revokeObjectURL(fotosFiles[index].preview);
+    fotosFiles.splice(index, 1);
+    actualizarPreviewFotos();
+};
+
+// Subir fotos a Firebase Storage
+async function subirFotosOferta(ofertaId) {
+    if (fotosFiles.length === 0) return [];
+
+    const urls = [];
+    const timestamp = Date.now();
+
+    for (let i = 0; i < fotosFiles.length; i++) {
+        const foto = fotosFiles[i];
+        const storageRef = ref(storage, `ofertas/${ofertaId}/foto-${timestamp}-${i}.jpg`);
+
+        try {
+            await uploadBytes(storageRef, foto.file);
+            const downloadURL = await getDownloadURL(storageRef);
+            urls.push(downloadURL);
+        } catch (error) {
+            console.error(`Error subiendo foto ${i}:`, error);
+        }
+    }
+
+    return urls;
+}
+
+// Eliminar fotos marcadas de Storage
+async function eliminarFotosMarcadas() {
+    for (const url of fotosAEliminar) {
+        try {
+            const storageRef = ref(storage, url);
+            await deleteObject(storageRef);
+        } catch (error) {
+            // Ignorar errores de eliminación
+            console.warn('Error eliminando foto:', error);
+        }
+    }
+    fotosAEliminar = [];
+}
+
+// Cargar fotos existentes en modo edición
+function cargarFotosExistentes(imagenesURLs) {
+    if (!imagenesURLs || !Array.isArray(imagenesURLs)) return;
+
+    fotosExistentes = [...imagenesURLs];
+    fotosFiles = [];
+    fotosAEliminar = [];
+    actualizarPreviewFotos();
+}
+
+// Actualizar review de fotos
+function actualizarReviewFotos() {
+    const section = document.getElementById('review-fotos-section');
+    const grid = document.getElementById('review-fotos-grid');
+
+    if (!section || !grid) return;
+
+    const totalFotos = fotosExistentes.length + fotosFiles.length;
+
+    if (totalFotos === 0) {
+        section.style.display = 'none';
+        return;
+    }
+
+    section.style.display = 'block';
+    grid.innerHTML = '';
+
+    // Fotos existentes
+    fotosExistentes.forEach((url, index) => {
+        const item = document.createElement('div');
+        item.className = 'review-foto-item';
+        item.innerHTML = `<img src="${url}" alt="Foto ${index + 1}">`;
+        grid.appendChild(item);
+    });
+
+    // Fotos nuevas
+    fotosFiles.forEach((foto, index) => {
+        const item = document.createElement('div');
+        item.className = 'review-foto-item';
+        item.innerHTML = `<img src="${foto.preview}" alt="Foto nueva ${index + 1}">`;
+        grid.appendChild(item);
+    });
+}
+
+// ============================================
 // CARGAR DATOS SI ESTÁ EN MODO EDICIÓN
 // ============================================
 if (modoEdicion) {
@@ -1232,10 +1572,15 @@ async function cargarOfertaParaEditar(id) {
         if (oferta.requiereEquipos) {
             document.getElementById('equipos').checked = true;
         }
-        
+
         // Actualizar character counters
         document.getElementById('titulo-count').textContent = oferta.titulo?.length || 0;
         document.getElementById('descripcion-count').textContent = oferta.descripcion?.length || 0;
+
+        // Cargar fotos existentes (G6) - solo en modo edición, no reutilizar
+        if (modoEdicion && oferta.imagenesURLs && Array.isArray(oferta.imagenesURLs)) {
+            cargarFotosExistentes(oferta.imagenesURLs);
+        }
         
         // Cambiar textos del formulario segun modo
         if (modoReutilizar) {
@@ -1501,6 +1846,9 @@ async function updateReviewSection() {
     } else {
         habilidadesContainer.style.display = 'none';
     }
+
+    // Fotos (G6)
+    actualizarReviewFotos();
 }
 
 // ============================================
@@ -1568,9 +1916,25 @@ formOferta.addEventListener('submit', async (e) => {
             const nuevaFechaExpiracion = new Date();
             nuevaFechaExpiracion.setDate(nuevaFechaExpiracion.getDate() + 14);
 
+            // Subir fotos nuevas (G6)
+            let nuevasURLs = [];
+            if (fotosFiles.length > 0) {
+                if (typeof toastInfo === 'function') {
+                    toastInfo('Subiendo fotos...');
+                }
+                nuevasURLs = await subirFotosOferta(ofertaId);
+            }
+
+            // Combinar fotos existentes con nuevas
+            const imagenesURLs = [...fotosExistentes, ...nuevasURLs];
+
+            // Eliminar fotos marcadas
+            await eliminarFotosMarcadas();
+
             const docRef = doc(db, 'ofertas', ofertaId);
             await updateDoc(docRef, {
                 ...ofertaData,
+                imagenesURLs: imagenesURLs,
                 fechaActualizacion: serverTimestamp(),
                 fechaExpiracion: Timestamp.fromDate(nuevaFechaExpiracion)
             });
@@ -1594,13 +1958,28 @@ formOferta.addEventListener('submit', async (e) => {
                 estado: 'activa',
                 fechaCreacion: serverTimestamp(),
                 fechaExpiracion: Timestamp.fromDate(fechaExpiracion),
-                aplicaciones: 0
+                aplicaciones: 0,
+                imagenesURLs: [] // Se actualizará después de subir fotos
             };
-            
-            await addDoc(collection(db, 'ofertas'), nuevaOferta);
-            
+
+            // Crear documento primero para tener el ID
+            const docRef = await addDoc(collection(db, 'ofertas'), nuevaOferta);
+
+            // Subir fotos si hay (G6)
+            if (fotosFiles.length > 0) {
+                if (typeof toastInfo === 'function') {
+                    toastInfo('Subiendo fotos...');
+                }
+                const imagenesURLs = await subirFotosOferta(docRef.id);
+
+                // Actualizar documento con URLs de fotos
+                if (imagenesURLs.length > 0) {
+                    await updateDoc(docRef, { imagenesURLs });
+                }
+            }
+
             if (typeof toastSuccess === 'function') {
-                toastSuccess('隆Oferta publicada exitosamente! 馃帀');
+                toastSuccess('¡Oferta publicada exitosamente! 🎉');
             }
         }
         
@@ -1630,6 +2009,7 @@ formOferta.addEventListener('submit', async (e) => {
 // ============================================
 showStep(currentStep);
 inicializarUbicacion();
+inicializarFotos(); // G6: Sistema de fotos
 
 // Inicializar Google Maps y Autocomplete (con delay para mejor UX)
 setTimeout(async () => {

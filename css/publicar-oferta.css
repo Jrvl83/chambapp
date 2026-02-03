@@ -866,3 +866,178 @@ body {
         font-size: 2rem;
     }
 }
+
+/* ============================================
+   FOTOS DE OFERTA (G6)
+   ============================================ */
+.fotos-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--light);
+}
+
+.fotos-upload-area:hover {
+    border-color: var(--primary);
+    background: #eff6ff;
+}
+
+.fotos-upload-area.dragover {
+    border-color: var(--primary);
+    background: #dbeafe;
+    transform: scale(1.01);
+}
+
+.fotos-upload-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.fotos-upload-text {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.fotos-upload-hint {
+    font-size: 0.8125rem;
+    color: var(--gray);
+}
+
+/* Preview Grid */
+.fotos-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.foto-preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.foto-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.foto-preview-item .btn-remove-foto {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.foto-preview-item .btn-remove-foto:hover {
+    background: var(--danger);
+}
+
+.foto-preview-item.uploading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.foto-preview-item.uploading::before {
+    content: '⏳';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    z-index: 1;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Contador de fotos */
+.fotos-count {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray);
+}
+
+.fotos-count.limit-reached {
+    color: var(--warning);
+}
+
+/* Review fotos */
+.review-fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.review-foto-item {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.review-foto-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Botón link para agregar más fotos */
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.875rem;
+}
+
+.btn-link:hover {
+    color: var(--primary-dark);
+}
+
+/* Responsive fotos */
+@media (max-width: 480px) {
+    .fotos-preview-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .fotos-upload-area {
+        padding: 1.5rem 1rem;
+    }
+
+    .fotos-upload-icon {
+        font-size: 2rem;
+    }
+}

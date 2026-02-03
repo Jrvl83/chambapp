@@ -103,7 +103,7 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | G3 | Conteo correcto | Solo mostrar/contar ofertas `activa` + no expiradas en index/dashboard | Alta | ✅ HECHO |
 | G4 | Editar/Eliminar ofertas | Botones en cards del dashboard del empleador | Alta | ✅ HECHO |
 | G5 | Historial de publicaciones | Nueva página para empleador con todas sus ofertas (activas, en curso, completadas, caducadas) + opciones reutilizar/renovar | Media | ✅ HECHO |
-| G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | Pendiente |
+| G6 | Fotos en ofertas | Galería de imágenes al publicar oferta (máx 5 fotos) | Media | ✅ HECHO |
 
 ### Progreso G1 (31/01/26)
 **Implementado:**
@@ -273,7 +273,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
 > **Última sesión:** 02 Febrero 2026
-> **Sprint activo:** Gestión de Ofertas (G1-G6)
+> **Sprint activo:** Gestión de Ofertas (G1-G6) - ✅ COMPLETADO
 
 ### Resumen de lo completado
 1. ✅ Plan de refactorización completado (Lighthouse: Perf 85, A11y 92, SEO 100)
@@ -282,8 +282,14 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 4. ✅ G3: Conteo correcto implementado
 5. ✅ G4: Editar/Eliminar ofertas con menú ⋮
 6. ✅ G5: Historial de ofertas + Bottom nav diferenciado por rol
+7. ✅ G6: Fotos en ofertas (galería de hasta 5 fotos)
 
 ### Archivos modificados (sesión 02/02/26)
+
+**G6 - Fotos en ofertas:**
+- `publicar-oferta.html` - Sección de fotos en Step 2 y review en Step 4
+- `js/publicar-oferta.js` - Funciones de validación, optimización, preview y upload
+- `css/publicar-oferta.css` - Estilos para área de upload, preview grid, botones
 
 **G2 - Caducidad automática:**
 - `functions/index.js` - Cloud Function scheduled `marcarOfertasCaducadas`
@@ -317,8 +323,19 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | 4º | 🔔 Alertas | 🔔 Alertas |
 | 5º | 👤 Perfil Trab. | 👤 Perfil Emp. |
 
-### Próximas tareas prioritarias
-1. **G6: Fotos** - Galería de imágenes al publicar oferta (máx 5)
+### Sistema de Fotos (G6)
+- Máximo 5 fotos por oferta
+- Tamaño máximo: 10MB por foto
+- Optimización automática: 1200x1200px, 85% calidad JPEG
+- Storage path: `ofertas/{ofertaId}/foto-{timestamp}-{index}.jpg`
+- Campo Firestore: `imagenesURLs: string[]`
+- Modo edición: mantiene fotos existentes, permite agregar/eliminar
+- Modo reutilizar: no copia fotos (empieza limpio)
+
+### Próximas tareas sugeridas
+1. **Mostrar fotos en cards** - Dashboard y mapa de ofertas (imagen principal)
+2. **Lightbox de fotos** - Ver galería completa en detalle de oferta
+3. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
