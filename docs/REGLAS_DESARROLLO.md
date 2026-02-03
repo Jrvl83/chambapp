@@ -33,10 +33,12 @@ const ofertasActivas = obtenerOfertasActivas();
 ### 1.2 Organización de Archivos
 ```
 css/
-  ├── design-system.css    # Variables, colores, tipografía
-  ├── components.css       # Componentes reutilizables
+  ├── design-system.css    # Reset *, body, variables, colores, tipografía (FUENTE ÚNICA)
+  ├── components.css       # Componentes reutilizables (spinner, skeleton, etc.)
+  ├── header-simple.css    # Header de páginas secundarias (FUENTE ÚNICA)
+  ├── bottom-nav.css       # Bottom navigation móvil
   ├── animations.css       # Animaciones y transiciones
-  └── [pagina].css         # Estilos específicos de página
+  └── [pagina].css         # Estilos específicos de página (SIN duplicar base)
 
 js/
   ├── config/              # Configuración (Firebase, API keys)
@@ -92,7 +94,50 @@ js/
   2. `components.css`
   3. Archivo CSS de la página
 
-### 2.4 Organización de CSS
+### 2.4 Arquitectura CSS: Fuente Única de Verdad
+
+> **Lección aprendida (03/02/26):** Se duplicaron resets `*`, variables `:root` y `body` en 9 CSS individuales, causando que algunas páginas usaran Inter y otras fuentes del sistema. Los headers se veían diferentes entre páginas.
+
+**Reglas obligatorias:**
+
+1. **`design-system.css` es la ÚNICA fuente de estilos base:**
+   - Reset `* { margin: 0; padding: 0; box-sizing: border-box; }`
+   - `body { font-family, background, color, min-height }`
+   - Variables `:root` globales (colores, tipografía, espaciado, sombras)
+
+2. **Los CSS de página NUNCA deben definir:**
+   - Reset `*` (ya está en design-system.css)
+   - `body { font-family }` (ya está en design-system.css)
+   - Variables `:root` que ya existen en design-system.css (ej: `--primary`, `--dark`, `--light`)
+
+3. **Los CSS de página SÍ pueden definir:**
+   - Variables `:root` nuevas exclusivas de esa página (ej: `--whatsapp`, `--completado`)
+   - Overrides de variables con valores diferentes para esa página (ej: dashboard usa `--light: #f7fafc`)
+   - Override de `body` solo para propiedades específicas (ej: `publicar-oferta.css` define `body { background: linear-gradient(...) }`)
+   - Estilos de componentes propios de la página
+
+4. **Header: usar `header-simple.css` en todas las páginas secundarias:**
+   - NUNCA definir `.header`, `.header-content`, `.logo`, `.logo-img`, `.btn-volver` en CSS de página
+   - Si se necesita un override (ej: `max-width` diferente), solo definir esa propiedad
+
+```css
+/* ✅ BIEN - CSS de página */
+:root {
+    --whatsapp: #25D366;    /* Variable nueva, exclusiva de esta página */
+}
+
+/* ✅ BIEN - Override específico */
+.header-content {
+    max-width: 900px;       /* Solo sobreescribe max-width */
+}
+
+/* ❌ MAL - Duplica lo que ya está en design-system.css */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --primary: #0066FF; --dark: #1e293b; }
+body { font-family: 'Inter', sans-serif; background: var(--light); }
+```
+
+### 2.5 Organización de CSS
 ```css
 /* Orden de propiedades */
 .elemento {
@@ -336,6 +381,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | Pendiente |
 | 30/01/26 | General | Auditoría Lighthouse | Alta | Pendiente |
 | 30/01/26 | General | Meta tags SEO/OG | Media | Pendiente |
+| 03/02/26 | 9 CSS individuales | Reset `*`, `:root` y `body` duplicados en cada CSS de página. Causaba font inconsistente (sistema vs Inter) y headers visualmente diferentes | Alta | ✅ Resuelto - Centralizado en design-system.css |
 
 ---
 
@@ -577,5 +623,5 @@ btn.disabled = false;
 
 ---
 
-**Última actualización:** 30 Enero 2026
-**Próxima revisión:** Después de Task de Refactorización
+**Última actualización:** 03 Febrero 2026
+**Próxima revisión:** Después de Fase 2

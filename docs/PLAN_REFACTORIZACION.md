@@ -24,6 +24,25 @@ Revisar y limpiar el código existente para cumplir con las REGLAS_DESARROLLO.md
 
 **Resultado:** Todos los estilos de spinner y skeleton ahora están solo en `components.css`.
 
+### 1.1b Centralizar Reset y Base Styles ✅ COMPLETADO (03/02/26)
+
+**Problema:** 9 CSS individuales duplicaban `* { reset }`, `:root { variables }` y `body { font-family }`. Esto causaba que `design-system.css` definiera `font-family: var(--font-sans)` (fuentes del sistema) pero los CSS de página lo sobreescribían con `'Inter'`. Las páginas SIN override (perfil-empleador, historial-ofertas) heredaban la fuente del sistema, causando headers visualmente diferentes.
+
+| Archivo | Elementos duplicados eliminados | Estado |
+|---------|--------------------------------|--------|
+| design-system.css | Agregado `*` reset + body font cambiado a `var(--font-body)` + background | ✅ Fuente única |
+| notificaciones.css | `*`, `:root` (11 vars), `body` | ✅ Eliminado |
+| mis-aplicaciones.css | `*`, `:root` (11 vars), `body` | ✅ Eliminado |
+| mis-aplicaciones-trabajador.css | `*`, `:root` (11 vars), `body` | ✅ Eliminado |
+| perfil-trabajador.css | `*`, `:root` (11 vars), `body` | ✅ Eliminado |
+| historial-calificaciones.css | `*`, `:root` (11 vars), `body` | ✅ Eliminado |
+| mapa-ofertas.css | `*`, `:root` (11 vars), `body` | ✅ Eliminado |
+| publicar-oferta.css | `*`, `:root` (11 vars), body font + header duplicado | ✅ Eliminado (mantenido body gradient) |
+| dashboard-main.css | `*`, `:root` (30+ vars), `body` | ✅ Eliminado (mantenidos overrides específicos) |
+| styles.css | `*`, `body` | ✅ Eliminado |
+
+**Resultado:** `design-system.css` es la fuente única de reset, font y background. ~330 líneas de CSS duplicado eliminadas.
+
 ### 1.2 Mover Estilos Inline a CSS
 **Archivos revisados:**
 - [x] dashboard.html - Modal ubicación movido a clases CSS
@@ -213,6 +232,7 @@ Correr Lighthouse en las páginas principales:
 | 31/01/26 | **Fase C parcial:** Lazy loading agregado, Google Maps ya optimizado |
 | 31/01/26 | **Deploy a producción** - Lighthouse post-deploy: Performance 85, A11y 92, SEO 100 |
 | 31/01/26 | **PLAN COMPLETADO** ✅ - Siguiente: Sprint Gestión de Ofertas |
+| 03/02/26 | **CSS centralizado:** Reset `*`, body font y `:root` vars movidos a design-system.css. Eliminados de 9 CSS individuales (~330 líneas). Fix headers inconsistentes. |
 
 ---
 

@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 03 Febrero 2026
+**Última actualización:** 03 Febrero 2026 (sesión 2)
 
 ---
 
@@ -332,4 +332,4 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.1
+**Versión documento:** 3.2

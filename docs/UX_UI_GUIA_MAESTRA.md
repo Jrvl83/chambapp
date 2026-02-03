@@ -264,44 +264,47 @@ Usar Heroicons (https://heroicons.com/) o Phosphor Icons (https://phosphoricons.
 ## 5.5 HEADER SIMPLE (Páginas Secundarias)
 
 ### Componente Centralizado
-El header de páginas secundarias (Perfil, Alertas, Explorar) está centralizado en `css/header-simple.css`.
+El header de TODAS las páginas secundarias está centralizado en `css/header-simple.css`. Es la **fuente única** de estilos para `.header`, `.header-content`, `.logo`, `.logo-img`, `.logo-text` y `.btn-volver`.
+
+> **Regla (03/02/26):** NUNCA definir estos estilos en CSS de página. Si se necesita un override (ej: `max-width` diferente), definir solo esa propiedad en el CSS de página.
+
+```html
+<!-- Estructura HTML estándar del header -->
+<header class="header">
+    <div class="header-content">
+        <a href="dashboard.html" class="logo">
+            <img src="/assets/logo/logo-icono.png" alt="ChambApp" class="logo-img">
+            <span class="logo-text">ChambApp</span>
+        </a>
+        <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
+    </div>
+</header>
+```
 
 ```css
-/* Estructura del Header Simple */
-.header {
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.btn-volver {
-    padding: 0.5rem 1rem;
-    background: #64748b;
-    color: white;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
+/* header-simple.css - Estilos del header */
+.header { background: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+.header-content { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+.logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+.logo-img { height: 32px; width: auto; }
+.logo-text { font-size: 1.25rem; font-weight: 700; color: #1e293b; }
+.btn-volver { padding: 0.5rem 1rem; background: #64748b; color: white; border-radius: 6px; font-size: 0.875rem; font-weight: 500; }
 ```
 
 ### Páginas que usan Header Simple
-| Página | Archivo CSS |
-|--------|-------------|
-| perfil-trabajador.html | header-simple.css |
-| perfil-empleador.html | header-simple.css (inline) |
-| notificaciones.html | header-simple.css |
-| mapa-ofertas.html | header-simple.css |
+| Página | Import | Override |
+|--------|--------|----------|
+| perfil-trabajador.html | `header-simple.css` | Ninguno |
+| perfil-empleador.html | `header-simple.css` | Ninguno |
+| notificaciones.html | `header-simple.css` | Ninguno |
+| mis-aplicaciones.html | `header-simple.css` | Ninguno |
+| mis-aplicaciones-trabajador.html | `header-simple.css` | Ninguno |
+| historial-ofertas.html | `header-simple.css` | Ninguno |
+| historial-calificaciones.html | `header-simple.css` | Ninguno |
+| mapa-ofertas.html | `header-simple.css` | Ninguno |
+| publicar-oferta.html | `header-simple.css` | `.header-content { max-width: 900px }` |
+
+**Nota:** `dashboard.html` usa su propio header definido en `dashboard-main.css` con clase `.dashboard-header`.
 
 ---
 
@@ -705,6 +708,6 @@ Cada empty state debe tener:
 
 ---
 
-**Última actualización:** 30 Enero 2026
-**Próxima revisión:** Al completar Sprint 8
+**Última actualización:** 03 Febrero 2026
+**Próxima revisión:** Al completar Fase 2
 
