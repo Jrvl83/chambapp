@@ -21,312 +21,36 @@
     <title>Registro - ChambApp</title>
 
     <!-- CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/register.css">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/animations.css">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
-            min-height: 100vh;
-            padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
-        }
-
-        .register-container {
-            background: white;
-            max-width: 600px;
-            margin: 1rem auto;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-
-        /* Header Compacto */
-        .register-header {
-            background: linear-gradient(135deg, #0066FF, #0052CC);
-            color: white;
-            padding: 1.5rem 1rem;
-            text-align: center;
-        }
-
-        .register-header h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .register-header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        /* Progress Simple */
-        .progress {
-            background: #f5f5f5;
-            padding: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .step-dot {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #999;
-        }
-
-        .step-dot.active {
-            background: #0066FF;
-            color: white;
-            border-color: #0066FF;
-        }
-
-        .step-dot.completed {
-            background: #00C48C;
-            border-color: #00C48C;
-            color: white;
-        }
-
-        /* Form Container */
-        .form-content {
-            padding: 2rem 1.5rem;
-            min-height: 400px;
-        }
-
-        .form-step {
-            display: none;
-        }
-
-        .form-step.active {
-            display: block;
-        }
-
-        .step-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .step-subtitle {
-            color: #666;
-            margin-bottom: 1.5rem;
-        }
-
-        /* User Type Cards - MÁS GRANDES Y VISIBLES */
-        .user-type-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .user-card {
-            border: 3px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: white;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-card:active {
-            transform: scale(0.98);
-        }
-
-        .user-card.selected {
-            border-color: #0066FF;
-            background: #E6F2FF;
-        }
-
-        .user-card-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .user-card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-card-desc {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        /* Form Groups */
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #0066FF;
-        }
-
-        .error-msg {
-            color: #EF4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            display: none;
-        }
-
-        .error-msg.show {
-            display: block;
-        }
-
-        /* Password Wrapper */
-        .password-wrapper {
-            position: relative;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        /* Checkbox */
-        .checkbox-wrapper {
-            display: flex;
-            gap: 0.75rem;
-            margin: 1.5rem 0;
-        }
-
-        .checkbox-wrapper input {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .checkbox-wrapper label {
-            font-size: 0.875rem;
-            color: #666;
-        }
-
-        .checkbox-wrapper a {
-            color: #0066FF;
-            text-decoration: none;
-        }
-
-        /* Buttons */
-        .buttons {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            min-height: 52px;
-        }
-
-        .btn-back {
-            background: #f5f5f5;
-            color: #666;
-        }
-
-        .btn-next,
-        .btn-submit {
-            background: linear-gradient(135deg, #0066FF, #0052CC);
-            color: white;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-        }
-
-        /* Footer */
-        .register-footer {
-            text-align: center;
-            padding: 1.5rem;
-            background: #f5f5f5;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .register-footer a {
-            color: #0066FF;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @media (max-width: 640px) {
-            .register-container {
-                margin: 0;
-                border-radius: 0;
-                min-height: 100vh;
-            }
-
-            .form-content {
-                padding: 1.5rem 1rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <main>
     <div class="register-container">
-        <!-- Header -->
+        <!-- Header con logo -->
         <div class="register-header">
-            <h1>🚀 Únete a ChambApp</h1>
+            <img src="/assets/logo/logo-icono.png" alt="ChambApp">
+            <h1>Únete a ChambApp</h1>
             <p>Comienza a encontrar chambas hoy</p>
         </div>
 
-        <!-- Progress -->
+        <!-- Progress con labels -->
         <div class="progress">
-            <div class="step-dot active" id="dot1">1</div>
-            <div class="step-dot" id="dot2">2</div>
-            <div class="step-dot" id="dot3">3</div>
+            <div class="step-item">
+                <div class="step-dot active" id="dot1">1</div>
+                <span class="step-label">Tipo</span>
+            </div>
+            <div class="step-item">
+                <div class="step-dot" id="dot2">2</div>
+                <span class="step-label">Datos</span>
+            </div>
+            <div class="step-item">
+                <div class="step-dot" id="dot3">3</div>
+                <span class="step-label">Clave</span>
+            </div>
         </div>
 
         <!-- Form -->
@@ -340,14 +64,18 @@
                     <div class="user-type-cards">
                         <div class="user-card" data-type="trabajador">
                             <div class="user-card-icon">👷</div>
-                            <div class="user-card-title">Busco Trabajo</div>
-                            <div class="user-card-desc">Encuentra chambas cerca de ti</div>
+                            <div class="user-card-text">
+                                <div class="user-card-title">Busco Trabajo</div>
+                                <div class="user-card-desc">Encuentra chambas cerca de ti</div>
+                            </div>
                         </div>
 
                         <div class="user-card" data-type="empleador">
                             <div class="user-card-icon">💼</div>
-                            <div class="user-card-title">Busco Trabajadores</div>
-                            <div class="user-card-desc">Encuentra profesionales</div>
+                            <div class="user-card-text">
+                                <div class="user-card-title">Busco Trabajadores</div>
+                                <div class="user-card-desc">Encuentra profesionales</div>
+                            </div>
                         </div>
                     </div>
 
@@ -390,6 +118,12 @@
                             <input type="password" id="password" placeholder="••••••">
                             <button type="button" class="toggle-password" onclick="togglePwd('password', this)">👁️</button>
                         </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <span class="strength-text" id="strengthText"></span>
+                        </div>
                         <div class="error-msg" id="passwordError"></div>
                     </div>
 
@@ -429,7 +163,7 @@
     <script src="js/toast.js"></script>
     <script src="js/config/firebase-config.js"></script>
 
-    <!-- Script de registro (ahora externo y organizado) -->
+    <!-- Script de registro -->
     <script type="module" src="js/auth/register.js"></script>
 </body>
 </html>

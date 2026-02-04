@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ████████████████████░░░░░░░░ 65% (32/49 tareas)
+FASE 1: █████████████████████░░░░░░░ 67% (33/49 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  18% del proyecto (32/176 tareas)
+TOTAL:  19% del proyecto (33/176 tareas)
 ```
 
 ### Features Implementadas
@@ -72,8 +72,9 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | 31-32 | Micro-interacciones y empty states | 30 Ene |
 | 34 | Loading states (spinner centrado) | 30 Ene |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
+| OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 
-### Tareas Pendientes (12)
+### Tareas Pendientes (11)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
@@ -83,7 +84,6 @@ TOTAL:  18% del proyecto (32/176 tareas)
 | 37-39 | Performance y PWA | Alta (al final) |
 | 40-44 | Testing y QA | Alta |
 | 45-48 | Panel de administración | Media |
-| OB1 | Revisar y arreglar onboarding de todas las páginas (centrado, forma, consistencia) | Alta |
 
 ### Tareas Diferidas (6)
 - Tasks 18-20, 22: Chat in-app (WhatsApp cubre la necesidad)
@@ -274,22 +274,32 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 03 Febrero 2026 (sesión 3)
-> **Sprint activo:** UX Mobile Polish
+> **Última sesión:** 03 Febrero 2026 (sesión 4)
+> **Sprint activo:** OB1 - Onboarding
 
-### Resumen de lo completado (sesión 3 - 03/02/26)
-1. ✅ Cards compactas horizontales en móvil (thumbnail 80x80 izquierda, contenido derecha)
-2. ✅ **Filtros reestructurados para móvil:**
-   - Quick bar siempre visible: búsqueda + categorías + ordenar + botón ⚙️
-   - Bottom sheet compacto (~55vh): ubicación + distancia + salario (inputs numéricos) + fecha (chips)
-   - Dropdowns full-width en mobile, overlay real para bottom sheet
-   - Desktop sin cambios (CSS show/hide por breakpoint, controles duplicados con syncControls)
-3. ✅ Chips de fecha ajustados: Hoy / 3 días / 7 días / Todas (antes: 7/30/90 días sin sentido con caducidad de 14 días)
-4. ✅ Filtro de fecha usa `fechaActualizacion || fechaCreacion` (antes solo fechaCreacion)
-5. ✅ Ordenamiento "Más recientes" ordena explícitamente por fecha (antes confiaba en orden de Firestore)
-6. ✅ Carga inicial del dashboard ordena por fecha más reciente
+### Resumen de lo completado (sesión 4 - 03/02/26)
+1. ✅ **OB1: CSS externalizado de login.html y register.html**
+   - Creados `css/login.css` y `css/register.css` (eliminadas ~500 líneas de CSS inline)
+   - Ambas páginas ahora usan `design-system.css` (tipografía Inter, variables CSS, reset centralizado)
+2. ✅ **Consistencia visual login/register:**
+   - Mismo centrado flex (vertical + horizontal) en ambas páginas
+   - Border-radius normalizados: inputs `var(--radius-md)` 8px, botones `var(--radius-lg)` 12px
+   - Colores hardcoded reemplazados por variables CSS
+   - Breakpoint unificado a 768px
+   - Button min-height normalizado a 44px (WCAG AA)
+3. ✅ **Mejoras UX del registro:**
+   - Cards de tipo usuario: layout horizontal compacto (emoji izquierda, texto derecha)
+   - Progress dots con micro-labels ("Tipo", "Datos", "Clave")
+   - Indicador de fortaleza de contraseña (débil/media/fuerte con barra visual)
+   - Checkbox custom de 24x24px con check azul
+   - Logo de ChambApp agregado al header del registro
+   - Botón "Crear Cuenta" ya no se parte en 2 líneas (`white-space: nowrap`)
+   - Bordes de inputs más visibles (`var(--gray-300)`)
+   - Ancho del container fijo entre pasos (fix `<main>` width)
+4. ✅ **Fix validación prematura:** Anulados bordes verdes/rojos automáticos de `accessibility.css` en login/register
 
 ### Sesiones anteriores
+- **Sesión 3 (03/02/26):** Cards compactas móvil, filtros reestructurados, chips de fecha
 - **Sesión 2 (03/02/26):** Fix headers inconsistentes (centralizar CSS en design-system.css)
 - **Sesión 1:** Plan de refactorización + Sprint G1-G6 completo
 
@@ -324,10 +334,9 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **OB1** - Revisar y arreglar onboarding de todas las páginas (centrado, forma, consistencia)
-2. **Task 33** - Error states y validaciones
-3. **Tasks 37-39** - Performance y PWA
-4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+1. **Task 33** - Error states y validaciones
+2. **Tasks 37-39** - Performance y PWA
+3. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`

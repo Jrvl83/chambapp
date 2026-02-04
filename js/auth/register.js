@@ -302,6 +302,57 @@ async function handleSubmit(e) {
 }
 
 // ============================================
+// PASSWORD STRENGTH
+// ============================================
+
+/**
+ * Evaluar fortaleza de contraseña
+ * @param {string} password
+ * @returns {{ level: string, text: string }}
+ */
+function evaluatePassword(password) {
+    if (!password) return { level: '', text: '' };
+
+    let score = 0;
+    if (password.length >= 6) score++;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    if (score <= 2) return { level: 'weak', text: 'Débil' };
+    if (score <= 3) return { level: 'medium', text: 'Media' };
+    return { level: 'strong', text: 'Fuerte' };
+}
+
+/**
+ * Actualizar indicador visual de fortaleza
+ */
+function updatePasswordStrength() {
+    const password = document.getElementById('password').value;
+    const container = document.getElementById('passwordStrength');
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+
+    if (!password) {
+        container.classList.remove('visible');
+        return;
+    }
+
+    container.classList.add('visible');
+    const { level, text: label } = evaluatePassword(password);
+
+    fill.className = 'strength-fill';
+    text.className = 'strength-text';
+
+    if (level) {
+        fill.classList.add(level);
+        text.classList.add(level);
+        text.textContent = label;
+    }
+}
+
+// ============================================
 // EVENT LISTENERS
 // ============================================
 
@@ -325,6 +376,9 @@ btnBack.addEventListener('click', () => {
         updateStep();
     }
 });
+
+// Password strength indicator
+document.getElementById('password').addEventListener('input', updatePasswordStrength);
 
 // Submit del formulario
 registerForm.addEventListener('submit', handleSubmit);

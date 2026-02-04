@@ -306,6 +306,27 @@ El header de TODAS las páginas secundarias está centralizado en `css/header-si
 
 **Nota:** `dashboard.html` usa su propio header definido en `dashboard-main.css` con clase `.dashboard-header`.
 
+### Páginas de Autenticación (login/register)
+
+> **Regla (03/02/26):** login.html y register.html tienen CSS externalizado en `css/login.css` y `css/register.css`. Ambos usan `design-system.css` como base. NUNCA volver a poner CSS inline en estas páginas.
+
+**Estructura CSS compartida:**
+- Body: `display: flex; align-items: center; justify-content: center;` (centrado total)
+- `<main>`: `width: 100%; max-width: Xpx;` (fija el ancho, evita variación por contenido)
+- Container: `width: 100%; border-radius: var(--radius-xl);`
+- Inputs: `border: 2px solid var(--gray-300); border-radius: var(--radius-md);`
+- Botones: `border-radius: var(--radius-lg); min-height: 44px; white-space: nowrap;`
+
+**Validación visual:** Los bordes verdes/rojos automáticos de `accessibility.css` (`input:valid/:invalid`) están anulados en login/register para evitar feedback prematuro.
+
+**Register - Componentes:**
+- Progress dots con micro-labels ("Tipo", "Datos", "Clave")
+- Cards de tipo usuario: layout horizontal (emoji + texto)
+- Indicador de fortaleza de contraseña (JS en register.js)
+- Checkbox custom 24x24px con check azul
+- Logo del header con fondo blanco redondeado sobre gradiente azul
+- `form-content` con `min-height` fija y `flex` para botones anclados al fondo
+
 ---
 
 ## 6. COMPONENTES UI MEJORADOS

@@ -1,0 +1,468 @@
+/* ============================================
+   REGISTER - ChambApp
+   Requiere: design-system.css
+   ============================================ */
+
+/* Page layout: centrado vertical y horizontal */
+body {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+/* Main wrapper - ancho fijo para evitar variación entre pasos */
+main {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Container principal */
+.register-container {
+    background: var(--white);
+    width: 100%;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Header con logo */
+.register-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: var(--white);
+    padding: 1.25rem 1rem;
+    text-align: center;
+}
+
+.register-header img {
+    height: 48px;
+    width: 48px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 6px;
+}
+
+.register-header h1 {
+    font-size: var(--text-xl);
+    margin-bottom: 0.25rem;
+}
+
+.register-header p {
+    font-size: var(--text-sm);
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Progress dots con labels */
+.progress {
+    background: var(--gray-100);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.step-dot {
+    width: 36px;
+    height: 36px;
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-bold);
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+    transition: all var(--transition-fast);
+}
+
+.step-dot.active {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.step-dot.completed {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--white);
+}
+
+.step-label {
+    font-size: 0.6875rem;
+    color: var(--gray-400);
+    font-weight: var(--font-medium);
+    transition: color var(--transition-fast);
+}
+
+.step-item:has(.step-dot.active) .step-label {
+    color: var(--primary);
+    font-weight: var(--font-semibold);
+}
+
+.step-item:has(.step-dot.completed) .step-label {
+    color: var(--secondary);
+}
+
+/* Form content area - altura fija para consistencia entre pasos */
+.form-content {
+    padding: 1.5rem;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-content form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-content .form-step.active {
+    flex: 1;
+}
+
+.form-content .buttons {
+    margin-top: auto;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.step-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    margin-bottom: 0.25rem;
+}
+
+.step-subtitle {
+    color: var(--gray-500);
+    margin-bottom: 1.25rem;
+}
+
+/* User type cards - compactas */
+.user-type-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.user-card {
+    border: 2.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1rem;
+    cursor: pointer;
+    transition: all var(--transition-slow);
+    background: var(--white);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-card:active {
+    transform: scale(0.98);
+}
+
+.user-card.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.user-card-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.user-card-text {
+    text-align: left;
+}
+
+.user-card-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    margin-bottom: 0.125rem;
+}
+
+.user-card-desc {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: var(--font-semibold);
+    color: var(--dark);
+}
+
+.form-group input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.875rem;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-family: inherit;
+    color: var(--dark);
+    background: var(--white);
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Anular validación automática de accessibility.css
+   (muestra verde/rojo antes de que el usuario envíe) */
+.register-container input:valid:not(:placeholder-shown),
+.register-container input:invalid:not(:placeholder-shown) {
+    border-color: var(--gray-300);
+}
+
+.register-container input:focus:valid,
+.register-container input:focus:invalid {
+    border-color: var(--primary);
+}
+
+/* Error messages */
+.error-msg {
+    color: var(--danger);
+    font-size: var(--text-sm);
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.error-msg.show {
+    display: block;
+}
+
+/* Password wrapper */
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Password strength indicator */
+.password-strength {
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.password-strength.visible {
+    display: block;
+}
+
+.strength-bar {
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: var(--gray-200);
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.strength-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--transition-slow), background var(--transition-slow);
+    width: 0;
+}
+
+.strength-fill.weak {
+    width: 33%;
+    background: var(--danger);
+}
+
+.strength-fill.medium {
+    width: 66%;
+    background: var(--warning);
+}
+
+.strength-fill.strong {
+    width: 100%;
+    background: var(--secondary);
+}
+
+.strength-text {
+    font-size: 0.6875rem;
+    font-weight: var(--font-medium);
+    color: var(--gray-500);
+}
+
+.strength-text.weak { color: var(--danger); }
+.strength-text.medium { color: var(--warning-hover); }
+.strength-text.strong { color: var(--secondary); }
+
+/* Checkbox - touch target mejorado */
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    cursor: pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border: 2px solid var(--gray-300);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all var(--transition-fast);
+    padding: 0;
+    min-height: auto;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 0.875rem;
+    font-weight: var(--font-bold);
+}
+
+.checkbox-wrapper label {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.checkbox-wrapper a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: var(--font-semibold);
+}
+
+/* Buttons */
+.buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.register-container .btn {
+    flex: 1;
+    padding: 0.875rem 1rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    font-family: inherit;
+    cursor: pointer;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.btn-back {
+    background: var(--gray-100);
+    color: var(--gray-500);
+    flex: 0 1 auto;
+}
+
+.btn-next,
+.btn-submit {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: var(--white);
+}
+
+.register-container .btn:active {
+    transform: scale(0.98);
+}
+
+.register-container .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Footer */
+.register-footer {
+    text-align: center;
+    padding: 1.25rem;
+    background: var(--gray-100);
+    border-top: 1px solid var(--border);
+}
+
+.register-footer p {
+    margin: 0;
+}
+
+.register-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: var(--font-semibold);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+
+    .register-container {
+        margin: 0;
+        border-radius: 0;
+        min-height: 100vh;
+    }
+
+    .form-content {
+        padding: 1.25rem 1rem;
+    }
+}
