@@ -74,10 +74,11 @@ TOTAL:  19% del proyecto (33/176 tareas)
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 
-### Tareas Pendientes (11)
+### Tareas Pendientes (12)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
+| GT1 | Centralizar guided tours / coach marks (ver sección Sprint GT) | **Alta** |
 | 33 | Error states y validaciones | Media |
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
 | 36 | Dark mode (opcional) | Baja |
@@ -142,6 +143,43 @@ Empleador publica oferta
 Ofertas visibles para trabajadores:
 → estado === "activa" AND fechaExpiracion > ahora
 ```
+
+---
+
+## SPRINT: GUIDED TOURS / COACH MARKS (1 tarea)
+
+> **Objetivo:** Centralizar y reparar el sistema de guided tours (tutoriales de primera visita) que se rompieron durante actualizaciones.
+
+### Problema
+ChambApp tenía guided tours en varias páginas pero se rompieron con las actualizaciones de HTML/CSS. Además, el código de tours estaba mezclado dentro de cada página (no centralizado), lo que dificulta el mantenimiento.
+
+### Tareas
+
+| # | Tarea | Descripción | Prioridad | Estado |
+|---|-------|-------------|-----------|--------|
+| GT1 | Centralizar guided tours | Buscar tours rotos existentes, crear arquitectura centralizada, reparar todos los tours | **Alta** | Pendiente |
+
+### Arquitectura propuesta
+```
+js/components/guided-tour.js   → Motor del tour (highlight, tooltip, navegación)
+css/guided-tour.css             → Estilos del overlay, tooltips, spotlight
+js/config/tours.js              → Configuración de cada tour por página
+```
+
+### Funcionalidades del motor
+- Highlight de elemento con overlay oscuro alrededor (spotlight)
+- Tooltip posicionado automáticamente (arriba/abajo/izq/der)
+- Navegación: "Siguiente", "Anterior", "Saltar"
+- Progress dots (paso X de Y)
+- `localStorage` para marcar tour como completado por página
+- Responsive (ajustar posición en mobile)
+- Solo se muestra en la primera visita del usuario
+
+### Páginas que necesitan tour
+- `dashboard.html` — Explicar stats, ofertas, filtros, bottom nav
+- `publicar-oferta.html` — Guiar al empleador por el formulario
+- `mapa-ofertas.html` — Explicar interacción con el mapa
+- `perfil-trabajador.html` / `perfil-empleador.html` — Secciones del perfil
 
 ---
 
@@ -269,6 +307,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | [UX_UI_GUIA_MAESTRA.md](UX_UI_GUIA_MAESTRA.md) | Identidad visual, colores, tipografía, componentes |
 | [REGLAS_DESARROLLO.md](REGLAS_DESARROLLO.md) | Estándares de código y buenas prácticas |
 | [PLAN_REFACTORIZACION.md](PLAN_REFACTORIZACION.md) | Plan actual de limpieza de código |
+| [PLAN_GUIDED_TOURS.md](PLAN_GUIDED_TOURS.md) | Plan GT1: Centralizar guided tours (próxima sesión) |
 
 ---
 
@@ -334,9 +373,10 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **Task 33** - Error states y validaciones
-2. **Tasks 37-39** - Performance y PWA
-3. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+1. **GT1** - Centralizar guided tours / coach marks (tours existentes rotos)
+2. **Task 33** - Error states y validaciones
+3. **Tasks 37-39** - Performance y PWA
+4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`

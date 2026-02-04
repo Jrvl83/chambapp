@@ -384,6 +384,7 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | 03/02/26 | 9 CSS individuales | Reset `*`, `:root` y `body` duplicados en cada CSS de página. Causaba font inconsistente (sistema vs Inter) y headers visualmente diferentes | Alta | ✅ Resuelto - Centralizado en design-system.css |
 | 03/02/26 | login.html, register.html | ~500 líneas de CSS inline en `<style>`, no usaban design-system.css. Font-family inconsistente, border-radius diferentes, sin centrado vertical en register, colores hardcodeados | Alta | ✅ Resuelto - Externalizados a css/login.css y css/register.css |
 | 03/02/26 | accessibility.css | `input:valid/:invalid` aplica bordes verdes/rojos prematuramente antes de validar formulario | Media | ✅ Resuelto - Anulado en login.css y register.css |
+| 03/02/26 | Varios HTML | Guided tours / coach marks rotos e incrustados en cada página. No hay arquitectura centralizada, se rompieron con actualizaciones de HTML/CSS | Alta | Pendiente - Crear `js/components/guided-tour.js`, `css/guided-tour.css`, `js/config/tours.js` |
 
 ---
 
