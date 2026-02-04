@@ -31,9 +31,19 @@
 
     <link rel="stylesheet" href="css/animations.css">
 
-    <!-- Intro.js CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css">
-    <link rel="stylesheet" href="css/introjs-custom.css">
+    <!-- Intro.js CSS - Carga condicional -->
+    <script>
+        (function() {
+            if (localStorage.getItem('chambapp-onboarding-publicar') !== 'true') {
+                var c1 = document.createElement('link'); c1.rel='stylesheet';
+                c1.href='https://cdn.jsdelivr.net/npm/intro.js@7/minified/introjs.min.css';
+                document.head.appendChild(c1);
+                var c2 = document.createElement('link'); c2.rel='stylesheet';
+                c2.href='css/introjs-custom.css';
+                document.head.appendChild(c2);
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -505,15 +515,18 @@
     <script src="js/components/bottom-nav.js"></script>
     <script type="module" src="js/publicar-oferta.js"></script>
     
-    <!-- Onboarding -->
-    <script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"></script>
-    <script src="js/onboarding-publicar.js"></script>
+    <!-- Guided Tour -->
     <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                if (typeof iniciarOnboardingPublicar === 'function') {
-                    iniciarOnboardingPublicar();
-                }
+        if (localStorage.getItem('chambapp-onboarding-publicar') !== 'true') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/intro.js@7/intro.min.js"><\/script>');
+        }
+    </script>
+    <script src="js/components/guided-tour.js"></script>
+    <script src="js/config/tours.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (typeof GuidedTour !== 'undefined') GuidedTour.start('publicar');
             }, 1000);
         });
     </script>

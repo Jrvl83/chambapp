@@ -356,27 +356,23 @@
     <!-- Scripts -->
     <script src="js/config/firebase-config.js"></script>
     <script src="js/toast.js"></script>
-    <script src="js/onboarding.js"></script>
+    <script src="js/components/guided-tour.js"></script>
+    <script src="js/config/tours.js"></script>
     <script src="js/components/filtros-avanzados.js"></script>
     <script src="js/components/bottom-nav.js"></script>
 
     <!-- Dashboard JS con Task 9 -->
     <script type="module" src="js/dashboard/dashboard.js"></script>
     
-    <!-- Onboarding -->
+    <!-- Guided Tour -->
     <script>
-        window.addEventListener('load', () => {
-            const checkLoaded = setInterval(() => {
-                const content = document.getElementById('dashboard-content');
-                if (content && content.style.display !== 'none') {
-                    clearInterval(checkLoaded);
-                    setTimeout(() => {
-                        if (typeof iniciarOnboarding === 'function') {
-                            iniciarOnboarding();
-                        }
-                    }, 1500);
-                }
-            }, 500);
+        window.addEventListener('load', function() {
+            if (typeof GuidedTour === 'undefined') return;
+            var role = GuidedTour._helpers.getUserRole();
+            var viewId = role === 'trabajador' ? 'dashboard-trabajador' : 'dashboard-empleador';
+            GuidedTour._helpers.waitForElement('#' + viewId, function(visible) {
+                if (visible) GuidedTour.start('dashboard');
+            });
         });
     </script>
 </body>

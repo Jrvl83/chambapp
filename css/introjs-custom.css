@@ -13,10 +13,9 @@
     background: white !important;
     border: none !important;
     animation: tooltipFadeIn 0.3s ease-out !important;
-    /* FIX iOS: Estructura flexbox para botones siempre visibles */
     display: flex !important;
     flex-direction: column !important;
-    overflow: hidden !important;
+    overflow: visible !important;
 }
 
 @keyframes tooltipFadeIn {
@@ -78,59 +77,55 @@
     line-height: 1.6 !important;
 }
 
-/* Ocultar header */
+/* Header: muestra step counter + botón saltar */
 .introjs-tooltip-header {
-    padding: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.625rem 1rem 0 !important;
     margin: 0 !important;
-    display: none !important;
+    min-height: 24px !important;
+}
+
+.introjs-tooltip-title {
+    font-size: 0.75rem !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
 }
 
 /* Contenedor de botones */
 .introjs-tooltipbuttons {
-    padding: 1rem 1.5rem !important;
-    border-top: 2px solid #f1f5f9 !important;
+    padding: 0.625rem 1.25rem !important;
+    border-top: 1px solid #f1f5f9 !important;
     display: flex !important;
-    gap: 0.75rem !important;
-    justify-content: space-between !important;
+    gap: 0.5rem !important;
+    justify-content: flex-end !important;
     align-items: center !important;
-    /* FIX iOS: Botones NUNCA se cortan */
     flex-shrink: 0 !important;
-    min-height: 56px !important;
     background: white !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+/* Centrar botón cuando es el único (done sin prev) */
+.introjs-tooltipbuttons .introjs-nextbutton:first-child:last-child,
+.introjs-tooltipbuttons .introjs-donebutton:first-child:last-child {
+    margin: 0 auto !important;
 }
 
 /* Todos los botones - base */
 .introjs-button {
-    border-radius: 10px !important;
-    padding: 0.875rem 1.75rem !important;
+    border-radius: 8px !important;
+    padding: 0.375rem 1.25rem !important;
     font-weight: 600 !important;
-    font-size: 1rem !important;
+    font-size: 0.875rem !important;
     text-shadow: none !important;
     border: none !important;
     cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.2s ease !important;
     box-shadow: none !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-/* 🔴 MEJORA: Efecto ripple en botones */
-.introjs-button::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.5) !important;
-    transform: translate(-50%, -50%) !important;
-    transition: width 0.6s, height 0.6s !important;
-}
-
-.introjs-button:active::before {
-    width: 300px !important;
-    height: 300px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
 }
 
 /* Botón siguiente y done */
@@ -157,9 +152,9 @@
 
 /* Botón anterior */
 .introjs-prevbutton {
-    background: white !important;
+    background: transparent !important;
     color: #64748b !important;
-    border: 2px solid #e2e8f0 !important;
+    border: 1px solid #e2e8f0 !important;
 }
 
 .introjs-prevbutton:hover,
@@ -169,24 +164,33 @@
     color: #475569 !important;
 }
 
-/* Botón saltar */
+/* Botón saltar - texto link limpio en header */
 .introjs-skipbutton {
     color: #94a3b8 !important;
-    background: transparent !important;
-    padding: 0.75rem 1rem !important;
-    font-size: 0.9375rem !important;
+    background: none !important;
+    padding: 0.25rem 0 !important;
+    font-size: 0.8125rem !important;
+    font-weight: 400 !important;
+    border-radius: 0 !important;
+    position: static !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    border: none !important;
+    text-decoration: none !important;
 }
 
 .introjs-skipbutton:hover,
 .introjs-skipbutton:focus {
     color: #64748b !important;
-    background: rgba(148, 163, 184, 0.1) !important;
+    background: none !important;
+    border: none !important;
+    text-decoration: underline !important;
 }
 
-/* 🔴 MEJORA: Capa de highlight con animación suave */
+/* Capa de highlight con animación suave */
 .introjs-helperLayer {
     border-radius: 12px !important;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px !important;
+    box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 1px 2px, rgba(0, 0, 0, 0.8) 0px 0px 0px 5000px !important;
     border: 3px solid #0066FF !important;
     background: transparent !important;
     animation: pulseHighlight 2s ease-in-out infinite !important;
@@ -195,15 +199,15 @@
 @keyframes pulseHighlight {
     0%, 100% {
         border-color: #0066FF;
-        box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, 
-                    rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px,
+        box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 1px 2px,
+                    rgba(0, 0, 0, 0.8) 0px 0px 0px 5000px,
                     0 0 0 0 rgba(0, 102, 255, 0.4);
     }
     50% {
-        border-color: #0066FF;
-        box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 1px 2px, 
-                    rgba(0, 0, 0, 0.5) 0px 0px 0px 5000px,
-                    0 0 0 8px rgba(0, 102, 255, 0.2);
+        border-color: #3B82F6;
+        box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 1px 2px,
+                    rgba(0, 0, 0, 0.8) 0px 0px 0px 5000px,
+                    0 0 0 10px rgba(0, 102, 255, 0.15);
     }
 }
 
@@ -212,19 +216,25 @@
     display: none !important;
 }
 
-/* Flechas - todas direcciones */
+/* Flechas - conectan tooltip con elemento */
 .introjs-arrow {
     border: 10px solid transparent !important;
+    display: block !important;
+    visibility: visible !important;
+    overflow: visible !important;
+    z-index: 1 !important;
 }
 
 .introjs-arrow.top {
     border-bottom-color: white !important;
     top: -20px !important;
+    margin-top: 0 !important;
 }
 
 .introjs-arrow.bottom {
     border-top-color: white !important;
     bottom: -20px !important;
+    margin-bottom: 0 !important;
 }
 
 .introjs-arrow.left {
@@ -283,9 +293,9 @@
     display: none !important;
 }
 
-/* Overlay mejorado */
+/* Overlay mejorado - más oscuro para foco total */
 .introjs-overlay {
-    background: rgba(0, 0, 0, 0.6) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
     animation: overlayFadeIn 0.3s ease-out !important;
 }
 
@@ -305,20 +315,23 @@
     box-shadow: none !important;
 }
 
+/* Ocultar botón "Atrás" cuando está deshabilitado (primer paso) */
+.introjs-prevbutton.introjs-disabled {
+    display: none !important;
+}
+
 /* ============================================
    RESPONSIVE - MOBILE
    ============================================ */
 @media (max-width: 640px) {
     .introjs-tooltip {
-        max-width: 90vw !important;
-        min-width: 280px !important;
-        /* FIX iOS: Altura máxima conservadora */
+        max-width: 88vw !important;
+        min-width: 260px !important;
         max-height: 70vh !important;
         max-height: 70dvh !important;
-        /* Mantener flexbox */
         display: flex !important;
         flex-direction: column !important;
-        overflow: hidden !important;
+        overflow: visible !important;
     }
 
     .introjs-tooltiptext {
@@ -347,41 +360,41 @@
         margin: 0.375rem 0 !important;
     }
 
-    /* FIX iOS: Botones SIEMPRE visibles - nunca se cortan */
     .introjs-tooltipbuttons {
         flex-wrap: nowrap !important;
         gap: 0.5rem !important;
-        padding: 0.75rem 1rem !important;
-        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0)) !important;
-        /* CRÍTICO: No hacer scroll, siempre visible */
+        padding: 0.5rem 0.75rem !important;
+        padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0)) !important;
         flex-shrink: 0 !important;
-        min-height: 52px !important;
         background: white !important;
-        border-top: 1px solid #e2e8f0 !important;
+        border-top: 1px solid #f1f5f9 !important;
+        justify-content: flex-end !important;
+        border-radius: 0 0 16px 16px !important;
     }
 
     .introjs-button {
-        padding: 0.625rem 0.875rem !important;
+        padding: 0.3125rem 0.875rem !important;
         font-size: 0.8125rem !important;
-        min-height: 40px !important;
-        min-width: 40px !important;
         flex-shrink: 0 !important;
-    }
-
-    .introjs-skipbutton {
-        padding: 0.5rem 0.625rem !important;
-        font-size: 0.75rem !important;
     }
 
     .introjs-nextbutton,
     .introjs-donebutton {
-        flex: 1 !important;
-        max-width: 140px !important;
+        flex: 0 1 auto !important;
     }
 
     .introjs-prevbutton {
         flex: 0 0 auto !important;
     }
+
+    .introjs-tooltip-header {
+        padding: 0.5rem 0.75rem 0 !important;
+    }
+
+    .introjs-skipbutton {
+        font-size: 0.75rem !important;
+    }
+
 }
 
 /* ============================================
@@ -393,8 +406,8 @@
 }
 
 .introjs-skipbutton:focus {
-    outline: 2px solid #cbd5e1 !important;
-    outline-offset: 2px !important;
+    outline: none !important;
+    text-decoration: underline !important;
 }
 
 /* Reducir animaciones para usuarios que lo prefieran */
@@ -502,29 +515,25 @@
     }
 
     .introjs-tooltipbuttons {
-        border-radius: 0 0 16px 16px !important;
         flex-direction: row !important;
-        justify-content: space-between !important;
+        justify-content: flex-end !important;
         align-items: center !important;
-        padding: 0.75rem !important;
+        padding: 0.5rem 0.75rem !important;
         gap: 0.375rem !important;
     }
 
-    /* Botones más compactos en pantallas pequeñas */
     .introjs-button {
-        padding: 0.5rem 0.75rem !important;
+        padding: 0.3125rem 0.75rem !important;
         font-size: 0.75rem !important;
-        min-height: 40px !important;
     }
 
     .introjs-skipbutton {
-        padding: 0.375rem 0.5rem !important;
         font-size: 0.6875rem !important;
     }
 
     .introjs-nextbutton,
     .introjs-donebutton {
-        padding: 0.5rem 1rem !important;
+        padding: 0.3125rem 1rem !important;
     }
 }
 
@@ -547,33 +556,53 @@
 }
 
 /* ============================================
-   FIX: FLOATING LAYER PARA iOS
+   TOOLTIPS FLOATING (bienvenida/cierre)
+   Diseño centrado, más impactante
    ============================================ */
-.introjs-floatingElement {
+/* Floating tooltips: centrados en pantalla */
+.introjs-floating .introjs-tooltip {
     position: fixed !important;
-    top: 50% !important;
     left: 50% !important;
+    top: 50% !important;
     transform: translate(-50%, -50%) !important;
-    max-width: calc(100vw - 32px) !important;
-    max-height: calc(100vh - 100px) !important;
-    max-height: calc(100dvh - 100px) !important;
+    margin: 0 !important;
+    min-width: 340px !important;
+    border-top: 4px solid #0066FF !important;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4) !important;
+    animation: floatingFadeIn 0.3s ease-out !important;
 }
 
-/* ============================================
-   FIX: TOOLTIPS SIN ELEMENTO TARGET (floating)
-   ============================================ */
-.introjs-tooltip:not([data-targetid]) {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
+@keyframes floatingFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.introjs-floating .introjs-tooltiptext {
+    text-align: center !important;
+    padding: 2rem 2rem 1.5rem !important;
+}
+
+.introjs-floating .introjs-arrow {
+    display: none !important;
 }
 
 @media (max-width: 640px) {
-    .introjs-tooltip:not([data-targetid]) {
-        top: auto !important;
-        bottom: calc(20px + env(safe-area-inset-bottom, 0)) !important;
-        transform: translateX(-50%) !important;
+    .introjs-floating .introjs-tooltip {
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: calc(100vw - 32px) !important;
+        min-width: auto !important;
+    }
+
+    .introjs-floating .introjs-tooltiptext {
+        padding: 1.5rem 1.25rem 1rem !important;
     }
 }
 
@@ -581,13 +610,22 @@
    FIX: ESTADO ONBOARDING ACTIVO
    ============================================ */
 body.onboarding-activo {
-    /* Asegurar que el body no tenga padding extra del bottom-nav */
     padding-bottom: 0 !important;
 }
 
+/* Nuclear: display:none para que nada interfiera con el tour */
 body.onboarding-activo .bottom-nav {
-    transform: translateY(100%) !important;
-    pointer-events: none !important;
+    display: none !important;
+}
+
+body.onboarding-activo .notif-prompt-banner,
+body.onboarding-activo #notif-prompt-banner {
+    display: none !important;
+}
+
+/* Ocultar cualquier modal/overlay que compita */
+body.onboarding-activo .modal-overlay:not(.introjs-overlay) {
+    display: none !important;
 }
 
 /* ============================================
