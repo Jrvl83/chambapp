@@ -1,7 +1,7 @@
 # Plan GT1: Centralizar Sistema de Guided Tours
 
 **Fecha:** 03 Febrero 2026
-**Estado:** Pendiente de ejecución (próxima sesión)
+**Estado:** ✅ Completado (04 Febrero 2026)
 **Prioridad:** Alta
 
 ---
@@ -282,12 +282,20 @@ ELIMINAR:
 
 ---
 
-## Resultado esperado
+## Resultado final
 
-- **4 archivos → 2 archivos** (guided-tour.js + tours.js)
-- **~1150 líneas → ~450 líneas** (eliminación de duplicación)
+- **4 archivos eliminados → 2 archivos nuevos** (guided-tour.js ~420 líneas + tours.js ~258 líneas)
+- **1,297 líneas eliminadas, 899 líneas agregadas** (neto: -398 líneas)
 - **Bug `#dashboard-content` resuelto** — tour del dashboard vuelve a funcionar
 - **Selector `.filtros-container` corregido** → `#filtros-avanzados-container`
+- **Texto "Ver Aplicantes" corregido** → "Ver Candidatos"
 - **Carga condicional en las 4 páginas** — Intro.js no se descarga si tours ya completados
 - **Compatibilidad total** — mismas localStorage keys, mismos tours, misma experiencia
 - **Fácil agregar nuevos tours** — solo agregar `GuidedTour.registerTour('nuevo-id', {...})` en tours.js
+
+### Fixes adicionales (durante testing visual)
+- Bottom nav visible durante tour → flag `transitioning` + enforcer interval cada 200ms
+- Step counter desaparecía entre pasos → `title` nativo en cada step (no más `onafterchange`)
+- Tooltip perdido en containers altos → `scrollTo: 'tooltip'` global
+- Scroll to top antes de iniciar cualquier tour
+- CSS: botones compactos, skip como text link, border-radius consistente top/bottom, prev oculto cuando disabled

@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 03 Febrero 2026 (sesión 3)
+**Última actualización:** 04 Febrero 2026 (sesión 5)
 
 ---
 
@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: █████████████████████░░░░░░░ 67% (33/49 tareas)
+FASE 1: ██████████████████████░░░░░░ 69% (34/49 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  19% del proyecto (33/176 tareas)
+TOTAL:  19% del proyecto (34/176 tareas)
 ```
 
 ### Features Implementadas
@@ -73,12 +73,12 @@ TOTAL:  19% del proyecto (33/176 tareas)
 | 34 | Loading states (spinner centrado) | 30 Ene |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
+| GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 
-### Tareas Pendientes (12)
+### Tareas Pendientes (11)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
-| GT1 | Centralizar guided tours / coach marks (ver sección Sprint GT) | **Alta** |
 | 33 | Error states y validaciones | Media |
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
 | 36 | Dark mode (opcional) | Baja |
@@ -157,29 +157,31 @@ ChambApp tenía guided tours en varias páginas pero se rompieron con las actual
 
 | # | Tarea | Descripción | Prioridad | Estado |
 |---|-------|-------------|-----------|--------|
-| GT1 | Centralizar guided tours | Buscar tours rotos existentes, crear arquitectura centralizada, reparar todos los tours | **Alta** | Pendiente |
+| GT1 | Centralizar guided tours | Motor centralizado + config de 4 tours, fix selectores rotos, UX mejorada | **Alta** | ✅ HECHO |
 
-### Arquitectura propuesta
+### Arquitectura implementada
 ```
-js/components/guided-tour.js   → Motor del tour (highlight, tooltip, navegación)
-css/guided-tour.css             → Estilos del overlay, tooltips, spotlight
-js/config/tours.js              → Configuración de cada tour por página
+js/components/guided-tour.js   → Motor centralizado (IIFE → window.GuidedTour)
+js/config/tours.js              → Definiciones de 4 tours (dashboard, publicar, aplicaciones x2)
+css/introjs-custom.css          → Estilos personalizados (existente, mejorado)
 ```
 
 ### Funcionalidades del motor
-- Highlight de elemento con overlay oscuro alrededor (spotlight)
-- Tooltip posicionado automáticamente (arriba/abajo/izq/der)
-- Navegación: "Siguiente", "Anterior", "Saltar"
-- Progress dots (paso X de Y)
-- `localStorage` para marcar tour como completado por página
-- Responsive (ajustar posición en mobile)
-- Solo se muestra en la primera visita del usuario
+- Intro.js v7 CDN con carga condicional (solo si tour no completado)
+- Highlight con overlay oscuro + borde azul pulsante
+- Tooltip posicionado automáticamente con scroll to tooltip
+- Navegación: "Siguiente", "Atrás", "Saltar" + step counter nativo
+- Barra de progreso animada con shimmer
+- `localStorage` con compatibilidad de keys legacy
+- Bottom nav enforcer (oculta bottom nav durante todo el tour)
+- Multi-secuencia para dashboard, single para el resto
+- Responsive mobile-first + iOS safe areas + dark mode
 
-### Páginas que necesitan tour
-- `dashboard.html` — Explicar stats, ofertas, filtros, bottom nav
-- `publicar-oferta.html` — Guiar al empleador por el formulario
-- `mapa-ofertas.html` — Explicar interacción con el mapa
-- `perfil-trabajador.html` / `perfil-empleador.html` — Secciones del perfil
+### Páginas con tour activo
+- `dashboard.html` — Multi-secuencia: bienvenida → nav → stats/ofertas/filtros → listo
+- `publicar-oferta.html` — 7 pasos: progreso, título, categoría, descripción, navegación
+- `mis-aplicaciones.html` — 4 pasos: resumen, aplicantes, listo
+- `mis-aplicaciones-trabajador.html` — 5 pasos: stats, filtros, postulaciones, listo
 
 ---
 
@@ -248,7 +250,9 @@ chambapp/
 │   ├── dashboard-main.css, bottom-nav.css
 │   └── [page-specific].css
 ├── js/
-│   ├── config/, auth/, dashboard/, components/, utils/
+│   ├── config/ (firebase-config.js, tours.js)
+│   ├── auth/, dashboard/, utils/
+│   ├── components/ (bottom-nav.js, guided-tour.js)
 │   └── [page-specific].js
 ├── assets/
 │   ├── icons/ (PWA)
@@ -307,37 +311,33 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | [UX_UI_GUIA_MAESTRA.md](UX_UI_GUIA_MAESTRA.md) | Identidad visual, colores, tipografía, componentes |
 | [REGLAS_DESARROLLO.md](REGLAS_DESARROLLO.md) | Estándares de código y buenas prácticas |
 | [PLAN_REFACTORIZACION.md](PLAN_REFACTORIZACION.md) | Plan actual de limpieza de código |
-| [PLAN_GUIDED_TOURS.md](PLAN_GUIDED_TOURS.md) | Plan GT1: Centralizar guided tours (próxima sesión) |
+| [PLAN_GUIDED_TOURS.md](PLAN_GUIDED_TOURS.md) | Plan GT1: Centralizar guided tours (completado 04/02/26) |
 
 ---
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 03 Febrero 2026 (sesión 4)
-> **Sprint activo:** OB1 - Onboarding
+> **Última sesión:** 04 Febrero 2026 (sesión 5)
+> **Sprint activo:** Guided Tours
 
-### Resumen de lo completado (sesión 4 - 03/02/26)
-1. ✅ **OB1: CSS externalizado de login.html y register.html**
-   - Creados `css/login.css` y `css/register.css` (eliminadas ~500 líneas de CSS inline)
-   - Ambas páginas ahora usan `design-system.css` (tipografía Inter, variables CSS, reset centralizado)
-2. ✅ **Consistencia visual login/register:**
-   - Mismo centrado flex (vertical + horizontal) en ambas páginas
-   - Border-radius normalizados: inputs `var(--radius-md)` 8px, botones `var(--radius-lg)` 12px
-   - Colores hardcoded reemplazados por variables CSS
-   - Breakpoint unificado a 768px
-   - Button min-height normalizado a 44px (WCAG AA)
-3. ✅ **Mejoras UX del registro:**
-   - Cards de tipo usuario: layout horizontal compacto (emoji izquierda, texto derecha)
-   - Progress dots con micro-labels ("Tipo", "Datos", "Clave")
-   - Indicador de fortaleza de contraseña (débil/media/fuerte con barra visual)
-   - Checkbox custom de 24x24px con check azul
-   - Logo de ChambApp agregado al header del registro
-   - Botón "Crear Cuenta" ya no se parte en 2 líneas (`white-space: nowrap`)
-   - Bordes de inputs más visibles (`var(--gray-300)`)
-   - Ancho del container fijo entre pasos (fix `<main>` width)
-4. ✅ **Fix validación prematura:** Anulados bordes verdes/rojos automáticos de `accessibility.css` en login/register
+### Resumen de lo completado (sesión 5 - 04/02/26)
+1. ✅ **GT1: Centralizar guided tours**
+   - Eliminados 4 archivos JS onboarding (1,297 líneas) → 2 archivos nuevos (899 líneas)
+   - `js/components/guided-tour.js` — Motor centralizado con API `window.GuidedTour`
+   - `js/config/tours.js` — Definiciones de 4 tours (dashboard, publicar, aplicaciones x2)
+   - Fix bug principal: `#dashboard-content` → `#dashboard-trabajador`/`#dashboard-empleador`
+   - Fix selector: `.filtros-container` → `#filtros-avanzados-container`
+   - Fix texto: "Ver Aplicantes" → "Ver Candidatos"
+   - Carga condicional de Intro.js CSS/JS en las 4 páginas
+2. ✅ **Fixes UX iterativos (3 rondas de testing visual):**
+   - Bottom nav visible durante tour → flag `transitioning` + enforcer interval 200ms
+   - Step counter desaparecía → `title` nativo en cada step de Intro.js
+   - Tooltip perdido en containers altos → `scrollTo: 'tooltip'` global
+   - Scroll to top antes de iniciar cualquier tour
+   - CSS: botones compactos, skip como text link, border-radius consistente, prev oculto cuando disabled
 
 ### Sesiones anteriores
+- **Sesión 4 (03/02/26):** OB1 - CSS externalizado login/register, mejoras UX registro
 - **Sesión 3 (03/02/26):** Cards compactas móvil, filtros reestructurados, chips de fecha
 - **Sesión 2 (03/02/26):** Fix headers inconsistentes (centralizar CSS en design-system.css)
 - **Sesión 1:** Plan de refactorización + Sprint G1-G6 completo
@@ -373,8 +373,8 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **GT1** - Centralizar guided tours / coach marks (tours existentes rotos)
-2. **Task 33** - Error states y validaciones
+1. **Task 33** - Error states y validaciones
+2. **Task 35** - Accesibilidad WCAG 2.1 AA
 3. **Tasks 37-39** - Performance y PWA
 4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
@@ -388,4 +388,4 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.3
+**Versión documento:** 3.4
