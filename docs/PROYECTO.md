@@ -314,6 +314,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | [REGLAS_DESARROLLO.md](REGLAS_DESARROLLO.md) | Estándares de código y buenas prácticas |
 | [PLAN_REFACTORIZACION.md](PLAN_REFACTORIZACION.md) | Plan actual de limpieza de código |
 | [PLAN_GUIDED_TOURS.md](PLAN_GUIDED_TOURS.md) | Plan GT1: Centralizar guided tours (completado 04/02/26) |
+| [PLAN_REFACTORIZACION_JS.md](PLAN_REFACTORIZACION_JS.md) | Plan de modularización JS: 7 archivos >500 líneas → ~35 módulos |
 
 ---
 
