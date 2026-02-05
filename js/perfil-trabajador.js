@@ -8,6 +8,7 @@ import { auth, db, storage } from './config/firebase-init.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { doc, getDoc, setDoc, collection, query, where, getDocs, orderBy, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
 
 // Variables globales
 let perfilData = {};
@@ -1118,36 +1119,9 @@ function mostrarListaResenas(resenas) {
     });
 }
 
-function generarEstrellasHTML(puntuacion) {
-    let html = '';
-    for (let i = 1; i <= 5; i++) {
-        if (i <= puntuacion) {
-            html += '<span class="estrella-filled">★</span>';
-        } else {
-            html += '<span class="estrella-empty">☆</span>';
-        }
-    }
-    return html;
-}
-
+// Alias para compatibilidad
 function formatearFechaRelativa(timestamp) {
-    if (!timestamp) return 'Reciente';
-
-    try {
-        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        const ahora = new Date();
-        const diff = ahora - fecha;
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-        if (dias === 0) return 'Hoy';
-        if (dias === 1) return 'Ayer';
-        if (dias < 7) return `Hace ${dias} días`;
-        if (dias < 30) return `Hace ${Math.floor(dias / 7)} semana${Math.floor(dias / 7) > 1 ? 's' : ''}`;
-
-        return fecha.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
-    } catch (error) {
-        return 'Reciente';
-    }
+    return formatearFecha(timestamp, 'relativo');
 }
 
 // ============================================

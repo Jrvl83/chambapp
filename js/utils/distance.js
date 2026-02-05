@@ -58,5 +58,3 @@ export function formatearDistancia(km) {
     }
     return `${km} km`;
 }
-
-console.log('✅ Modulo distance.js cargado');

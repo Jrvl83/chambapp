@@ -19,6 +19,7 @@ import {
     serverTimestamp,
     Timestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { formatearFecha } from './utils/formatting.js';
 
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
@@ -219,12 +220,6 @@ function getAccionesHTML(id, estado, titulo, vacantes) {
         default:
             return '';
     }
-}
-
-function formatearFecha(timestamp) {
-    if (!timestamp) return '';
-    const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return fecha.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 // ============================================

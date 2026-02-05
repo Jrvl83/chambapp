@@ -1,12 +1,13 @@
 // ============================================
 // MIS APLICACIONES - TRABAJADOR
 // ChambApp - Task 21: Ver estado de postulaciones
-// Actualizado: 19 Enero 2026
+// Actualizado: 04 Febrero 2026
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, orderBy, addDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { formatearFecha } from './utils/formatting.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -299,28 +300,6 @@ function crearAplicacionCard(aplicacion) {
             </div>
         </div>
     `;
-}
-
-// ============================================
-// FORMATEAR FECHA
-// ============================================
-function formatearFecha(timestamp) {
-    if (!timestamp) return 'Reciente';
-
-    try {
-        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-
-        const opciones = {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        };
-
-        return fecha.toLocaleDateString('es-PE', opciones);
-    } catch (error) {
-        console.error('Error al formatear fecha:', error);
-        return 'Reciente';
-    }
 }
 
 // ============================================

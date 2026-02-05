@@ -1,7 +1,7 @@
 // ============================================
 // MIS APLICACIONES - EMPLEADOR (Ver Candidatos)
 // ChambApp - Task 21: Aceptar/Rechazar + WhatsApp
-// Actualizado: 19 Enero 2026
+// Actualizado: 04 Febrero 2026
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -19,6 +19,7 @@ import {
     serverTimestamp,
     runTransaction
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -1069,29 +1070,6 @@ function getCategoriaLabel(categoria) {
     return labels[categoria] || categoria || '📦 Sin categoría';
 }
 
-function formatearFecha(timestamp) {
-    if (!timestamp) return 'Reciente';
-
-    try {
-        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        const ahora = new Date();
-        const diff = ahora - fecha;
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-        if (dias === 0) return 'Hoy';
-        if (dias === 1) return 'Ayer';
-        if (dias < 7) return `Hace ${dias} días`;
-
-        return fecha.toLocaleDateString('es-PE', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        });
-    } catch (error) {
-        return 'Reciente';
-    }
-}
-
 // ============================================
 // VER DETALLE DE CALIFICACIONES DEL TRABAJADOR
 // ============================================
@@ -1221,27 +1199,9 @@ function cerrarModalDetalleCalificaciones() {
     }
 }
 
-function generarEstrellasHTML(puntuacion) {
-    let html = '';
-    const puntuacionRedondeada = Math.round(puntuacion);
-    for (let i = 1; i <= 5; i++) {
-        if (i <= puntuacionRedondeada) {
-            html += '<span class="estrella-filled">★</span>';
-        } else {
-            html += '<span class="estrella-empty">☆</span>';
-        }
-    }
-    return html;
-}
-
+// Alias para mantener compatibilidad con código que usa formatearFechaCalificacion
 function formatearFechaCalificacion(timestamp) {
-    if (!timestamp) return 'Reciente';
-    try {
-        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        return fecha.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
-    } catch (error) {
-        return 'Reciente';
-    }
+    return formatearFecha(timestamp, 'absoluto');
 }
 
 // ============================================

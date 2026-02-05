@@ -7,6 +7,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, updateDoc, addDoc, deleteDoc, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
+import { formatearFecha } from '../utils/formatting.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 
 // Usar window.firebaseConfig (arquitectura original)
@@ -891,12 +892,6 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
 }
 
 // Función cargarEstadisticas removida - ahora usamos cargarEstadisticasTrabajador y cargarDashboardEmpleador
-
-function formatearFecha(timestamp) {
-    if (!timestamp) return '';
-    const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return fecha.toLocaleDateString('es-PE');
-}
 
 // ========================================
 // VERIFICAR SI HAY OFERTA PENDIENTE DE ABRIR

@@ -6,6 +6,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -214,27 +215,6 @@ function crearCardCalificacion(cal) {
             ` : ''}
         </div>
     `;
-}
-
-// ============================================
-// HELPERS
-// ============================================
-function generarEstrellasHTML(puntuacion) {
-    let html = '';
-    for (let i = 1; i <= 5; i++) {
-        html += i <= puntuacion ? '<span class="estrella-filled">★</span>' : '<span class="estrella-empty">☆</span>';
-    }
-    return html;
-}
-
-function formatearFecha(timestamp) {
-    if (!timestamp) return 'Reciente';
-    try {
-        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-        return fecha.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
-    } catch (error) {
-        return 'Reciente';
-    }
 }
 
 // ============================================
