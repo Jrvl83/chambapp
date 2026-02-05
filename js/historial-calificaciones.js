@@ -243,5 +243,3 @@ function formatearFecha(timestamp) {
 window.cambiarTab = cambiarTab;
 window.aplicarFiltros = aplicarFiltros;
 window.limpiarFiltros = limpiarFiltros;
-
-console.log('✅ Historial de Calificaciones (Task 16) cargado correctamente');

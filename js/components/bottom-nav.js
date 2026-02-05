@@ -60,8 +60,6 @@
 
         // Add ripple effect listeners
         setupRippleEffects();
-
-        console.log('📱 Bottom Navigation initialized');
     }
 
     // ============================================

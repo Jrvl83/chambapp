@@ -169,7 +169,6 @@ async function cargarRatingsTrabajadores(aplicaciones) {
             }
         }
 
-        console.log('✅ Ratings de trabajadores cargados:', Object.keys(trabajadoresRatings).length);
     } catch (error) {
         console.error('Error al cargar ratings de trabajadores:', error);
     }
@@ -961,8 +960,6 @@ async function actualizarPromedioTrabajador(trabajadorId, nuevaPuntuacion) {
             distribucionCalificaciones: distribucion
         });
 
-        console.log(`✅ Promedio actualizado: ${nuevoPromedio} (${nuevoTotal} calificaciones)`);
-
     } catch (error) {
         console.error('Error al actualizar promedio:', error);
         // No lanzar error - la calificacion ya se guardo
@@ -1269,5 +1266,3 @@ window.cerrarModalDetalleCalificaciones = cerrarModalDetalleCalificaciones;
 // INICIALIZACIÓN
 // ============================================
 cargarAplicaciones();
-
-console.log('✅ Mis Aplicaciones - Empleador (Task 21) cargado correctamente');

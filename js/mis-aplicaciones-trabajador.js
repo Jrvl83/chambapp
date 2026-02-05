@@ -55,8 +55,6 @@ function escaparParaHTML(str) {
 // ============================================
 async function cargarAplicaciones() {
     try {
-        console.log('🔄 Cargando aplicaciones del trabajador:', usuario.email);
-
         const q = query(
             collection(db, 'aplicaciones'),
             where('aplicanteEmail', '==', usuario.email),
@@ -64,7 +62,6 @@ async function cargarAplicaciones() {
         );
 
         const querySnapshot = await getDocs(q);
-        console.log('📦 Aplicaciones encontradas:', querySnapshot.size);
 
         document.getElementById('loading-screen').style.display = 'none';
 
@@ -95,8 +92,6 @@ async function cargarAplicaciones() {
         // Mostrar aplicaciones
         aplicacionesFiltradas = [...todasLasAplicaciones];
         mostrarAplicaciones(aplicacionesFiltradas);
-
-        console.log('✅ Aplicaciones cargadas correctamente');
 
     } catch (error) {
         console.error('❌ Error al cargar aplicaciones:', error);
@@ -780,8 +775,6 @@ async function actualizarPromedioEmpleador(empleadorId, nuevaPuntuacion) {
             distribucionCalificaciones: distribucion
         });
 
-        console.log(`✅ Promedio empleador actualizado: ${nuevoPromedio} (${nuevoTotal} calificaciones)`);
-
     } catch (error) {
         console.error('Error al actualizar promedio empleador:', error);
     }
@@ -852,5 +845,3 @@ window.enviarCalificacionEmpleador = enviarCalificacionEmpleador;
 // INICIALIZACIÓN
 // ============================================
 cargarAplicaciones();
-
-console.log('✅ Mis Aplicaciones - Trabajador (Task 21) cargado correctamente');
