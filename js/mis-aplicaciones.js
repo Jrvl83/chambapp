@@ -16,7 +16,8 @@ import {
     getDoc,
     updateDoc,
     addDoc,
-    serverTimestamp
+    serverTimestamp,
+    runTransaction
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Inicializar Firebase
@@ -53,6 +54,7 @@ if (usuario.tipo !== 'empleador') {
 let todasLasAplicaciones = [];
 let filtroEstadoActual = '';
 let trabajadoresRatings = {}; // Cache de ratings de trabajadores
+let ofertasCache = {}; // Cache de datos de ofertas (vacantes, aceptadosCount)
 
 // Función para escapar comillas en strings para onclick
 function escaparParaHTML(str) {
@@ -96,8 +98,11 @@ async function cargarAplicaciones() {
             todasLasAplicaciones.push(aplicacion);
         });
 
-        // Cargar ratings de los trabajadores
-        await cargarRatingsTrabajadores(todasLasAplicaciones);
+        // Cargar ratings de los trabajadores y datos de ofertas en paralelo
+        await Promise.all([
+            cargarRatingsTrabajadores(todasLasAplicaciones),
+            cargarDatosOfertas(todasLasAplicaciones)
+        ]);
 
         // Mostrar aplicaciones
         mostrarAplicaciones(todasLasAplicaciones);
@@ -167,6 +172,30 @@ async function cargarRatingsTrabajadores(aplicaciones) {
         console.log('✅ Ratings de trabajadores cargados:', Object.keys(trabajadoresRatings).length);
     } catch (error) {
         console.error('Error al cargar ratings de trabajadores:', error);
+    }
+}
+
+// ============================================
+// CARGAR DATOS DE OFERTAS (vacantes, aceptadosCount)
+// ============================================
+async function cargarDatosOfertas(aplicaciones) {
+    try {
+        const ofertaIdsUnicos = [...new Set(aplicaciones.map(a => a.ofertaId).filter(Boolean))];
+        if (ofertaIdsUnicos.length === 0) return;
+
+        for (const ofertaId of ofertaIdsUnicos) {
+            const ofertaSnap = await getDoc(doc(db, 'ofertas', ofertaId));
+            if (ofertaSnap.exists()) {
+                const data = ofertaSnap.data();
+                ofertasCache[ofertaId] = {
+                    vacantes: data.vacantes || 1,
+                    aceptadosCount: data.aceptadosCount || 0,
+                    estado: data.estado || 'activa'
+                };
+            }
+        }
+    } catch (error) {
+        console.error('Error al cargar datos de ofertas:', error);
     }
 }
 
@@ -252,10 +281,18 @@ function mostrarAplicaciones(aplicaciones) {
 function crearGrupoOferta(ofertaId, grupo) {
     const categoriaLabel = getCategoriaLabel(grupo.categoria);
     const cantidadAplicantes = grupo.aplicaciones.length;
+    const ofertaInfo = ofertasCache[ofertaId] || {};
+    const vacantes = ofertaInfo.vacantes || 1;
+    const aceptadosCount = ofertaInfo.aceptadosCount || 0;
+
+    // Badge de vacantes (solo si hay más de 1)
+    const vacantesHTML = vacantes > 1
+        ? `<span class="oferta-vacantes-badge">${aceptadosCount}/${vacantes} vacantes cubiertas</span>`
+        : '';
 
     let aplicacionesHTML = '';
     grupo.aplicaciones.forEach(aplicacion => {
-        aplicacionesHTML += crearAplicacionCard(aplicacion);
+        aplicacionesHTML += crearAplicacionCard(aplicacion, ofertaId);
     });
 
     return `
@@ -266,6 +303,7 @@ function crearGrupoOferta(ofertaId, grupo) {
                     <div class="oferta-grupo-meta">
                         <span class="oferta-categoria-badge">${categoriaLabel}</span>
                         <span class="oferta-aplicantes-count">👥 ${cantidadAplicantes} postulante${cantidadAplicantes !== 1 ? 's' : ''}</span>
+                        ${vacantesHTML}
                     </div>
                 </div>
             </div>
@@ -279,7 +317,7 @@ function crearGrupoOferta(ofertaId, grupo) {
 // ============================================
 // CREAR CARD DE APLICACIÓN
 // ============================================
-function crearAplicacionCard(aplicacion) {
+function crearAplicacionCard(aplicacion, ofertaId) {
     const estado = aplicacion.estado || 'pendiente';
     const estadoBadge = crearBadgeEstado(estado);
 
@@ -290,6 +328,12 @@ function crearAplicacionCard(aplicacion) {
     const fecha = formatearFecha(aplicacion.fechaAplicacion);
     const tituloOferta = aplicacion.ofertaTitulo || 'Sin título';
 
+    // Datos de vacantes de la oferta
+    const ofertaInfo = ofertasCache[ofertaId] || {};
+    const vacantes = ofertaInfo.vacantes || 1;
+    const aceptadosCount = ofertaInfo.aceptadosCount || 0;
+    const vacantesLlenas = aceptadosCount >= vacantes;
+
     // Escapar para uso en onclick
     const nombreEscapado = escaparParaHTML(nombre);
     const tituloEscapado = escaparParaHTML(tituloOferta);
@@ -299,15 +343,27 @@ function crearAplicacionCard(aplicacion) {
     let botonesAccion = '';
 
     if (estado === 'pendiente') {
-        // Botones para estado pendiente: Aceptar y Rechazar
-        botonesAccion = `
-            <button class="btn btn-success btn-sm" onclick="aceptarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
-                ✅ Aceptar
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
-                ❌ Rechazar
-            </button>
-        `;
+        if (vacantesLlenas) {
+            // Todas las vacantes cubiertas, no se puede aceptar más
+            botonesAccion = `
+                <div class="estado-final">
+                    <span class="texto-rechazado">Vacantes cubiertas</span>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
+                    ❌ Rechazar
+                </button>
+            `;
+        } else {
+            // Botones para estado pendiente: Aceptar y Rechazar
+            botonesAccion = `
+                <button class="btn btn-success btn-sm" onclick="aceptarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
+                    ✅ Aceptar
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
+                    ❌ Rechazar
+                </button>
+            `;
+        }
     } else if (estado === 'aceptado') {
         // Botones para estado aceptado: WhatsApp, Llamar, Marcar Completado
         const mensajeWhatsApp = encodeURIComponent(
@@ -441,52 +497,92 @@ function crearBadgeEstado(estado) {
 // ============================================
 async function aceptarAplicacion(aplicacionId, nombreTrabajador) {
     const confirmar = confirm(`¿Deseas ACEPTAR la postulación de ${nombreTrabajador}?\n\nPodrás contactarlo por WhatsApp o teléfono.`);
-
     if (!confirmar) return;
 
     try {
-        // Obtener la aplicación para conseguir el ofertaId
         const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
+        if (!aplicacion) return;
 
-        // Actualizar estado de la aplicación
-        const aplicacionRef = doc(db, 'aplicaciones', aplicacionId);
-        await updateDoc(aplicacionRef, {
+        // Primero la transaction (atómica, puede fallar por conflicto)
+        const resultado = await actualizarOfertaAlAceptar(aplicacion, nombreTrabajador);
+
+        // Solo si la transaction fue exitosa, marcar la aplicación
+        await updateDoc(doc(db, 'aplicaciones', aplicacionId), {
             estado: 'aceptado',
             fechaAceptacion: serverTimestamp()
         });
 
-        // Actualizar estado de la oferta a 'en_curso' (ya no acepta más postulaciones)
-        if (aplicacion && aplicacion.ofertaId) {
-            const ofertaRef = doc(db, 'ofertas', aplicacion.ofertaId);
-            await updateDoc(ofertaRef, {
-                estado: 'en_curso',
-                trabajadorAceptadoId: aplicacion.trabajadorId,
-                trabajadorAceptadoNombre: nombreTrabajador,
-                fechaAceptacion: serverTimestamp()
-            });
-        }
+        // Toast con contexto de vacantes
+        const mensaje = resultado.vacantes > 1
+            ? `¡Aceptado! ${resultado.aceptadosCount} de ${resultado.vacantes} vacantes cubiertas`
+            : `¡Postulación de ${nombreTrabajador} aceptada!`;
 
         if (typeof toastSuccess === 'function') {
-            toastSuccess(`¡Postulación de ${nombreTrabajador} aceptada!`);
-        } else {
-            alert(`¡Postulación de ${nombreTrabajador} aceptada!`);
+            toastSuccess(mensaje);
         }
 
-        // Actualizar la UI
-        if (aplicacion) {
-            aplicacion.estado = 'aceptado';
+        // Actualizar cache y UI
+        aplicacion.estado = 'aceptado';
+        if (ofertasCache[aplicacion.ofertaId]) {
+            ofertasCache[aplicacion.ofertaId].aceptadosCount = resultado.aceptadosCount;
         }
         mostrarAplicaciones(todasLasAplicaciones);
         actualizarEstadisticas();
-
     } catch (error) {
         console.error('Error al aceptar aplicación:', error);
         if (typeof toastError === 'function') {
-            toastError('Error al aceptar la postulación');
-        } else {
-            alert('Error al aceptar la postulación');
+            const msg = error.message === 'No hay vacantes disponibles'
+                ? 'Las vacantes ya fueron cubiertas'
+                : 'Error al aceptar la postulación';
+            toastError(msg);
         }
     }
+}
+
+// Helper: transaction atómica para actualizar oferta al aceptar
+async function actualizarOfertaAlAceptar(aplicacion, nombreTrabajador) {
+    const ofertaRef = doc(db, 'ofertas', aplicacion.ofertaId);
+
+    return await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(ofertaRef);
+        const data = snap.data();
+        const vacantes = data.vacantes || 1;
+        const currentCount = data.aceptadosCount || 0;
+
+        // Validar que hay vacantes disponibles
+        if (currentCount >= vacantes) {
+            throw new Error('No hay vacantes disponibles');
+        }
+
+        const nuevoCount = currentCount + 1;
+        const aceptados = data.trabajadoresAceptados || [];
+
+        aceptados.push({
+            id: aplicacion.aplicanteId || aplicacion.trabajadorId,
+            nombre: nombreTrabajador,
+            fechaAceptacion: new Date().toISOString()
+        });
+
+        const updates = {
+            aceptadosCount: nuevoCount,
+            trabajadoresAceptados: aceptados,
+            fechaAceptacion: serverTimestamp()
+        };
+
+        // Si se llenaron todas las vacantes → en_curso
+        if (nuevoCount >= vacantes) {
+            updates.estado = 'en_curso';
+        }
+
+        // Backward compat: mantener campo legacy para ofertas de 1 vacante
+        if (vacantes === 1) {
+            updates.trabajadorAceptadoId = aplicacion.aplicanteId || aplicacion.trabajadorId;
+            updates.trabajadorAceptadoNombre = nombreTrabajador;
+        }
+
+        transaction.update(ofertaRef, updates);
+        return { aceptadosCount: nuevoCount, vacantes };
+    });
 }
 
 // ============================================
@@ -533,49 +629,59 @@ async function rechazarAplicacion(aplicacionId, nombreTrabajador) {
 // ============================================
 async function marcarCompletado(aplicacionId, nombreTrabajador, tituloOferta) {
     const confirmar = confirm(`¿El trabajo "${tituloOferta}" con ${nombreTrabajador} ha sido COMPLETADO?\n\nDespués podrás calificar al trabajador.`);
-
     if (!confirmar) return;
 
     try {
-        // Obtener la aplicación para conseguir el ofertaId
         const aplicacion = todasLasAplicaciones.find(a => a.id === aplicacionId);
 
-        // Actualizar estado de la aplicación
-        const aplicacionRef = doc(db, 'aplicaciones', aplicacionId);
-        await updateDoc(aplicacionRef, {
+        await updateDoc(doc(db, 'aplicaciones', aplicacionId), {
             estado: 'completado',
             fechaCompletado: serverTimestamp()
         });
 
-        // Actualizar estado de la oferta a 'completada'
+        // Verificar si todos los aceptados completaron (para multi-vacante)
         if (aplicacion && aplicacion.ofertaId) {
-            const ofertaRef = doc(db, 'ofertas', aplicacion.ofertaId);
-            await updateDoc(ofertaRef, {
-                estado: 'completada',
-                fechaCompletado: serverTimestamp()
-            });
+            await verificarTodosCompletados(aplicacion.ofertaId, aplicacionId);
         }
 
         if (typeof toastSuccess === 'function') {
             toastSuccess(`¡Trabajo completado! Ahora puedes calificar a ${nombreTrabajador}`);
-        } else {
-            alert(`¡Trabajo completado! Ahora puedes calificar a ${nombreTrabajador}`);
         }
 
-        // Actualizar la UI
         if (aplicacion) {
             aplicacion.estado = 'completado';
         }
         mostrarAplicaciones(todasLasAplicaciones);
         actualizarEstadisticas();
-
     } catch (error) {
         console.error('Error al marcar como completado:', error);
         if (typeof toastError === 'function') {
             toastError('Error al marcar como completado');
-        } else {
-            alert('Error al marcar como completado');
         }
+    }
+}
+
+// Helper: verificar si todos los trabajadores aceptados completaron
+async function verificarTodosCompletados(ofertaId, aplicacionRecienCompletadaId) {
+    const appsQuery = query(
+        collection(db, 'aplicaciones'),
+        where('ofertaId', '==', ofertaId),
+        where('estado', 'in', ['aceptado', 'completado'])
+    );
+    const snap = await getDocs(appsQuery);
+
+    // Guard: si no hay aplicaciones aceptadas/completadas, no marcar la oferta
+    if (snap.empty) return;
+
+    const todosCompletados = snap.docs.every(d =>
+        d.id === aplicacionRecienCompletadaId || d.data().estado === 'completado'
+    );
+
+    if (todosCompletados) {
+        await updateDoc(doc(db, 'ofertas', ofertaId), {
+            estado: 'completada',
+            fechaCompletado: serverTimestamp()
+        });
     }
 }
 

@@ -147,7 +147,7 @@ function renderizarOfertas(ofertas) {
         }
 
         const estadoBadge = getEstadoBadge(estadoReal);
-        const acciones = getAccionesHTML(oferta.id, estadoReal, oferta.titulo);
+        const acciones = getAccionesHTML(oferta.id, estadoReal, oferta.titulo, oferta.vacantes || 1);
         const fechaMostrar = formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion);
 
         const ubicacion = typeof oferta.ubicacion === 'object'
@@ -172,6 +172,7 @@ function renderizarOfertas(ofertas) {
                     <div class="oferta-meta">
                         <span>📍 ${ubicacion}</span>
                         <span>💰 ${oferta.salario || 'No especificado'}</span>
+                        ${(oferta.vacantes || 1) > 1 ? `<span>👥 ${oferta.aceptadosCount || 0}/${oferta.vacantes} aceptados</span>` : ''}
                     </div>
                     <div class="oferta-acciones">
                         ${acciones}
@@ -192,8 +193,9 @@ function getEstadoBadge(estado) {
     return badges[estado] || estado;
 }
 
-function getAccionesHTML(id, estado, titulo) {
+function getAccionesHTML(id, estado, titulo, vacantes) {
     const tituloEscapado = titulo.replace(/'/g, "\\'");
+    vacantes = vacantes || 1;
 
     switch (estado) {
         case 'activa':
@@ -203,7 +205,7 @@ function getAccionesHTML(id, estado, titulo) {
             `;
         case 'en_curso':
             return `
-                <a href="mis-aplicaciones.html" class="btn-accion">👥 Ver candidato</a>
+                <a href="mis-aplicaciones.html" class="btn-accion">👥 Ver candidato${vacantes > 1 ? 's' : ''}</a>
             `;
         case 'completada':
             return `
@@ -230,7 +232,7 @@ function formatearFecha(timestamp) {
 // ============================================
 
 window.editarOferta = function(id) {
-    window.location.href = `publicar-oferta.html?id=${id}`;
+    window.location.href = `/publicar-oferta.html?id=${id}`;
 };
 
 window.eliminarOferta = function(id, titulo) {
@@ -280,7 +282,9 @@ window.renovarOferta = async function(id) {
         await updateDoc(doc(db, 'ofertas', id), {
             estado: 'activa',
             fechaExpiracion: Timestamp.fromDate(nuevaExpiracion),
-            fechaActualizacion: serverTimestamp()
+            fechaActualizacion: serverTimestamp(),
+            aceptadosCount: 0,
+            trabajadoresAceptados: []
         });
 
         toastSuccess('Oferta renovada por 14 dias');

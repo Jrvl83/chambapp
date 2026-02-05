@@ -200,6 +200,14 @@
     opacity: 0.9;
 }
 
+.oferta-vacantes-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm, 8px);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
 .oferta-grupo-aplicaciones {
     padding: 1rem;
     display: flex;

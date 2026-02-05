@@ -1494,12 +1494,8 @@ function actualizarReviewFotos() {
 
 // ============================================
 // CARGAR DATOS SI ESTÁ EN MODO EDICIÓN
+// (Se ejecuta después de inicializarUbicacion en la sección de INICIALIZACION)
 // ============================================
-if (modoEdicion) {
-    cargarOfertaParaEditar(ofertaId);
-} else if (modoReutilizar) {
-    cargarOfertaParaEditar(reutilizarId);
-}
 
 async function cargarOfertaParaEditar(id) {
     try {
@@ -1550,7 +1546,13 @@ async function cargarOfertaParaEditar(id) {
         document.getElementById('salario').value = oferta.salario || '';
         document.getElementById('duracion').value = oferta.duracion === 'No especificada' ? '' : oferta.duracion || '';
         document.getElementById('horario').value = oferta.horario === 'No especificado' ? '' : oferta.horario || '';
-        
+
+        // Vacantes
+        const vacantesInput = document.getElementById('vacantes');
+        if (vacantesInput) {
+            vacantesInput.value = oferta.vacantes || 1;
+        }
+
         // Campos opcionales del paso 3
         if (oferta.experiencia && oferta.experiencia !== 'No especificada') {
             document.getElementById('experiencia').value = oferta.experiencia;
@@ -1748,8 +1750,18 @@ function validateStep(step) {
         } else {
             hideError('salario');
         }
+
+        // Validar vacantes
+        const vacantes = document.getElementById('vacantes');
+        const vacantesVal = parseInt(vacantes.value) || 0;
+        if (vacantesVal < 1 || vacantesVal > 20) {
+            showError('vacantes', 'Las vacantes deben ser entre 1 y 20');
+            isValid = false;
+        } else {
+            hideError('vacantes');
+        }
     }
-    
+
     // Paso 3 y 4 son opcionales
     
     return isValid;
@@ -1829,9 +1841,16 @@ async function updateReviewSection() {
         duracion || 'No especificado';
     
     const horario = document.getElementById('horario').value;
-    document.getElementById('review-horario').textContent = 
+    document.getElementById('review-horario').textContent =
         horario || 'No especificado';
-    
+
+    const vacantesInput = document.getElementById('vacantes');
+    const vacantesValue = vacantesInput ? parseInt(vacantesInput.value) || 1 : 1;
+    const reviewVacantes = document.getElementById('review-vacantes');
+    if (reviewVacantes) {
+        reviewVacantes.textContent = vacantesValue === 1 ? '1 persona' : `${vacantesValue} personas`;
+    }
+
     // Requisitos
     const experienciaSelect = document.getElementById('experiencia');
     const experienciaValue = experienciaSelect.value;
@@ -1907,7 +1926,8 @@ formOferta.addEventListener('submit', async (e) => {
             requisitosAdicionales: document.getElementById('requisitos-adicionales').value.trim() || 'Ninguno',
             requiereHerramientas: document.getElementById('herramientas').checked,
             requiereTransporte: document.getElementById('transporte').checked,
-            requiereEquipos: document.getElementById('equipos').checked
+            requiereEquipos: document.getElementById('equipos').checked,
+            vacantes: parseInt(document.getElementById('vacantes').value) || 1
         };
         
         if (modoEdicion) {
@@ -1931,7 +1951,19 @@ formOferta.addEventListener('submit', async (e) => {
             // Eliminar fotos marcadas
             await eliminarFotosMarcadas();
 
+            // Validar vacantes no menor que aceptados actuales
             const docRef = doc(db, 'ofertas', ofertaId);
+            const ofertaActual = await getDoc(docRef);
+            if (ofertaActual.exists()) {
+                const aceptadosActuales = ofertaActual.data().aceptadosCount || 0;
+                if (ofertaData.vacantes < aceptadosActuales) {
+                    ofertaData.vacantes = aceptadosActuales;
+                    if (typeof toastInfo === 'function') {
+                        toastInfo(`Vacantes ajustadas a ${aceptadosActuales} (ya hay trabajadores aceptados)`);
+                    }
+                }
+            }
+
             await updateDoc(docRef, {
                 ...ofertaData,
                 imagenesURLs: imagenesURLs,
@@ -1959,6 +1991,8 @@ formOferta.addEventListener('submit', async (e) => {
                 fechaCreacion: serverTimestamp(),
                 fechaExpiracion: Timestamp.fromDate(fechaExpiracion),
                 aplicaciones: 0,
+                aceptadosCount: 0,
+                trabajadoresAceptados: [],
                 imagenesURLs: [] // Se actualizará después de subir fotos
             };
 
@@ -2008,8 +2042,19 @@ formOferta.addEventListener('submit', async (e) => {
 // INICIALIZACION
 // ============================================
 showStep(currentStep);
-inicializarUbicacion();
 inicializarFotos(); // G6: Sistema de fotos
+
+// Inicializar ubicación y luego cargar datos si es modo edición/reutilizar
+(async () => {
+    await inicializarUbicacion();
+
+    // Cargar datos de oferta DESPUÉS de que los combos estén listos
+    if (modoEdicion) {
+        await cargarOfertaParaEditar(ofertaId);
+    } else if (modoReutilizar) {
+        await cargarOfertaParaEditar(reutilizarId);
+    }
+})();
 
 // Inicializar Google Maps y Autocomplete (con delay para mejor UX)
 setTimeout(async () => {

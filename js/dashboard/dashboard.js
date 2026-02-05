@@ -880,6 +880,7 @@ function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
                     <span class='detalle detalle-salario'>💰 ${oferta.salario}</span>
                     <span class='detalle'>📍 ${ubicacionTexto}</span>
                     ${distanciaBadge}
+                    ${(oferta.vacantes || 1) > 1 ? `<span class='detalle'>👥 ${oferta.vacantes} vacantes</span>` : ''}
                 </div>
                 <div class='oferta-footer'>
                     ${footerHTML}
@@ -1740,7 +1741,7 @@ window.editarOferta = function(ofertaId) {
     document.querySelectorAll('.oferta-menu.active').forEach(menu => {
         menu.classList.remove('active');
     });
-    window.location.href = `publicar-oferta.html?id=${ofertaId}`;
+    window.location.href = `/publicar-oferta.html?id=${ofertaId}`;
 };
 
 /**

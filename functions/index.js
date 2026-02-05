@@ -226,15 +226,32 @@ exports.marcarOfertasCaducadas = functions
 
             // Batch update (max 500 por batch)
             const batch = db.batch();
-            snapshot.docs.forEach(doc => {
-                batch.update(doc.ref, {
-                    estado: 'caducada',
-                    fechaCaducidad: admin.firestore.FieldValue.serverTimestamp()
-                });
+            let caducadas = 0;
+            let enCurso = 0;
+
+            snapshot.docs.forEach(docSnap => {
+                const data = docSnap.data();
+                const aceptadosCount = data.aceptadosCount || 0;
+
+                if (aceptadosCount > 0) {
+                    // Tiene trabajadores aceptados: pasar a en_curso (siguen trabajando)
+                    batch.update(docSnap.ref, {
+                        estado: 'en_curso',
+                        fechaCaducidad: admin.firestore.FieldValue.serverTimestamp()
+                    });
+                    enCurso++;
+                } else {
+                    // Sin aceptados: caducar normalmente
+                    batch.update(docSnap.ref, {
+                        estado: 'caducada',
+                        fechaCaducidad: admin.firestore.FieldValue.serverTimestamp()
+                    });
+                    caducadas++;
+                }
             });
 
             await batch.commit();
-            console.log(`${snapshot.size} ofertas marcadas como caducadas`);
+            console.log(`${caducadas} ofertas caducadas, ${enCurso} pasadas a en_curso (con aceptados)`);
 
             return null;
 

@@ -414,6 +414,7 @@ function mostrarPreviewOferta(oferta) {
             <span class="preview-detalle">&#128176; ${oferta.data.salario || 'A convenir'}</span>
             <span class="preview-detalle">&#128205; ${ubicacionTexto}</span>
             ${distanciaBadge}
+            ${(oferta.data.vacantes || 1) > 1 ? `<span class="preview-detalle">👥 ${oferta.data.vacantes} vacantes</span>` : ''}
         </div>
         <div class="preview-acciones">
             <button class="btn btn-secondary" onclick="cerrarPreview()">Cerrar</button>
@@ -657,6 +658,12 @@ window.verDetalleOferta = async function(ofertaId) {
                     <strong>🕐 Horario</strong>
                     <span>${ofertaData.horario || 'No especificado'}</span>
                 </div>
+                ${(ofertaData.vacantes || 1) > 1 ? `
+                <div class="detalle-item">
+                    <strong>👥 Vacantes</strong>
+                    <span>${ofertaData.vacantes} personas</span>
+                </div>
+                ` : ''}
             </div>
 
             <div class="detalle-seccion">
