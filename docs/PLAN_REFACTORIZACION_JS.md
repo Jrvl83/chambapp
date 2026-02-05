@@ -93,11 +93,12 @@ js/utils/
 
 ```
 js/publicar-oferta/
-├── index.js             # Orquestador principal (~100 líneas)
-├── form-navigation.js   # Steps, validación, progreso (~150 líneas)
-├── ubicacion.js         # RENIEC + Google Maps + autocomplete (~300 líneas)
-├── fotos.js             # Upload, preview, galería (~200 líneas)
-└── submit.js            # Crear/editar/reutilizar oferta (~150 líneas)
+├── index.js                  # Orquestador principal (159 líneas) ✅
+├── form-navigation.js        # Steps, validación, progreso (359 líneas) ✅
+├── ubicacion.js              # Estado UBIGEO + cascading (413 líneas) ✅
+├── google-maps-ubicacion.js  # Google Maps + autocomplete (366 líneas) ✅
+├── fotos.js                  # Upload, preview, galería (346 líneas) ✅
+└── submit.js                 # Crear/editar/reutilizar (272 líneas) ✅
 
 js/dashboard/
 ├── index.js             # Orquestador principal (~100 líneas)
@@ -258,35 +259,33 @@ Se creará cuando haya necesidad de reutilización en otros formularios.
 
 ---
 
-### FASE 3: Dividir publicar-oferta.js (1-2 sesiones)
-> **Archivo más grande: 2,067 líneas → 5 módulos**
+### FASE 3: Dividir publicar-oferta.js (1-2 sesiones) ✅ COMPLETADA
+> **Archivo más grande: 2,002 líneas → 6 módulos**
 
 #### Estructura final:
 ```
 js/publicar-oferta/
-├── index.js             # Imports + inicialización (~100 líneas)
-├── form-navigation.js   # showStep, validateStep, progress (~150 líneas)
-├── ubicacion.js         # RENIEC combos + Google Maps preview (~300 líneas)
-├── fotos.js             # Upload, preview, eliminar (~200 líneas)
-└── submit.js            # Crear/editar/reutilizar + review section (~200 líneas)
+├── index.js                  # Orquestador principal (159 líneas) ✅
+├── form-navigation.js        # showStep, validateStep, counters (359 líneas) ✅
+├── ubicacion.js              # Estado UBIGEO + cascading (413 líneas) ✅
+├── google-maps-ubicacion.js  # Google Maps + autocomplete + geocoding (366 líneas) ✅
+├── fotos.js                  # Upload, preview, eliminar (346 líneas) ✅
+└── submit.js                 # Crear/editar/reutilizar (272 líneas) ✅
 ```
 
-#### Pasos:
-1. Crear carpeta `js/publicar-oferta/`
-2. Extraer `form-navigation.js` (funciones showStep, validateStep, updateProgress)
-3. Extraer `ubicacion.js` (todo lo relacionado con RENIEC y Google Maps)
-4. Extraer `fotos.js` (sistema G6 de fotos)
-5. Extraer `submit.js` (manejo del formulario y submit)
-6. Crear `index.js` que orqueste todo
-7. Actualizar `publicar-oferta.html` para importar desde `index.js`
+**Total:** 1,915 líneas en 6 módulos (todos bajo 500 líneas) ✅
 
-**Commit:** "refactor: Dividir publicar-oferta.js en 5 módulos"
+**Archivos actualizados:**
+- `publicar-oferta.html` → importa `js/publicar-oferta/index.js`
+- `publicar-oferta.js` original puede eliminarse después de testing
 
-**Testing:**
-- Crear nueva oferta
-- Editar oferta existente
-- Reutilizar oferta
-- Verificar fotos, ubicación, validación
+**Commit:** "refactor: Dividir publicar-oferta.js en 6 módulos (Fase 3)"
+
+**Testing:** Pendiente verificación manual
+- [ ] Crear nueva oferta
+- [ ] Editar oferta existente
+- [ ] Reutilizar oferta
+- [ ] Verificar fotos, ubicación, validación
 
 ---
 
@@ -378,27 +377,28 @@ js/components/filtros-avanzados/
 | 0 | chore: Limpiar console.logs y código muerto | 4 archivos |
 | 1 | refactor: Crear módulos utilitarios compartidos | +4 nuevos |
 | 2 | refactor: Crear componentes reutilizables | +3 nuevos |
-| 3 | refactor: Dividir publicar-oferta.js | 1 → 5 |
+| 3 | refactor: Dividir publicar-oferta.js | 1 → 6 |
 | 4 | refactor: Dividir dashboard.js | 1 → 6 |
 | 5 | refactor: Dividir mis-aplicaciones.js | 1 → 5 |
 | 6 | refactor: Dividir mapa-ofertas.js | 1 → 5 |
 | 7 | refactor: Dividir filtros-avanzados.js | 1 → 5 |
 | 8 | refactor: Reducir perfil-trabajador.js | 1 archivo |
 
-**Total:** 7 archivos grandes → ~35 módulos pequeños
+**Total:** 7 archivos grandes → ~38 módulos pequeños
 
 ---
 
 ## MÉTRICAS DE ÉXITO
 
-| Métrica | Antes | Actual (Fase 2) | Meta |
+| Métrica | Antes | Actual (Fase 3) | Meta |
 |---------|-------|-----------------|------|
-| Archivos >500 líneas | 7 | 7 (pendiente Fases 3-8) | 0 |
+| Archivos >500 líneas | 7 | 6 (-1: publicar-oferta dividido) | 0 |
 | Líneas duplicadas | ~800 | ~200 (-600) | <100 |
-| Funciones >30 líneas | 31 | 31 (pendiente Fases 3-8) | <5 |
+| Funciones >30 líneas | 31 | ~25 (reducidas en publicar-oferta) | <5 |
 | Console.logs debug | 18 | 0 ✅ | 0 |
 | Nuevos módulos utils | 0 | 3 (formatting, image-utils, dom-helpers) | 4 |
 | Nuevos componentes | 0 | 2 (oferta-card, rating-input) ✅ | 3 |
+| Módulos publicar-oferta | 1 (2002 líneas) | 6 (1915 líneas, todos <500) ✅ | 6 |
 
 ---
 
@@ -470,4 +470,4 @@ js/components/filtros-avanzados/
 ---
 
 *Plan creado: 04 Febrero 2026*
-*Última actualización: 05 Febrero 2026 - Fase 2 completada*
+*Última actualización: 05 Febrero 2026 - Fase 3 completada*
