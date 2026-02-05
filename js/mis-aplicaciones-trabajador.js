@@ -8,6 +8,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, orderBy, addDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha } from './utils/formatting.js';
+import { RatingInput, inicializarContadorComentario, configurarCierreModal, TEXTOS_ESTRELLAS } from './components/rating-input.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -520,14 +521,16 @@ let calificacionEmpleadorActual = {
     puntuacion: 0
 };
 
-const textosEstrellasEmpleador = {
-    0: 'Selecciona una calificación',
-    1: 'Muy malo',
-    2: 'Malo',
-    3: 'Regular',
-    4: 'Bueno',
-    5: 'Excelente'
-};
+// Usar textos del componente (TEXTOS_ESTRELLAS ya importado)
+// Instancia del componente de rating para calificar empleadores
+const ratingInputEmpleador = new RatingInput({
+    containerId: 'estrellas-input-empleador',
+    textoId: 'estrellas-texto-empleador',
+    btnEnviarId: 'btn-enviar-calificacion-empleador',
+    onSelect: (valor) => {
+        calificacionEmpleadorActual.puntuacion = valor;
+    }
+});
 
 async function calificarEmpleador(aplicacionId, empleadorEmail, nombreEmpleador) {
     try {
@@ -581,43 +584,14 @@ function cerrarModalCalificacionEmpleador() {
     };
 }
 
+// Funciones de estrellas (usando componente reutilizable)
 function seleccionarEstrellaEmpleador(valor) {
-    calificacionEmpleadorActual.puntuacion = valor;
-
-    const estrellas = document.querySelectorAll('#estrellas-input-empleador .estrella');
-    estrellas.forEach((estrella, index) => {
-        if (index < valor) {
-            estrella.classList.add('active');
-            estrella.textContent = '★';
-        } else {
-            estrella.classList.remove('active');
-            estrella.textContent = '☆';
-        }
-    });
-
-    const textoEl = document.getElementById('estrellas-texto-empleador');
-    textoEl.textContent = textosEstrellasEmpleador[valor];
-    textoEl.classList.add('selected');
-
-    document.getElementById('btn-enviar-calificacion-empleador').disabled = false;
+    ratingInputEmpleador.seleccionar(valor);
 }
 
 function resetearEstrellasEmpleador() {
+    ratingInputEmpleador.resetear();
     calificacionEmpleadorActual.puntuacion = 0;
-    const estrellas = document.querySelectorAll('#estrellas-input-empleador .estrella');
-    estrellas.forEach(estrella => {
-        estrella.classList.remove('active', 'hover');
-        estrella.textContent = '☆';
-    });
-
-    const textoEl = document.getElementById('estrellas-texto-empleador');
-    if (textoEl) {
-        textoEl.textContent = textosEstrellasEmpleador[0];
-        textoEl.classList.remove('selected');
-    }
-
-    const btnEnviar = document.getElementById('btn-enviar-calificacion-empleador');
-    if (btnEnviar) btnEnviar.disabled = true;
 }
 
 async function enviarCalificacionEmpleador() {
@@ -759,43 +733,15 @@ async function actualizarPromedioEmpleador(empleadorId, nuevaPuntuacion) {
     }
 }
 
-// Inicializar eventos del modal de calificación
+// Inicializar eventos del modal de calificación (usando componente reutilizable)
 function inicializarEventosCalificacionEmpleador() {
-    const comentarioInput = document.getElementById('cal-emp-comentario');
-    if (comentarioInput) {
-        comentarioInput.addEventListener('input', (e) => {
-            document.getElementById('cal-emp-char-count').textContent = e.target.value.length;
-        });
-    }
+    // Inicializar hover de estrellas (componente)
+    ratingInputEmpleador.inicializarEventos();
 
-    // Hover effect en estrellas
-    const estrellas = document.querySelectorAll('#estrellas-input-empleador .estrella');
-    estrellas.forEach((estrella, index) => {
-        estrella.addEventListener('mouseenter', () => {
-            estrellas.forEach((e, i) => {
-                if (i <= index) {
-                    e.classList.add('hover');
-                    e.textContent = '★';
-                } else {
-                    e.classList.remove('hover');
-                    if (!e.classList.contains('active')) {
-                        e.textContent = '☆';
-                    }
-                }
-            });
-        });
+    // Contador de caracteres del comentario (componente)
+    inicializarContadorComentario('cal-emp-comentario', 'cal-emp-char-count');
 
-        estrella.addEventListener('mouseleave', () => {
-            estrellas.forEach((e, i) => {
-                e.classList.remove('hover');
-                if (!e.classList.contains('active')) {
-                    e.textContent = '☆';
-                }
-            });
-        });
-    });
-
-    // Cerrar modal con ESC
+    // Cierre del modal con ESC (componente) - sin click fuera para evitar duplicados
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             cerrarModalCalificacionEmpleador();

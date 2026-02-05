@@ -216,44 +216,45 @@ export function qs/qsa(selector, parent) { }
 
 ---
 
-### FASE 2: Componentes Reutilizables (1-2 sesiones)
+### FASE 2: Componentes Reutilizables (1-2 sesiones) ✅ COMPLETADA
 > **Objetivo:** Unificar componentes visuales duplicados
 
-#### 2.1 `js/components/oferta-card.js` (~200 líneas)
-Unificar desde: dashboard.js, mapa-ofertas.js, filtros-avanzados.js
+#### 2.1 `js/components/oferta-card.js` (~230 líneas) ✅
+Unificado desde: dashboard.js, mapa-ofertas.js
 
 ```javascript
-export function crearOfertaCard(oferta, opciones = {}) {
-    // opciones: { mostrarDistancia, mostrarVacantes, onClick, compacta }
-}
-export function crearOfertaCardCompacta(oferta) { }
-export function crearOfertaCardMapa(oferta) { }
+export function crearOfertaCardTrabajador(oferta, id, opciones) { }
+export function crearOfertaCardEmpleador(oferta, id, opciones) { }
+export function crearOfertaPreviewMapa(ofertaData, ofertaId, opciones) { }
+export function generarDistanciaBadge(distanciaKm, formatearDistancia, claseBase) { }
 ```
+**Archivos actualizados:** dashboard.js, mapa-ofertas.js
+**Líneas eliminadas:** ~120 líneas duplicadas
 
-#### 2.2 `js/components/rating-display.js` (~100 líneas)
-Unificar desde: mis-aplicaciones.js, perfil-trabajador.js
+#### 2.2 `js/components/rating-input.js` (~200 líneas) ✅
+Unificado desde: mis-aplicaciones.js, mis-aplicaciones-trabajador.js
 
 ```javascript
-export function crearRatingDisplay(rating, totalResenas) { }
-export function crearRatingInput(onChange) { }
-export function crearResenaCard(resena) { }
+export class RatingInput { }
+export function crearRatingInput(sufijo, onSelect) { }
+export function inicializarContadorComentario(inputId, counterId) { }
+export function configurarCierreModal(modalId, cerrarFn) { }
+export const TEXTOS_ESTRELLAS = { }
 ```
+**Archivos actualizados:** mis-aplicaciones.js, mis-aplicaciones-trabajador.js
+**Líneas eliminadas:** ~100 líneas duplicadas
 
-#### 2.3 `js/components/location-selector.js` (~250 líneas)
-Extraer de: publicar-oferta.js
+#### 2.3 `js/components/location-selector.js` ⏭️ POSPUESTO
+El selector de ubicación solo se usa en publicar-oferta.js y ya existe `ubigeo-api.js`.
+Se creará cuando haya necesidad de reutilización en otros formularios.
 
-```javascript
-export class LocationSelector {
-    constructor(containerId, opciones) { }
-    async cargarDepartamentos() { }
-    async cargarProvincias(departamentoId) { }
-    async cargarDistritos(provinciaId) { }
-    getUbicacion() { }
-    setUbicacion(ubicacion) { }
-}
-```
+**Commits:**
+- "refactor: Crear oferta-card.js y actualizar dashboard/mapa"
+- "refactor: Crear rating-input.js y actualizar mis-aplicaciones"
 
-**Commit:** "refactor: Crear componentes reutilizables (oferta-card, rating, location-selector)"
+**Total Fase 2:** ~220 líneas duplicadas eliminadas
+
+**Testing:** Pendiente verificación manual
 
 ---
 
@@ -390,13 +391,14 @@ js/components/filtros-avanzados/
 
 ## MÉTRICAS DE ÉXITO
 
-| Métrica | Antes | Actual (Fase 1) | Meta |
+| Métrica | Antes | Actual (Fase 2) | Meta |
 |---------|-------|-----------------|------|
-| Archivos >500 líneas | 7 | 7 (pendiente Fases 2-8) | 0 |
-| Líneas duplicadas | ~800 | ~420 (-380) | <100 |
-| Funciones >30 líneas | 31 | 31 (pendiente Fases 2-8) | <5 |
+| Archivos >500 líneas | 7 | 7 (pendiente Fases 3-8) | 0 |
+| Líneas duplicadas | ~800 | ~200 (-600) | <100 |
+| Funciones >30 líneas | 31 | 31 (pendiente Fases 3-8) | <5 |
 | Console.logs debug | 18 | 0 ✅ | 0 |
 | Nuevos módulos utils | 0 | 3 (formatting, image-utils, dom-helpers) | 4 |
+| Nuevos componentes | 0 | 2 (oferta-card, rating-input) ✅ | 3 |
 
 ---
 
@@ -468,4 +470,4 @@ js/components/filtros-avanzados/
 ---
 
 *Plan creado: 04 Febrero 2026*
-*Última actualización: 04 Febrero 2026*
+*Última actualización: 05 Febrero 2026 - Fase 2 completada*

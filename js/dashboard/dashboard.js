@@ -9,6 +9,7 @@ import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, g
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 import { formatearFecha } from '../utils/formatting.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
+import { crearOfertaCardTrabajador, crearOfertaCardEmpleador } from '../components/oferta-card.js';
 
 // Usar window.firebaseConfig (arquitectura original)
 const app = initializeApp(window.firebaseConfig);
@@ -542,7 +543,7 @@ async function cargarOfertasTrabajador() {
                     );
                 }
             }
-            ofertasGrid.innerHTML += crearOfertaCardTrabajador(item.data, item.id, distanciaKm);
+            ofertasGrid.innerHTML += crearOfertaCardTrabajadorLocal(item.data, item.id, distanciaKm);
         });
 
     } catch (error) {
@@ -701,64 +702,11 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
         const numAplicaciones = aplicacionesPorOferta[id] || 0;
         const numPendientes = pendientesPorOferta[id] || 0;
 
-        const ubicacionTexto = typeof oferta.ubicacion === 'object'
-            ? (oferta.ubicacion.distrito || 'Sin ubicación')
-            : (oferta.ubicacion || 'Sin ubicación');
-
-        const badgeClass = numPendientes > 0 ? 'badge-aplicaciones tiene-pendientes' :
-                          (numAplicaciones > 0 ? 'badge-aplicaciones' : 'badge-sin-aplicaciones');
-        const badgeText = numPendientes > 0 ? `🔔 ${numPendientes} nuevas` :
-                         (numAplicaciones > 0 ? `${numAplicaciones} postulaciones` : 'Sin postulaciones');
-
-        // Usar mismo componente visual que trabajador (homologado)
-        const categoriaDisplay = oferta.categoria
-            ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1)
-            : 'Otros';
-
-        // Imagen principal (G6)
-        const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
-        const imagenHTML = tieneImagen
-            ? `<div class="oferta-imagen"><img src="${oferta.imagenesURLs[0]}" alt="${oferta.titulo}" loading="lazy"></div>`
-            : '';
-
-        grid.innerHTML += `
-            <div class="oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}" data-categoria="${oferta.categoria || 'otros'}" onclick="window.location.href='mis-aplicaciones.html'" style="cursor: pointer;">
-                <div class="oferta-categoria-bar ${oferta.categoria || 'otros'}"></div>
-                ${imagenHTML}
-                <div class="oferta-card-body">
-                    <div class="oferta-header">
-                        <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
-                        <div class="oferta-header-right">
-                            <span class="oferta-fecha">${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion)}</span>
-                            <div class="oferta-menu-container">
-                                <button class="oferta-menu-btn" onclick="event.stopPropagation(); toggleOfertaMenu('${id}')" aria-label="Más opciones">
-                                    ⋮
-                                </button>
-                                <div class="oferta-menu" id="menu-${id}">
-                                    <button class="oferta-menu-item" onclick="event.stopPropagation(); editarOferta('${id}')">
-                                        ✏️ Editar
-                                    </button>
-                                    <button class="oferta-menu-item oferta-menu-item-danger" onclick="event.stopPropagation(); eliminarOferta('${id}', '${oferta.titulo.replace(/'/g, "\\'")}')">
-                                        🗑️ Eliminar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 class="oferta-titulo">${oferta.titulo}</h3>
-                    <div class="oferta-detalles">
-                        <span class="detalle">📍 ${ubicacionTexto}</span>
-                        <span class="detalle detalle-salario">💰 ${oferta.salario}</span>
-                    </div>
-                    <div class="oferta-footer">
-                        <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
-                        <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
-                            👥 Ver Candidatos
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `;
+        // Usar componente reutilizable
+        grid.innerHTML += crearOfertaCardEmpleador(oferta, id, {
+            numAplicaciones,
+            numPendientes
+        });
     });
 }
 
@@ -836,59 +784,15 @@ function calcularTiempoRelativo(fecha) {
     return fecha.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' });
 }
 
-function crearOfertaCardTrabajador(oferta, id, distanciaKm = null) {
-    // Obtener texto de ubicacion
-    const ubicacionTexto = typeof oferta.ubicacion === 'object'
-        ? (oferta.ubicacion.texto_completo || oferta.ubicacion.distrito || 'Sin ubicacion')
-        : (oferta.ubicacion || 'Sin ubicacion');
-
-    // Badge de distancia (Task 11)
-    let distanciaBadge = '';
-    if (distanciaKm !== null && distanciaKm >= 0) {
-        const distanciaFormateada = formatearDistancia(distanciaKm);
-        const colorClase = distanciaKm <= 5 ? 'distancia-cerca' : (distanciaKm <= 15 ? 'distancia-media' : 'distancia-lejos');
-        distanciaBadge = `<span class='distancia-badge ${colorClase}'>📏 A ${distanciaFormateada} de ti</span>`;
-    }
-
-    // Verificar si ya aplicó
+// crearOfertaCardTrabajador ahora se importa desde components/oferta-card.js
+// Wrapper para mantener compatibilidad con el código existente
+function crearOfertaCardTrabajadorLocal(oferta, id, distanciaKm = null) {
     const yaAplico = aplicacionesUsuario.includes(id);
-    const footerHTML = yaAplico
-        ? `<span class='oferta-badge'>✅ Ya aplicaste</span>
-           <button class='btn btn-secondary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>`
-        : `<button class='btn btn-primary btn-small' onclick='verDetalle("${id}")'>Ver Detalles</button>`;
-
-    // Capitalizar categoría para mostrar
-    const categoriaDisplay = oferta.categoria ? oferta.categoria.charAt(0).toUpperCase() + oferta.categoria.slice(1) : 'Otros';
-
-    // Imagen principal (G6)
-    const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
-    const imagenHTML = tieneImagen
-        ? `<div class='oferta-imagen'><img src='${oferta.imagenesURLs[0]}' alt='${oferta.titulo}' loading='lazy'></div>`
-        : '';
-
-    return `
-        <div class='oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}' data-categoria='${oferta.categoria || 'otros'}'>
-            <div class='oferta-categoria-bar ${oferta.categoria || 'otros'}'></div>
-            ${imagenHTML}
-            <div class='oferta-card-body'>
-                <div class='oferta-header'>
-                    <span class='oferta-categoria ${oferta.categoria || 'otros'}'>${categoriaDisplay}</span>
-                    <span class='oferta-fecha'>${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion)}</span>
-                </div>
-                <h3 class='oferta-titulo'>${oferta.titulo}</h3>
-                <p class='oferta-descripcion'>${oferta.descripcion?.substring(0, 100) || ''}...</p>
-                <div class='oferta-detalles'>
-                    <span class='detalle detalle-salario'>💰 ${oferta.salario}</span>
-                    <span class='detalle'>📍 ${ubicacionTexto}</span>
-                    ${distanciaBadge}
-                    ${(oferta.vacantes || 1) > 1 ? `<span class='detalle'>👥 ${oferta.vacantes} vacantes</span>` : ''}
-                </div>
-                <div class='oferta-footer'>
-                    ${footerHTML}
-                </div>
-            </div>
-        </div>
-    `;
+    return crearOfertaCardTrabajador(oferta, id, {
+        distanciaKm,
+        yaAplico,
+        formatearDistancia
+    });
 }
 
 // Función cargarEstadisticas removida - ahora usamos cargarEstadisticasTrabajador y cargarDashboardEmpleador
@@ -1173,7 +1077,7 @@ function renderizarOfertasFiltradas(ofertas) {
     }
 
     ofertasGrid.innerHTML = ofertas.map(item =>
-        crearOfertaCardTrabajador(item.data, item.id, item.distanciaKm)
+        crearOfertaCardTrabajadorLocal(item.data, item.id, item.distanciaKm)
     ).join('');
 }
 

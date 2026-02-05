@@ -20,6 +20,7 @@ import {
     runTransaction
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
+import { RatingInput, inicializarContadorComentario, configurarCierreModal, TEXTOS_ESTRELLAS } from './components/rating-input.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -699,15 +700,16 @@ let calificacionActual = {
     puntuacion: 0
 };
 
-// Textos para cada nivel de estrella
-const textosEstrellas = {
-    0: 'Selecciona una calificacion',
-    1: 'Muy malo',
-    2: 'Malo',
-    3: 'Regular',
-    4: 'Bueno',
-    5: 'Excelente'
-};
+// Usar textos del componente (TEXTOS_ESTRELLAS ya importado)
+// Instancia del componente de rating
+const ratingInputTrabajador = new RatingInput({
+    containerId: 'estrellas-input',
+    textoId: 'estrellas-texto',
+    btnEnviarId: 'btn-enviar-calificacion',
+    onSelect: (valor) => {
+        calificacionActual.puntuacion = valor;
+    }
+});
 
 // ============================================
 // ABRIR MODAL DE CALIFICACION
@@ -775,50 +777,15 @@ function cerrarModalCalificacion() {
 }
 
 // ============================================
-// SELECCIONAR ESTRELLAS
+// SELECCIONAR ESTRELLAS (usando componente reutilizable)
 // ============================================
 function seleccionarEstrella(valor) {
-    calificacionActual.puntuacion = valor;
-
-    // Actualizar visualizacion de estrellas
-    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
-    estrellas.forEach((estrella, index) => {
-        if (index < valor) {
-            estrella.classList.add('active');
-            estrella.textContent = '★';
-        } else {
-            estrella.classList.remove('active');
-            estrella.textContent = '☆';
-        }
-    });
-
-    // Actualizar texto
-    const textoEl = document.getElementById('estrellas-texto');
-    textoEl.textContent = textosEstrellas[valor];
-    textoEl.classList.add('selected');
-
-    // Habilitar boton de enviar
-    document.getElementById('btn-enviar-calificacion').disabled = false;
+    ratingInputTrabajador.seleccionar(valor);
 }
 
 function resetearEstrellas() {
+    ratingInputTrabajador.resetear();
     calificacionActual.puntuacion = 0;
-    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
-    estrellas.forEach(estrella => {
-        estrella.classList.remove('active', 'hover');
-        estrella.textContent = '☆';
-    });
-
-    const textoEl = document.getElementById('estrellas-texto');
-    if (textoEl) {
-        textoEl.textContent = textosEstrellas[0];
-        textoEl.classList.remove('selected');
-    }
-
-    const btnEnviar = document.getElementById('btn-enviar-calificacion');
-    if (btnEnviar) {
-        btnEnviar.disabled = true;
-    }
 }
 
 // ============================================
@@ -968,66 +935,17 @@ async function actualizarPromedioTrabajador(trabajadorId, nuevaPuntuacion) {
 }
 
 // ============================================
-// INICIALIZAR EVENTOS DEL MODAL
+// INICIALIZAR EVENTOS DEL MODAL (usando componente reutilizable)
 // ============================================
 function inicializarEventosCalificacion() {
-    // Contador de caracteres del comentario
-    const comentarioInput = document.getElementById('cal-comentario');
-    if (comentarioInput) {
-        comentarioInput.addEventListener('input', (e) => {
-            document.getElementById('cal-char-count').textContent = e.target.value.length;
-        });
-    }
+    // Inicializar hover de estrellas (componente)
+    ratingInputTrabajador.inicializarEventos();
 
-    // Hover de estrellas
-    const estrellas = document.querySelectorAll('#estrellas-input .estrella');
-    estrellas.forEach((estrella, index) => {
-        estrella.addEventListener('mouseenter', () => {
-            estrellas.forEach((e, i) => {
-                if (i <= index) {
-                    e.classList.add('hover');
-                    e.textContent = '★';
-                } else if (!e.classList.contains('active')) {
-                    e.classList.remove('hover');
-                    e.textContent = '☆';
-                }
-            });
-        });
-    });
+    // Contador de caracteres del comentario (componente)
+    inicializarContadorComentario('cal-comentario', 'cal-char-count');
 
-    const estrellasContainer = document.getElementById('estrellas-input');
-    if (estrellasContainer) {
-        estrellasContainer.addEventListener('mouseleave', () => {
-            estrellas.forEach((e, i) => {
-                e.classList.remove('hover');
-                if (i < calificacionActual.puntuacion) {
-                    e.textContent = '★';
-                } else {
-                    e.textContent = '☆';
-                }
-            });
-        });
-    }
-
-    // Cerrar modal con ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const modal = document.getElementById('modal-calificacion');
-            if (modal && modal.classList.contains('active')) {
-                cerrarModalCalificacion();
-            }
-        }
-    });
-
-    // Cerrar modal al hacer click fuera
-    const modal = document.getElementById('modal-calificacion');
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                cerrarModalCalificacion();
-            }
-        });
-    }
+    // Cierre del modal con ESC y click fuera (componente)
+    configurarCierreModal('modal-calificacion', cerrarModalCalificacion);
 }
 
 // Inicializar eventos cuando el DOM este listo

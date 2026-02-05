@@ -8,6 +8,7 @@ import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/fi
 import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { GOOGLE_MAPS_API_KEY } from './config/api-keys.js';
 import { calcularDistancia, formatearDistancia } from './utils/distance.js';
+import { crearOfertaPreviewMapa } from './components/oferta-card.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -388,39 +389,22 @@ function mostrarPreviewOferta(oferta) {
 
     if (!preview || !contenido) return;
 
-    const ubicacionTexto = oferta.data.ubicacion?.texto_completo ||
-                          oferta.data.ubicacion?.distrito ||
-                          'Sin ubicacion';
-
     // Calcular distancia si hay ubicacion del usuario
-    let distanciaBadge = '';
+    let distanciaKm = null;
     if (ubicacionUsuario) {
-        const distancia = calcularDistancia(
+        distanciaKm = calcularDistancia(
             ubicacionUsuario.lat,
             ubicacionUsuario.lng,
             oferta.lat,
             oferta.lng
         );
-        const colorClase = distancia <= 5 ? 'distancia-cerca' :
-                          (distancia <= 15 ? 'distancia-media' : 'distancia-lejos');
-        distanciaBadge = `<span class="distancia-badge-preview ${colorClase}">A ${formatearDistancia(distancia)} de ti</span>`;
     }
 
-    contenido.innerHTML = `
-        <span class="preview-categoria ${oferta.data.categoria}">${oferta.data.categoria || 'otros'}</span>
-        <h3 class="preview-titulo">${oferta.data.titulo}</h3>
-        <p class="preview-descripcion">${oferta.data.descripcion?.substring(0, 100) || ''}...</p>
-        <div class="preview-detalles">
-            <span class="preview-detalle">&#128176; ${oferta.data.salario || 'A convenir'}</span>
-            <span class="preview-detalle">&#128205; ${ubicacionTexto}</span>
-            ${distanciaBadge}
-            ${(oferta.data.vacantes || 1) > 1 ? `<span class="preview-detalle">👥 ${oferta.data.vacantes} vacantes</span>` : ''}
-        </div>
-        <div class="preview-acciones">
-            <button class="btn btn-secondary" onclick="cerrarPreview()">Cerrar</button>
-            <button class="btn btn-primary" onclick="verDetalleOferta('${oferta.id}')">Ver detalles</button>
-        </div>
-    `;
+    // Usar componente reutilizable
+    contenido.innerHTML = crearOfertaPreviewMapa(oferta.data, oferta.id, {
+        distanciaKm,
+        formatearDistancia
+    });
 
     preview.style.display = 'block';
 
