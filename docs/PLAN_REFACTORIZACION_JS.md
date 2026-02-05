@@ -289,21 +289,37 @@ js/publicar-oferta/
 
 ---
 
-### FASE 4: Dividir dashboard.js (1-2 sesiones)
-> **1,823 líneas → 6 módulos**
+### FASE 4: Dividir dashboard.js (1-2 sesiones) ✅ COMPLETADA
+> **1,723 líneas → 6 módulos**
 
 #### Estructura final:
 ```
 js/dashboard/
-├── index.js             # Imports + inicialización (~100 líneas)
-├── estadisticas.js      # Carga y render de stats cards (~100 líneas)
-├── ofertas-trabajador.js # Vista y cards para trabajador (~200 líneas)
-├── ofertas-empleador.js  # Vista y cards para empleador (~200 líneas)
-├── geolocation.js       # Obtener/guardar ubicación usuario (~150 líneas)
-└── postulacion.js       # Modal de postulación rápida (~150 líneas)
+├── index.js              # Orquestador principal (296 líneas) ✅
+├── geolocation.js        # Ubicación Task 9 (327 líneas) ✅
+├── trabajador.js         # Vista trabajador + filtros (463 líneas) ✅
+├── empleador.js          # Vista empleador + editar/eliminar (341 líneas) ✅
+├── modal-detalle.js      # Modal detalle + postulación (336 líneas) ✅
+└── notificaciones-push.js # Push notifications Task 27/29 (267 líneas) ✅
 ```
 
-**Commit:** "refactor: Dividir dashboard.js en 6 módulos"
+**Total:** 2,030 líneas en 6 módulos (todos bajo 500 líneas) ✅
+
+**Archivos actualizados:**
+- `dashboard.html` → importa `js/dashboard/index.js`
+- `dashboard.js` original puede eliminarse después de testing
+
+**Commit:** "refactor: Dividir dashboard.js en 6 módulos (Fase 4)"
+
+**Testing:** Pendiente verificación manual
+- [ ] Dashboard trabajador carga
+- [ ] Dashboard empleador carga
+- [ ] Estadísticas correctas
+- [ ] Filtros avanzados funcionan
+- [ ] Geolocalización funciona
+- [ ] Postulación rápida funciona
+- [ ] Notificaciones push funcionan
+- [ ] Editar/eliminar ofertas funciona
 
 ---
 
@@ -390,15 +406,16 @@ js/components/filtros-avanzados/
 
 ## MÉTRICAS DE ÉXITO
 
-| Métrica | Antes | Actual (Fase 3) | Meta |
+| Métrica | Antes | Actual (Fase 4) | Meta |
 |---------|-------|-----------------|------|
-| Archivos >500 líneas | 7 | 6 (-1: publicar-oferta dividido) | 0 |
+| Archivos >500 líneas | 7 | 5 (-2: publicar-oferta, dashboard divididos) | 0 |
 | Líneas duplicadas | ~800 | ~200 (-600) | <100 |
-| Funciones >30 líneas | 31 | ~25 (reducidas en publicar-oferta) | <5 |
+| Funciones >30 líneas | 31 | ~20 (reducidas en fases 3-4) | <5 |
 | Console.logs debug | 18 | 0 ✅ | 0 |
 | Nuevos módulos utils | 0 | 3 (formatting, image-utils, dom-helpers) | 4 |
 | Nuevos componentes | 0 | 2 (oferta-card, rating-input) ✅ | 3 |
 | Módulos publicar-oferta | 1 (2002 líneas) | 6 (1915 líneas, todos <500) ✅ | 6 |
+| Módulos dashboard | 1 (1723 líneas) | 6 (2030 líneas, todos <500) ✅ | 6 |
 
 ---
 
@@ -470,4 +487,4 @@ js/components/filtros-avanzados/
 ---
 
 *Plan creado: 04 Febrero 2026*
-*Última actualización: 05 Febrero 2026 - Fase 3 completada*
+*Última actualización: 05 Febrero 2026 - Fase 4 completada*
