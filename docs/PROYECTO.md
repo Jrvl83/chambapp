@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 04 Febrero 2026 (sesión 5)
+**Última actualización:** 04 Febrero 2026 (sesión 6)
 
 ---
 
@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ██████████████████████░░░░░░ 69% (34/49 tareas)
+FASE 1: ███████████████████████░░░░░ 71% (35/49 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  19% del proyecto (34/176 tareas)
+TOTAL:  20% del proyecto (35/176 tareas)
 ```
 
 ### Features Implementadas
@@ -45,6 +45,7 @@ TOTAL:  19% del proyecto (34/176 tareas)
 - Publicar ofertas de trabajo con geolocalización
 - Mapa interactivo de ofertas (Google Maps)
 - Postulaciones con estados (pendiente/aceptado/rechazado/completado)
+- Vacantes múltiples por oferta (1-20 trabajadores)
 - Contacto directo vía WhatsApp
 - Sistema de calificaciones bidireccional (5 estrellas)
 - Filtros avanzados con quick bar mobile + bottom sheet compacto
@@ -74,6 +75,7 @@ TOTAL:  19% del proyecto (34/176 tareas)
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
+| V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
 ### Tareas Pendientes (11)
 
@@ -317,26 +319,29 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 04 Febrero 2026 (sesión 5)
-> **Sprint activo:** Guided Tours
+> **Última sesión:** 04 Febrero 2026 (sesión 6)
+> **Sprint activo:** Feature Vacantes
 
-### Resumen de lo completado (sesión 5 - 04/02/26)
-1. ✅ **GT1: Centralizar guided tours**
-   - Eliminados 4 archivos JS onboarding (1,297 líneas) → 2 archivos nuevos (899 líneas)
-   - `js/components/guided-tour.js` — Motor centralizado con API `window.GuidedTour`
-   - `js/config/tours.js` — Definiciones de 4 tours (dashboard, publicar, aplicaciones x2)
-   - Fix bug principal: `#dashboard-content` → `#dashboard-trabajador`/`#dashboard-empleador`
-   - Fix selector: `.filtros-container` → `#filtros-avanzados-container`
-   - Fix texto: "Ver Aplicantes" → "Ver Candidatos"
-   - Carga condicional de Intro.js CSS/JS en las 4 páginas
-2. ✅ **Fixes UX iterativos (3 rondas de testing visual):**
-   - Bottom nav visible durante tour → flag `transitioning` + enforcer interval 200ms
-   - Step counter desaparecía → `title` nativo en cada step de Intro.js
-   - Tooltip perdido en containers altos → `scrollTo: 'tooltip'` global
-   - Scroll to top antes de iniciar cualquier tour
-   - CSS: botones compactos, skip como text link, border-radius consistente, prev oculto cuando disabled
+### Resumen de lo completado (sesión 6 - 04/02/26)
+1. ✅ **V1: Sistema de vacantes múltiples por oferta**
+   - Campo vacantes (input numérico 1-20) en formulario publicar-oferta
+   - `runTransaction` para aceptación atómica (previene race conditions)
+   - Lógica híbrida: oferta `activa` hasta llenar TODAS las vacantes → `en_curso`
+   - Completar trabajo es individual por trabajador
+   - Badge "👥 X vacantes" en dashboard trabajador, historial y mapa
+   - Cloud Function: ofertas con aceptados parciales → `en_curso` en vez de `caducada`
+   - Backward compatible: ofertas sin campo vacantes se tratan como `vacantes: 1`
+   - Archivos modificados: publicar-oferta.html/js, mis-aplicaciones.js, dashboard.js, historial-ofertas.js, mapa-ofertas.js, functions/index.js
+
+2. ✅ **Fixes durante implementación:**
+   - Bug race condition: transaction antes de updateDoc aplicación
+   - Bug validación: verificar vacantes disponibles dentro de transaction
+   - Bug every() vacío: guard para array vacío en verificarTodosCompletados
+   - Bug edición: no reducir vacantes por debajo de aceptados actuales
+   - Bug servidor: `npx serve` elimina query strings → usar `http-server`
 
 ### Sesiones anteriores
+- **Sesión 5 (04/02/26):** GT1 - Centralizar guided tours, motor único, fix selectores
 - **Sesión 4 (03/02/26):** OB1 - CSS externalizado login/register, mejoras UX registro
 - **Sesión 3 (03/02/26):** Cards compactas móvil, filtros reestructurados, chips de fecha
 - **Sesión 2 (03/02/26):** Fix headers inconsistentes (centralizar CSS en design-system.css)
@@ -384,8 +389,11 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Al editar oferta: fechaExpiracion se resetea a +14 días
 - Ordenamiento y filtro de fecha usan `fechaActualizacion || fechaCreacion`
 - Cards móvil: layout horizontal con `data-categoria` para color de borde
+- **Vacantes:** oferta.vacantes (1-20), aceptadosCount, trabajadoresAceptados[]
+- **Flujo vacantes:** activa (aceptando) → en_curso (todas llenas) → completada (todos terminaron)
+- **Servidor local:** usar `npx http-server -p 8080 -c-1` (no `npx serve` que elimina query strings)
 
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.4
+**Versión documento:** 3.5
