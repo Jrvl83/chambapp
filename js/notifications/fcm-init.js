@@ -5,6 +5,7 @@
 
 import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
 import { doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { escapeHtml } from '../utils/dom-helpers.js';
 
 // ============================================
 // CONFIGURACION
@@ -369,13 +370,4 @@ function playNotificationSound() {
     } catch (e) {
         // Silenciar errores de audio
     }
-}
-
-/**
- * Escapa HTML para prevenir XSS
- */
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }

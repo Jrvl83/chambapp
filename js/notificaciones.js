@@ -19,6 +19,7 @@ import {
     onSnapshot,
     where
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { escapeHtml } from './utils/dom-helpers.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -340,13 +341,6 @@ window.filtrarNotificaciones = function(filtro) {
 // ============================================
 // UTILIDADES
 // ============================================
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
 
 function mostrarError() {
     document.getElementById('loading-screen').style.display = 'none';

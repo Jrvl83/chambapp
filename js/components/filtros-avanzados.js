@@ -4,6 +4,8 @@
  * multiselect, range slider y persistencia
  */
 
+import { escapeHtml } from '../utils/dom-helpers.js';
+
 // ============================================
 // CONSTANTES
 // ============================================
@@ -61,12 +63,6 @@ function debounce(func, wait) {
 function formatearSalario(valor) {
     if (valor >= 5000) return 'S/ 5,000+';
     return 'S/ ' + valor.toLocaleString('es-PE');
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 // ============================================
