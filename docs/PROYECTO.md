@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 04 Febrero 2026 (sesión 6)
+**Última actualización:** 04 Febrero 2026 (sesión 7)
 
 ---
 
@@ -320,28 +320,37 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 04 Febrero 2026 (sesión 6)
-> **Sprint activo:** Feature Vacantes
+> **Última sesión:** 04 Febrero 2026 (sesión 7)
+> **Sprint activo:** Refactorización JS (Fase 1 completada, Fases 2-8 pendientes)
 
-### Resumen de lo completado (sesión 6 - 04/02/26)
-1. ✅ **V1: Sistema de vacantes múltiples por oferta**
-   - Campo vacantes (input numérico 1-20) en formulario publicar-oferta
-   - `runTransaction` para aceptación atómica (previene race conditions)
-   - Lógica híbrida: oferta `activa` hasta llenar TODAS las vacantes → `en_curso`
-   - Completar trabajo es individual por trabajador
-   - Badge "👥 X vacantes" en dashboard trabajador, historial y mapa
-   - Cloud Function: ofertas con aceptados parciales → `en_curso` en vez de `caducada`
-   - Backward compatible: ofertas sin campo vacantes se tratan como `vacantes: 1`
-   - Archivos modificados: publicar-oferta.html/js, mis-aplicaciones.js, dashboard.js, historial-ofertas.js, mapa-ofertas.js, functions/index.js
+### Resumen de lo completado (sesión 7 - 04/02/26)
+1. ✅ **Refactorización JS - Fase 0: Limpieza**
+   - Eliminados 18 console.logs de debug de 4 archivos
 
-2. ✅ **Fixes durante implementación:**
-   - Bug race condition: transaction antes de updateDoc aplicación
-   - Bug validación: verificar vacantes disponibles dentro de transaction
-   - Bug every() vacío: guard para array vacío en verificarTodosCompletados
-   - Bug edición: no reducir vacantes por debajo de aceptados actuales
-   - Bug servidor: `npx serve` elimina query strings → usar `http-server`
+2. ✅ **Refactorización JS - Fase 1: Módulos Utilitarios**
+   - Creado `js/utils/formatting.js` (131 líneas) - fechas, estrellas, moneda
+   - Creado `js/utils/image-utils.js` (174 líneas) - optimización, validación imágenes
+   - Creado `js/utils/dom-helpers.js` (149 líneas) - escapeHtml, crearElemento
+   - **Total: ~380 líneas de código duplicado eliminadas**
+   - Archivos actualizados: 12 archivos usando los nuevos módulos
+
+3. ✅ **Fixes durante implementación:**
+   - Bug `filtros-avanzados.js`: agregar `type="module"` en dashboard.html
+
+### Estado de archivos grandes (pendiente Fases 2-8)
+| Archivo | Líneas | Estado |
+|---------|--------|--------|
+| publicar-oferta.js | 2,002 | ❌ 4.0x límite |
+| dashboard.js | 1,818 | ❌ 3.6x límite |
+| filtros-avanzados.js | 1,458 | ❌ 2.9x límite |
+| mis-aplicaciones.js | 1,228 | ❌ 2.5x límite |
+| perfil-trabajador.js | 1,191 | ❌ 2.4x límite |
+| mapa-ofertas.js | 1,185 | ❌ 2.4x límite |
+
+> Ver `docs/PLAN_REFACTORIZACION_JS.md` para plan completo de Fases 2-8
 
 ### Sesiones anteriores
+- **Sesión 6 (04/02/26):** V1 - Vacantes múltiples (1-20 por oferta, transactions, badges)
 - **Sesión 5 (04/02/26):** GT1 - Centralizar guided tours, motor único, fix selectores
 - **Sesión 4 (03/02/26):** OB1 - CSS externalizado login/register, mejoras UX registro
 - **Sesión 3 (03/02/26):** Cards compactas móvil, filtros reestructurados, chips de fecha
