@@ -378,11 +378,11 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | 30/01/26 | components.css + dashboard-main.css | CSS duplicado | Alta | ✅ Resuelto |
 | 30/01/26 | Varios HTML | Estilos inline | Media | ✅ Resuelto |
 | 30/01/26 | 6 archivos JS | Console.logs debug | Media | ✅ Resuelto |
-| 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | Pendiente → Ver PLAN_REFACTORIZACION_JS.md |
-| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1): publicar-oferta (2067), dashboard (1823), filtros-avanzados (1462), perfil-trabajador (1319), mis-aplicaciones (1273), mapa-ofertas (1185), mis-aplicaciones-trabajador (856) | **Alta** | Pendiente → Ver PLAN_REFACTORIZACION_JS.md |
-| 04/02/26 | Varios JS | 15 patrones de código duplicado (~800 líneas): estrellas HTML, formateo fechas, cálculo distancias, cards oferta, etc. | Alta | Pendiente |
-| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2), 9 son críticas (>100 líneas) | Alta | Pendiente |
-| 04/02/26 | 4 archivos JS | 8 console.logs de debug pendientes de eliminar | Baja | Pendiente |
+| 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | ✅ Resuelto - Dividido en 6 módulos (Fase 4) |
+| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1) | **Alta** | 🔄 En progreso - 2/7 completados (publicar-oferta, dashboard) → Ver PLAN_REFACTORIZACION_JS.md |
+| 04/02/26 | Varios JS | 15 patrones de código duplicado (~800 líneas) | Alta | ✅ Resuelto (Fases 1-2) - Creados formatting.js, image-utils.js, dom-helpers.js, oferta-card.js, rating-input.js |
+| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2) | Alta | 🔄 En progreso - Reducidas a ~20 en Fases 3-4 |
+| 04/02/26 | 4 archivos JS | 8 console.logs de debug | Baja | ✅ Resuelto (Fase 0) |
 | 30/01/26 | General | Auditoría Lighthouse | Alta | Pendiente |
 | 30/01/26 | General | Meta tags SEO/OG | Media | Pendiente |
 | 03/02/26 | 9 CSS individuales | Reset `*`, `:root` y `body` duplicados en cada CSS de página. Causaba font inconsistente (sistema vs Inter) y headers visualmente diferentes | Alta | ✅ Resuelto - Centralizado en design-system.css |
@@ -630,5 +630,5 @@ btn.disabled = false;
 
 ---
 
-**Última actualización:** 03 Febrero 2026
-**Próxima revisión:** Después de Fase 2
+**Última actualización:** 05 Febrero 2026
+**Próxima revisión:** Después de Fase 8 (refactorización JS completa)
