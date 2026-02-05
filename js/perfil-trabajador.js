@@ -9,6 +9,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/fi
 import { doc, getDoc, setDoc, collection, query, where, getDocs, orderBy, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
+import { optimizarImagen, validarArchivoImagen, crearPreviewImagen, esFormatoHEIC, blobToFile } from './utils/image-utils.js';
 
 // Variables globales
 let perfilData = {};
@@ -490,112 +491,9 @@ async function eliminarFotoPortfolio(index) {
 // OPTIMIZACIÓN DE IMÁGENES
 // ============================================
 
-/**
- * Optimizar imagen antes de subir
- * Redimensiona y comprime automáticamente
- * @param {File} file - Archivo de imagen original
- * @param {number} maxWidth - Ancho máximo en píxeles
- * @param {number} maxHeight - Alto máximo en píxeles
- * @param {number} quality - Calidad JPEG (0-1)
- * @returns {Promise<Blob>} - Imagen optimizada
- */
-async function optimizarImagen(file, maxWidth = 1920, maxHeight = 1920, quality = 0.85) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            const img = new Image();
-            
-            img.onload = () => {
-                // Calcular dimensiones manteniendo aspect ratio
-                let width = img.width;
-                let height = img.height;
-                
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width = Math.round(width * ratio);
-                    height = Math.round(height * ratio);
-                }
-                
-                // Crear canvas para redimensionar
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                
-                const ctx = canvas.getContext('2d');
-                
-                // Aplicar suavizado para mejor calidad
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                
-                // Dibujar imagen redimensionada
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                // Convertir a blob JPEG
-                canvas.toBlob(
-                    (blob) => {
-                        if (blob) {
-                            resolve(blob);
-                        } else {
-                            reject(new Error('Error al convertir imagen'));
-                        }
-                    },
-                    'image/jpeg',
-                    quality
-                );
-            };
-            
-            img.onerror = () => reject(new Error('Error al cargar imagen'));
-            img.src = e.target.result;
-        };
-        
-        reader.onerror = () => reject(new Error('Error al leer archivo'));
-        reader.readAsDataURL(file);
-    });
-}
-
-/**
- * Validar y preparar archivo de imagen
- * @param {File} file - Archivo a validar
- * @returns {Object} - {valid, error, file, isHEIC}
- */
+// Alias para mantener compatibilidad con código existente
 function validarArchivo(file) {
-    // Extensiones válidas
-    const extensionesValidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
-    const nombreArchivo = file.name.toLowerCase();
-    const tieneExtensionValida = extensionesValidas.some(ext => nombreArchivo.endsWith(ext));
-    
-    // Detectar si es HEIC
-    const isHEIC = nombreArchivo.endsWith('.heic') || nombreArchivo.endsWith('.heif');
-    
-    // Validar que sea imagen por tipo MIME o por extensión
-    const esTipoImagen = file.type.startsWith('image/') || file.type === '';
-    
-    if (!esTipoImagen && !tieneExtensionValida) {
-        return {
-            valid: false,
-            error: 'Por favor selecciona una imagen válida (JPG, PNG, HEIC)'
-        };
-    }
-    
-    // Si es HEIC en desktop, mostrar mensaje informativo
-    if (isHEIC && file.type === '') {
-        return {
-            valid: false,
-            error: 'Archivos HEIC (iPhone) no soportados en desktop. Por favor:\n• Usa tu iPhone para subir, o\n• Convierte a JPG primero, o\n• Envíate la foto por WhatsApp/email (convierte automáticamente)'
-        };
-    }
-    
-    // Límite aumentado a 15MB para archivo original
-    const MAX_SIZE = 15 * 1024 * 1024; // 15MB
-    if (file.size > MAX_SIZE) {
-        return {
-            valid: false,
-            error: 'La imagen es muy grande (máx. 15MB)'
-        };
-    }
-    
-    return { valid: true, file, isHEIC };
+    return validarArchivoImagen(file, 15);
 }
 
 // ============================================

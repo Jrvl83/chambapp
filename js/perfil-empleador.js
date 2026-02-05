@@ -8,6 +8,7 @@ import { auth, db, storage } from './config/firebase-init.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+import { optimizarImagen, validarArchivoImagen } from './utils/image-utils.js';
 
 // Variables globales
 let perfilData = {};
@@ -95,89 +96,10 @@ function cargarDatosPersonales() {
 }
 
 // ============================================
-// OPTIMIZACIÓN DE IMAGEN
-// ============================================
-async function optimizarImagen(file, maxWidth = 800, maxHeight = 800, quality = 0.85) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            const img = new Image();
-            
-            img.onload = () => {
-                let width = img.width;
-                let height = img.height;
-                
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width = Math.round(width * ratio);
-                    height = Math.round(height * ratio);
-                }
-                
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                
-                const ctx = canvas.getContext('2d');
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                canvas.toBlob(
-                    (blob) => {
-                        if (blob) {
-                            resolve(blob);
-                        } else {
-                            reject(new Error('Error al convertir imagen'));
-                        }
-                    },
-                    'image/jpeg',
-                    quality
-                );
-            };
-            
-            img.onerror = () => reject(new Error('Error al cargar imagen'));
-            img.src = e.target.result;
-        };
-        
-        reader.onerror = () => reject(new Error('Error al leer archivo'));
-        reader.readAsDataURL(file);
-    });
-}
-
-// ============================================
-// VALIDAR ARCHIVO
+// VALIDAR ARCHIVO (alias para compatibilidad)
 // ============================================
 function validarArchivo(file) {
-    const extensionesValidas = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
-    const nombreArchivo = file.name.toLowerCase();
-    const tieneExtensionValida = extensionesValidas.some(ext => nombreArchivo.endsWith(ext));
-    const isHEIC = nombreArchivo.endsWith('.heic') || nombreArchivo.endsWith('.heif');
-    const esTipoImagen = file.type.startsWith('image/') || file.type === '';
-    
-    if (!esTipoImagen && !tieneExtensionValida) {
-        return {
-            valid: false,
-            error: 'Por favor selecciona una imagen válida (JPG, PNG, HEIC)'
-        };
-    }
-    
-    if (isHEIC && file.type === '') {
-        return {
-            valid: false,
-            error: 'Archivos HEIC (iPhone) no soportados en desktop. Por favor:\n• Usa tu iPhone para subir, o\n• Convierte a JPG primero, o\n• Envíate la foto por WhatsApp/email (convierte automáticamente)'
-        };
-    }
-    
-    const MAX_SIZE = 15 * 1024 * 1024; // 15MB
-    if (file.size > MAX_SIZE) {
-        return {
-            valid: false,
-            error: 'La imagen es muy grande (máx. 15MB)'
-        };
-    }
-    
-    return { valid: true, file };
+    return validarArchivoImagen(file, 15);
 }
 
 // ============================================

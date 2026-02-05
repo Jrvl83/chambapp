@@ -9,6 +9,7 @@ import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp, Timestamp 
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { obtenerDepartamentos, obtenerProvincias, obtenerDistritos, obtenerCoordenadasDistrito } from './utils/ubigeo-api.js';
 import { GOOGLE_MAPS_API_KEY } from './config/api-keys.js';
+import { optimizarImagen, validarArchivoImagen, crearPreviewImagen } from './utils/image-utils.js';
 
 // Verificar autenticacion
 const usuarioStr = localStorage.getItem('usuarioChambApp');
@@ -1263,80 +1264,14 @@ async function procesarFotosSeleccionadas(files) {
     }
 }
 
-// Validar archivo de foto
+// Validar archivo de foto (usa módulo centralizado)
 function validarArchivoFoto(file) {
-    const extensionesValidas = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
-    const nombreArchivo = file.name.toLowerCase();
-    const tieneExtensionValida = extensionesValidas.some(ext => nombreArchivo.endsWith(ext));
-    const esTipoImagen = file.type.startsWith('image/') || file.type === '';
-
-    if (!esTipoImagen && !tieneExtensionValida) {
-        return {
-            valid: false,
-            error: 'Formato no válido. Usa JPG, PNG o WebP.'
-        };
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-        return {
-            valid: false,
-            error: `Archivo muy grande (máx ${MAX_FILE_SIZE / 1024 / 1024}MB)`
-        };
-    }
-
-    return { valid: true };
+    return validarArchivoImagen(file, MAX_FILE_SIZE / 1024 / 1024);
 }
 
-// Optimizar imagen
+// Alias para optimizarImagenFoto (usa módulo centralizado)
 function optimizarImagenFoto(file, maxWidth = 1200, maxHeight = 1200, quality = 0.85) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-            const img = new Image();
-
-            img.onload = () => {
-                let width = img.width;
-                let height = img.height;
-
-                // Calcular dimensiones manteniendo aspecto
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width = Math.round(width * ratio);
-                    height = Math.round(height * ratio);
-                }
-
-                // Crear canvas
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // Convertir a blob JPEG
-                canvas.toBlob(
-                    (blob) => {
-                        if (blob) {
-                            resolve(blob);
-                        } else {
-                            reject(new Error('Error al convertir imagen'));
-                        }
-                    },
-                    'image/jpeg',
-                    quality
-                );
-            };
-
-            img.onerror = () => reject(new Error('Error al cargar imagen'));
-            img.src = e.target.result;
-        };
-
-        reader.onerror = () => reject(new Error('Error al leer archivo'));
-        reader.readAsDataURL(file);
-    });
+    return optimizarImagen(file, maxWidth, maxHeight, quality);
 }
 
 // Actualizar preview de fotos
