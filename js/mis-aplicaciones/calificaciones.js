@@ -204,17 +204,15 @@ async function enviarCalificacion() {
             calificacionId: calificacionRef.id
         });
 
-        if (trabajadorId) {
-            await actualizarPromedioTrabajador(trabajadorId, calificacionActual.puntuacion);
-        }
-
+        // El promedio se actualiza automaticamente via Cloud Function
         actualizarEstadoLocal(calificacionRef.id);
 
+        const nombre = calificacionActual.trabajadorNombre;
         cerrarModalCalificacion();
         if (typeof toastSuccess === 'function') {
-            toastSuccess(`¡Gracias por calificar a ${calificacionActual.trabajadorNombre}!`);
+            toastSuccess(`¡Gracias por calificar a ${nombre}!`);
         } else {
-            alert(`¡Gracias por calificar a ${calificacionActual.trabajadorNombre}!`);
+            alert(`¡Gracias por calificar a ${nombre}!`);
         }
 
         callbacks.recargarUI();
@@ -236,40 +234,6 @@ function actualizarEstadoLocal(calificacionId) {
     if (aplicacion) {
         aplicacion.calificado = true;
         aplicacion.calificacionId = calificacionId;
-    }
-}
-
-// ============================================
-// ACTUALIZAR PROMEDIO DEL TRABAJADOR
-// ============================================
-
-async function actualizarPromedioTrabajador(trabajadorId, nuevaPuntuacion) {
-    try {
-        const trabajadorRef = doc(db, 'usuarios', trabajadorId);
-        const trabajadorSnap = await getDoc(trabajadorRef);
-
-        if (!trabajadorSnap.exists()) return;
-
-        const data = trabajadorSnap.data();
-        const promedioActual = data.calificacionPromedio || 0;
-        const totalActual = data.totalCalificaciones || 0;
-
-        const nuevoTotal = totalActual + 1;
-        const sumaTotal = (promedioActual * totalActual) + nuevaPuntuacion;
-        const nuevoPromedio = Number((sumaTotal / nuevoTotal).toFixed(2));
-
-        const distribucion = data.distribucionCalificaciones || {
-            "5": 0, "4": 0, "3": 0, "2": 0, "1": 0
-        };
-        distribucion[String(nuevaPuntuacion)] = (distribucion[String(nuevaPuntuacion)] || 0) + 1;
-
-        await updateDoc(trabajadorRef, {
-            calificacionPromedio: nuevoPromedio,
-            totalCalificaciones: nuevoTotal,
-            distribucionCalificaciones: distribucion
-        });
-    } catch (error) {
-        console.error('Error al actualizar promedio:', error);
     }
 }
 
