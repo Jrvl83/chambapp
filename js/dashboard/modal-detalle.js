@@ -8,7 +8,7 @@
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAplicacionesUsuario } from './trabajador.js';
 import { fetchEmpleadorRating } from '../utils/employer-rating.js';
-import { generarEstrellasHTML } from '../utils/formatting.js';
+import { generarDetalleOfertaHTML } from '../components/oferta-detalle.js';
 
 // ============================================
 // VARIABLES DEL MÓDULO
@@ -65,114 +65,18 @@ export async function verDetalle(id) {
 }
 
 function mostrarModalDetalle(oferta, id, ratingData) {
-    const ubicacionTexto = extraerTextoUbicacion(oferta.ubicacion);
-    const botonAccion = generarBotonAccion(id);
-    const galeriaHTML = generarGaleria(oferta.imagenesURLs);
-
-    const modalBody = document.getElementById('modal-body');
-    modalBody.innerHTML = generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion, ratingData);
-
-    abrirModal();
-}
-
-function extraerTextoUbicacion(ubicacion) {
-    if (typeof ubicacion === 'object') {
-        return ubicacion.texto_completo || ubicacion.distrito || 'No especificada';
-    }
-    return ubicacion || 'No especificada';
-}
-
-function generarBotonAccion(id) {
     const esTrabajador = usuarioData && usuarioData.tipo === 'trabajador';
     const aplicaciones = getAplicacionesUsuario();
-    const yaAplico = aplicaciones.includes(id);
 
-    if (!esTrabajador) return '';
+    const modalBody = document.getElementById('modal-body');
+    modalBody.innerHTML = generarDetalleOfertaHTML(oferta, id, ratingData, {
+        mostrarPostulacion: esTrabajador,
+        yaAplico: aplicaciones.includes(id),
+        onPostularFn: 'mostrarFormularioPostulacion',
+        onCerrarFn: 'cerrarModal'
+    });
 
-    if (yaAplico) {
-        return `
-            <button class="btn btn-success btn-disabled" disabled style="flex: 1; cursor: not-allowed; opacity: 0.7;">
-                ✅ Ya postulaste
-            </button>
-        `;
-    }
-
-    return `
-        <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacion('${id}')" style="flex: 1;">
-            📝 Postular a esta oferta
-        </button>
-    `;
-}
-
-function generarGaleria(imagenesURLs) {
-    if (!imagenesURLs || imagenesURLs.length === 0) return '';
-
-    const imagenes = imagenesURLs.map((url, i) => `
-        <img src="${url}" alt="Foto ${i + 1}"
-            style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; flex-shrink: 0;"
-            onclick="window.open('${url}', '_blank')">
-    `).join('');
-
-    return `
-        <div style="margin-bottom: 1.5rem;">
-            <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
-                ${imagenes}
-            </div>
-        </div>
-    `;
-}
-
-function generarRatingEmpleadorHTML(ratingData) {
-    if (!ratingData || ratingData.total === 0) return '';
-    return `<span style="display: inline-flex; align-items: center; gap: 0.25rem; margin-left: 0.5rem; background: rgba(245,158,11,0.12); padding: 0.25rem 0.625rem; border-radius: 12px; font-size: 0.8125rem; font-weight: 600;">
-        ${generarEstrellasHTML(ratingData.promedio)}
-        <span style="color: #92400e; margin-left: 0.125rem;">${ratingData.promedio.toFixed(1)}</span>
-        <span style="color: #a16207; font-size: 0.75rem;">(${ratingData.total})</span>
-    </span>`;
-}
-
-function generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion, ratingData) {
-    return `
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${oferta.titulo}</h2>
-            <span class="oferta-categoria ${oferta.categoria}" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
-                ${oferta.categoria}
-            </span>
-        </div>
-
-        ${galeriaHTML}
-
-        <div style="margin-bottom: 1.5rem;">
-            <h3 style="margin-bottom: 0.5rem;">📝 Descripción</h3>
-            <p style="color: var(--gray); line-height: 1.6;">${oferta.descripcion}</p>
-        </div>
-
-        <div style="background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div><strong>💰 Salario:</strong><br>${oferta.salario}</div>
-                <div><strong>📍 Ubicación:</strong><br>${ubicacionTexto}</div>
-                <div><strong>⏱️ Duración:</strong><br>${oferta.duracion || 'No especificada'}</div>
-                <div><strong>🕐 Horario:</strong><br>${oferta.horario || 'No especificado'}</div>
-            </div>
-        </div>
-
-        <div style="margin-bottom: 1.5rem;">
-            <h3 style="margin-bottom: 0.5rem;">📋 Requisitos</h3>
-            <p><strong>Experiencia:</strong> ${oferta.experiencia || 'No especificada'}</p>
-            <p><strong>Habilidades:</strong> ${oferta.habilidades || 'No especificadas'}</p>
-        </div>
-
-        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
-            <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
-            <span style="color: var(--dark);">${oferta.empleadorNombre || 'Empleador'}</span>
-            ${generarRatingEmpleadorHTML(ratingData)}
-        </div>
-
-        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-            <button class="btn btn-secondary" onclick="cerrarModal()" style="flex: 1;">Cerrar</button>
-            ${botonAccion}
-        </div>
-    `;
+    abrirModal();
 }
 
 // ============================================

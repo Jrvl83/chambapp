@@ -12,7 +12,7 @@ import {
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 import { crearOfertaPreviewMapa } from '../components/oferta-card.js';
 import { fetchEmpleadorRating } from '../utils/employer-rating.js';
-import { generarEstrellasHTML } from '../utils/formatting.js';
+import { generarDetalleOfertaHTML } from '../components/oferta-detalle.js';
 
 // Referencias inyectadas
 let db = null;
@@ -92,123 +92,6 @@ async function obtenerDatosOferta(ofertaId) {
     return docSnap.data();
 }
 
-function crearGaleriaHTML(imagenesURLs) {
-    if (!imagenesURLs || imagenesURLs.length === 0) return '';
-
-    const imagenes = imagenesURLs.map((url, i) => `
-        <img src="${url}" alt="Foto ${i + 1}"
-            style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; flex-shrink: 0;"
-            onclick="window.open('${url}', '_blank')">
-    `).join('');
-
-    return `
-        <div style="margin-bottom: 1.5rem;">
-            <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
-                ${imagenes}
-            </div>
-        </div>
-    `;
-}
-
-function crearBotonAccionOferta(ofertaId, yaAplico) {
-    if (yaAplico) {
-        return `
-            <button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">
-                ✅ Ya postulaste
-            </button>
-        `;
-    }
-    return `
-        <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacionMapa('${ofertaId}')">
-            📝 Postular a esta oferta
-        </button>
-    `;
-}
-
-function obtenerUbicacionTexto(ofertaData) {
-    if (typeof ofertaData.ubicacion === 'object') {
-        return ofertaData.ubicacion.texto_completo || ofertaData.ubicacion.distrito || 'No especificada';
-    }
-    return ofertaData.ubicacion || 'No especificada';
-}
-
-function crearEmpleadorHTML(ofertaData, ratingData) {
-    const nombre = ofertaData.empleadorNombre || 'Empleador';
-    const { promedio, total } = ratingData;
-
-    const ratingHTML = total > 0
-        ? `<span class="empleador-rating-inline">
-               ${generarEstrellasHTML(promedio)}
-               <span class="rating-numero">${promedio.toFixed(1)}</span>
-               <span class="rating-count">(${total})</span>
-           </span>`
-        : '<span class="empleador-sin-rating">Sin calificaciones aún</span>';
-
-    return `
-        <div class="detalle-empleador">
-            <strong>👤 Publicado por:</strong><br>
-            <span>${nombre}</span>
-            ${ratingHTML}
-        </div>
-    `;
-}
-
-function crearContenidoDetalle(ofertaData, ofertaId, yaAplico, ratingData) {
-    const ubicacionTexto = obtenerUbicacionTexto(ofertaData);
-
-    return `
-        <div class="detalle-header">
-            <h2 class="detalle-titulo">${ofertaData.titulo}</h2>
-            <span class="detalle-categoria ${ofertaData.categoria}">${ofertaData.categoria || 'otros'}</span>
-        </div>
-
-        ${crearGaleriaHTML(ofertaData.imagenesURLs)}
-
-        <div class="detalle-seccion">
-            <h4>📝 Descripcion</h4>
-            <p>${ofertaData.descripcion || 'Sin descripcion'}</p>
-        </div>
-
-        <div class="detalle-grid">
-            <div class="detalle-item">
-                <strong>💰 Salario</strong>
-                <span>${ofertaData.salario || 'A convenir'}</span>
-            </div>
-            <div class="detalle-item">
-                <strong>📍 Ubicacion</strong>
-                <span>${ubicacionTexto}</span>
-            </div>
-            <div class="detalle-item">
-                <strong>⏱️ Duracion</strong>
-                <span>${ofertaData.duracion || 'No especificada'}</span>
-            </div>
-            <div class="detalle-item">
-                <strong>🕐 Horario</strong>
-                <span>${ofertaData.horario || 'No especificado'}</span>
-            </div>
-            ${(ofertaData.vacantes || 1) > 1 ? `
-            <div class="detalle-item">
-                <strong>👥 Vacantes</strong>
-                <span>${ofertaData.vacantes} personas</span>
-            </div>
-            ` : ''}
-        </div>
-
-        <div class="detalle-seccion">
-            <h4>📋 Requisitos</h4>
-            <p><strong>Experiencia:</strong> ${ofertaData.experiencia || 'No especificada'}</p>
-            <p><strong>Habilidades:</strong> ${ofertaData.habilidades || 'No especificadas'}</p>
-        </div>
-
-        ${crearEmpleadorHTML(ofertaData, ratingData)}
-
-        <div class="detalle-acciones">
-            <button class="btn btn-secondary" onclick="cerrarModalDetalle()">Cerrar</button>
-            ${crearBotonAccionOferta(ofertaId, yaAplico)}
-        </div>
-    `;
-}
-
 async function verDetalleOferta(ofertaId) {
     try {
         const ofertaData = await obtenerDatosOferta(ofertaId);
@@ -227,7 +110,12 @@ async function verDetalleOferta(ofertaId) {
             : { promedio: 0, total: 0 };
 
         const modalBody = document.getElementById('modal-detalle-body');
-        modalBody.innerHTML = crearContenidoDetalle(ofertaData, ofertaId, yaAplico, ratingData);
+        modalBody.innerHTML = generarDetalleOfertaHTML(ofertaData, ofertaId, ratingData, {
+            mostrarPostulacion: true,
+            yaAplico,
+            onPostularFn: 'mostrarFormularioPostulacionMapa',
+            onCerrarFn: 'cerrarModalDetalle'
+        });
 
         const modal = document.getElementById('modal-detalle-overlay');
         modal.classList.add('active');
