@@ -551,106 +551,8 @@ input[type="radio"] {
 }
 
 /* ============================================
-   5. MODALS
+   5. MODALS → Movido a css/modal.css
    ============================================ */
-
-/* Modal Overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: var(--z-modal-overlay);
-    padding: var(--padding-md);
-    animation: fadeIn var(--transition-fast);
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Modal Content */
-.modal-content {
-    background: var(--white);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-modal);
-    max-width: 600px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: slideUp var(--transition-base);
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Modal Close Button */
-.modal-close {
-    position: absolute;
-    top: var(--space-md);
-    right: var(--space-md);
-    background: var(--gray-200);
-    border: none;
-    border-radius: var(--radius-full);
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: var(--text-xl);
-    color: var(--dark);
-    transition: all var(--transition-fast);
-}
-
-.modal-close:hover {
-    background: var(--gray-300);
-    transform: scale(1.1);
-}
-
-/* Modal Body */
-.modal-body {
-    padding: var(--padding-xl);
-}
-
-.modal-header {
-    margin-bottom: var(--space-lg);
-}
-
-.modal-header h2,
-.modal-header h3 {
-    margin: 0;
-}
-
-.modal-footer {
-    margin-top: var(--space-lg);
-    display: flex;
-    gap: var(--gap-sm);
-    justify-content: flex-end;
-}
 
 /* ============================================
    6. ALERTS
@@ -1068,12 +970,6 @@ input[type="radio"] {
    ============================================ */
 
 @media (max-width: 768px) {
-    .modal-content {
-        max-width: 100%;
-        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-        max-height: 95vh;
-    }
-    
     .form-row {
         grid-template-columns: 1fr;
     }

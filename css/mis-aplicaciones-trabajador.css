@@ -559,82 +559,8 @@
 }
 
 /* ============================================
-   MODAL
+   MODAL → Base en css/modal.css
    ============================================ */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.modal-container {
-    background: var(--white);
-    border-radius: 16px;
-    max-width: 600px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: modalSlideIn 0.3s ease;
-}
-
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.modal-header {
-    padding: 1.5rem 2rem;
-    border-bottom: 2px solid var(--light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-header h2 {
-    color: var(--dark);
-    font-size: 1.5rem;
-}
-
-.modal-close {
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: var(--light);
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    color: var(--gray);
-}
-
-.modal-close:hover {
-    background: var(--danger);
-    color: white;
-    transform: rotate(90deg);
-}
-
-.modal-body {
-    padding: 2rem;
-}
 
 /* ============================================
    RESPONSIVE
@@ -729,30 +655,6 @@
 /* ============================================
    MODAL CALIFICACIÓN EMPLEADOR - Task 15
    ============================================ */
-
-.modal-calificacion {
-    max-width: 500px;
-}
-
-.modal-header-empleador {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    border-bottom: none;
-}
-
-.modal-header-empleador h2 {
-    color: white;
-}
-
-.modal-header-empleador .modal-close {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-}
-
-.modal-header-empleador .modal-close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
-}
 
 /* Info del empleador */
 .calificacion-info {
@@ -881,15 +783,6 @@
     margin-top: 0.25rem;
 }
 
-/* Modal Footer */
-.modal-footer {
-    padding: 1.5rem 2rem;
-    border-top: 2px solid var(--light);
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-}
-
 /* Botón Warning */
 .btn-warning {
     background: var(--warning);
@@ -926,20 +819,8 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .modal-calificacion {
-        max-width: 95%;
-    }
-
     .estrellas-container .estrella {
         font-size: 2rem;
-    }
-
-    .modal-footer {
-        flex-direction: column;
-    }
-
-    .modal-footer .btn {
-        width: 100%;
     }
 }
 

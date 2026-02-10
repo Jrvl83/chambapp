@@ -26,6 +26,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/header-simple.css?v=2">
@@ -164,7 +165,7 @@
 
     <!-- Modal Ver Oferta -->
     <div id="modal-overlay" class="modal-overlay" onclick="clickFueraModal(event)">
-        <div class="modal-container">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-titulo">Detalles de la Oferta</h2>
                 <button class="modal-close" onclick="cerrarModal()">✕</button>
@@ -175,8 +176,8 @@
 
     <!-- Modal Calificar Empleador - Task 15 -->
     <div id="modal-calificar-empleador" class="modal-overlay">
-        <div class="modal-container modal-calificacion">
-            <div class="modal-header modal-header-empleador">
+        <div class="modal-content modal-content--md">
+            <div class="modal-header modal-header--primary">
                 <h2>⭐ Calificar Empleador</h2>
                 <button class="modal-close" onclick="cerrarModalCalificacionEmpleador()">&times;</button>
             </div>

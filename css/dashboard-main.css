@@ -1186,78 +1186,9 @@ a.stat-card-link:focus-visible {
 }
 
 /* ============================================
-   🔴 MEJORA #6: MODAL SAFE AREA
+   🔴 MEJORA #6: MODAL → Base en css/modal.css
+   Aquí solo quedan overrides específicos del dashboard
    ============================================ */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 16px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    position: relative;
-    animation: modalSlideIn 0.3s ease;
-}
-
-@keyframes modalSlideIn {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: var(--light);
-    border: none;
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s;
-}
-
-.modal-close:hover {
-    background: var(--danger);
-    color: white;
-    transform: rotate(90deg);
-}
-
-.modal-body {
-    padding: 2rem;
-    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
-}
 
 .modal-header {
     text-align: center;
@@ -1362,19 +1293,6 @@ a.stat-card-link:focus-visible {
 
 .modal-form textarea {
     min-height: 100px;
-}
-
-.modal-buttons,
-.modal-footer {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    padding-top: 1.5rem;
-    border-top: 2px solid var(--light);
-}
-
-.modal-buttons .btn {
-    min-width: 120px;
 }
 
 /* ============================================
@@ -1942,25 +1860,6 @@ a.stat-card-link:focus-visible {
         gap: 0.75rem;
     }
     
-    .modal-content {
-        width: 95%;
-        max-height: 90vh;
-    }
-    
-    .modal-body {
-        padding: 1.5rem;
-        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-    }
-    
-    .modal-buttons,
-    .modal-footer {
-        flex-direction: column;
-    }
-    
-    .modal-buttons .btn,
-    .modal-footer .btn {
-        width: 100%;
-    }
 }
 
 @media (max-width: 480px) {
@@ -2052,26 +1951,6 @@ a.stat-card-link:focus-visible {
     .stat-info p {
         font-size: 0.5625rem;
     }
-}
-
-/* ============================================
-   SCROLLBAR PERSONALIZADO
-   ============================================ */
-.modal-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: var(--light);
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: var(--gray);
-    border-radius: 4px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
 }
 
 /* ============================================
