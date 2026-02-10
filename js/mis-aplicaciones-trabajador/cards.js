@@ -3,7 +3,7 @@
  * @module mis-aplicaciones-trabajador/cards
  */
 
-import { formatearFecha } from '../utils/formatting.js';
+import { formatearFecha, generarEstrellasHTML } from '../utils/formatting.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
 
 let state = null;
@@ -201,6 +201,17 @@ function renderBotonCalificar(aplicacion, estado) {
     `;
 }
 
+function crearEmpleadorRatingHTML(empleadorId) {
+    const info = state.empleadoresRatings?.[empleadorId];
+    if (!info || info.total === 0) return '';
+
+    return `<span class="empleador-rating-badge">
+        <span class="rating-estrella">★</span>
+        <span class="rating-numero">${info.promedio.toFixed(1)}</span>
+        <span class="rating-total">(${info.total})</span>
+    </span>`;
+}
+
 function renderCardHTML(app, config, fecha, contacto, btnCancelar, btnCalificar) {
     return `
         <div class="aplicacion-card ${config.clase} touchable hover-lift">
@@ -208,7 +219,7 @@ function renderCardHTML(app, config, fecha, contacto, btnCancelar, btnCalificar)
                 <div class="aplicacion-info">
                     <div class="aplicacion-titulo">${escapeHtml(app.ofertaTitulo)}</div>
                     <span class="aplicacion-categoria">${getCategoriaLabel(app.ofertaCategoria)}</span>
-                    <div class="aplicacion-empleador">👤 ${escapeHtml(app.empleadorNombre)}</div>
+                    <div class="aplicacion-empleador">👤 ${escapeHtml(app.empleadorNombre)} ${crearEmpleadorRatingHTML(app.empleadorId)}</div>
                 </div>
                 <div class="aplicacion-estado">
                     <span class="estado-badge ${config.clase}">

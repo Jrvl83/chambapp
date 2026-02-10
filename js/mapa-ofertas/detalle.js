@@ -11,6 +11,8 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 import { crearOfertaPreviewMapa } from '../components/oferta-card.js';
+import { fetchEmpleadorRating } from '../utils/employer-rating.js';
+import { generarEstrellasHTML } from '../utils/formatting.js';
 
 // Referencias inyectadas
 let db = null;
@@ -130,7 +132,28 @@ function obtenerUbicacionTexto(ofertaData) {
     return ofertaData.ubicacion || 'No especificada';
 }
 
-function crearContenidoDetalle(ofertaData, ofertaId, yaAplico) {
+function crearEmpleadorHTML(ofertaData, ratingData) {
+    const nombre = ofertaData.empleadorNombre || 'Empleador';
+    const { promedio, total } = ratingData;
+
+    const ratingHTML = total > 0
+        ? `<span class="empleador-rating-inline">
+               ${generarEstrellasHTML(promedio)}
+               <span class="rating-numero">${promedio.toFixed(1)}</span>
+               <span class="rating-count">(${total})</span>
+           </span>`
+        : '<span class="empleador-sin-rating">Sin calificaciones aún</span>';
+
+    return `
+        <div class="detalle-empleador">
+            <strong>👤 Publicado por:</strong><br>
+            <span>${nombre}</span>
+            ${ratingHTML}
+        </div>
+    `;
+}
+
+function crearContenidoDetalle(ofertaData, ofertaId, yaAplico, ratingData) {
     const ubicacionTexto = obtenerUbicacionTexto(ofertaData);
 
     return `
@@ -177,10 +200,7 @@ function crearContenidoDetalle(ofertaData, ofertaId, yaAplico) {
             <p><strong>Habilidades:</strong> ${ofertaData.habilidades || 'No especificadas'}</p>
         </div>
 
-        <div class="detalle-empleador">
-            <strong>👤 Publicado por:</strong><br>
-            <span>${ofertaData.empleadorNombre || 'Empleador'}</span>
-        </div>
+        ${crearEmpleadorHTML(ofertaData, ratingData)}
 
         <div class="detalle-acciones">
             <button class="btn btn-secondary" onclick="cerrarModalDetalle()">Cerrar</button>
@@ -202,8 +222,12 @@ async function verDetalleOferta(ofertaId) {
         cerrarPreview();
 
         const yaAplico = state.aplicacionesUsuario.includes(ofertaId);
+        const ratingData = ofertaData.empleadorId
+            ? await fetchEmpleadorRating(db, ofertaData.empleadorId)
+            : { promedio: 0, total: 0 };
+
         const modalBody = document.getElementById('modal-detalle-body');
-        modalBody.innerHTML = crearContenidoDetalle(ofertaData, ofertaId, yaAplico);
+        modalBody.innerHTML = crearContenidoDetalle(ofertaData, ofertaId, yaAplico, ratingData);
 
         const modal = document.getElementById('modal-detalle-overlay');
         modal.classList.add('active');

@@ -1,6 +1,6 @@
 // ============================================
 // CLOUD FUNCTIONS - ChambApp
-// Notificaciones Push
+// Notificaciones Push + Calificaciones
 // ============================================
 
 const functions = require('firebase-functions');
@@ -257,6 +257,84 @@ exports.marcarOfertasCaducadas = functions
 
         } catch (error) {
             console.error('Error marcando ofertas caducadas:', error);
+            return null;
+        }
+    });
+
+// ============================================
+// CALIFICACION: Actualizar Promedio del Usuario
+// Trigger: Cuando se crea un documento en 'calificaciones'
+// ============================================
+
+function determinarUsuarioCalificado(calificacion) {
+    const tipo = calificacion.tipo || 'empleador_a_trabajador';
+
+    if (tipo === 'trabajador_a_empleador') {
+        return calificacion.empleadorId;
+    }
+    return calificacion.trabajadorId;
+}
+
+function calcularNuevoPromedio(data, nuevaPuntuacion) {
+    const promedioActual = data.calificacionPromedio || 0;
+    const totalActual = data.totalCalificaciones || 0;
+
+    const nuevoTotal = totalActual + 1;
+    const sumaTotal = (promedioActual * totalActual) + nuevaPuntuacion;
+    const nuevoPromedio = Number((sumaTotal / nuevoTotal).toFixed(2));
+
+    const distribucion = data.distribucionCalificaciones || {
+        '5': 0, '4': 0, '3': 0, '2': 0, '1': 0
+    };
+    distribucion[String(nuevaPuntuacion)] = (distribucion[String(nuevaPuntuacion)] || 0) + 1;
+
+    return { nuevoPromedio, nuevoTotal, distribucion };
+}
+
+exports.actualizarPromedioCalificacion = functions
+    .region('us-central1')
+    .firestore
+    .document('calificaciones/{calificacionId}')
+    .onCreate(async (snap, context) => {
+        const calificacion = snap.data();
+        const puntuacion = calificacion.puntuacion;
+
+        if (!puntuacion || puntuacion < 1 || puntuacion > 5) {
+            console.log('Puntuacion invalida:', puntuacion);
+            return null;
+        }
+
+        const targetUserId = determinarUsuarioCalificado(calificacion);
+
+        if (!targetUserId) {
+            console.log('No se pudo determinar usuario a actualizar');
+            return null;
+        }
+
+        console.log('Actualizando promedio para usuario:', targetUserId);
+
+        try {
+            const userRef = db.collection('usuarios').doc(targetUserId);
+            const userDoc = await userRef.get();
+
+            if (!userDoc.exists) {
+                console.log('Usuario no encontrado:', targetUserId);
+                return null;
+            }
+
+            const { nuevoPromedio, nuevoTotal, distribucion } = calcularNuevoPromedio(userDoc.data(), puntuacion);
+
+            await userRef.update({
+                calificacionPromedio: nuevoPromedio,
+                totalCalificaciones: nuevoTotal,
+                distribucionCalificaciones: distribucion
+            });
+
+            console.log(`Promedio actualizado: ${nuevoPromedio} (${nuevoTotal} calificaciones)`);
+            return null;
+
+        } catch (error) {
+            console.error('Error actualizando promedio:', error);
             return null;
         }
     });

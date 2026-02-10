@@ -16,6 +16,7 @@ import {
     calificarEmpleador, cerrarModalCalificacion,
     seleccionarEstrella, enviarCalificacion
 } from './calificaciones.js';
+import { fetchEmpleadoresRatings } from '../utils/employer-rating.js';
 
 // --- Firebase ---
 const app = initializeApp(window.firebaseConfig);
@@ -50,6 +51,7 @@ if (usuario.tipo !== 'trabajador') {
 const state = {
     todasLasAplicaciones: [],
     aplicacionesFiltradas: [],
+    empleadoresRatings: {},
     usuario
 };
 
@@ -89,6 +91,7 @@ async function cargarAplicaciones() {
         actualizarEstadisticas(stats.total, stats.pendientes, stats.aceptados, stats.completados);
 
         state.aplicacionesFiltradas = [...state.todasLasAplicaciones];
+        await cargarRatingsEmpleadores();
         mostrarAplicaciones(state.aplicacionesFiltradas);
     } catch (error) {
         console.error('Error al cargar aplicaciones:', error);
@@ -97,6 +100,22 @@ async function cargarAplicaciones() {
             <h2>Error al cargar</h2>
             <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
         `;
+    }
+}
+
+async function cargarRatingsEmpleadores() {
+    try {
+        const idsUnicos = [...new Set(
+            state.todasLasAplicaciones
+                .map(a => a.empleadorId)
+                .filter(Boolean)
+        )];
+        if (idsUnicos.length === 0) return;
+
+        const ratings = await fetchEmpleadoresRatings(db, idsUnicos);
+        Object.assign(state.empleadoresRatings, ratings);
+    } catch (error) {
+        console.error('Error al cargar ratings de empleadores:', error);
     }
 }
 

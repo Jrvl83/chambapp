@@ -8,7 +8,6 @@ import {
     addDoc, updateDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { RatingInput, inicializarContadorComentario } from '../components/rating-input.js';
-import { actualizarPromedioUsuario } from '../utils/calificacion-utils.js';
 
 let db = null;
 let auth = null;
@@ -140,10 +139,7 @@ export async function enviarCalificacion() {
         const calificacionRef = await addDoc(collection(db, 'calificaciones'), calificacionData);
         await marcarAplicacionCalificada(calificacionRef.id);
 
-        if (empleadorId) {
-            await actualizarPromedioUsuario(db, empleadorId, calificacionActual.puntuacion);
-        }
-
+        // El promedio se actualiza automaticamente via Cloud Function
         actualizarUILocal(calificacionRef.id);
 
         const nombre = calificacionActual.empleadorNombre;

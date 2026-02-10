@@ -9,6 +9,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/fi
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { optimizarImagen, validarArchivoImagen } from './utils/image-utils.js';
+import { generarEstrellasHTML } from './utils/formatting.js';
 
 // Variables globales
 let perfilData = {};
@@ -66,7 +67,9 @@ async function cargarPerfil() {
         }
         
         cargarDatosPersonales();
-        
+        cargarCalificacionBadge();
+        cargarSeccionCalificaciones();
+
     } catch (error) {
         console.error('Error al cargar perfil:', error);
         if (typeof toastError === 'function') {
@@ -264,6 +267,99 @@ async function guardarPerfil() {
         btnGuardar.disabled = false;
         btnGuardar.textContent = '💾 Guardar Cambios';
     }
+}
+
+// ============================================
+// CALIFICACION - BADGE
+// ============================================
+
+function cargarCalificacionBadge() {
+    const badge = document.getElementById('badge-calificacion');
+    const promedioEl = document.getElementById('perfil-promedio');
+    const totalEl = document.getElementById('perfil-total-calificaciones');
+
+    if (!badge) return;
+
+    const promedio = perfilData.calificacionPromedio || 0;
+    const total = perfilData.totalCalificaciones || 0;
+
+    badge.style.display = 'inline-flex';
+
+    if (total === 0) {
+        badge.classList.add('sin-calificaciones');
+        promedioEl.textContent = '-';
+        totalEl.textContent = '(Sin calificaciones)';
+    } else {
+        badge.classList.remove('sin-calificaciones');
+        promedioEl.textContent = promedio.toFixed(1);
+        totalEl.textContent = `(${total})`;
+    }
+}
+
+// ============================================
+// CALIFICACION - SECCION DETALLADA
+// ============================================
+
+function cargarSeccionCalificaciones() {
+    const contenido = document.getElementById('calificaciones-contenido');
+    if (!contenido) return;
+
+    const promedio = perfilData.calificacionPromedio || 0;
+    const total = perfilData.totalCalificaciones || 0;
+    const distribucion = perfilData.distribucionCalificaciones || {};
+
+    if (total === 0) {
+        contenido.innerHTML = renderSinCalificaciones();
+        return;
+    }
+
+    contenido.innerHTML = renderResumenCalificaciones(promedio, total, distribucion);
+}
+
+function renderSinCalificaciones() {
+    return `
+        <div class="sin-calificaciones-msg">
+            <div class="icono">📋</div>
+            <p>Aún no tienes calificaciones de trabajadores</p>
+            <p style="font-size: 0.8125rem; margin-top: 0.5rem;">
+                Cuando completes trabajos, los trabajadores podrán calificarte
+            </p>
+        </div>
+    `;
+}
+
+function renderResumenCalificaciones(promedio, total, distribucion) {
+    return `
+        <div class="calificaciones-resumen">
+            <div class="calificaciones-promedio">
+                <div class="promedio-grande">${promedio.toFixed(1)}</div>
+                <div class="promedio-estrellas">${generarEstrellasHTML(promedio)}</div>
+                <div class="promedio-total">${total} calificación${total !== 1 ? 'es' : ''}</div>
+            </div>
+            <div class="calificaciones-distribucion">
+                ${renderBarrasDistribucion(distribucion, total)}
+            </div>
+        </div>
+    `;
+}
+
+function renderBarrasDistribucion(distribucion, total) {
+    let html = '';
+    for (let i = 5; i >= 1; i--) {
+        const count = distribucion[String(i)] || 0;
+        const porcentaje = total > 0 ? (count / total) * 100 : 0;
+        html += `
+            <div class="distribucion-fila">
+                <span class="distribucion-label">${i}</span>
+                <span class="distribucion-estrella">★</span>
+                <div class="distribucion-barra">
+                    <div class="distribucion-relleno" style="width: ${porcentaje}%"></div>
+                </div>
+                <span class="distribucion-count">${count}</span>
+            </div>
+        `;
+    }
+    return html;
 }
 
 // ============================================

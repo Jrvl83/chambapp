@@ -781,6 +781,47 @@
     color: var(--dark);
 }
 
+.empleador-rating-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 0.5rem;
+    background: rgba(245, 158, 11, 0.12);
+    padding: 0.25rem 0.625rem;
+    border-radius: 12px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.empleador-rating-inline .estrella-filled {
+    color: var(--warning, #f59e0b);
+    font-size: 0.75rem;
+}
+
+.empleador-rating-inline .estrella-empty {
+    color: #d1d5db;
+    font-size: 0.75rem;
+}
+
+.empleador-rating-inline .rating-numero {
+    color: #92400e;
+    margin-left: 0.125rem;
+}
+
+.empleador-rating-inline .rating-count {
+    color: #a16207;
+    font-size: 0.75rem;
+}
+
+.empleador-sin-rating {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--gray);
+    font-style: italic;
+}
+
 .detalle-acciones {
     display: flex;
     gap: 0.75rem;
