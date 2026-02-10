@@ -109,7 +109,15 @@
     color: var(--primary);
 }
 
-.detalle-empleador span {
+.detalle-empleador-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.detalle-empleador-info > span {
     color: var(--dark);
 }
 
@@ -125,7 +133,6 @@
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    margin-left: 0.5rem;
     background: rgba(245, 158, 11, 0.12);
     padding: 0.25rem 0.625rem;
     border-radius: 12px;

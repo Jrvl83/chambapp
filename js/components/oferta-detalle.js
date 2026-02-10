@@ -131,9 +131,11 @@ function renderEmpleadorHTML(oferta, ratingData, mostrarEmail) {
 
     return `
         <div class="detalle-empleador">
-            <strong>👤 Publicado por:</strong><br>
-            <span>${nombre}</span>
-            ${renderRatingInlineHTML(ratingData)}
+            <strong>👤 Publicado por:</strong>
+            <div class="detalle-empleador-info">
+                <span>${nombre}</span>
+                ${renderRatingInlineHTML(ratingData)}
+            </div>
             ${emailHTML}
         </div>
     `;
