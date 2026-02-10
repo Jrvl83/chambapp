@@ -6,6 +6,8 @@
 import { doc, getDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
 import { getCategoriaLabel } from './cards.js';
+import { fetchEmpleadorRating } from '../utils/employer-rating.js';
+import { generarEstrellasHTML } from '../utils/formatting.js';
 
 let db = null;
 
@@ -33,7 +35,10 @@ export async function verOfertaCompleta(ofertaId) {
         }
 
         const oferta = docSnap.data();
-        document.getElementById('modal-body').innerHTML = renderDetalleOferta(oferta);
+        const ratingData = oferta.empleadorId
+            ? await fetchEmpleadorRating(db, oferta.empleadorId)
+            : { promedio: 0, total: 0 };
+        document.getElementById('modal-body').innerHTML = renderDetalleOferta(oferta, ratingData);
         document.getElementById('modal-overlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     } catch (error) {
@@ -44,7 +49,16 @@ export async function verOfertaCompleta(ofertaId) {
     }
 }
 
-function renderDetalleOferta(oferta) {
+function generarRatingEmpleadorHTML(ratingData) {
+    if (!ratingData || ratingData.total === 0) return '';
+    return `<span style="display: inline-flex; align-items: center; gap: 0.25rem; margin-left: 0.5rem; background: rgba(245,158,11,0.12); padding: 0.25rem 0.625rem; border-radius: 12px; font-size: 0.8125rem; font-weight: 600;">
+        ${generarEstrellasHTML(ratingData.promedio)}
+        <span style="color: #92400e; margin-left: 0.125rem;">${ratingData.promedio.toFixed(1)}</span>
+        <span style="color: #a16207; font-size: 0.75rem;">(${ratingData.total})</span>
+    </span>`;
+}
+
+function renderDetalleOferta(oferta, ratingData) {
     const galeria = renderGaleria(oferta.imagenesURLs);
     const ubicacion = oferta.ubicacion?.texto_completo || oferta.ubicacion || 'No especificada';
 
@@ -63,7 +77,8 @@ function renderDetalleOferta(oferta) {
         ${renderDetallesGrid(ubicacion, oferta)}
         <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--primary);">
             <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
-            <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre)}</span><br>
+            <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre)}</span>
+            ${generarRatingEmpleadorHTML(ratingData)}<br>
             <span style="color: var(--gray); font-size: 0.875rem;">📧 ${escapeHtml(oferta.empleadorEmail)}</span>
         </div>
         <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">

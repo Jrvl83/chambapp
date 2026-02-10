@@ -7,6 +7,8 @@
 
 import { doc, getDoc, addDoc, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAplicacionesUsuario } from './trabajador.js';
+import { fetchEmpleadorRating } from '../utils/employer-rating.js';
+import { generarEstrellasHTML } from '../utils/formatting.js';
 
 // ============================================
 // VARIABLES DEL MÓDULO
@@ -49,7 +51,10 @@ export async function verDetalle(id) {
         }
 
         const oferta = docSnap.data();
-        mostrarModalDetalle(oferta, id);
+        const ratingData = oferta.empleadorId
+            ? await fetchEmpleadorRating(db, oferta.empleadorId)
+            : { promedio: 0, total: 0 };
+        mostrarModalDetalle(oferta, id, ratingData);
 
     } catch (error) {
         console.error('Error al cargar oferta:', error);
@@ -59,13 +64,13 @@ export async function verDetalle(id) {
     }
 }
 
-function mostrarModalDetalle(oferta, id) {
+function mostrarModalDetalle(oferta, id, ratingData) {
     const ubicacionTexto = extraerTextoUbicacion(oferta.ubicacion);
     const botonAccion = generarBotonAccion(id);
     const galeriaHTML = generarGaleria(oferta.imagenesURLs);
 
     const modalBody = document.getElementById('modal-body');
-    modalBody.innerHTML = generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion);
+    modalBody.innerHTML = generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion, ratingData);
 
     abrirModal();
 }
@@ -117,7 +122,16 @@ function generarGaleria(imagenesURLs) {
     `;
 }
 
-function generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion) {
+function generarRatingEmpleadorHTML(ratingData) {
+    if (!ratingData || ratingData.total === 0) return '';
+    return `<span style="display: inline-flex; align-items: center; gap: 0.25rem; margin-left: 0.5rem; background: rgba(245,158,11,0.12); padding: 0.25rem 0.625rem; border-radius: 12px; font-size: 0.8125rem; font-weight: 600;">
+        ${generarEstrellasHTML(ratingData.promedio)}
+        <span style="color: #92400e; margin-left: 0.125rem;">${ratingData.promedio.toFixed(1)}</span>
+        <span style="color: #a16207; font-size: 0.75rem;">(${ratingData.total})</span>
+    </span>`;
+}
+
+function generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion, ratingData) {
     return `
         <div style="text-align: center; margin-bottom: 1.5rem;">
             <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${oferta.titulo}</h2>
@@ -151,6 +165,7 @@ function generarHTMLDetalle(oferta, ubicacionTexto, galeriaHTML, botonAccion) {
         <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
             <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
             <span style="color: var(--dark);">${oferta.empleadorNombre || 'Empleador'}</span>
+            ${generarRatingEmpleadorHTML(ratingData)}
         </div>
 
         <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
