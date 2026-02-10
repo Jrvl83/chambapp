@@ -461,6 +461,38 @@ js/components/filtros-avanzados/
 
 ---
 
+### FASE 9: Dividir mis-aplicaciones-trabajador.js (1 sesión) ✅ COMPLETADA
+> **772 líneas → 4 módulos + 1 utilidad compartida**
+
+#### Estructura final:
+```
+js/mis-aplicaciones-trabajador/
+├── index.js             # Orquestador: Firebase, auth, carga datos, stats, init (155 líneas) ✅
+├── cards.js             # crearAplicacionCard (split en helpers), mostrarAplicaciones (235 líneas) ✅
+├── detalle.js           # verOfertaCompleta, cancelarAplicacion, modal (142 líneas) ✅
+└── calificaciones.js    # Rating empleador: modal, enviar, promedio (226 líneas) ✅
+
+js/utils/
+└── calificacion-utils.js # actualizarPromedioUsuario compartido (44 líneas) ✅
+```
+
+**Total:** 802 líneas en 4 módulos + 1 util (todos bajo 500 líneas) ✅
+
+**Mejoras aplicadas:**
+- `crearAplicacionCard` (157 líneas) dividida en 7 helpers: renderContacto, renderDatosContacto, renderAccionesContacto, renderBotonCancelar, renderBotonCalificar, renderCardHTML
+- `verOfertaCompleta` (91 líneas) dividida en 3 helpers: renderDetalleOferta, renderGaleria, renderDetallesGrid
+- `enviarCalificacionEmpleador` (108 líneas) dividida en 5 helpers: buscarEmpleador, obtenerAplicacionData, buildCalificacionData, marcarAplicacionCalificada, actualizarUILocal
+- `actualizarPromedioEmpleador` extraída a `calificacion-utils.js` como `actualizarPromedioUsuario` (reutilizable)
+- `escaparParaHTML` local reemplazada por `escapeHtml` de `dom-helpers.js`
+
+**Archivos actualizados:**
+- `mis-aplicaciones-trabajador.html` → importa `js/mis-aplicaciones-trabajador/index.js`
+- `mis-aplicaciones-trabajador.js` original puede eliminarse después de testing
+
+**Commit:** "refactor: Dividir mis-aplicaciones-trabajador.js en 4 módulos (Fase 9)"
+
+---
+
 ## RESUMEN DE COMMITS
 
 | Fase | Commit | Archivos Afectados |
@@ -474,26 +506,28 @@ js/components/filtros-avanzados/
 | 6 | refactor: Dividir mapa-ofertas.js | 1 → 5 |
 | 7 | refactor: Dividir filtros-avanzados.js | 1 → 6 |
 | 8 | refactor: Reducir perfil-trabajador.js | 1 archivo |
+| 9 | refactor: Dividir mis-aplicaciones-trabajador.js | 1 → 4 |
 
-**Total:** 7 archivos grandes → ~38 módulos pequeños
+**Total:** 7 archivos grandes → ~42 módulos pequeños
 
 ---
 
 ## MÉTRICAS DE ÉXITO
 
-| Métrica | Antes | Actual (Fase 7) | Meta |
+| Métrica | Antes | Actual (Fase 9) | Meta |
 |---------|-------|-----------------|------|
-| Archivos >500 líneas | 7 | 2 (-5: publicar-oferta, dashboard, mis-aplicaciones, mapa-ofertas, filtros-avanzados divididos) | 0 |
-| Líneas duplicadas | ~800 | ~200 (-600) | <100 |
-| Funciones >30 líneas | 31 | ~5 (reducidas en fases 3-7) | <5 |
+| Archivos >500 líneas | 7 | 1 (perfil-trabajador.js pendiente Fase 8) | 0 |
+| Líneas duplicadas | ~800 | ~150 (-650) | <100 |
+| Funciones >30 líneas | 31 | ~3 (reducidas en fases 3-9) | <5 |
 | Console.logs debug | 18 | 0 ✅ | 0 |
-| Nuevos módulos utils | 0 | 3 (formatting, image-utils, dom-helpers) | 4 |
+| Nuevos módulos utils | 0 | 4 (formatting, image-utils, dom-helpers, calificacion-utils) ✅ | 4 |
 | Nuevos componentes | 0 | 2 (oferta-card, rating-input) ✅ | 3 |
 | Módulos publicar-oferta | 1 (2002 líneas) | 6 (1915 líneas, todos <500) ✅ | 6 |
 | Módulos dashboard | 1 (1723 líneas) | 6 (2030 líneas, todos <500) ✅ | 6 |
 | Módulos mis-aplicaciones | 1 (1147 líneas) | 5 (1284 líneas, todos <500) ✅ | 5 |
 | Módulos mapa-ofertas | 1 (1170 líneas) | 5 (1258 líneas, todos <500) ✅ | 5 |
 | Módulos filtros-avanzados | 1 (1459 líneas) | 6 (1417 líneas, todos <500) ✅ | 6 |
+| Módulos mis-aplicaciones-trabajador | 1 (772 líneas) | 4+1 (802 líneas, todos <500) ✅ | 4 |
 
 ---
 
@@ -551,10 +585,12 @@ js/components/filtros-avanzados/
 
 ## PRÓXIMOS PASOS
 
-1. **Aprobar este plan**
-2. **Comenzar con Fase 0** (limpieza rápida, bajo riesgo)
-3. **Fase 1** es la más importante - crea la base para todo lo demás
-4. **Fases 3-7** pueden hacerse en paralelo si hay tiempo
+1. ~~**Aprobar este plan**~~ ✅
+2. ~~**Comenzar con Fase 0**~~ ✅
+3. ~~**Fase 1** - base reutilizable~~ ✅
+4. ~~**Fases 2-7** - componentes y división de archivos~~ ✅
+5. ~~**Fase 9** - mis-aplicaciones-trabajador.js~~ ✅
+6. **Fase 8** - Reducir perfil-trabajador.js (PENDIENTE)
 
 ---
 
@@ -565,4 +601,4 @@ js/components/filtros-avanzados/
 ---
 
 *Plan creado: 04 Febrero 2026*
-*Última actualización: 09 Febrero 2026 - Fase 7 completada*
+*Última actualización: 10 Febrero 2026 - Fase 9 completada, solo queda Fase 8*
