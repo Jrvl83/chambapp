@@ -323,54 +323,129 @@ js/dashboard/
 
 ---
 
-### FASE 5: Dividir mis-aplicaciones.js (1 sesión)
-> **1,273 líneas → 5 módulos**
+### FASE 5: Dividir mis-aplicaciones.js (1 sesión) ✅ COMPLETADA
+> **1,147 líneas → 5 módulos**
 
 #### Estructura final:
 ```
 js/mis-aplicaciones/
-├── index.js             # Imports + inicialización (~80 líneas)
-├── cards.js             # crearGrupoOferta, crearAplicacionCard (~250 líneas)
-├── acciones.js          # aceptar, rechazar, completar, WhatsApp (~200 líneas)
-├── calificaciones.js    # Rating modal, enviar, actualizar promedio (~300 líneas)
-└── filtros.js           # Filtrado por estado (~100 líneas)
+├── index.js             # Orquestador principal (243 líneas) ✅
+├── cards.js             # crearGrupoOferta, crearAplicacionCard (276 líneas) ✅
+├── acciones.js          # aceptar, rechazar, completar, WhatsApp (230 líneas) ✅
+├── calificaciones.js    # Rating modal, enviar, actualizar promedio (428 líneas) ✅
+└── filtros.js           # Filtrado por estado (107 líneas) ✅
 ```
 
-**Commit:** "refactor: Dividir mis-aplicaciones.js en 5 módulos"
+**Total:** 1,284 líneas en 5 módulos (todos bajo 500 líneas) ✅
+
+**Mejoras aplicadas:**
+- `crearAplicacionCard` (159 líneas) dividida en 5 funciones auxiliares (<30 líneas c/u)
+- `enviarCalificacion` (104 líneas) dividida en 3 funciones auxiliares
+- `verDetalleCalificaciones` (117 líneas) dividida en 4 funciones auxiliares
+- `cargarRatingsTrabajadores` refactorizada extrayendo `cargarRatingsBatch`
+
+**Archivos actualizados:**
+- `mis-aplicaciones.html` → importa `js/mis-aplicaciones/index.js`
+- `mis-aplicaciones.js` original puede eliminarse después de testing
+
+**Commit:** "refactor: Dividir mis-aplicaciones.js en 5 módulos (Fase 5)"
+
+**Testing:** Pendiente verificación manual
+- [ ] Lista de aplicaciones carga
+- [ ] Aceptar aplicación funciona
+- [ ] Rechazar aplicación funciona
+- [ ] Marcar completado funciona
+- [ ] Calificar trabajador funciona
+- [ ] Ver detalle calificaciones funciona
+- [ ] WhatsApp abre correctamente
+- [ ] Filtros por estado funcionan
 
 ---
 
-### FASE 6: Dividir mapa-ofertas.js (1 sesión)
-> **1,185 líneas → 5 módulos**
+### FASE 6: Dividir mapa-ofertas.js (1 sesión) ✅ COMPLETADA
+> **1,170 líneas → 5 módulos**
 
 #### Estructura final:
 ```
 js/mapa-ofertas/
-├── index.js             # Imports + inicialización (~80 líneas)
-├── mapa.js              # Inicialización Google Maps (~150 líneas)
-├── markers.js           # Creación markers + clustering (~200 líneas)
-├── detalle.js           # Modal detalle oferta (~200 líneas)
-└── postulacion.js       # Formulario postulación en mapa (~150 líneas)
+├── index.js             # Orquestador principal (225 líneas) ✅
+├── mapa.js              # Google Maps init + controles (244 líneas) ✅
+├── markers.js           # Markers + clusters + filtros (308 líneas) ✅
+├── detalle.js           # Modal detalle + sidebar (317 líneas) ✅
+└── postulacion.js       # Formulario postulación (164 líneas) ✅
 ```
 
-**Commit:** "refactor: Dividir mapa-ofertas.js en 5 módulos"
+**Total:** 1,258 líneas en 5 módulos (todos bajo 500 líneas) ✅
+
+**Mejoras aplicadas:**
+- `verDetalleOferta` (132 líneas) dividida en 5 funciones auxiliares
+- `centrarEnMiUbicacion` (57 líneas) dividida extrayendo `crearMarkerUsuario`
+- `mostrarListaOfertasCluster` (69 líneas) dividida en 3 funciones
+- `crearMarkers` (58 líneas) dividida extrayendo `crearClusterer` y `crearClusterRenderer`
+- Patrón de callbacks compartidos para comunicación entre módulos sin imports circulares
+
+**Archivos actualizados:**
+- `mapa-ofertas.html` → importa `js/mapa-ofertas/index.js`
+- `mapa-ofertas.js` original puede eliminarse después de testing
+
+**Commit:** "refactor: Dividir mapa-ofertas.js en 5 módulos (Fase 6)"
+
+**Testing:** Pendiente verificación manual
+- [ ] Mapa carga correctamente
+- [ ] Markers se muestran
+- [ ] Clustering funciona
+- [ ] Detalle de oferta abre
+- [ ] Postulación desde mapa funciona
+- [ ] Filtros funcionan
+- [ ] Geolocalización funciona
+- [ ] Sidebar lista funciona
 
 ---
 
-### FASE 7: Dividir filtros-avanzados.js (1 sesión)
-> **1,462 líneas → 5 módulos**
+### FASE 7: Dividir filtros-avanzados.js (1 sesión) ✅ COMPLETADA
+> **1,459 líneas → 6 módulos**
 
 #### Estructura final:
 ```
 js/components/filtros-avanzados/
-├── index.js             # FiltrosAvanzados class principal (~150 líneas)
-├── custom-dropdown.js   # Clase CustomDropdown (~200 líneas)
-├── multi-select.js      # Clase MultiSelectDropdown (~220 líneas)
-├── dual-range.js        # Clase DualRangeSlider (~150 líneas)
-└── chips.js             # Gestión de chips activos (~150 líneas)
+├── index.js             # FiltrosAvanzados class principal (458 líneas) ✅
+├── constants.js         # Constantes y utilidades compartidas (68 líneas) ✅
+├── custom-dropdown.js   # Clase CustomDropdown (210 líneas) ✅
+├── multi-select.js      # Clase MultiSelectDropdown (226 líneas) ✅
+├── dual-range.js        # Clase DualRangeSlider (143 líneas) ✅
+└── chips.js             # Template HTML, chips y conteo (312 líneas) ✅
 ```
 
-**Commit:** "refactor: Dividir filtros-avanzados.js en 5 módulos"
+**Total:** 1,417 líneas en 6 módulos (todos bajo 500 líneas) ✅
+
+**Mejoras aplicadas:**
+- `updateChips` (109 líneas) → extraída a chips.js como `getActiveChips` + `renderChipsHTML`
+- `updateFilterCount` (24 líneas) → extraída a chips.js como `countActiveFilters` + `countAdvancedFilters`
+- `render()` HTML template (160 líneas) → extraída a chips.js como `renderFiltrosHTML`
+- Callbacks repetitivos → unificados con helpers `_onFieldChange` y `_onCategoriasChange`
+- `initComponents` (107 líneas) → dividida en `initDesktopComponents` + `initMobileComponents`
+- `bindEvents` (127 líneas) → dividida en `bindDesktopEvents` + `bindMobileEvents` + `bindSharedEvents`
+- `clearAll` (45 líneas) → dividida con `resetDesktopComponents` + `resetMobileComponents`
+
+**Archivos actualizados:**
+- `dashboard.html` → importa `js/components/filtros-avanzados/index.js`
+- `filtros-avanzados.js` original puede eliminarse después de testing
+
+**Commit:** "refactor: Dividir filtros-avanzados.js en 6 módulos (Fase 7)"
+
+**Testing:** Pendiente verificación manual
+- [ ] Filtros avanzados cargan en dashboard
+- [ ] Búsqueda por texto funciona
+- [ ] Multiselect de categorías funciona
+- [ ] Slider de salario funciona
+- [ ] Dropdown de distancia funciona
+- [ ] Dropdown de fecha funciona
+- [ ] Dropdown de ordenar funciona
+- [ ] Chips se muestran y se pueden quitar
+- [ ] Limpiar filtros funciona
+- [ ] Persistencia en localStorage funciona
+- [ ] Vista mobile (bottom sheet) funciona
+- [ ] Sync entre controles desktop/mobile funciona
 
 ---
 
@@ -397,7 +472,7 @@ js/components/filtros-avanzados/
 | 4 | refactor: Dividir dashboard.js | 1 → 6 |
 | 5 | refactor: Dividir mis-aplicaciones.js | 1 → 5 |
 | 6 | refactor: Dividir mapa-ofertas.js | 1 → 5 |
-| 7 | refactor: Dividir filtros-avanzados.js | 1 → 5 |
+| 7 | refactor: Dividir filtros-avanzados.js | 1 → 6 |
 | 8 | refactor: Reducir perfil-trabajador.js | 1 archivo |
 
 **Total:** 7 archivos grandes → ~38 módulos pequeños
@@ -406,16 +481,19 @@ js/components/filtros-avanzados/
 
 ## MÉTRICAS DE ÉXITO
 
-| Métrica | Antes | Actual (Fase 4) | Meta |
+| Métrica | Antes | Actual (Fase 7) | Meta |
 |---------|-------|-----------------|------|
-| Archivos >500 líneas | 7 | 5 (-2: publicar-oferta, dashboard divididos) | 0 |
+| Archivos >500 líneas | 7 | 2 (-5: publicar-oferta, dashboard, mis-aplicaciones, mapa-ofertas, filtros-avanzados divididos) | 0 |
 | Líneas duplicadas | ~800 | ~200 (-600) | <100 |
-| Funciones >30 líneas | 31 | ~20 (reducidas en fases 3-4) | <5 |
+| Funciones >30 líneas | 31 | ~5 (reducidas en fases 3-7) | <5 |
 | Console.logs debug | 18 | 0 ✅ | 0 |
 | Nuevos módulos utils | 0 | 3 (formatting, image-utils, dom-helpers) | 4 |
 | Nuevos componentes | 0 | 2 (oferta-card, rating-input) ✅ | 3 |
 | Módulos publicar-oferta | 1 (2002 líneas) | 6 (1915 líneas, todos <500) ✅ | 6 |
 | Módulos dashboard | 1 (1723 líneas) | 6 (2030 líneas, todos <500) ✅ | 6 |
+| Módulos mis-aplicaciones | 1 (1147 líneas) | 5 (1284 líneas, todos <500) ✅ | 5 |
+| Módulos mapa-ofertas | 1 (1170 líneas) | 5 (1258 líneas, todos <500) ✅ | 5 |
+| Módulos filtros-avanzados | 1 (1459 líneas) | 6 (1417 líneas, todos <500) ✅ | 6 |
 
 ---
 
@@ -487,4 +565,4 @@ js/components/filtros-avanzados/
 ---
 
 *Plan creado: 04 Febrero 2026*
-*Última actualización: 05 Febrero 2026 - Fase 4 completada*
+*Última actualización: 09 Febrero 2026 - Fase 7 completada*

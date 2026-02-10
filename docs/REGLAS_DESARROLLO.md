@@ -379,9 +379,9 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | 30/01/26 | Varios HTML | Estilos inline | Media | ✅ Resuelto |
 | 30/01/26 | 6 archivos JS | Console.logs debug | Media | ✅ Resuelto |
 | 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | ✅ Resuelto - Dividido en 6 módulos (Fase 4) |
-| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1) | **Alta** | 🔄 En progreso - 2/7 completados (publicar-oferta, dashboard) → Ver PLAN_REFACTORIZACION_JS.md |
+| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1) | **Alta** | 🔄 En progreso - 4/7 completados (publicar-oferta, dashboard, mis-aplicaciones, mapa-ofertas) → Ver PLAN_REFACTORIZACION_JS.md |
 | 04/02/26 | Varios JS | 15 patrones de código duplicado (~800 líneas) | Alta | ✅ Resuelto (Fases 1-2) - Creados formatting.js, image-utils.js, dom-helpers.js, oferta-card.js, rating-input.js |
-| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2) | Alta | 🔄 En progreso - Reducidas a ~20 en Fases 3-4 |
+| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2) | Alta | 🔄 En progreso - Reducidas a ~10 en Fases 3-6 |
 | 04/02/26 | 4 archivos JS | 8 console.logs de debug | Baja | ✅ Resuelto (Fase 0) |
 | 30/01/26 | General | Auditoría Lighthouse | Alta | Pendiente |
 | 30/01/26 | General | Meta tags SEO/OG | Media | Pendiente |
