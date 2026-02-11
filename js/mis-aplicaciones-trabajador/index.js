@@ -72,7 +72,6 @@ async function cargarAplicaciones() {
             where('aplicanteEmail', '==', usuario.email),
             orderBy('fechaAplicacion', 'desc')
         );
-
         const querySnapshot = await getDocs(q);
         document.getElementById('loading-screen').style.display = 'none';
 
@@ -81,26 +80,33 @@ async function cargarAplicaciones() {
             actualizarEstadisticas(0, 0, 0, 0);
             return;
         }
-
-        state.todasLasAplicaciones = [];
-        querySnapshot.forEach((docSnap) => {
-            state.todasLasAplicaciones.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        const stats = calcularStats(state.todasLasAplicaciones);
-        actualizarEstadisticas(stats.total, stats.pendientes, stats.aceptados, stats.completados);
-
-        state.aplicacionesFiltradas = [...state.todasLasAplicaciones];
-        await cargarRatingsEmpleadores();
-        mostrarAplicaciones(state.aplicacionesFiltradas);
+        await procesarAplicaciones(querySnapshot);
     } catch (error) {
         console.error('Error al cargar aplicaciones:', error);
-        document.getElementById('loading-screen').innerHTML = `
-            <div class="empty-icon">❌</div>
-            <h2>Error al cargar</h2>
-            <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
-        `;
+        mostrarErrorCarga();
     }
+}
+
+function mostrarErrorCarga() {
+    document.getElementById('loading-screen').innerHTML = `
+        <div class="empty-icon">❌</div>
+        <h2>Error al cargar</h2>
+        <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
+    `;
+}
+
+async function procesarAplicaciones(querySnapshot) {
+    state.todasLasAplicaciones = [];
+    querySnapshot.forEach((docSnap) => {
+        state.todasLasAplicaciones.push({ id: docSnap.id, ...docSnap.data() });
+    });
+
+    const stats = calcularStats(state.todasLasAplicaciones);
+    actualizarEstadisticas(stats.total, stats.pendientes, stats.aceptados, stats.completados);
+
+    state.aplicacionesFiltradas = [...state.todasLasAplicaciones];
+    await cargarRatingsEmpleadores();
+    mostrarAplicaciones(state.aplicacionesFiltradas);
 }
 
 async function cargarRatingsEmpleadores() {
@@ -184,36 +190,12 @@ function limpiarFiltros() {
     mostrarAplicaciones(state.aplicacionesFiltradas);
 }
 
-// --- Toggles de cards ---
-function toggleContacto(uid) {
-    const cont = document.getElementById(`contacto-${uid}`);
-    const btn = document.getElementById(`toggle-contacto-${uid}`);
-    if (!cont) return;
-    const visible = cont.style.display !== 'none';
-    cont.style.display = visible ? 'none' : '';
-    btn.classList.toggle('contacto-abierto', !visible);
-}
-
-function toggleMensaje(appId) {
-    const el = document.getElementById(`msg-${appId}`);
-    if (!el) return;
-    const trunc = el.querySelector('.msg-truncated');
-    const full = el.querySelector('.msg-full');
-    const btn = el.querySelector('.msg-ver-mas');
-    const showing = full.style.display !== 'none';
-    trunc.style.display = showing ? '' : 'none';
-    full.style.display = showing ? 'none' : '';
-    btn.textContent = showing ? 'ver más' : 'ver menos';
-}
-
 // --- Window globals (para onclick en HTML) ---
 window.verOfertaCompleta = verOfertaCompleta;
 window.cancelarAplicacion = cancelarAplicacion;
 window.filtrarPorEstadoBtn = filtrarPorEstadoBtn;
 window.aplicarFiltroCategoriaChip = aplicarFiltroCategoriaChip;
 window.limpiarFiltros = limpiarFiltros;
-window.toggleContacto = toggleContacto;
-window.toggleMensaje = toggleMensaje;
 window.cerrarModal = cerrarModal;
 window.clickFueraModal = clickFueraModal;
 window.calificarEmpleador = calificarEmpleador;

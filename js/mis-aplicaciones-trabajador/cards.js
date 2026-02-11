@@ -3,7 +3,7 @@
  * @module mis-aplicaciones-trabajador/cards
  */
 
-import { formatearFecha, generarEstrellasHTML } from '../utils/formatting.js';
+import { formatearFecha } from '../utils/formatting.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
 
 let state = null;
@@ -102,59 +102,37 @@ function crearAplicacionCard(aplicacion) {
     const fecha = formatearFecha(aplicacion.fechaAplicacion);
     const estado = aplicacion.estado || 'pendiente';
     const config = ESTADO_CONFIG[estado] || ESTADO_CONFIG['pendiente'];
+    const ctaPrincipal = renderCtaPrincipal(aplicacion, estado);
 
-    const seccionContacto = renderContacto(aplicacion, estado);
-    const botonCancelar = renderBotonCancelar(aplicacion, estado);
-    const botonCalificar = renderBotonCalificar(aplicacion, estado);
-
-    return renderCardHTML(aplicacion, config, fecha, seccionContacto, botonCancelar, botonCalificar);
+    return renderCardHTML(aplicacion, config, fecha, ctaPrincipal);
 }
 
-function renderContacto(aplicacion, estado) {
-    if (estado !== 'aceptado' && estado !== 'completado') return '';
+function renderCtaPrincipal(aplicacion, estado) {
+    if (estado === 'pendiente') return renderBotonCancelar(aplicacion, estado);
+    if (estado === 'aceptado') return renderBotonContacto(aplicacion);
+    if (estado === 'completado') return renderBotonCalificar(aplicacion, estado);
+    return '';
+}
 
-    const nombre = aplicacion.empleadorNombre || 'Empleador';
-    const email = aplicacion.empleadorEmail || '';
+function renderBotonContacto(aplicacion) {
     const telefono = aplicacion.empleadorTelefono || null;
-    const uid = aplicacion.id;
-
-    const mensajeWA = encodeURIComponent(
-        `Hola ${nombre}, soy ${state.usuario.nombre || 'el trabajador'} de ChambApp. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada. ¿Cuándo podemos coordinar?`
-    );
-
-    let telefonoWA = '';
-    if (telefono) {
-        const limpio = telefono.replace(/\D/g, '');
-        telefonoWA = limpio.startsWith('51') ? limpio : `51${limpio}`;
+    if (telefono) return renderWhatsAppLink(aplicacion, telefono);
+    const email = aplicacion.empleadorEmail || '';
+    if (email) {
+        return `<a href="mailto:${escapeHtml(email)}" class="btn btn-primary btn-small">📧 Contactar</a>`;
     }
-
-    return `
-        <div class="contacto-colapsable ${estado}">
-            <button class="contacto-toggle-btn" onclick="toggleContacto('${uid}')" id="toggle-contacto-${uid}">
-                📞 Contactar empleador
-            </button>
-            <div class="contacto-contenido" id="contacto-${uid}" style="display:none;">
-                <div class="contacto-datos-compact">
-                    <span>👤 ${escapeHtml(nombre)}</span>
-                    ${telefono ? `<span>📞 ${escapeHtml(telefono)}</span>` : ''}
-                    <span>📧 ${escapeHtml(email)}</span>
-                </div>
-                <div class="contacto-acciones-compact">
-                    ${renderBotonesContacto(telefono, telefonoWA, mensajeWA, email)}
-                </div>
-            </div>
-        </div>
-    `;
+    return '';
 }
 
-function renderBotonesContacto(tel, telefonoWA, msgWA, email) {
-    return `
-        ${tel ? `
-            <a href="https://wa.me/${telefonoWA}?text=${msgWA}" target="_blank" class="contacto-icon-btn whatsapp" title="WhatsApp">📱</a>
-            <a href="tel:${escapeHtml(tel)}" class="contacto-icon-btn llamar" title="Llamar">📞</a>
-        ` : ''}
-        <a href="mailto:${escapeHtml(email)}" class="contacto-icon-btn email" title="Email">📧</a>
-    `;
+function renderWhatsAppLink(aplicacion, telefono) {
+    const nombre = aplicacion.empleadorNombre || 'Empleador';
+    const limpio = telefono.replace(/\D/g, '');
+    const telefonoWA = limpio.startsWith('51') ? limpio : `51${limpio}`;
+    const msg = encodeURIComponent(
+        `Hola ${nombre}, soy ${state.usuario.nombre || 'el trabajador'} ` +
+        `de ChambApp. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada.`
+    );
+    return `<a href="https://wa.me/${telefonoWA}?text=${msg}" target="_blank" class="btn btn-whatsapp btn-small">📱 WhatsApp</a>`;
 }
 
 function renderBotonCancelar(aplicacion, estado) {
@@ -193,54 +171,29 @@ function crearEmpleadorRatingHTML(empleadorId) {
     </span>`;
 }
 
-function renderMensaje(mensaje, appId) {
-    if (!mensaje) return '';
-    const escaped = escapeHtml(mensaje);
-    if (mensaje.length <= 100) {
-        return `<div class="aplicacion-mensaje-compact">
-            <span class="msg-label">💬</span>
-            <span class="msg-text">${escaped}</span>
-        </div>`;
-    }
-    const truncated = escapeHtml(mensaje.substring(0, 100));
-    return `<div class="aplicacion-mensaje-compact">
-        <span class="msg-label">💬</span>
-        <span class="msg-text" id="msg-${appId}">
-            <span class="msg-truncated">${truncated}...</span>
-            <button class="msg-ver-mas" onclick="toggleMensaje('${appId}')">ver más</button>
-            <span class="msg-full" style="display:none;">${escaped}</span>
-        </span>
-    </div>`;
-}
-
-function renderCardHTML(app, config, fecha, contacto, btnCancelar, btnCalificar) {
+function renderCardHTML(app, config, fecha, ctaPrincipal) {
     const catKey = app.ofertaCategoria || 'otros';
+    const rating = crearEmpleadorRatingHTML(app.empleadorId);
+    const salario = app.ofertaSalario
+        ? `<span class="aplicacion-sep">·</span><span class="aplicacion-salario-inline">💰 ${escapeHtml(app.ofertaSalario)}</span>`
+        : '';
+
     return `
-        <div class="aplicacion-card ${config.clase} touchable hover-lift">
-            <div class="aplicacion-header">
-                <div class="aplicacion-info">
-                    <div class="aplicacion-titulo">${escapeHtml(app.ofertaTitulo)}</div>
-                    <span class="aplicacion-categoria ${catKey}">${getCategoriaLabel(app.ofertaCategoria)}</span>
-                    <div class="aplicacion-empleador">👤 ${escapeHtml(app.empleadorNombre)} ${crearEmpleadorRatingHTML(app.empleadorId)}</div>
-                    ${app.ofertaSalario ? `<div class="aplicacion-salario">💰 ${escapeHtml(app.ofertaSalario)}</div>` : ''}
-                </div>
-                <div class="aplicacion-estado">
-                    <span class="estado-badge ${config.clase}">
-                        ${config.icono} ${config.texto}
-                    </span>
-                    <span class="aplicacion-fecha">📅 ${fecha}</span>
-                </div>
+        <div class="aplicacion-card ${config.clase} touchable hover-lift" onclick="verOfertaCompleta('${app.ofertaId}')">
+            <div class="aplicacion-header-compact">
+                <div class="aplicacion-titulo">${escapeHtml(app.ofertaTitulo)}</div>
+                <span class="estado-badge estado-badge--sm ${config.clase}">${config.icono} ${config.texto}</span>
             </div>
-            <div class="estado-descripcion ${config.clase}">${config.descripcion}</div>
-            ${contacto}
-            ${renderMensaje(app.mensaje, app.id)}
-            <div class="aplicacion-actions-row">
-                <button class="btn btn-primary btn-small" onclick="verOfertaCompleta('${app.ofertaId}')">
-                    👁️ Ver Oferta
-                </button>
-                ${btnCancelar}
-                ${btnCalificar}
+            <div class="aplicacion-meta">
+                <span class="aplicacion-categoria ${catKey}">${getCategoriaLabel(app.ofertaCategoria)}</span>
+                <span class="aplicacion-sep">·</span>
+                <span class="aplicacion-fecha">${fecha}</span>
             </div>
+            <div class="aplicacion-meta">
+                <span>👤 ${escapeHtml(app.empleadorNombre)} ${rating}</span>
+                ${salario}
+            </div>
+            ${ctaPrincipal ? `<div class="aplicacion-cta" onclick="event.stopPropagation();">${ctaPrincipal}</div>` : ''}
         </div>
     `;
 }
