@@ -32,57 +32,18 @@ exports.notificarNuevaPostulacion = functions
         }
 
         try {
-            // Obtener token FCM del empleador
-            const empleadorDoc = await db.collection('usuarios').doc(empleadorId).get();
-
-            if (!empleadorDoc.exists) {
-                console.log('Empleador no encontrado:', empleadorId);
-                return null;
-            }
-
-            const empleadorData = empleadorDoc.data();
-            const fcmToken = empleadorData.fcmToken;
-
-            if (!fcmToken) {
-                console.log('Empleador no tiene token FCM:', empleadorId);
-                return null;
-            }
-
-            // Verificar si tiene notificaciones activas
-            if (empleadorData.notificacionesActivas === false) {
-                console.log('Empleador tiene notificaciones desactivadas');
-                return null;
-            }
-
-            // Construir mensaje
+            // Construir datos de notificacion
             const nombreTrabajador = aplicacion.aplicanteNombre || 'Un trabajador';
             const tituloOferta = aplicacion.ofertaTitulo || 'tu oferta';
+            const titulo = 'Nueva postulacion';
+            const cuerpo = `${nombreTrabajador} se postulo a "${tituloOferta}"`;
 
-            const message = {
-                notification: {
-                    title: 'Nueva postulacion',
-                    body: `${nombreTrabajador} se postulo a "${tituloOferta}"`
-                },
-                data: {
-                    tipo: 'nueva_postulacion',
-                    aplicacionId: context.params.aplicacionId,
-                    ofertaId: aplicacion.ofertaId || '',
-                    url: '/mis-aplicaciones.html',
-                    tag: 'postulacion-' + context.params.aplicacionId
-                },
-                token: fcmToken
-            };
-
-            // Enviar notificacion
-            const response = await messaging.send(message);
-            console.log('Notificacion enviada exitosamente:', response);
-
-            // Guardar en coleccion de notificaciones del usuario (para historial)
+            // Siempre guardar en Firestore (historial in-app)
             await db.collection('usuarios').doc(empleadorId)
                 .collection('notificaciones').add({
                     tipo: 'nueva_postulacion',
-                    titulo: message.notification.title,
-                    cuerpo: message.notification.body,
+                    titulo,
+                    cuerpo,
                     leida: false,
                     url: '/mis-aplicaciones.html',
                     datos: {
@@ -92,11 +53,36 @@ exports.notificarNuevaPostulacion = functions
                     },
                     fechaCreacion: admin.firestore.FieldValue.serverTimestamp()
                 });
+            console.log('Notificacion guardada en Firestore para:', empleadorId);
 
+            // Intentar push FCM solo si tiene token
+            const empleadorDoc = await db.collection('usuarios').doc(empleadorId).get();
+            if (!empleadorDoc.exists) return null;
+
+            const empleadorData = empleadorDoc.data();
+            const fcmToken = empleadorData.fcmToken;
+
+            if (!fcmToken || empleadorData.notificacionesActivas === false) {
+                console.log('Sin token FCM o notificaciones desactivadas, solo guardado in-app');
+                return null;
+            }
+
+            const response = await messaging.send({
+                notification: { title: titulo, body: cuerpo },
+                data: {
+                    tipo: 'nueva_postulacion',
+                    aplicacionId: context.params.aplicacionId,
+                    ofertaId: aplicacion.ofertaId || '',
+                    url: '/mis-aplicaciones.html',
+                    tag: 'postulacion-' + context.params.aplicacionId
+                },
+                token: fcmToken
+            });
+            console.log('Push FCM enviado:', response);
             return response;
 
         } catch (error) {
-            console.error('Error enviando notificacion nueva postulacion:', error);
+            console.error('Error en notificacion nueva postulacion:', error);
             return null;
         }
     });
@@ -128,57 +114,18 @@ exports.notificarPostulacionAceptada = functions
         }
 
         try {
-            // Obtener token FCM del trabajador
-            const trabajadorDoc = await db.collection('usuarios').doc(trabajadorId).get();
-
-            if (!trabajadorDoc.exists) {
-                console.log('Trabajador no encontrado:', trabajadorId);
-                return null;
-            }
-
-            const trabajadorData = trabajadorDoc.data();
-            const fcmToken = trabajadorData.fcmToken;
-
-            if (!fcmToken) {
-                console.log('Trabajador no tiene token FCM:', trabajadorId);
-                return null;
-            }
-
-            // Verificar si tiene notificaciones activas
-            if (trabajadorData.notificacionesActivas === false) {
-                console.log('Trabajador tiene notificaciones desactivadas');
-                return null;
-            }
-
-            // Construir mensaje
+            // Construir datos de notificacion
             const nombreEmpleador = despues.empleadorNombre || 'El empleador';
             const tituloOferta = despues.ofertaTitulo || 'la oferta';
+            const titulo = '!Te aceptaron!';
+            const cuerpo = `${nombreEmpleador} acepto tu postulacion para "${tituloOferta}"`;
 
-            const message = {
-                notification: {
-                    title: '!Te aceptaron!',
-                    body: `${nombreEmpleador} acepto tu postulacion para "${tituloOferta}"`
-                },
-                data: {
-                    tipo: 'postulacion_aceptada',
-                    aplicacionId: context.params.aplicacionId,
-                    ofertaId: despues.ofertaId || '',
-                    url: '/mis-aplicaciones-trabajador.html',
-                    tag: 'aceptacion-' + context.params.aplicacionId
-                },
-                token: fcmToken
-            };
-
-            // Enviar notificacion
-            const response = await messaging.send(message);
-            console.log('Notificacion aceptacion enviada:', response);
-
-            // Guardar en coleccion de notificaciones
+            // Siempre guardar en Firestore (historial in-app)
             await db.collection('usuarios').doc(trabajadorId)
                 .collection('notificaciones').add({
                     tipo: 'postulacion_aceptada',
-                    titulo: message.notification.title,
-                    cuerpo: message.notification.body,
+                    titulo,
+                    cuerpo,
                     leida: false,
                     url: '/mis-aplicaciones-trabajador.html',
                     datos: {
@@ -188,11 +135,36 @@ exports.notificarPostulacionAceptada = functions
                     },
                     fechaCreacion: admin.firestore.FieldValue.serverTimestamp()
                 });
+            console.log('Notificacion guardada en Firestore para:', trabajadorId);
 
+            // Intentar push FCM solo si tiene token
+            const trabajadorDoc = await db.collection('usuarios').doc(trabajadorId).get();
+            if (!trabajadorDoc.exists) return null;
+
+            const trabajadorData = trabajadorDoc.data();
+            const fcmToken = trabajadorData.fcmToken;
+
+            if (!fcmToken || trabajadorData.notificacionesActivas === false) {
+                console.log('Sin token FCM o notificaciones desactivadas, solo guardado in-app');
+                return null;
+            }
+
+            const response = await messaging.send({
+                notification: { title: titulo, body: cuerpo },
+                data: {
+                    tipo: 'postulacion_aceptada',
+                    aplicacionId: context.params.aplicacionId,
+                    ofertaId: despues.ofertaId || '',
+                    url: '/mis-aplicaciones-trabajador.html',
+                    tag: 'aceptacion-' + context.params.aplicacionId
+                },
+                token: fcmToken
+            });
+            console.log('Push FCM enviado:', response);
             return response;
 
         } catch (error) {
-            console.error('Error enviando notificacion aceptacion:', error);
+            console.error('Error en notificacion aceptacion:', error);
             return null;
         }
     });
