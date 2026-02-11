@@ -22,14 +22,14 @@
 // ============================================
 
 /**
- * API Key para Google Maps JavaScript API
- * Usado en: google-maps.js (mapas interactivos)
+ * API Key para Google Maps JavaScript API + Geocoding API
+ * Usado en: google-maps.js (mapas), geolocation.js (geocodificación)
+ * Tiene habilitadas: Maps JavaScript API, Geocoding API, Places API
  */
 export const GOOGLE_MAPS_API_KEY = 'AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE';
 
 /**
- * API Key para Google Geocoding API
- * Usado en: geolocation.js (convertir coordenadas a direcciones)
+ * @deprecated - Key inválida (REQUEST_DENIED). Usar GOOGLE_MAPS_API_KEY en su lugar.
  */
 export const GOOGLE_GEOCODING_API_KEY = 'AIzaSyBxUb73baTPSq_nvX5vCjGN_d_ctEC8ySs';
 

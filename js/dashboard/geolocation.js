@@ -6,6 +6,7 @@
  */
 
 import { doc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { GOOGLE_MAPS_API_KEY } from '../config/api-keys.js';
 
 // ============================================
 // VARIABLES DEL MÓDULO
@@ -80,7 +81,7 @@ export async function obtenerCoordenadas() {
 export async function geocodificar(coords) {
     try {
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lng}&key=AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE&language=es`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lng}&key=${GOOGLE_MAPS_API_KEY}&language=es`
         );
 
         const data = await response.json();
@@ -89,8 +90,10 @@ export async function geocodificar(coords) {
             return extraerDatosUbicacion(data.results[0], coords);
         }
 
+        console.error('Geocoding API error:', data.status, data.error_message);
         return crearUbicacionFallback(coords);
-    } catch {
+    } catch (error) {
+        console.error('Error en geocodificación:', error);
         return crearUbicacionFallback(coords);
     }
 }
@@ -157,7 +160,8 @@ export async function obtenerUbicacionGuardada(uid) {
             return data.ubicacion || null;
         }
         return null;
-    } catch {
+    } catch (error) {
+        console.error('Error obteniendo ubicación guardada:', error);
         return null;
     }
 }
@@ -168,7 +172,8 @@ async function actualizarUbicacionSilenciosa(uid) {
         const ubicacion = await geocodificar(coords);
         await guardarUbicacion(uid, ubicacion);
         return ubicacion;
-    } catch {
+    } catch (error) {
+        console.error('Error actualizando ubicación silenciosa:', error);
         return null;
     }
 }
@@ -185,16 +190,34 @@ export async function verificarUbicacion(uid, tipoUsuario) {
     try {
         const ubicacionGuardada = await obtenerUbicacionGuardada(uid);
 
-        if (!ubicacionGuardada) {
-            setTimeout(() => {
-                mostrarModalUbicacion();
-            }, 2000);
+        if (!ubicacionGuardada || !ubicacionGuardada.distrito) {
+            // Sin datos o datos incompletos: re-geocodificar si hay coords
+            if (ubicacionGuardada && ubicacionGuardada.lat && ubicacionGuardada.lng) {
+                await regeocodificarUbicacion(uid, ubicacionGuardada);
+            } else {
+                setTimeout(() => {
+                    mostrarModalUbicacion();
+                }, 2000);
+            }
         } else {
             mostrarBadgeUbicacion(ubicacionGuardada);
             actualizarUbicacionEnBackground(uid);
         }
-    } catch {
-        // Error verificando ubicación
+    } catch (error) {
+        console.error('Error verificando ubicación:', error);
+    }
+}
+
+async function regeocodificarUbicacion(uid, ubicacionVieja) {
+    try {
+        const coords = { lat: ubicacionVieja.lat, lng: ubicacionVieja.lng };
+        const ubicacion = await geocodificar(coords);
+        await guardarUbicacion(uid, ubicacion);
+        mostrarBadgeUbicacion(ubicacion);
+        actualizarUbicacionEnBackground(uid);
+    } catch (error) {
+        console.error('Error re-geocodificando:', error);
+        mostrarBadgeUbicacion({ ...ubicacionVieja, distrito: 'Ubicación detectada' });
     }
 }
 
@@ -234,9 +257,12 @@ export function mostrarBadgeUbicacion(ubicacion) {
         }
     }
 
+    const textoUbicacion = ubicacion.distrito || 'Ubicación detectada';
+    const tituloCompleto = ubicacion.direccionCompleta || textoUbicacion;
+
     badge.innerHTML = `
-        <span class='ubicacion-texto' title='${ubicacion.direccionCompleta || ubicacion.distrito}'>
-            📍 ${ubicacion.distrito}
+        <span class='ubicacion-texto' title='${tituloCompleto}'>
+            📍 ${textoUbicacion}
         </span>
         <button
             class='ubicacion-actualizar'

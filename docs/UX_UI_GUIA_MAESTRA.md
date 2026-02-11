@@ -1,8 +1,8 @@
 # UX/UI GUIA MAESTRA - CHAMBAPP
 
 **Documento de Identidad Visual y Mejoras UX**
-**Versión:** 1.2
-**Fecha:** 28 Enero 2026
+**Versión:** 1.3
+**Fecha:** 11 Febrero 2026
 **Autor:** Análisis de Experto UX/UI
 
 ---
@@ -100,25 +100,28 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 
 ### 2.3 Tono de Voz
 
-| Situación | Tono | Ejemplo |
-|-----------|------|---------|
-| Éxito | Celebratorio | "¡Bacán! Tu oferta ya está publicada" |
-| Error | Comprensivo | "Algo salió mal, pero no te preocupes" |
-| Vacío | Motivador | "Aún no tienes chambas, ¡busquemos una!" |
-| Carga | Paciente | "Buscando las mejores chambas para ti..." |
-| Onboarding | Amigable | "¡Hola! Cuéntanos qué sabes hacer" |
+> **Decisión (30 Ene 2026):** Se eligió tono **neutro y formal** para la UI implementada. El tono coloquial peruano queda reservado para marketing y redes sociales, no para la interfaz de la app. Ver REGLAS_DESARROLLO.md sección 4.5.
+
+| Situación | Tono en UI (implementado) | Tono en Marketing (futuro) |
+|-----------|---------------------------|----------------------------|
+| Éxito | "Tu oferta ha sido publicada" | "¡Bacán! Tu oferta ya está publicada" |
+| Error | "No se pudieron cargar los datos. Intenta nuevamente." | "Algo salió mal, pero no te preocupes" |
+| Vacío | "Sin ofertas disponibles. Explora el mapa o vuelve más tarde." | "Aún no tienes chambas, ¡busquemos una!" |
+| Carga | "Cargando ofertas..." | "Buscando las mejores chambas para ti..." |
+| Onboarding | "Completa tu perfil para comenzar" | "¡Hola! Cuéntanos qué sabes hacer" |
 
 ### 2.4 Vocabulario ChambApp
 
-| Término Genérico | Término ChambApp |
-|------------------|------------------|
-| Trabajo | Chamba |
-| Empleo temporal | Cachuelo |
-| Trabajador | Chambero/Chambera |
-| Aplicar | Postular |
-| Notificación | Alerta |
-| Perfil | Tu perfil |
-| Dashboard | Inicio |
+> **Nota:** En la UI se usa terminología formal. El vocabulario coloquial ("chamba", "chambero") se reserva para la marca y comunicación externa.
+
+| Término Genérico | En la UI (implementado) | En Marketing/Marca |
+|------------------|-------------------------|---------------------|
+| Trabajo temporal | Oferta | Chamba / Cachuelo |
+| Trabajador | Trabajador | Chambero/Chambera |
+| Aplicar | Postular | Postular |
+| Notificación | Notificación | Alerta |
+| Perfil | Tu perfil | Tu perfil |
+| Dashboard | Inicio | Inicio |
 
 ---
 
@@ -732,6 +735,6 @@ Cada empty state debe tener:
 
 ---
 
-**Última actualización:** 10 Febrero 2026
+**Última actualización:** 11 Febrero 2026
 **Próxima revisión:** Al iniciar Fase 2 (Diferenciación)
 

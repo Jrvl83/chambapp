@@ -1887,9 +1887,10 @@ a.stat-card-link:focus-visible {
         font-size: 0.75rem;
     }
 
-    /* Ocultar botón recargar en móvil muy pequeño */
     .ubicacion-actualizar {
-        display: none;
+        width: 24px;
+        height: 24px;
+        font-size: 0.875rem;
     }
 
     /* Botón salir compacto */

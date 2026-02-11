@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 10 Febrero 2026 (sesión 11)
+**Última actualización:** 11 Febrero 2026 (sesión 12)
 
 ---
 
@@ -31,13 +31,15 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ███████████████████████░░░░░ 71% (35/49 tareas)
+FASE 1: ██████████████████░░░░░░░░░░ 63% (38/60 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  20% del proyecto (35/176 tareas)
+TOTAL:  20% del proyecto (38/192 tareas)
 ```
+
+> **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + 3 tareas pendientes nuevas (45-48 sin las ya contadas) = 60 tareas totales.
 
 ### Features Implementadas
 - Registro/Login con Firebase Auth
@@ -57,7 +59,7 @@ TOTAL:  20% del proyecto (35/176 tareas)
 
 ---
 
-## FASE 1: EXPERIENCIA WOW (49 tareas)
+## FASE 1: EXPERIENCIA WOW (60 tareas)
 
 ### Tareas Completadas (32)
 
@@ -77,7 +79,7 @@ TOTAL:  20% del proyecto (35/176 tareas)
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (11)
+### Tareas Pendientes (15)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
@@ -88,9 +90,10 @@ TOTAL:  20% del proyecto (35/176 tareas)
 | 40-44 | Testing y QA | Alta |
 | 45-48 | Panel de administración | Media |
 
-### Tareas Diferidas (6)
-- Tasks 18-20, 22: Chat in-app (WhatsApp cubre la necesidad)
-- Task 25-26: Búsqueda avanzada premium
+### Tareas Diferidas (7)
+- Tasks 18, 19, 20: Chat in-app (WhatsApp cubre la necesidad)
+- Task 22: Historial de mensajes (mismo motivo)
+- Tasks 25-26: Búsqueda avanzada premium
 - Task 30: Settings de notificaciones
 
 ---
@@ -233,10 +236,12 @@ css/introjs-custom.css          → Estilos personalizados (existente, mejorado)
 
 ### API Keys
 ```
-Google Maps: AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE
+Google Maps: (ver js/config/api-keys.js - restringida por dominio en Google Cloud Console)
 Firebase: chambapp-7785b
 Plan: Blaze (activo)
 ```
+
+> **Nota:** No incluir API keys en documentación. Están en `js/config/api-keys.js` y restringidas por dominio/referrer en la consola de Google Cloud.
 
 ### Estructura de Carpetas
 ```
@@ -405,9 +410,9 @@ chambapp/
 ## COMANDOS ÚTILES
 
 ```bash
-# Ejecutar localmente
+# Ejecutar localmente (http-server preserva query strings, serve los elimina)
 cd C:\Users\JOEL\Documents\Proyectos\Chambapp
-npx serve
+npx http-server -p 8080 -c-1
 
 # Deploy a producción
 firebase deploy --only hosting
@@ -457,7 +462,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 10 Febrero 2026 (sesión 11)
+> **Última sesión:** 11 Febrero 2026 (sesión 12)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas)
@@ -522,9 +527,9 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Cards móvil: layout horizontal con `data-categoria` para color de borde
 - **Vacantes:** oferta.vacantes (1-20), aceptadosCount, trabajadoresAceptados[]
 - **Flujo vacantes:** activa (aceptando) → en_curso (todas llenas) → completada (todos terminaron)
-- **Servidor local:** usar `npx http-server -p 8080 -c-1` (no `npx serve` que elimina query strings)
+- **Servidor local:** usar `npx http-server -p 8080 -c-1` (preserva query strings necesarios para editar/reutilizar ofertas)
 
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.6
+**Versión documento:** 3.7

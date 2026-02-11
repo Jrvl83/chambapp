@@ -1,8 +1,8 @@
 # REGLAS DE DESARROLLO - CHAMBAPP
 
 **Documento de Estándares y Buenas Prácticas**
-**Versión:** 1.0
-**Fecha:** 30 Enero 2026
+**Versión:** 2.0
+**Fecha:** 11 Febrero 2026
 
 ---
 
@@ -35,16 +35,35 @@ const ofertasActivas = obtenerOfertasActivas();
 css/
   ├── design-system.css    # Reset *, body, variables, colores, tipografía (FUENTE ÚNICA)
   ├── components.css       # Componentes reutilizables (spinner, skeleton, etc.)
+  ├── modal.css            # Modal unificado (12 modales, 7 páginas)
+  ├── oferta-detalle.css   # Detalle de oferta compartido
+  ├── calificacion-modal.css # Modal de calificación
   ├── header-simple.css    # Header de páginas secundarias (FUENTE ÚNICA)
   ├── bottom-nav.css       # Bottom navigation móvil
   ├── animations.css       # Animaciones y transiciones
   └── [pagina].css         # Estilos específicos de página (SIN duplicar base)
 
 js/
-  ├── config/              # Configuración (Firebase, API keys)
+  ├── config/              # Configuración (Firebase, API keys, tours)
+  ├── auth/                # Login y registro
+  ├── utils/               # Funciones utilitarias compartidas
+  │   ├── formatting.js        # Fechas, estrellas, moneda
+  │   ├── image-utils.js       # Optimización/validación imágenes
+  │   ├── dom-helpers.js       # escapeHtml, crearElemento, etc.
+  │   └── calificacion-utils.js # Promedio compartido
   ├── components/          # Componentes JS reutilizables
-  ├── utils/               # Funciones utilitarias
-  └── [pagina].js          # Lógica específica de página
+  │   ├── oferta-card.js       # Card de oferta (3 variantes)
+  │   ├── oferta-detalle.js    # Detalle compartido (3 páginas)
+  │   ├── rating-input.js      # Input de calificación con estrellas
+  │   ├── guided-tour.js       # Motor de guided tours
+  │   └── filtros-avanzados/   # 6 módulos de filtros
+  └── [pagina]/            # Módulos por página (index.js = orquestador)
+      ├── dashboard/           # 6 módulos
+      ├── publicar-oferta/     # 6 módulos
+      ├── mis-aplicaciones/    # 5 módulos
+      ├── mapa-ofertas/        # 5 módulos
+      ├── perfil-trabajador/   # 5 módulos
+      └── mis-aplicaciones-trabajador/ # 4 módulos
 ```
 
 ### 1.3 Convenciones de Nombres
@@ -173,12 +192,14 @@ body { font-family: 'Inter', sans-serif; background: var(--light); }
 ### 3.1 Modularización
 - Archivos JS no deben exceder **500 líneas**
 - Si excede, dividir en módulos por responsabilidad
+- Cada carpeta de página tiene un `index.js` que actúa como orquestador
 
 ```javascript
-// dashboard.js (archivo principal)
-import { cargarEstadisticas } from './dashboard/estadisticas.js';
-import { cargarOfertas } from './dashboard/ofertas.js';
-import { inicializarFiltros } from './dashboard/filtros.js';
+// js/dashboard/index.js (orquestador)
+import { initEmpleador } from './empleador.js';
+import { initTrabajador } from './trabajador.js';
+import { initModalDetalle } from './modal-detalle.js';
+import { initGeolocation } from './geolocation.js';
 ```
 
 ### 3.2 Funciones Pequeñas
@@ -207,6 +228,32 @@ contador++;
 // Incrementar después de validar para evitar contar intentos fallidos
 contador++;
 ```
+
+### 3.5 Patrones de Modularización
+
+> **Establecidos durante la refactorización JS (Feb 2026).** 7 archivos → 41 módulos.
+
+#### Shared State
+Objeto `state` compartido entre módulos de una misma página. El `index.js` lo crea y lo pasa a cada módulo.
+```javascript
+// index.js
+const state = { ofertas: [], usuario: null, filtros: {} };
+initCards(state);
+initFiltros(state);
+```
+
+#### Callback Injection
+Para comunicación entre módulos sin imports circulares. El orquestador inyecta callbacks.
+```javascript
+// index.js
+initAcciones(state, { recargarUI: () => cargarDatos(state) });
+```
+
+#### Entry Points Legacy
+Los archivos originales (`js/dashboard.js`, `js/mapa-ofertas.js`, etc.) se conservan como redirects al nuevo `index.js` modular, para no romper `<script src>` existentes.
+
+#### Template Extraction
+Templates HTML grandes (>15 líneas) se extraen a funciones separadas para mantener la lógica legible.
 
 ---
 
@@ -371,26 +418,38 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 
 ## 10. DEUDA TÉCNICA CONOCIDA
 
-> Actualizar esta sección cuando se identifique deuda técnica
+> Actualizar esta sección cuando se identifique deuda técnica.
 
-| Fecha | Archivo | Problema | Prioridad | Estado |
-|-------|---------|----------|-----------|--------|
-| 30/01/26 | components.css + dashboard-main.css | CSS duplicado | Alta | ✅ Resuelto |
-| 30/01/26 | Varios HTML | Estilos inline | Media | ✅ Resuelto |
-| 30/01/26 | 6 archivos JS | Console.logs debug | Media | ✅ Resuelto |
-| 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | ✅ Resuelto - Dividido en 6 módulos (Fase 4) |
-| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1) | **Alta** | ✅ Resuelto - 7/7 completados, 41 módulos todos <500 líneas → Ver PLAN_REFACTORIZACION_JS.md |
-| 04/02/26 | Varios JS | 15 patrones de código duplicado (~800 líneas) | Alta | ✅ Resuelto (Fases 1-2) - Creados formatting.js, image-utils.js, dom-helpers.js, oferta-card.js, rating-input.js |
-| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2) | Alta | ✅ Resuelto - Todas corregidas en Fases 3-9 |
-| 04/02/26 | 4 archivos JS | 8 console.logs de debug | Baja | ✅ Resuelto (Fase 0) |
-| 30/01/26 | General | Auditoría Lighthouse | Alta | ✅ Resuelto (31/01/26) - Performance 85, A11y 92, SEO 100 |
-| 30/01/26 | General | Meta tags SEO/OG | Media | Pendiente |
-| 03/02/26 | 9 CSS individuales | Reset `*`, `:root` y `body` duplicados en cada CSS de página | Alta | ✅ Resuelto - Centralizado en design-system.css |
-| 03/02/26 | login.html, register.html | ~500 líneas de CSS inline en `<style>` | Alta | ✅ Resuelto - Externalizados a css/login.css y css/register.css |
-| 03/02/26 | accessibility.css | `input:valid/:invalid` bordes prematuros | Media | ✅ Resuelto - Anulado en login.css y register.css |
-| 03/02/26 | Varios HTML | Guided tours rotos e incrustados en cada página | Alta | ✅ Resuelto (04/02/26) - Motor centralizado `guided-tour.js` + `tours.js` |
-| 10/02/26 | 8 archivos CSS | Modal CSS duplicado (~740 líneas) | Alta | ✅ Resuelto - Unificado en `css/modal.css` |
-| 10/02/26 | mis-aplicaciones-trabajador | CSS 855 líneas, botones duplicados, prioridad invertida | Alta | ✅ Resuelto - UX mejorada, CSS 522 líneas, extraído `calificacion-modal.css` |
+### 10.1 Pendiente
+
+| Fecha | Archivo | Problema | Prioridad |
+|-------|---------|----------|-----------|
+| 30/01/26 | General | Meta tags SEO/OG faltantes | Media |
+| 30/01/26 | 20 archivos CSS | 413 colores hex + 733 valores px hardcodeados (deberían ser variables CSS) | Baja - aplicar gradualmente |
+
+### 10.2 Historial Resuelto
+
+<details>
+<summary>Ver 14 items resueltos (Ene-Feb 2026)</summary>
+
+| Fecha | Problema | Resolución |
+|-------|----------|------------|
+| 30/01/26 | CSS duplicado (spinner, skeleton) | Centralizado en components.css |
+| 30/01/26 | Estilos inline en HTML | Movidos a archivos CSS |
+| 30/01/26 | Console.logs de debug | Eliminados de 6 archivos |
+| 31/01/26 | Lighthouse bajo | Performance 85, A11y 92, SEO 100 |
+| 03/02/26 | Reset/body duplicado en 9 CSS | Centralizado en design-system.css |
+| 03/02/26 | CSS inline en login/register | Externalizado a login.css y register.css |
+| 03/02/26 | Bordes prematuros input:valid | Anulado en login.css y register.css |
+| 04/02/26 | Guided tours rotos | Motor centralizado guided-tour.js + tours.js |
+| 04/02/26 | 7 archivos JS >500 líneas | 41 módulos, todos <500 líneas |
+| 04/02/26 | 15 patrones de código duplicado | Creados formatting.js, image-utils.js, dom-helpers.js, oferta-card.js, rating-input.js |
+| 04/02/26 | 31 funciones >30 líneas | Todas corregidas en Fases 3-9 |
+| 04/02/26 | Console.logs restantes | Eliminados (Fase 0) |
+| 10/02/26 | Modal CSS duplicado ~740 líneas | Unificado en css/modal.css |
+| 10/02/26 | UX mis-aplicaciones-trabajador | Hero compacto, stats pills, CSS 855→522 líneas |
+
+</details>
 
 ---
 
@@ -455,17 +514,20 @@ try {
 | Tipo de dato | Dónde | Ejemplo |
 |--------------|-------|---------|
 | Sesión usuario | localStorage | `usuarioChambApp` |
-| Preferencias UI | localStorage | `tema`, `filtros` |
+| Preferencias UI | localStorage | `chambapp-tema`, `chambapp-filtros` |
 | Datos temporales | sessionStorage | `ofertaEnEdicion` |
 | Datos persistentes | Firestore | perfiles, ofertas, aplicaciones |
 | Caché de consultas | Variable JS | `todasLasOfertas` |
 
 ### 13.2 Convenciones de Keys
 ```javascript
-// localStorage keys - usar prefijo chambapp-
-localStorage.setItem('chambapp-usuario', JSON.stringify(usuario));
+// localStorage keys nuevas - usar prefijo chambapp-
 localStorage.setItem('chambapp-tema', 'dark');
 localStorage.setItem('chambapp-onboarding-completed', 'true');
+localStorage.setItem('chambapp-filtros', JSON.stringify(filtros));
+
+// Key legacy (mantener por compatibilidad, no crear nuevas con este formato)
+localStorage.getItem('usuarioChambApp'); // ← formato antiguo, NO usar para keys nuevas
 ```
 
 ### 13.3 Sincronización
@@ -623,7 +685,10 @@ btn.disabled = false;
 - Firestore Rules: limitar escrituras por usuario
 - Cloud Functions: rate limiting en endpoints sensibles
 
-### 19.3 Límites de Negocio
+### 19.3 Límites de Negocio (Planificado - Fase 2)
+
+> **Nota:** Estos límites aún NO están implementados. Se implementarán con el sistema freemium en Fase 2. Actualmente todo es ilimitado.
+
 | Acción | Límite Free | Límite Premium |
 |--------|-------------|----------------|
 | Postulaciones/mes | 5 | Ilimitado |
@@ -632,5 +697,5 @@ btn.disabled = false;
 
 ---
 
-**Última actualización:** 10 Febrero 2026
+**Última actualización:** 11 Febrero 2026
 **Próxima revisión:** Al iniciar Fase 2 (Diferenciación)
