@@ -675,13 +675,16 @@ Cada empty state debe tener:
 | 3-4 | Auditoría y fixes de accesibilidad | PENDIENTE |
 | 4-5 | Dark mode (si hay tiempo) | PENDIENTE |
 
-### Refactorización (Pre-Sprint 8 continuación)
+### Refactorización
 | Tarea | Estado |
 |-------|--------|
 | Eliminar CSS duplicado | ✅ COMPLETADO (30 Ene) |
-| Mover estilos inline a CSS | 🔄 EN PROGRESO |
-| Limpiar console.logs | PENDIENTE |
-| Auditoría Lighthouse | PENDIENTE |
+| Mover estilos inline a CSS | ✅ COMPLETADO (03 Feb) |
+| Limpiar console.logs | ✅ COMPLETADO (04 Feb) |
+| Auditoría Lighthouse | ✅ COMPLETADO (31 Ene) |
+| Modal CSS unificado | ✅ COMPLETADO (10 Feb) - `css/modal.css` |
+| JS modularizado (7→41 módulos) | ✅ COMPLETADO (10 Feb) |
+| UX mis-aplicaciones-trabajador | ✅ COMPLETADO (10 Feb) |
 
 ---
 
@@ -729,6 +732,6 @@ Cada empty state debe tener:
 
 ---
 
-**Última actualización:** 03 Febrero 2026
-**Próxima revisión:** Al completar Fase 2
+**Última actualización:** 10 Febrero 2026
+**Próxima revisión:** Al iniciar Fase 2 (Diferenciación)
 

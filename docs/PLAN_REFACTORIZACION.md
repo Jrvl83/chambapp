@@ -233,6 +233,9 @@ Correr Lighthouse en las páginas principales:
 | 31/01/26 | **Deploy a producción** - Lighthouse post-deploy: Performance 85, A11y 92, SEO 100 |
 | 31/01/26 | **PLAN COMPLETADO** ✅ - Siguiente: Sprint Gestión de Ofertas |
 | 03/02/26 | **CSS centralizado:** Reset `*`, body font y `:root` vars movidos a design-system.css. Eliminados de 9 CSS individuales (~330 líneas). Fix headers inconsistentes. |
+| 10/02/26 | **Modal CSS unificado:** `css/modal.css` reemplaza ~740 líneas duplicadas en 8 archivos CSS. 12 modales estandarizados. |
+| 10/02/26 | **Detalle de oferta compartido:** `js/components/oferta-detalle.js` + `css/oferta-detalle.css` usado en 3 páginas. |
+| 10/02/26 | **UX mis-aplicaciones-trabajador:** Hero compacto, stats como pills filtro, contacto colapsable, mensaje compacto. CSS: 855→522 líneas. Extraído `css/calificacion-modal.css`. Eliminados botones duplicados de `components.css`. |
 
 ---
 

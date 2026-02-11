@@ -322,7 +322,7 @@ tipo: descripción corta
 - Detalle 1
 - Detalle 2
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 **Tipos:**
@@ -379,16 +379,18 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | 30/01/26 | Varios HTML | Estilos inline | Media | ✅ Resuelto |
 | 30/01/26 | 6 archivos JS | Console.logs debug | Media | ✅ Resuelto |
 | 30/01/26 | dashboard.js | 1500+ líneas, modularizar | Baja | ✅ Resuelto - Dividido en 6 módulos (Fase 4) |
-| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1) | **Alta** | 🔄 En progreso - 4/7 completados (publicar-oferta, dashboard, mis-aplicaciones, mapa-ofertas) → Ver PLAN_REFACTORIZACION_JS.md |
+| 04/02/26 | 7 archivos JS | Exceden 500 líneas (máx según regla 3.1) | **Alta** | ✅ Resuelto - 7/7 completados, 41 módulos todos <500 líneas → Ver PLAN_REFACTORIZACION_JS.md |
 | 04/02/26 | Varios JS | 15 patrones de código duplicado (~800 líneas) | Alta | ✅ Resuelto (Fases 1-2) - Creados formatting.js, image-utils.js, dom-helpers.js, oferta-card.js, rating-input.js |
-| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2) | Alta | 🔄 En progreso - Reducidas a ~10 en Fases 3-6 |
+| 04/02/26 | Varios JS | 31 funciones exceden 30 líneas (regla 3.2) | Alta | ✅ Resuelto - Todas corregidas en Fases 3-9 |
 | 04/02/26 | 4 archivos JS | 8 console.logs de debug | Baja | ✅ Resuelto (Fase 0) |
-| 30/01/26 | General | Auditoría Lighthouse | Alta | Pendiente |
+| 30/01/26 | General | Auditoría Lighthouse | Alta | ✅ Resuelto (31/01/26) - Performance 85, A11y 92, SEO 100 |
 | 30/01/26 | General | Meta tags SEO/OG | Media | Pendiente |
-| 03/02/26 | 9 CSS individuales | Reset `*`, `:root` y `body` duplicados en cada CSS de página. Causaba font inconsistente (sistema vs Inter) y headers visualmente diferentes | Alta | ✅ Resuelto - Centralizado en design-system.css |
-| 03/02/26 | login.html, register.html | ~500 líneas de CSS inline en `<style>`, no usaban design-system.css. Font-family inconsistente, border-radius diferentes, sin centrado vertical en register, colores hardcodeados | Alta | ✅ Resuelto - Externalizados a css/login.css y css/register.css |
-| 03/02/26 | accessibility.css | `input:valid/:invalid` aplica bordes verdes/rojos prematuramente antes de validar formulario | Media | ✅ Resuelto - Anulado en login.css y register.css |
-| 03/02/26 | Varios HTML | Guided tours / coach marks rotos e incrustados en cada página. No hay arquitectura centralizada, se rompieron con actualizaciones de HTML/CSS | Alta | Pendiente - Crear `js/components/guided-tour.js`, `css/guided-tour.css`, `js/config/tours.js` |
+| 03/02/26 | 9 CSS individuales | Reset `*`, `:root` y `body` duplicados en cada CSS de página | Alta | ✅ Resuelto - Centralizado en design-system.css |
+| 03/02/26 | login.html, register.html | ~500 líneas de CSS inline en `<style>` | Alta | ✅ Resuelto - Externalizados a css/login.css y css/register.css |
+| 03/02/26 | accessibility.css | `input:valid/:invalid` bordes prematuros | Media | ✅ Resuelto - Anulado en login.css y register.css |
+| 03/02/26 | Varios HTML | Guided tours rotos e incrustados en cada página | Alta | ✅ Resuelto (04/02/26) - Motor centralizado `guided-tour.js` + `tours.js` |
+| 10/02/26 | 8 archivos CSS | Modal CSS duplicado (~740 líneas) | Alta | ✅ Resuelto - Unificado en `css/modal.css` |
+| 10/02/26 | mis-aplicaciones-trabajador | CSS 855 líneas, botones duplicados, prioridad invertida | Alta | ✅ Resuelto - UX mejorada, CSS 522 líneas, extraído `calificacion-modal.css` |
 
 ---
 
@@ -630,5 +632,5 @@ btn.disabled = false;
 
 ---
 
-**Última actualización:** 05 Febrero 2026
-**Próxima revisión:** Después de Fase 8 (refactorización JS completa)
+**Última actualización:** 10 Febrero 2026
+**Próxima revisión:** Al iniciar Fase 2 (Diferenciación)

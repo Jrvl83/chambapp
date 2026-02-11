@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 10 Febrero 2026 (sesión 10)
+**Última actualización:** 10 Febrero 2026 (sesión 11)
 
 ---
 
@@ -259,6 +259,7 @@ chambapp/
 │   ├── design-system.css               # Variables CSS, tokens, reset
 │   ├── components.css                  # Componentes reutilizables (cards, badges, etc.)
 │   ├── modal.css                       # Modal unificado (12 modales, 7 páginas)
+│   ├── calificacion-modal.css          # Modal de calificación (estrellas, comentario)
 │   ├── oferta-detalle.css              # Detalle de oferta compartido
 │   ├── animations.css                  # Animaciones globales
 │   ├── bottom-nav.css                  # Navegación inferior móvil
@@ -296,6 +297,7 @@ chambapp/
 │   │   ├── formatting.js              # Fechas, estrellas, moneda
 │   │   ├── image-utils.js             # Optimización/validación imágenes
 │   │   ├── dom-helpers.js             # escapeHtml, crearElemento, etc.
+│   │   ├── calificacion-utils.js      # Utilidad compartida de calificaciones
 │   │   ├── employer-rating.js         # Rating del empleador
 │   │   ├── google-maps.js             # Carga Google Maps API
 │   │   ├── geolocation.js             # Geolocalización del usuario
@@ -455,14 +457,16 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 10 Febrero 2026 (sesión 10)
+> **Última sesión:** 10 Febrero 2026 (sesión 11)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas)
 - ✅ **CSS modal unificado:** `css/modal.css` reemplaza duplicados en 8 archivos (~740 líneas eliminadas)
 - ✅ **Detalle de oferta compartido:** `js/components/oferta-detalle.js` + `css/oferta-detalle.css` (3 páginas)
+- ✅ **UX mis-aplicaciones-trabajador:** Prioridad de contenido corregida (~570px→190px sobre cards), contacto colapsable, stats como pills filtro, CSS 855→522 líneas
 
 ### Sesiones
+- **Sesión 11 (10/02/26):** UX mejoras mis-aplicaciones-trabajador (hero compacto, stats pills, contacto colapsable, mensaje compacto, acciones mejoradas). Extraído `calificacion-modal.css`. Actualización de todos los MD.
 - **Sesión 10 (10/02/26):** CSS modal unificado, detalle de oferta compartido, actualización estructura
 - **Sesión 9 (10/02/26):** Refactorización JS Fases 5-9, calificación empleador, Cloud Function ratings
 - **Sesión 8 (07/02/26):** Refactorización JS Fases 2-4 (componentes, publicar-oferta, dashboard)
@@ -523,4 +527,4 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.5
+**Versión documento:** 3.6
