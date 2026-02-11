@@ -84,11 +84,7 @@
                 <img src="/assets/logo/logo-icono.png" alt="ChambApp" class="logo-img">
                 <span class="logo-text">ChambApp</span>
             </a>
-            <!-- ✅ Badge ubicación se insertará aquí dinámicamente -->
-            <div class="user-menu">
-                <span class="user-name" id="user-name">👤 Bienvenido</span>
-                <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
-            </div>
+            <!-- Badge ubicación se insertará aquí dinámicamente -->
         </div>
     </header>
 
@@ -147,37 +143,24 @@
                  ======================================== -->
             <div id="dashboard-trabajador" class="dashboard-view" style="display: none;">
 
-                <!-- Stats Cards Trabajador (Clickeables) -->
-                <div class="stats-grid stagger-fast">
-                    <a href="mapa-ofertas.html" class="stat-card stat-card-link touchable hover-lift">
-                        <div class="stat-icon" id="stat-icon-t1">📋</div>
-                        <div class="stat-info">
-                            <h3 id="stat-number-t1">0</h3>
-                            <p id="stat-label-t1">Ofertas Disponibles</p>
-                        </div>
+                <!-- Stats Pills Trabajador (Compactas) -->
+                <div class="stats-pills">
+                    <a href="mapa-ofertas.html" class="stat-pill stat-pill--primary">
+                        <span class="stat-pill-number" id="stat-number-t1">0</span>
+                        <span class="stat-pill-label" id="stat-label-t1">disponibles</span>
                     </a>
-                    <a href="mis-aplicaciones-trabajador.html" class="stat-card stat-card-link touchable hover-lift">
-                        <div class="stat-icon" id="stat-icon-t2">💼</div>
-                        <div class="stat-info">
-                            <h3 id="stat-number-t2">0</h3>
-                            <p id="stat-label-t2">Mis Aplicaciones</p>
-                        </div>
+                    <a href="mis-aplicaciones-trabajador.html" class="stat-pill stat-pill--secondary">
+                        <span class="stat-pill-number" id="stat-number-t2">0</span>
+                        <span class="stat-pill-label" id="stat-label-t2">postuladas</span>
                     </a>
-                    <a href="historial-calificaciones.html" class="stat-card stat-card-link touchable hover-lift">
-                        <div class="stat-icon" id="stat-icon-t3">🤝</div>
-                        <div class="stat-info">
-                            <h3 id="stat-number-t3">0</h3>
-                            <p id="stat-label-t3">Trabajos Completados</p>
-                        </div>
+                    <a href="historial-calificaciones.html" class="stat-pill stat-pill--accent">
+                        <span class="stat-pill-number" id="stat-number-t3">0</span>
+                        <span class="stat-pill-label" id="stat-label-t3">completadas</span>
                     </a>
                 </div>
 
                 <!-- Ofertas Section -->
                 <section class="section">
-                    <div class="section-header">
-                        <h2>Chambas Disponibles</h2>
-                    </div>
-
                     <!-- Panel de Filtros Avanzados -->
                     <div id="filtros-avanzados-container" class="filtros-avanzados">
                         <!-- Componente se inicializa via JavaScript -->

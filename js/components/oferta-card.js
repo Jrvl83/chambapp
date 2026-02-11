@@ -5,7 +5,7 @@
  * @module components/oferta-card
  */
 
-import { formatearFecha } from '../utils/formatting.js';
+import { formatearFecha, esHoy } from '../utils/formatting.js';
 
 /**
  * Obtiene el texto de ubicación de una oferta
@@ -78,37 +78,41 @@ export function crearOfertaCardTrabajador(oferta, id, opciones = {}) {
         formatearDistancia = (d) => d < 1 ? `${Math.round(d * 1000)}m` : `${d.toFixed(1)}km`
     } = opciones;
 
-    const ubicacionTexto = obtenerTextoUbicacion(oferta.ubicacion);
-    const distanciaBadge = generarDistanciaBadge(distanciaKm, formatearDistancia);
-    const categoriaDisplay = capitalizar(oferta.categoria);
-    const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
-    const imagenHTML = generarImagenHTML(oferta);
+    const datos = {
+        ubicacionTexto: obtenerTextoUbicacion(oferta.ubicacion),
+        distanciaBadge: generarDistanciaBadge(distanciaKm, formatearDistancia),
+        categoriaDisplay: capitalizar(oferta.categoria),
+        imagenHTML: generarImagenHTML(oferta),
+        tieneImagen: oferta.imagenesURLs && oferta.imagenesURLs.length > 0,
+        fechaRef: oferta.fechaActualizacion || oferta.fechaCreacion,
+        yaAplico
+    };
 
-    const footerHTML = yaAplico
-        ? `<span class="oferta-badge">✅ Ya aplicaste</span>
-           <button class="btn btn-secondary btn-small" onclick="verDetalle('${id}')">Ver Detalles</button>`
-        : `<button class="btn btn-primary btn-small" onclick="verDetalle('${id}')">Ver Detalles</button>`;
+    return templateCardTrabajador(oferta, id, datos);
+}
+
+function templateCardTrabajador(oferta, id, datos) {
+    const claseHoy = esHoy(datos.fechaRef) ? 'oferta-fecha--hoy' : '';
+    const cat = oferta.categoria || 'otros';
+    const badgeAplico = datos.yaAplico ? '<span class="oferta-badge">✅ Ya aplicaste</span>' : '';
 
     return `
-        <div class="oferta-card touchable hover-lift ${tieneImagen ? 'con-imagen' : ''}" data-categoria="${oferta.categoria || 'otros'}">
-            <div class="oferta-categoria-bar ${oferta.categoria || 'otros'}"></div>
-            ${imagenHTML}
+        <div class="oferta-card touchable hover-lift ${datos.tieneImagen ? 'con-imagen' : ''}" data-categoria="${cat}" onclick="verDetalle('${id}')">
+            <div class="oferta-categoria-bar ${cat}"></div>
+            ${datos.imagenHTML}
             <div class="oferta-card-body">
                 <div class="oferta-header">
-                    <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
-                    <span class="oferta-fecha">${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion)}</span>
+                    <span class="oferta-categoria ${cat}">${datos.categoriaDisplay}</span>
+                    <span class="oferta-fecha ${claseHoy}">${formatearFecha(datos.fechaRef)}</span>
                 </div>
                 <h3 class="oferta-titulo">${oferta.titulo}</h3>
-                <p class="oferta-descripcion">${oferta.descripcion?.substring(0, 100) || ''}...</p>
+                <span class="detalle detalle-salario">💰 ${oferta.salario}</span>
                 <div class="oferta-detalles">
-                    <span class="detalle detalle-salario">💰 ${oferta.salario}</span>
-                    <span class="detalle">📍 ${ubicacionTexto}</span>
-                    ${distanciaBadge}
+                    <span class="detalle">📍 ${datos.ubicacionTexto}</span>
+                    ${datos.distanciaBadge}
                     ${(oferta.vacantes || 1) > 1 ? `<span class="detalle">👥 ${oferta.vacantes} vacantes</span>` : ''}
                 </div>
-                <div class="oferta-footer">
-                    ${footerHTML}
-                </div>
+                ${badgeAplico ? `<div class="oferta-footer">${badgeAplico}</div>` : ''}
             </div>
         </div>
     `;

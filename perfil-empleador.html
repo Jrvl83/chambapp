@@ -123,6 +123,24 @@
 
         .profile-actions {
             margin-top: 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-logout-perfil {
+            padding: 0.625rem 1.25rem;
+            background: transparent;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout-perfil:active {
+            background: var(--danger);
+            color: white;
         }
 
         /* Section Card */
@@ -441,6 +459,9 @@
             <div class="profile-actions">
                 <button class="btn btn-primary" onclick="guardarPerfil()" id="btn-guardar">
                     💾 Guardar Cambios
+                </button>
+                <button class="btn btn-logout-perfil" onclick="cerrarSesion()">
+                    Cerrar Sesión
                 </button>
             </div>
         </div>

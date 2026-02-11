@@ -4,7 +4,7 @@
 // ============================================
 
 /**
- * Formatear fecha en formato relativo (Hoy, Ayer, Hace X días) o absoluto
+ * Formatear fecha: "Hoy 2:00pm" si es hoy, "09/02/2026" si es otro día
  * @param {Timestamp|Date|string} timestamp - Fecha a formatear
  * @param {string} formato - 'relativo' (default) o 'absoluto'
  * @returns {string} Fecha formateada
@@ -23,23 +23,44 @@ export function formatearFecha(timestamp, formato = 'relativo') {
             });
         }
 
-        // Formato relativo
-        const ahora = new Date();
-        const diff = ahora - fecha;
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-        if (dias === 0) return 'Hoy';
-        if (dias === 1) return 'Ayer';
-        if (dias < 7) return `Hace ${dias} días`;
+        if (esHoy(fecha)) {
+            return `Hoy ${formatearHora(fecha)}`;
+        }
 
         return fecha.toLocaleDateString('es-PE', {
             day: '2-digit',
-            month: 'short',
+            month: '2-digit',
             year: 'numeric'
         });
     } catch (error) {
         return 'Reciente';
     }
+}
+
+/**
+ * Verifica si una fecha es del día de hoy
+ * @param {Timestamp|Date|string} timestamp - Fecha a verificar
+ * @returns {boolean}
+ */
+export function esHoy(timestamp) {
+    if (!timestamp) return false;
+    try {
+        const fecha = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        const ahora = new Date();
+        return fecha.getDate() === ahora.getDate()
+            && fecha.getMonth() === ahora.getMonth()
+            && fecha.getFullYear() === ahora.getFullYear();
+    } catch {
+        return false;
+    }
+}
+
+function formatearHora(fecha) {
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'pm' : 'am';
+    horas = horas % 12 || 12;
+    return `${horas}:${minutos}${ampm}`;
 }
 
 /**

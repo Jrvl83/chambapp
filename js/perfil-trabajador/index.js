@@ -5,7 +5,7 @@
 
 // Firebase
 import { auth, db, storage } from '../config/firebase-init.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { generarEstrellasHTML } from '../utils/formatting.js';
 
@@ -318,3 +318,13 @@ window.eliminarHabilidad = eliminarHabilidad;
 window.abrirModalResponder = abrirModalResponder;
 window.cerrarModalResponder = cerrarModalResponder;
 window.enviarRespuesta = enviarRespuesta;
+
+// Sesión
+window.cerrarSesion = async function () {
+    try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error('Error cerrando sesión:', error);
+    }
+};

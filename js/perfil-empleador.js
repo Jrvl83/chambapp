@@ -5,7 +5,7 @@
 
 // Firebase - Importar instancias centralizadas
 import { auth, db, storage } from './config/firebase-init.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { optimizarImagen, validarArchivoImagen } from './utils/image-utils.js';
@@ -367,3 +367,11 @@ function renderBarrasDistribucion(distribucion, total) {
 // ============================================
 window.guardarPerfil = guardarPerfil;
 window.previsualizarFoto = previsualizarFoto;
+window.cerrarSesion = async function () {
+    try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error('Error cerrando sesión:', error);
+    }
+};
