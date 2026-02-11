@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/header-simple.css?v=2">
     <link rel="stylesheet" href="css/mis-aplicaciones-trabajador.css">
+    <link rel="stylesheet" href="css/calificacion-modal.css">
     <link rel="stylesheet" href="css/oferta-detalle.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
     <link rel="stylesheet" href="css/animations.css">
@@ -63,78 +64,48 @@
 
     <main>
     <div class="container page-content">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="page-title">
-                <h1>📋 Mis Postulaciones</h1>
-                <p>Revisa el estado de tus aplicaciones a chambas</p>
-            </div>
-            <a href="dashboard.html" class="btn btn-primary">
-                🔍 Buscar más chambas
+        <!-- Page Header Compacto -->
+        <div class="page-header-compact">
+            <h1 class="page-title-compact">Mis Postulaciones</h1>
+            <a href="mapa-ofertas.html" class="btn-buscar-chambas">
+                🔍 Buscar chambas
             </a>
         </div>
 
-        <!-- Estadísticas -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="total-aplicaciones">0</div>
-                    <div class="stat-label">Total Postulaciones</div>
-                </div>
-            </div>
-            <div class="stat-card stat-pendiente">
-                <div class="stat-icon">🟡</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="pendientes">0</div>
-                    <div class="stat-label">Pendientes</div>
-                </div>
-            </div>
-            <div class="stat-card stat-aceptado">
-                <div class="stat-icon">✅</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="aceptados">0</div>
-                    <div class="stat-label">Aceptados</div>
-                </div>
-            </div>
-            <div class="stat-card stat-completado">
-                <div class="stat-icon">🏆</div>
-                <div class="stat-content">
-                    <div class="stat-number" id="completados">0</div>
-                    <div class="stat-label">Completados</div>
-                </div>
-            </div>
+        <!-- Stats + Filtros rápidos por estado -->
+        <div class="stats-filtros-strip">
+            <button class="filtro-btn active" data-estado="" onclick="filtrarPorEstadoBtn('')">
+                <span class="filtro-num" id="total-aplicaciones">0</span> Total
+            </button>
+            <button class="filtro-btn" data-estado="pendiente" onclick="filtrarPorEstadoBtn('pendiente')">
+                <span class="filtro-num" id="pendientes">0</span> Pendientes
+            </button>
+            <button class="filtro-btn" data-estado="aceptado" onclick="filtrarPorEstadoBtn('aceptado')">
+                <span class="filtro-num" id="aceptados">0</span> Aceptados
+            </button>
+            <button class="filtro-btn" data-estado="completado" onclick="filtrarPorEstadoBtn('completado')">
+                <span class="filtro-num" id="completados">0</span> Completados
+            </button>
         </div>
 
-        <!-- Filtros -->
-        <div class="filters-container">
-            <div class="filter-group">
-                <label for="filtro-estado">Estado:</label>
-                <select id="filtro-estado" onchange="aplicarFiltros()">
-                    <option value="">Todos</option>
-                    <option value="pendiente">🟡 Pendientes</option>
-                    <option value="aceptado">✅ Aceptados</option>
-                    <option value="completado">🏁 Completados</option>
-                    <option value="rechazado">❌ No seleccionados</option>
+        <!-- Filtro de categoría inline -->
+        <div class="filtros-inline">
+            <div class="filtro-chip-select">
+                <select id="filtro-categoria" onchange="aplicarFiltroCategoriaChip()">
+                    <option value="">Categoría</option>
+                    <option value="construccion">🏗️ Construcción</option>
+                    <option value="electricidad">⚡ Electricidad</option>
+                    <option value="gasfiteria">🔧 Gasfitería</option>
+                    <option value="pintura">🎨 Pintura</option>
+                    <option value="carpinteria">🪵 Carpintería</option>
+                    <option value="limpieza">🧹 Limpieza</option>
+                    <option value="jardineria">🌿 Jardinería</option>
+                    <option value="mecanica">🔩 Mecánica</option>
+                    <option value="otros">📦 Otros</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label for="filtro-categoria">Categoría:</label>
-                <select id="filtro-categoria" onchange="aplicarFiltros()">
-                    <option value="">Todas</option>
-                    <option value="construccion">Construcción</option>
-                    <option value="electricidad">Electricidad</option>
-                    <option value="gasfiteria">Gasfitería</option>
-                    <option value="pintura">Pintura</option>
-                    <option value="carpinteria">Carpintería</option>
-                    <option value="limpieza">Limpieza</option>
-                    <option value="jardineria">Jardinería</option>
-                    <option value="mecanica">Mecánica</option>
-                    <option value="otros">Otros</option>
-                </select>
-            </div>
-            <button class="btn btn-secondary" onclick="limpiarFiltros()">
-                🔄 Limpiar
+            <button class="filtro-chip-limpiar" id="btn-limpiar-filtros" onclick="limpiarFiltros()" style="display:none;">
+                ✕ Limpiar
             </button>
         </div>
 

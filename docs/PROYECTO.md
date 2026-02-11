@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 04 Febrero 2026 (sesión 7)
+**Última actualización:** 10 Febrero 2026 (sesión 10)
 
 ---
 
@@ -241,26 +241,161 @@ Plan: Blaze (activo)
 ### Estructura de Carpetas
 ```
 chambapp/
-├── index.html, login.html, register.html, dashboard.html
-├── perfil-trabajador.html, perfil-empleador.html
-├── mis-aplicaciones.html, mis-aplicaciones-trabajador.html
-├── mapa-ofertas.html, publicar-oferta.html
-├── historial-calificaciones.html, notificaciones.html
+├── index.html                          # Landing page
+├── login.html, register.html           # Auth
+├── dashboard.html                      # Dashboard principal (empleador/trabajador)
+├── publicar-oferta.html                # Publicar oferta (empleador)
+├── mapa-ofertas.html                   # Mapa interactivo de ofertas
+├── mis-aplicaciones.html               # Gestión de aplicantes (empleador)
+├── mis-aplicaciones-trabajador.html    # Mis postulaciones (trabajador)
+├── perfil-trabajador.html              # Perfil del trabajador
+├── perfil-empleador.html               # Perfil del empleador
+├── historial-ofertas.html              # Historial de ofertas (empleador)
+├── historial-calificaciones.html       # Historial de calificaciones
+├── notificaciones.html                 # Centro de notificaciones
 ├── manifest.json, firebase-messaging-sw.js
+│
 ├── css/
-│   ├── design-system.css, components.css, animations.css
-│   ├── dashboard-main.css, bottom-nav.css
-│   └── [page-specific].css
+│   ├── design-system.css               # Variables CSS, tokens, reset
+│   ├── components.css                  # Componentes reutilizables (cards, badges, etc.)
+│   ├── modal.css                       # Modal unificado (12 modales, 7 páginas)
+│   ├── oferta-detalle.css              # Detalle de oferta compartido
+│   ├── animations.css                  # Animaciones globales
+│   ├── bottom-nav.css                  # Navegación inferior móvil
+│   ├── toast.css                       # Notificaciones toast
+│   ├── notifications.css               # Badge de notificaciones
+│   ├── header-simple.css               # Header simplificado
+│   ├── accessibility.css               # Estilos de accesibilidad
+│   ├── introjs-custom.css              # Estilos guided tours
+│   ├── filtros-avanzados.css           # Filtros avanzados
+│   ├── login.css, register.css         # Auth pages
+│   ├── styles.css                      # Landing page
+│   ├── dashboard-main.css              # Dashboard
+│   ├── dashboard-empleador.css         # Dashboard empleador
+│   ├── publicar-oferta.css             # Publicar oferta
+│   ├── mapa-ofertas.css                # Mapa de ofertas
+│   ├── mis-aplicaciones.css            # Aplicaciones empleador
+│   ├── mis-aplicaciones-trabajador.css # Aplicaciones trabajador
+│   ├── perfil-trabajador.css           # Perfil trabajador
+│   ├── historial-ofertas.css           # Historial ofertas
+│   ├── historial-calificaciones.css    # Historial calificaciones
+│   └── notificaciones.css              # Centro notificaciones
+│
 ├── js/
-│   ├── config/ (firebase-config.js, tours.js)
-│   ├── auth/, dashboard/, utils/
-│   ├── components/ (bottom-nav.js, guided-tour.js)
-│   └── [page-specific].js
+│   ├── config/
+│   │   ├── firebase-config.js          # Configuración Firebase
+│   │   ├── firebase-init.js            # Inicialización Firebase
+│   │   ├── api-keys.js                 # API keys
+│   │   └── tours.js                    # Definiciones de guided tours
+│   │
+│   ├── auth/
+│   │   ├── login.js                    # Login
+│   │   └── register.js                 # Registro
+│   │
+│   ├── utils/
+│   │   ├── formatting.js              # Fechas, estrellas, moneda
+│   │   ├── image-utils.js             # Optimización/validación imágenes
+│   │   ├── dom-helpers.js             # escapeHtml, crearElemento, etc.
+│   │   ├── employer-rating.js         # Rating del empleador
+│   │   ├── google-maps.js             # Carga Google Maps API
+│   │   ├── geolocation.js             # Geolocalización del usuario
+│   │   ├── distance.js                # Cálculo de distancias
+│   │   ├── ubigeo-api.js              # API ubigeo Perú
+│   │   ├── sanitize.js                # Sanitización de datos
+│   │   ├── logger.js                  # Logger
+│   │   └── migrar-ofertas.js          # Migración de datos
+│   │
+│   ├── components/
+│   │   ├── oferta-card.js             # Card de oferta reutilizable
+│   │   ├── oferta-detalle.js          # Detalle de oferta compartido (3 páginas)
+│   │   ├── rating-input.js            # Input de calificación con estrellas
+│   │   ├── bottom-nav.js              # Navegación inferior móvil
+│   │   ├── guided-tour.js             # Motor de guided tours
+│   │   ├── filtros-avanzados.js       # Entry point (legacy)
+│   │   └── filtros-avanzados/         # Módulos de filtros
+│   │       ├── index.js               # Coordinador
+│   │       ├── constants.js           # Constantes (categorías, etc.)
+│   │       ├── custom-dropdown.js     # Dropdown personalizado
+│   │       ├── multi-select.js        # Selector múltiple
+│   │       ├── dual-range.js          # Rango dual (salario)
+│   │       └── chips.js               # Chips de filtros activos
+│   │
+│   ├── dashboard/                     # Módulos del dashboard
+│   │   ├── index.js                   # Coordinador
+│   │   ├── dashboard.js               # Entry point (legacy)
+│   │   ├── empleador.js               # Vista empleador
+│   │   ├── trabajador.js              # Vista trabajador
+│   │   ├── modal-detalle.js           # Modal detalle oferta
+│   │   ├── geolocation.js             # Geo del dashboard
+│   │   └── notificaciones-push.js     # Push notifications
+│   │
+│   ├── publicar-oferta/               # Módulos publicar oferta
+│   │   ├── index.js                   # Coordinador
+│   │   ├── form-navigation.js         # Navegación multi-paso
+│   │   ├── ubicacion.js               # Selección de ubicación
+│   │   ├── google-maps-ubicacion.js   # Mapa para ubicación
+│   │   ├── fotos.js                   # Galería de fotos
+│   │   └── submit.js                  # Envío del formulario
+│   │
+│   ├── mapa-ofertas/                  # Módulos mapa de ofertas
+│   │   ├── index.js                   # Coordinador
+│   │   ├── mapa.js                    # Inicialización del mapa
+│   │   ├── markers.js                 # Marcadores y clusters
+│   │   ├── detalle.js                 # Modal detalle oferta
+│   │   └── postulacion.js             # Postulación desde mapa
+│   │
+│   ├── mis-aplicaciones/              # Módulos aplicaciones (empleador)
+│   │   ├── index.js                   # Coordinador
+│   │   ├── cards.js                   # Renderizado de cards
+│   │   ├── acciones.js                # Aceptar/rechazar/completar
+│   │   ├── calificaciones.js          # Calificar trabajador
+│   │   └── filtros.js                 # Filtros de aplicaciones
+│   │
+│   ├── mis-aplicaciones-trabajador/   # Módulos aplicaciones (trabajador)
+│   │   ├── index.js                   # Coordinador
+│   │   ├── cards.js                   # Renderizado de cards
+│   │   ├── detalle.js                 # Modal detalle oferta
+│   │   └── calificaciones.js          # Calificar empleador
+│   │
+│   ├── perfil-trabajador/             # Módulos perfil trabajador
+│   │   ├── index.js                   # Coordinador
+│   │   ├── portfolio.js               # Portafolio de fotos
+│   │   ├── resenas.js                 # Reseñas y respuestas
+│   │   ├── guardar.js                 # Guardar perfil
+│   │   └── experiencia-habilidades.js # Experiencia y skills
+│   │
+│   ├── notifications/
+│   │   └── fcm-init.js               # Inicialización FCM
+│   │
+│   ├── toast.js                       # Sistema de toasts
+│   ├── notificaciones.js              # Centro de notificaciones
+│   ├── historial-ofertas.js           # Historial de ofertas
+│   ├── historial-calificaciones.js    # Historial de calificaciones
+│   ├── perfil-empleador.js            # Perfil del empleador
+│   │
+│   │  # Legacy entry points (redirigen a módulos)
+│   ├── publicar-oferta.js
+│   ├── mapa-ofertas.js
+│   ├── mis-aplicaciones.js
+│   ├── mis-aplicaciones-trabajador.js
+│   └── perfil-trabajador.js
+│
 ├── assets/
-│   ├── icons/ (PWA)
-│   └── logo/ (logo-completo.png, logo-icono.png)
-├── functions/ (Cloud Functions)
-└── docs/ (documentación)
+│   ├── icons/                         # Iconos PWA
+│   └── logo/                          # logo-completo.png, logo-icono.png
+│
+├── functions/
+│   ├── index.js                       # Cloud Functions (caducidad, ratings)
+│   └── package.json
+│
+└── docs/
+    ├── PROYECTO.md                    # Este archivo
+    ├── REGLAS_DESARROLLO.md           # Estándares de código
+    ├── PLAN_REFACTORIZACION.md        # Plan refactorización CSS
+    ├── PLAN_REFACTORIZACION_JS.md     # Plan modularización JS
+    ├── PLAN_GUIDED_TOURS.md           # Plan guided tours (completado)
+    ├── UX_UI_GUIA_MAESTRA.md         # Guía de diseño
+    └── README.md
 ```
 
 ---
@@ -320,36 +455,18 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 04 Febrero 2026 (sesión 7)
-> **Sprint activo:** Refactorización JS (Fase 1 completada, Fases 2-8 pendientes)
+> **Última sesión:** 10 Febrero 2026 (sesión 10)
 
-### Resumen de lo completado (sesión 7 - 04/02/26)
-1. ✅ **Refactorización JS - Fase 0: Limpieza**
-   - Eliminados 18 console.logs de debug de 4 archivos
+### Refactorizaciones completadas
+- ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas)
+- ✅ **CSS modal unificado:** `css/modal.css` reemplaza duplicados en 8 archivos (~740 líneas eliminadas)
+- ✅ **Detalle de oferta compartido:** `js/components/oferta-detalle.js` + `css/oferta-detalle.css` (3 páginas)
 
-2. ✅ **Refactorización JS - Fase 1: Módulos Utilitarios**
-   - Creado `js/utils/formatting.js` (131 líneas) - fechas, estrellas, moneda
-   - Creado `js/utils/image-utils.js` (174 líneas) - optimización, validación imágenes
-   - Creado `js/utils/dom-helpers.js` (149 líneas) - escapeHtml, crearElemento
-   - **Total: ~380 líneas de código duplicado eliminadas**
-   - Archivos actualizados: 12 archivos usando los nuevos módulos
-
-3. ✅ **Fixes durante implementación:**
-   - Bug `filtros-avanzados.js`: agregar `type="module"` en dashboard.html
-
-### Estado de archivos grandes (pendiente Fases 2-8)
-| Archivo | Líneas | Estado |
-|---------|--------|--------|
-| publicar-oferta.js | 2,002 | ❌ 4.0x límite |
-| dashboard.js | 1,818 | ❌ 3.6x límite |
-| filtros-avanzados.js | 1,458 | ❌ 2.9x límite |
-| mis-aplicaciones.js | 1,228 | ❌ 2.5x límite |
-| perfil-trabajador.js | 1,191 | ❌ 2.4x límite |
-| mapa-ofertas.js | 1,185 | ❌ 2.4x límite |
-
-> Ver `docs/PLAN_REFACTORIZACION_JS.md` para plan completo de Fases 2-8
-
-### Sesiones anteriores
+### Sesiones
+- **Sesión 10 (10/02/26):** CSS modal unificado, detalle de oferta compartido, actualización estructura
+- **Sesión 9 (10/02/26):** Refactorización JS Fases 5-9, calificación empleador, Cloud Function ratings
+- **Sesión 8 (07/02/26):** Refactorización JS Fases 2-4 (componentes, publicar-oferta, dashboard)
+- **Sesión 7 (04/02/26):** Refactorización JS Fases 0-1 (limpieza + módulos utilitarios)
 - **Sesión 6 (04/02/26):** V1 - Vacantes múltiples (1-20 por oferta, transactions, badges)
 - **Sesión 5 (04/02/26):** GT1 - Centralizar guided tours, motor único, fix selectores
 - **Sesión 4 (03/02/26):** OB1 - CSS externalizado login/register, mejoras UX registro

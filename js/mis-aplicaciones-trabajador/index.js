@@ -136,32 +136,84 @@ function actualizarEstadisticas(total, pendientes, aceptados, completados) {
 }
 
 // --- Filtros ---
-function aplicarFiltros() {
-    const filtroEstado = document.getElementById('filtro-estado').value;
-    const filtroCategoria = document.getElementById('filtro-categoria').value;
+function getEstadoActivo() {
+    const btn = document.querySelector('.filtro-btn.active');
+    return btn ? btn.dataset.estado : '';
+}
 
+function filtrarPorEstadoBtn(estado) {
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`.filtro-btn[data-estado="${estado}"]`);
+    if (btn) btn.classList.add('active');
+    aplicarFiltrosCombinados();
+}
+
+function aplicarFiltroCategoriaChip() {
+    const select = document.getElementById('filtro-categoria');
+    const limpiarBtn = document.getElementById('btn-limpiar-filtros');
+    if (select.value) {
+        select.classList.add('has-value');
+        limpiarBtn.style.display = '';
+    } else {
+        select.classList.remove('has-value');
+        limpiarBtn.style.display = 'none';
+    }
+    aplicarFiltrosCombinados();
+}
+
+function aplicarFiltrosCombinados() {
+    const estadoActivo = getEstadoActivo();
+    const catValue = document.getElementById('filtro-categoria').value;
     state.aplicacionesFiltradas = state.todasLasAplicaciones.filter(a => {
-        const estado = a.estado || 'pendiente';
-        const coincideEstado = !filtroEstado || estado === filtroEstado;
-        const coincideCategoria = !filtroCategoria || a.ofertaCategoria === filtroCategoria;
-        return coincideEstado && coincideCategoria;
+        const est = a.estado || 'pendiente';
+        const okEstado = !estadoActivo || est === estadoActivo;
+        const okCat = !catValue || a.ofertaCategoria === catValue;
+        return okEstado && okCat;
     });
-
     mostrarAplicaciones(state.aplicacionesFiltradas);
 }
 
 function limpiarFiltros() {
-    document.getElementById('filtro-estado').value = '';
-    document.getElementById('filtro-categoria').value = '';
+    const select = document.getElementById('filtro-categoria');
+    select.value = '';
+    select.classList.remove('has-value');
+    document.getElementById('btn-limpiar-filtros').style.display = 'none';
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filtro-btn[data-estado=""]').classList.add('active');
     state.aplicacionesFiltradas = [...state.todasLasAplicaciones];
     mostrarAplicaciones(state.aplicacionesFiltradas);
+}
+
+// --- Toggles de cards ---
+function toggleContacto(uid) {
+    const cont = document.getElementById(`contacto-${uid}`);
+    const btn = document.getElementById(`toggle-contacto-${uid}`);
+    if (!cont) return;
+    const visible = cont.style.display !== 'none';
+    cont.style.display = visible ? 'none' : '';
+    btn.classList.toggle('contacto-abierto', !visible);
+}
+
+function toggleMensaje(appId) {
+    const el = document.getElementById(`msg-${appId}`);
+    if (!el) return;
+    const trunc = el.querySelector('.msg-truncated');
+    const full = el.querySelector('.msg-full');
+    const btn = el.querySelector('.msg-ver-mas');
+    const showing = full.style.display !== 'none';
+    trunc.style.display = showing ? '' : 'none';
+    full.style.display = showing ? 'none' : '';
+    btn.textContent = showing ? 'ver más' : 'ver menos';
 }
 
 // --- Window globals (para onclick en HTML) ---
 window.verOfertaCompleta = verOfertaCompleta;
 window.cancelarAplicacion = cancelarAplicacion;
-window.aplicarFiltros = aplicarFiltros;
+window.filtrarPorEstadoBtn = filtrarPorEstadoBtn;
+window.aplicarFiltroCategoriaChip = aplicarFiltroCategoriaChip;
 window.limpiarFiltros = limpiarFiltros;
+window.toggleContacto = toggleContacto;
+window.toggleMensaje = toggleMensaje;
 window.cerrarModal = cerrarModal;
 window.clickFueraModal = clickFueraModal;
 window.calificarEmpleador = calificarEmpleador;
