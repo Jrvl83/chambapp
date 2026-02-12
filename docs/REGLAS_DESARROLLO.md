@@ -63,6 +63,7 @@ js/
       ├── mis-aplicaciones/    # 5 módulos
       ├── mapa-ofertas/        # 5 módulos
       ├── perfil-trabajador/   # 5 módulos
+      ├── perfil-publico/      # 2 módulos (read-only para empleadores)
       └── mis-aplicaciones-trabajador/ # 4 módulos
 ```
 

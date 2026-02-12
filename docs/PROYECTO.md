@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 11 Febrero 2026 (sesión 12)
+**Última actualización:** 11 Febrero 2026 (sesión 13)
 
 ---
 
@@ -56,6 +56,7 @@ TOTAL:  20% del proyecto (38/192 tareas)
 - Bottom navigation móvil (estilo app nativa)
 - Dashboard diferenciado por rol
 - Cards compactas horizontales en móvil
+- Perfil público de trabajador (read-only para empleadores)
 
 ---
 
@@ -253,7 +254,8 @@ chambapp/
 ├── mapa-ofertas.html                   # Mapa interactivo de ofertas
 ├── mis-aplicaciones.html               # Gestión de aplicantes (empleador)
 ├── mis-aplicaciones-trabajador.html    # Mis postulaciones (trabajador)
-├── perfil-trabajador.html              # Perfil del trabajador
+├── perfil-trabajador.html              # Perfil del trabajador (editable)
+├── perfil-publico.html                 # Perfil público trabajador (read-only, empleadores)
 ├── perfil-empleador.html               # Perfil del empleador
 ├── historial-ofertas.html              # Historial de ofertas (empleador)
 ├── historial-calificaciones.html       # Historial de calificaciones
@@ -282,7 +284,8 @@ chambapp/
 │   ├── mapa-ofertas.css                # Mapa de ofertas
 │   ├── mis-aplicaciones.css            # Aplicaciones empleador
 │   ├── mis-aplicaciones-trabajador.css # Aplicaciones trabajador
-│   ├── perfil-trabajador.css           # Perfil trabajador
+│   ├── perfil-trabajador.css           # Perfil trabajador (editable)
+│   ├── perfil-publico.css             # Perfil público trabajador (read-only)
 │   ├── historial-ofertas.css           # Historial ofertas
 │   ├── historial-calificaciones.css    # Historial calificaciones
 │   └── notificaciones.css              # Centro notificaciones
@@ -364,12 +367,16 @@ chambapp/
 │   │   ├── detalle.js                 # Modal detalle oferta
 │   │   └── calificaciones.js          # Calificar empleador
 │   │
-│   ├── perfil-trabajador/             # Módulos perfil trabajador
+│   ├── perfil-trabajador/             # Módulos perfil trabajador (editable)
 │   │   ├── index.js                   # Coordinador
 │   │   ├── portfolio.js               # Portafolio de fotos
 │   │   ├── resenas.js                 # Reseñas y respuestas
 │   │   ├── guardar.js                 # Guardar perfil
 │   │   └── experiencia-habilidades.js # Experiencia y skills
+│   │
+│   ├── perfil-publico/                # Módulos perfil público (read-only)
+│   │   ├── index.js                   # Coordinador + render
+│   │   └── templates.js              # Templates HTML puros
 │   │
 │   ├── notifications/
 │   │   └── fcm-init.js               # Inicialización FCM
@@ -462,15 +469,17 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 11 Febrero 2026 (sesión 12)
+> **Última sesión:** 11 Febrero 2026 (sesión 13)
 
 ### Refactorizaciones completadas
-- ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas)
+- ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
 - ✅ **CSS modal unificado:** `css/modal.css` reemplaza duplicados en 8 archivos (~740 líneas eliminadas)
 - ✅ **Detalle de oferta compartido:** `js/components/oferta-detalle.js` + `css/oferta-detalle.css` (3 páginas)
 - ✅ **UX mis-aplicaciones-trabajador:** Prioridad de contenido corregida (~570px→190px sobre cards), contacto colapsable, stats como pills filtro, CSS 855→522 líneas
 
 ### Sesiones
+- **Sesión 13 (11/02/26):** Perfil público de trabajador (`perfil-publico.html` + 2 módulos JS + CSS). Página read-only para que empleadores evalúen trabajadores antes de aceptar/rechazar. Link "Ver Perfil" en cards de mis-aplicaciones. UX mejoras perfil-trabajador (save floating inteligente, CSS compactación, distribución condicional).
+- **Sesión 12 (11/02/26):** Actualización de todos los MD con estado actual del proyecto.
 - **Sesión 11 (10/02/26):** UX mejoras mis-aplicaciones-trabajador (hero compacto, stats pills, contacto colapsable, mensaje compacto, acciones mejoradas). Extraído `calificacion-modal.css`. Actualización de todos los MD.
 - **Sesión 10 (10/02/26):** CSS modal unificado, detalle de oferta compartido, actualización estructura
 - **Sesión 9 (10/02/26):** Refactorización JS Fases 5-9, calificación empleador, Cloud Function ratings
@@ -532,4 +541,4 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.7
+**Versión documento:** 3.8

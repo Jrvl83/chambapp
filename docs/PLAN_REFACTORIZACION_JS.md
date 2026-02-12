@@ -623,6 +623,15 @@ js/utils/
 **Estado: REFACTORIZACIÓN COMPLETADA** ✅
 Todas las 9 fases completadas. 7 archivos grandes → 41 módulos pequeños, todos bajo 500 líneas.
 
+### Módulos Post-Refactorización
+Nuevos módulos creados después de completar la refactorización, ya siguiendo las reglas:
+
+```
+js/perfil-publico/                # Perfil público read-only (11/02/26)
+├── index.js                      # Orquestador: carga datos + render (312 líneas)
+└── templates.js                  # Templates HTML puros (185 líneas)
+```
+
 ---
 
 *Plan creado: 04 Febrero 2026*

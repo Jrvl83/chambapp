@@ -305,6 +305,7 @@ El header de TODAS las páginas secundarias está centralizado en `css/header-si
 | historial-ofertas.html | `header-simple.css` | Ninguno |
 | historial-calificaciones.html | `header-simple.css` | Ninguno |
 | mapa-ofertas.html | `header-simple.css` | Ninguno |
+| perfil-publico.html | `header-simple.css` | Ninguno |
 | publicar-oferta.html | `header-simple.css` | `.header-content { max-width: 900px }` |
 
 **Nota:** `dashboard.html` usa su propio header definido en `dashboard-main.css` con clase `.dashboard-header`.
@@ -688,6 +689,8 @@ Cada empty state debe tener:
 | Modal CSS unificado | ✅ COMPLETADO (10 Feb) - `css/modal.css` |
 | JS modularizado (7→41 módulos) | ✅ COMPLETADO (10 Feb) |
 | UX mis-aplicaciones-trabajador | ✅ COMPLETADO (10 Feb) |
+| Perfil público trabajador | ✅ COMPLETADO (11 Feb) - `perfil-publico.html` + 2 módulos JS |
+| UX perfil-trabajador (save floating, compactación) | ✅ COMPLETADO (11 Feb) |
 
 ---
 
