@@ -42,8 +42,8 @@ export async function cargarDashboardEmpleador(usuario, userUid) {
 
         const { pendientes, contratados } = contarEstadosAplicaciones(aplicacionesSnap);
 
-        actualizarEstadisticasEmpleador(ofertasSnap.size, aplicacionesSnap.size, contratados);
-        mostrarAlertaPendientes(pendientes);
+        actualizarEstadisticasEmpleador(ofertasSnap.size, pendientes, contratados);
+        actualizarSaludo(pendientes, ofertasSnap.size);
         renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap);
         renderizarActividadReciente(aplicacionesSnap);
 
@@ -82,20 +82,39 @@ function contarEstadosAplicaciones(aplicacionesSnap) {
     return { pendientes, contratados };
 }
 
-function actualizarEstadisticasEmpleador(ofertas, aplicaciones, contratados) {
+function actualizarEstadisticasEmpleador(ofertas, pendientes, contratados) {
     document.getElementById('emp-ofertas-activas').textContent = ofertas;
-    document.getElementById('emp-total-aplicaciones').textContent = aplicaciones;
+    document.getElementById('emp-pendientes').textContent = pendientes;
     document.getElementById('emp-contrataciones').textContent = contratados;
+
+    const statPendientes = document.getElementById('stat-pendientes');
+    if (statPendientes) {
+        statPendientes.classList.toggle('stat-card-urgente', pendientes > 0);
+    }
 }
 
-function mostrarAlertaPendientes(pendientes) {
-    const alertaPendientes = document.getElementById('alerta-pendientes');
+function actualizarSaludo(pendientes, totalOfertas) {
+    const saludo = document.getElementById('saludo-empleador');
+    const nombre = document.getElementById('saludo-nombre');
+    const mensaje = document.getElementById('saludo-mensaje');
+    const action = document.getElementById('saludo-action');
+    if (!saludo) return;
+
+    const primerNombre = usuarioData?.nombre?.split(' ')[0] || 'Usuario';
+    nombre.textContent = `Hola, ${primerNombre}`;
+
     if (pendientes > 0) {
-        alertaPendientes.style.display = 'flex';
-        document.getElementById('pendientes-count').textContent =
-            `${pendientes} postulacion${pendientes > 1 ? 'es' : ''}`;
+        mensaje.textContent = 'Tienes postulaciones nuevas por revisar';
+        saludo.classList.add('saludo-urgente');
+        action.style.display = '';
+    } else if (totalOfertas > 0) {
+        mensaje.textContent = 'Tus ofertas están al día ✓';
+        saludo.classList.remove('saludo-urgente');
+        action.style.display = 'none';
     } else {
-        alertaPendientes.style.display = 'none';
+        mensaje.textContent = 'Publica tu primera oferta para encontrar trabajadores';
+        saludo.classList.remove('saludo-urgente');
+        action.style.display = 'none';
     }
 }
 
@@ -119,9 +138,11 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
 
     const { aplicacionesPorOferta, pendientesPorOferta } = contarAplicacionesPorOferta(aplicacionesSnap);
 
-    ofertasSnap.forEach((docSnap) => {
-        const oferta = docSnap.data();
-        const id = docSnap.id;
+    const ofertas = ordenarOfertasPorUrgencia(
+        ofertasSnap, pendientesPorOferta
+    );
+
+    ofertas.forEach(({ id, oferta }) => {
         const numAplicaciones = aplicacionesPorOferta[id] || 0;
         const numPendientes = pendientesPorOferta[id] || 0;
 
@@ -129,6 +150,26 @@ function renderizarOfertasEmpleador(ofertasSnap, aplicacionesSnap) {
             numAplicaciones,
             numPendientes
         });
+    });
+}
+
+function ordenarOfertasPorUrgencia(ofertasSnap, pendientesPorOferta) {
+    const ofertas = [];
+    ofertasSnap.forEach(docSnap => {
+        ofertas.push({ id: docSnap.id, oferta: docSnap.data() });
+    });
+
+    return ofertas.sort((a, b) => {
+        const pendA = pendientesPorOferta[a.id] || 0;
+        const pendB = pendientesPorOferta[b.id] || 0;
+
+        if (pendA > 0 && pendB === 0) return -1;
+        if (pendA === 0 && pendB > 0) return 1;
+        if (pendA > 0 && pendB > 0) return pendB - pendA;
+
+        const fechaA = a.oferta.fechaCreacion?.toDate?.() || new Date(0);
+        const fechaB = b.oferta.fechaCreacion?.toDate?.() || new Date(0);
+        return fechaB - fechaA;
     });
 }
 

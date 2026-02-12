@@ -143,7 +143,7 @@
                 // Empleador: ver candidatos
                 bottomNavExplore.href = 'mis-aplicaciones.html';
                 if (iconExplore) iconExplore.textContent = '👥';
-                if (labelExplore) labelExplore.textContent = 'Candidatos';
+                if (labelExplore) labelExplore.textContent = 'Talento';
             }
         }
 

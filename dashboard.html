@@ -177,14 +177,14 @@
                  ======================================== -->
             <div id="dashboard-empleador" class="dashboard-view" style="display: none;">
 
-                <!-- Alerta de Pendientes -->
-                <div class="alerta-pendientes" id="alerta-pendientes" style="display: none;">
-                    <div class="alerta-icon">🔔</div>
-                    <div class="alerta-content">
-                        <strong id="pendientes-count">0 postulaciones</strong> pendientes de revisar
+                <!-- Saludo Contextual -->
+                <div class="saludo-empleador" id="saludo-empleador">
+                    <div class="saludo-texto">
+                        <h2 id="saludo-nombre">Hola</h2>
+                        <p id="saludo-mensaje">Cargando...</p>
                     </div>
-                    <a href="mis-aplicaciones.html" class="alerta-action">
-                        Ver Candidatos →
+                    <a href="mis-aplicaciones.html" class="saludo-action" id="saludo-action" style="display: none;">
+                        Ver →
                     </a>
                 </div>
 
@@ -197,11 +197,11 @@
                             <p>Ofertas Activas</p>
                         </div>
                     </a>
-                    <a href="mis-aplicaciones.html" class="stat-card stat-card-link touchable hover-lift">
-                        <div class="stat-icon">👥</div>
+                    <a href="mis-aplicaciones.html" class="stat-card stat-card-link touchable hover-lift" id="stat-pendientes">
+                        <div class="stat-icon">⏳</div>
                         <div class="stat-info">
-                            <h3 id="emp-total-aplicaciones">0</h3>
-                            <p>Postulaciones</p>
+                            <h3 id="emp-pendientes">0</h3>
+                            <p>Pendientes</p>
                         </div>
                     </a>
                     <div class="stat-card hover-lift">
@@ -217,8 +217,8 @@
                 <section class="empleador-section" id="seccion-mis-ofertas">
                     <div class="empleador-section-header">
                         <h2>Mis Ofertas</h2>
-                        <a href="publicar-oferta.html" class="btn btn-primary touchable">
-                            ➕ Nueva Oferta
+                        <a href="publicar-oferta.html" class="btn btn-outline touchable">
+                            + Nueva Oferta
                         </a>
                     </div>
 

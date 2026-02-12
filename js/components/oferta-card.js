@@ -140,8 +140,8 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
 
     const badgeClass = numPendientes > 0 ? 'badge-aplicaciones tiene-pendientes' :
                       (numAplicaciones > 0 ? 'badge-aplicaciones' : 'badge-sin-aplicaciones');
-    const badgeText = numPendientes > 0 ? `🔔 ${numPendientes} nuevas` :
-                     (numAplicaciones > 0 ? `${numAplicaciones} postulaciones` : 'Sin postulaciones');
+    const badgeText = numPendientes > 0 ? `🔔 ${numPendientes} ${numPendientes === 1 ? 'nueva' : 'nuevas'}` :
+                     (numAplicaciones > 0 ? `${numAplicaciones} ${numAplicaciones === 1 ? 'postulación' : 'postulaciones'}` : 'Sin postulaciones');
 
     // Escapar título para onclick
     const tituloEscapado = oferta.titulo.replace(/'/g, "\\'");
@@ -154,7 +154,7 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
                 <div class="oferta-header">
                     <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
                     <div class="oferta-header-right">
-                        <span class="oferta-fecha">${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion)}</span>
+                        <span class="oferta-fecha">${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion, 'corto')}</span>
                         <div class="oferta-menu-container">
                             <button class="oferta-menu-btn" onclick="event.stopPropagation(); toggleOfertaMenu('${id}')" aria-label="Más opciones">
                                 ⋮
@@ -173,13 +173,13 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
                 <h3 class="oferta-titulo">${oferta.titulo}</h3>
                 <div class="oferta-detalles">
                     <span class="detalle">📍 ${ubicacionTexto}</span>
-                    <span class="detalle detalle-salario">💰 ${oferta.salario}</span>
+                    <span class="detalle detalle-salario">S/. ${oferta.salario}</span>
                 </div>
                 <div class="oferta-footer">
                     <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
-                    <a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
+                    ${numAplicaciones > 0 ? `<a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
                         👥 Ver Candidatos
-                    </a>
+                    </a>` : ''}
                 </div>
             </div>
         </div>

@@ -23,6 +23,14 @@ export function formatearFecha(timestamp, formato = 'relativo') {
             });
         }
 
+        if (formato === 'corto') {
+            if (esHoy(fecha)) return 'Hoy';
+            return fecha.toLocaleDateString('es-PE', {
+                day: 'numeric',
+                month: 'short'
+            }).replace('.', '');
+        }
+
         if (esHoy(fecha)) {
             return `Hoy ${formatearHora(fecha)}`;
         }

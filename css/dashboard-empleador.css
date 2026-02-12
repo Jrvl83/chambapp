@@ -4,49 +4,53 @@
    ============================================ */
 
 /* ============================================
-   GREETING - Removido (ahora solo en header)
+   SALUDO CONTEXTUAL
    ============================================ */
-
-/* ============================================
-   ALERTA DE PENDIENTES
-   ============================================ */
-.alerta-pendientes {
+.saludo-empleador {
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.25rem;
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 2px solid #f59e0b;
-    border-radius: 12px;
+    background: var(--primary-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     margin-bottom: 1.5rem;
-    animation: alertaPulse 2s ease-in-out infinite;
+    transition: all var(--transition-base);
 }
 
-@keyframes alertaPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+.saludo-empleador.saludo-urgente {
+    background: var(--accent-light);
+    border-color: var(--accent);
 }
 
-.alerta-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-
-.alerta-content {
+.saludo-texto {
     flex: 1;
-    color: #92400e;
-    font-size: 0.9375rem;
+    min-width: 0;
 }
 
-.alerta-content strong {
-    color: #78350f;
+.saludo-texto h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0 0 0.125rem 0;
 }
 
-.alerta-action {
-    background: #f59e0b;
-    color: white;
+.saludo-texto p {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin: 0;
+}
+
+.saludo-urgente .saludo-texto p {
+    color: var(--accent-hover);
+    font-weight: 500;
+}
+
+.saludo-action {
+    background: var(--accent);
+    color: var(--white);
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.875rem;
@@ -54,15 +58,18 @@
     transition: all 0.2s;
 }
 
-.alerta-action:hover {
-    background: #d97706;
-    transform: translateX(4px);
+.saludo-action:hover {
+    background: var(--accent-hover);
+    transform: translateX(2px);
 }
 
 /* ============================================
-   QUICK STATS - Usa estilos de dashboard-main.css
-   Las clases .stats-grid y .stat-card se heredan
+   QUICK STATS - Variante urgencia
    ============================================ */
+.stat-card.stat-card-urgente {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
 
 /* ============================================
    SECTION HEADERS
@@ -212,15 +219,11 @@
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {
-    .alerta-pendientes {
+    .saludo-empleador {
         flex-wrap: wrap;
     }
 
-    .alerta-content {
-        flex-basis: calc(100% - 3rem);
-    }
-
-    .alerta-action {
+    .saludo-action {
         width: 100%;
         text-align: center;
         margin-top: 0.5rem;
@@ -232,13 +235,8 @@
     }
 
     .empleador-section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-
-    .empleador-section-header .btn {
-        width: 100%;
+        flex-direction: row;
+        align-items: center;
     }
 }
 
