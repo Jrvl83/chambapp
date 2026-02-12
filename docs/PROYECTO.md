@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 11 Febrero 2026 (sesión 13)
+**Última actualización:** 12 Febrero 2026 (sesión 14)
 
 ---
 
@@ -469,7 +469,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 11 Febrero 2026 (sesión 13)
+> **Última sesión:** 12 Febrero 2026 (sesión 14)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
@@ -478,6 +478,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **UX mis-aplicaciones-trabajador:** Prioridad de contenido corregida (~570px→190px sobre cards), contacto colapsable, stats como pills filtro, CSS 855→522 líneas
 
 ### Sesiones
+- **Sesión 14 (12/02/26):** UX mejoras dashboard empleador: saludo contextual (reemplaza alerta amarilla), stats "Pendientes" con urgencia, cards ordenadas por prioridad, ocultar "Ver Candidatos" si 0 postulaciones, badge singular/plural, fecha corta, salario "S/.", bottom nav "Talento", botón "Nueva Oferta" outline. Fix settings.local.json corrupto.
 - **Sesión 13 (11/02/26):** Perfil público de trabajador (`perfil-publico.html` + 2 módulos JS + CSS). Página read-only para que empleadores evalúen trabajadores antes de aceptar/rechazar. Link "Ver Perfil" en cards de mis-aplicaciones. UX mejoras perfil-trabajador (save floating inteligente, CSS compactación, distribución condicional).
 - **Sesión 12 (11/02/26):** Actualización de todos los MD con estado actual del proyecto.
 - **Sesión 11 (10/02/26):** UX mejoras mis-aplicaciones-trabajador (hero compacto, stats pills, contacto colapsable, mensaje compacto, acciones mejoradas). Extraído `calificacion-modal.css`. Actualización de todos los MD.
@@ -496,7 +497,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | Botón | Trabajador | Empleador |
 |-------|------------|-----------|
 | 1º | Mis Apps | Historial |
-| 2º | Inicio | Candidatos |
+| 2º | Inicio | Talento |
 | 3º | Explorar | Publicar |
 | 4º | Alertas | Alertas |
 | 5º | Perfil Trab. | Perfil Emp. |
@@ -541,4 +542,4 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.8
+**Versión documento:** 3.9
