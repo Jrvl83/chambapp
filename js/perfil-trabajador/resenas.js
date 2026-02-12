@@ -123,9 +123,15 @@ function mostrarResumenCalificaciones(resenas) {
     const estrellasContainer = document.getElementById('resumen-estrellas');
     estrellasContainer.innerHTML = generarEstrellasHTML(promedio);
 
-    const distribucion = state.perfilData.distribucionCalificaciones || { "5": 0, "4": 0, "3": 0, "2": 0, "1": 0 };
     const distribucionContainer = document.getElementById('resumen-distribucion');
-    distribucionContainer.innerHTML = renderDistribucion(distribucion, total);
+    if (total >= 3) {
+        const distribucion = state.perfilData.distribucionCalificaciones || { "5": 0, "4": 0, "3": 0, "2": 0, "1": 0 };
+        distribucionContainer.innerHTML = renderDistribucion(distribucion, total);
+        distribucionContainer.style.display = '';
+    } else {
+        distribucionContainer.innerHTML = '';
+        distribucionContainer.style.display = 'none';
+    }
 }
 
 // ============================================

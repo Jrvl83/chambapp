@@ -340,9 +340,6 @@
                 <button class="btn btn-primary" onclick="guardarPerfil()">
                     💾 Guardar Cambios
                 </button>
-                <button class="btn btn-logout-perfil" onclick="cerrarSesion()">
-                    Cerrar Sesión
-                </button>
             </div>
         </div>
 
@@ -362,19 +359,19 @@
         <div class="tabs-container">
             <div class="tabs-nav">
                 <button class="tab-btn active" data-tab="datos-personales">
-                    👤 Datos Personales
+                    👤 Datos
                 </button>
                 <button class="tab-btn" data-tab="portfolio">
-                    📸 Portfolio
+                    📸 Fotos
                 </button>
                 <button class="tab-btn" data-tab="experiencia">
                     💼 Experiencia
                 </button>
                 <button class="tab-btn" data-tab="habilidades">
-                    🎯 Habilidades
+                    🎯 Skills
                 </button>
                 <button class="tab-btn" data-tab="disponibilidad">
-                    📅 Disponibilidad
+                    📅 Horario
                 </button>
                 <button class="tab-btn" data-tab="resenas">
                     ⭐ Reseñas
@@ -456,9 +453,6 @@
 
                     <div id="portfolio-empty" class="empty-state-small" style="display: none;">
                         <p>📋 No has agregado fotos a tu portfolio aún</p>
-                        <button class="btn btn-primary btn-small" onclick="document.getElementById('portfolio-input').click()">
-                            📸 Agregar Primera Foto
-                        </button>
                     </div>
                 </div>
             </div>
@@ -479,9 +473,6 @@
 
                     <div id="experiencias-empty" class="empty-state-small">
                         <p>📋 No has agregado experiencia laboral aún</p>
-                        <button class="btn btn-primary btn-small" onclick="agregarExperiencia()">
-                            ➕ Agregar Primera Experiencia
-                        </button>
                     </div>
                 </div>
             </div>
@@ -664,6 +655,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Cerrar Sesion (al fondo, separado de Guardar) -->
+        <div class="logout-bottom">
+            <button class="btn-logout-bottom" onclick="cerrarSesion()">
+                Cerrar Sesión
+            </button>
         </div>
 
         <!-- Floating Save Button (Mobile) -->

@@ -177,6 +177,16 @@ function crearRatingHTML(email, emailEscapado, nombreEscapado) {
 }
 
 // ============================================
+// VER PERFIL LINK
+// ============================================
+
+function crearVerPerfilLink(aplicacion) {
+    if (!aplicacion.aplicanteId) return '';
+    return `<a href="perfil-publico.html?id=${aplicacion.aplicanteId}"
+               class="btn-ver-perfil" onclick="event.stopPropagation()">👤 Ver Perfil</a>`;
+}
+
+// ============================================
 // CARD DE APLICACIÓN
 // ============================================
 
@@ -200,6 +210,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
                         <div class="aplicacion-nombre">${nombre}</div>
                         <div class="aplicacion-email">${email}</div>
                         ${crearRatingHTML(email, emailEscapado, nombreEscapado)}
+                        ${crearVerPerfilLink(aplicacion)}
                     </div>
                 </div>
                 ${crearBadgeEstado(estado)}

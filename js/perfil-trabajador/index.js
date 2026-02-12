@@ -47,7 +47,7 @@ function inicializarModulos() {
     initPortfolio(db, storage, auth, state, { onCompletitudChange: calcularCompletitud });
     initResenas(db, auth, state);
     initGuardar(db, storage, auth, state, {
-        onSaveComplete: () => { calcularCompletitud(); cargarDatosPersonales(); }
+        onSaveComplete: () => { calcularCompletitud(); cargarDatosPersonales(); ocultarSaveFloating(); }
     });
     initExpHabilidades(state);
 }
@@ -125,7 +125,10 @@ function cargarDatosPersonales() {
     document.getElementById('nombre').value = state.perfilData.nombre || '';
     document.getElementById('email').value = state.perfilData.email || state.usuario.email;
     document.getElementById('telefono').value = state.perfilData.telefono || '';
-    document.getElementById('ubicacion').value = state.perfilData.ubicacion || '';
+    const ubic = state.perfilData.ubicacion;
+    const ubicText = typeof ubic === 'object' && ubic
+        ? (ubic.texto_completo || ubic.distrito || '') : (ubic || '');
+    document.getElementById('ubicacion').value = ubicText;
     document.getElementById('fechaNacimiento').value = state.perfilData.fechaNacimiento || '';
     document.getElementById('bio').value = state.perfilData.bio || '';
 
@@ -252,6 +255,27 @@ function inicializarTabs() {
 }
 
 // ============================================
+// SAVE FLOATING INTELIGENTE
+// ============================================
+function mostrarSaveFloating() {
+    const btn = document.querySelector('.btn-save-floating');
+    if (btn) btn.classList.add('visible');
+}
+
+function ocultarSaveFloating() {
+    const btn = document.querySelector('.btn-save-floating');
+    if (btn) btn.classList.remove('visible');
+}
+
+function inicializarSaveFloating() {
+    const form = document.querySelector('.tabs-container');
+    if (!form) return;
+
+    form.addEventListener('input', mostrarSaveFloating);
+    form.addEventListener('change', mostrarSaveFloating);
+}
+
+// ============================================
 // EVENTOS
 // ============================================
 function inicializarEventosBio() {
@@ -270,6 +294,7 @@ function inicializarEventosBio() {
 
 function inicializarEventos() {
     inicializarEventosBio();
+    inicializarSaveFloating();
 
     // Cerrar modales con ESC
     document.addEventListener('keydown', (e) => {
