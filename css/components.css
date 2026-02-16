@@ -461,6 +461,10 @@ select,
     display: none;
 }
 
+.error-message.show {
+    display: block;
+}
+
 /* Character Count */
 .char-count {
     display: block;

@@ -162,5 +162,3 @@ window.sanitizeURL = sanitizeURL;
 window.sanitizeObject = sanitizeObject;
 window.sanitizeOferta = sanitizeOferta;
 window.sanitizePerfil = sanitizePerfil;
-
-console.log('✅ Modulo sanitize.js cargado');

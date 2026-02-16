@@ -6,6 +6,8 @@
  */
 
 import { collection, addDoc, doc, getDoc, updateDoc, serverTimestamp, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { sanitizeText } from '../utils/sanitize.js';
+import { mensajeErrorAmigable } from '../utils/error-handler.js';
 
 // ============================================
 // VARIABLES DEL MÓDULO
@@ -148,18 +150,18 @@ function initSubmitListener() {
         elements.btnSubmit.innerHTML = modoEdicion ? 'Guardando...' : 'Publicando...';
 
         try {
-            // Recopilar datos
+            // Recopilar datos (sanitizar campos de texto libre)
             const ofertaData = {
-                titulo: document.getElementById('titulo').value.trim(),
+                titulo: sanitizeText(document.getElementById('titulo').value.trim()),
                 categoria: document.getElementById('categoria').value,
-                descripcion: document.getElementById('descripcion').value.trim(),
+                descripcion: sanitizeText(document.getElementById('descripcion').value.trim()),
                 ubicacion: ubicacion,
-                salario: document.getElementById('salario').value.trim(),
-                duracion: document.getElementById('duracion').value.trim() || 'No especificada',
-                horario: document.getElementById('horario').value.trim() || 'No especificado',
+                salario: sanitizeText(document.getElementById('salario').value.trim()),
+                duracion: sanitizeText(document.getElementById('duracion').value.trim()) || 'No especificada',
+                horario: sanitizeText(document.getElementById('horario').value.trim()) || 'No especificado',
                 experiencia: document.getElementById('experiencia').value || 'No especificada',
-                habilidades: document.getElementById('habilidades').value.trim() || 'No especificadas',
-                requisitosAdicionales: document.getElementById('requisitos-adicionales').value.trim() || 'Ninguno',
+                habilidades: sanitizeText(document.getElementById('habilidades').value.trim()) || 'No especificadas',
+                requisitosAdicionales: sanitizeText(document.getElementById('requisitos-adicionales').value.trim()) || 'Ninguno',
                 requiereHerramientas: document.getElementById('herramientas').checked,
                 requiereTransporte: document.getElementById('transporte').checked,
                 requiereEquipos: document.getElementById('equipos').checked,
@@ -180,7 +182,7 @@ function initSubmitListener() {
             elements.btnSubmit.disabled = false;
             elements.btnSubmit.innerHTML = originalText;
             if (typeof toastError === 'function') {
-                toastError(modoEdicion ? 'Error al actualizar la oferta' : 'Error al publicar la oferta');
+                toastError(mensajeErrorAmigable(error, modoEdicion ? 'actualizar la oferta' : 'publicar la oferta'));
             }
         }
     });

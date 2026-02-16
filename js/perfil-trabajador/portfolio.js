@@ -6,6 +6,7 @@
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { optimizarImagen, validarArchivoImagen } from '../utils/image-utils.js';
+import { confirmar } from '../components/confirm-modal.js';
 
 let _db = null;
 let _storage = null;
@@ -148,7 +149,13 @@ async function eliminarDeStorage(url) {
 
 export async function eliminarFotoPortfolio(index) {
     try {
-        if (!confirm('¿Eliminar esta foto del portfolio?')) return;
+        const ok = await confirmar({
+            titulo: '¿Eliminar foto?',
+            mensaje: 'Se eliminará esta foto del portfolio.',
+            textoConfirmar: 'Eliminar',
+            tipo: 'danger'
+        });
+        if (!ok) return;
 
         const portfolioURLs = state.perfilData.portfolioURLs || [];
         const urlToDelete = portfolioURLs[index];

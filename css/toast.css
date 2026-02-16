@@ -356,3 +356,16 @@ ACCESIBILIDAD:
 - aria-live="assertive" o "polite"
 - Botón cerrar con aria-label
 */
+
+/* Botón Reintentar dentro de toast */
+.toast-retry-btn {
+    margin-left: 0.5rem;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+    font-size: inherit;
+    padding: 0;
+}

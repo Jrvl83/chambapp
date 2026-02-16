@@ -10,6 +10,10 @@ import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/f
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { optimizarImagen, validarArchivoImagen } from './utils/image-utils.js';
 import { generarEstrellasHTML } from './utils/formatting.js';
+import { validarNombre, validarTelefono } from './utils/validators.js';
+import { showFieldError, hideFieldError } from './utils/form-errors.js';
+import { sanitizeText } from './utils/sanitize.js';
+import { mensajeErrorAmigable, toastErrorConRetry } from './utils/error-handler.js';
 
 // Variables globales
 let perfilData = {};
@@ -38,7 +42,8 @@ onAuthStateChanged(auth, async (user) => {
         }
         
         await cargarPerfil();
-        
+        inicializarValidacionEnVivo();
+
     } else {
         toastError('Debes iniciar sesión');
         setTimeout(() => window.location.href = 'login.html', 1000);
@@ -72,9 +77,10 @@ async function cargarPerfil() {
 
     } catch (error) {
         console.error('Error al cargar perfil:', error);
-        if (typeof toastError === 'function') {
-            toastError('Error al cargar el perfil');
-        }
+        toastErrorConRetry(
+            mensajeErrorAmigable(error, 'cargar el perfil'),
+            () => cargarPerfil()
+        );
     }
 }
 
@@ -200,29 +206,39 @@ async function subirFoto() {
 // ============================================
 async function guardarPerfil() {
     try {
-        const nombre = document.getElementById('nombre').value.trim();
-        const telefono = document.getElementById('telefono').value.trim();
+        let valid = true;
+
+        const rNombre = validarNombre(document.getElementById('nombre').value);
+        if (!rNombre.valid) { showFieldError('nombre', rNombre.error); valid = false; }
+        else { hideFieldError('nombre'); }
+
+        const rTel = validarTelefono(document.getElementById('telefono').value);
+        if (!rTel.valid) { showFieldError('telefono', rTel.error); valid = false; }
+        else { hideFieldError('telefono'); }
+
         const ubicacion = document.getElementById('ubicacion').value.trim();
-        
-        if (!nombre || !telefono || !ubicacion) {
-            if (typeof toastError === 'function') {
-                toastError('Por favor completa los campos obligatorios');
-            } else {
-                alert('Por favor completa los campos obligatorios');
+        if (!ubicacion) { valid = false; }
+
+        if (!valid) {
+            if (typeof toastWarning === 'function') {
+                toastWarning('Revisa los campos marcados en rojo');
             }
             return;
         }
-        
+
+        const nombre = document.getElementById('nombre').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+
         // Deshabilitar botón
         const btnGuardar = document.getElementById('btn-guardar');
         btnGuardar.disabled = true;
         btnGuardar.textContent = '💾 Guardando...';
-        
+
         const datosActualizados = {
             email: perfilData.email || usuario.email,
-            nombre: nombre,
+            nombre: sanitizeText(nombre),
             telefono: telefono,
-            ubicacion: ubicacion,
+            ubicacion: sanitizeText(ubicacion),
             tipo: 'empleador'
         };
         
@@ -257,9 +273,7 @@ async function guardarPerfil() {
     } catch (error) {
         console.error('Error al guardar perfil:', error);
         if (typeof toastError === 'function') {
-            toastError('Error al guardar el perfil');
-        } else {
-            alert('Error al guardar el perfil: ' + error.message);
+            toastError(mensajeErrorAmigable(error, 'guardar el perfil'));
         }
         
         // Restaurar botón
@@ -360,6 +374,25 @@ function renderBarrasDistribucion(distribucion, total) {
         `;
     }
     return html;
+}
+
+// ============================================
+// VALIDACION EN VIVO (ONBLUR)
+// ============================================
+function inicializarValidacionEnVivo() {
+    const nombre = document.getElementById('nombre');
+    const telefono = document.getElementById('telefono');
+
+    if (nombre) nombre.addEventListener('blur', () => {
+        const r = validarNombre(nombre.value);
+        if (!r.valid) showFieldError('nombre', r.error);
+        else hideFieldError('nombre');
+    });
+    if (telefono) telefono.addEventListener('blur', () => {
+        const r = validarTelefono(telefono.value);
+        if (!r.valid) showFieldError('telefono', r.error);
+        else hideFieldError('telefono');
+    });
 }
 
 // ============================================

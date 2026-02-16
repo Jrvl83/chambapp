@@ -387,6 +387,7 @@
                         <div class="form-group">
                             <label for="nombre">Nombre Completo *</label>
                             <input type="text" id="nombre" placeholder="Ej: Juan Pérez García" required>
+                            <span class="error-message" id="nombre-error"></span>
                         </div>
 
                         <div class="form-group">
@@ -398,16 +399,19 @@
                         <div class="form-group">
                             <label for="telefono">Teléfono *</label>
                             <input type="tel" id="telefono" placeholder="999 999 999" required>
+                            <span class="error-message" id="telefono-error"></span>
                         </div>
 
                         <div class="form-group">
                             <label for="ubicacion">Ubicación *</label>
                             <input type="text" id="ubicacion" placeholder="Ej: San Isidro, Lima" required>
+                            <span class="error-message" id="ubicacion-error"></span>
                         </div>
 
                         <div class="form-group">
                             <label for="fechaNacimiento">Fecha de Nacimiento</label>
                             <input type="date" id="fechaNacimiento">
+                            <span class="error-message" id="fechaNacimiento-error"></span>
                         </div>
 
                         <div class="form-group full-width">
@@ -606,6 +610,7 @@
                             <div class="form-group">
                                 <label for="horario-fin">Hasta</label>
                                 <input type="time" id="horario-fin">
+                                <span class="error-message" id="horario-fin-error"></span>
                             </div>
                         </div>
                     </div>

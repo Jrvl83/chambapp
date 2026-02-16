@@ -8,6 +8,9 @@ import { auth, db, storage } from '../config/firebase-init.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { generarEstrellasHTML } from '../utils/formatting.js';
+import { validarNombre, validarTelefono, validarEdadMinima, validarHorarios } from '../utils/validators.js';
+import { validateField, hideFieldError, showFieldError } from '../utils/form-errors.js';
+import { mensajeErrorAmigable, toastErrorConRetry } from '../utils/error-handler.js';
 
 // Modulos
 import { initPortfolio, cargarPortfolio, previsualizarPortfolio, subirFotosPortfolio,
@@ -109,9 +112,10 @@ async function cargarPerfil() {
         cargarTodosLosDatos();
     } catch (error) {
         console.error('Error al cargar perfil:', error);
-        if (typeof toastError === 'function') {
-            toastError('Error al cargar el perfil');
-        }
+        toastErrorConRetry(
+            mensajeErrorAmigable(error, 'cargar el perfil'),
+            () => cargarPerfil()
+        );
     }
 }
 
@@ -292,9 +296,33 @@ function inicializarEventosBio() {
     });
 }
 
+function inicializarValidacionEnVivo() {
+    const nombre = document.getElementById('nombre');
+    const telefono = document.getElementById('telefono');
+    const fechaNac = document.getElementById('fechaNacimiento');
+    const hFin = document.getElementById('horario-fin');
+
+    if (nombre) nombre.addEventListener('blur', () => {
+        validateField('nombre', validarNombre);
+    });
+    if (telefono) telefono.addEventListener('blur', () => {
+        validateField('telefono', validarTelefono);
+    });
+    if (fechaNac) fechaNac.addEventListener('blur', () => {
+        validateField('fechaNacimiento', validarEdadMinima);
+    });
+    if (hFin) hFin.addEventListener('blur', () => {
+        const hInicio = document.getElementById('horario-inicio')?.value || '';
+        const result = validarHorarios(hInicio, hFin.value);
+        if (!result.valid) showFieldError('horario-fin', result.error);
+        else hideFieldError('horario-fin');
+    });
+}
+
 function inicializarEventos() {
     inicializarEventosBio();
     inicializarSaveFloating();
+    inicializarValidacionEnVivo();
 
     // Cerrar modales con ESC
     document.addEventListener('keydown', (e) => {

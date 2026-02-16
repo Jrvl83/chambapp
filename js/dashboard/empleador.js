@@ -7,6 +7,8 @@
 
 import { collection, query, where, orderBy, getDocs, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { crearOfertaCardEmpleador } from '../components/oferta-card.js';
+import { confirmar } from '../components/confirm-modal.js';
+import { mensajeErrorAmigable, toastErrorConRetry } from '../utils/error-handler.js';
 
 // ============================================
 // VARIABLES DEL MÓDULO
@@ -49,6 +51,10 @@ export async function cargarDashboardEmpleador(usuario, userUid) {
 
     } catch (error) {
         console.error('Error cargando dashboard empleador:', error);
+        toastErrorConRetry(
+            mensajeErrorAmigable(error, 'cargar el dashboard'),
+            () => cargarDashboardEmpleador(usuario, userUid)
+        );
     }
 }
 
@@ -295,27 +301,24 @@ export function registrarFuncionesGlobalesEmpleador() {
         window.location.href = `/publicar-oferta.html?id=${ofertaId}`;
     };
 
-    window.eliminarOferta = function (ofertaId, titulo) {
+    window.eliminarOferta = async function (ofertaId, titulo) {
         cerrarTodosLosMenus();
-        mostrarModalConfirmacionEliminar(ofertaId, titulo);
-    };
 
-    window.confirmarEliminarOferta = async function (ofertaId) {
-        const btn = event.target;
-        const textoOriginal = btn.innerHTML;
+        const ok = await confirmar({
+            titulo: '¿Eliminar oferta?',
+            mensaje: `"${titulo}"<br><small>Esta acción no se puede deshacer.</small>`,
+            textoConfirmar: 'Eliminar',
+            tipo: 'danger'
+        });
+        if (!ok) return;
 
         try {
-            btn.disabled = true;
-            btn.innerHTML = '⏳ Eliminando...';
-
             await deleteDoc(doc(db, 'ofertas', ofertaId));
             await eliminarAplicacionesDeOferta(ofertaId);
 
             if (typeof toastSuccess === 'function') {
                 toastSuccess('Oferta eliminada exitosamente');
             }
-
-            window.cerrarModal();
 
             if (usuarioData && usuarioActual) {
                 await cargarDashboardEmpleador(usuarioData, usuarioActual.uid);
@@ -326,8 +329,6 @@ export function registrarFuncionesGlobalesEmpleador() {
             if (typeof toastError === 'function') {
                 toastError('Error al eliminar la oferta');
             }
-            btn.disabled = false;
-            btn.innerHTML = textoOriginal;
         }
     };
 
@@ -343,30 +344,6 @@ function cerrarTodosLosMenus() {
     document.querySelectorAll('.oferta-menu.active').forEach(menu => {
         menu.classList.remove('active');
     });
-}
-
-function mostrarModalConfirmacionEliminar(ofertaId, titulo) {
-    const modalBody = document.getElementById('modal-body');
-    modalBody.innerHTML = `
-        <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-            <h3 style="margin-bottom: 0.5rem; color: var(--dark);">¿Eliminar oferta?</h3>
-            <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
-                "${titulo}"<br>
-                <small>Esta acción no se puede deshacer.</small>
-            </p>
-            <div style="display: flex; gap: 0.75rem;">
-                <button class="btn btn-secondary" onclick="cerrarModal()" style="flex: 1;">
-                    Cancelar
-                </button>
-                <button class="btn btn-danger" onclick="confirmarEliminarOferta('${ofertaId}')" style="flex: 1;">
-                    🗑️ Eliminar
-                </button>
-            </div>
-        </div>
-    `;
-    document.getElementById('modal-overlay').classList.add('active');
-    document.body.style.overflow = 'hidden';
 }
 
 async function eliminarAplicacionesDeOferta(ofertaId) {

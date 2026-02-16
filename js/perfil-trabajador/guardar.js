@@ -6,6 +6,10 @@
 import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { optimizarImagen, validarArchivoImagen } from '../utils/image-utils.js';
+import { validarNombre, validarTelefono, validarEdadMinima, validarHorarios } from '../utils/validators.js';
+import { showFieldError, hideFieldError } from '../utils/form-errors.js';
+import { sanitizeText } from '../utils/sanitize.js';
+import { mensajeErrorAmigable } from '../utils/error-handler.js';
 
 let _db = null;
 let _storage = null;
@@ -49,29 +53,45 @@ function obtenerDiasDisponibles() {
 // GUARDAR PERFIL COMPLETO
 // ============================================
 function validarCamposObligatorios() {
-    const nombre = document.getElementById('nombre').value.trim();
-    const telefono = document.getElementById('telefono').value.trim();
-    const ubicacion = document.getElementById('ubicacion').value.trim();
+    let valid = true;
 
-    if (!nombre || !telefono || !ubicacion) {
-        if (typeof toastError === 'function') {
-            toastError('Por favor completa los campos obligatorios');
-        } else {
-            alert('Por favor completa los campos obligatorios');
-        }
-        return false;
+    const rNombre = validarNombre(document.getElementById('nombre').value);
+    if (!rNombre.valid) { showFieldError('nombre', rNombre.error); valid = false; }
+    else { hideFieldError('nombre'); }
+
+    const rTel = validarTelefono(document.getElementById('telefono').value);
+    if (!rTel.valid) { showFieldError('telefono', rTel.error); valid = false; }
+    else { hideFieldError('telefono'); }
+
+    const ubicacion = document.getElementById('ubicacion').value.trim();
+    if (!ubicacion) { showFieldError('ubicacion', 'La ubicación es obligatoria'); valid = false; }
+    else { hideFieldError('ubicacion'); }
+
+    const fechaNac = document.getElementById('fechaNacimiento').value;
+    const rEdad = validarEdadMinima(fechaNac);
+    if (!rEdad.valid) { showFieldError('fechaNacimiento', rEdad.error); valid = false; }
+    else { hideFieldError('fechaNacimiento'); }
+
+    const hInicio = document.getElementById('horario-inicio')?.value || '';
+    const hFin = document.getElementById('horario-fin')?.value || '';
+    const rHorario = validarHorarios(hInicio, hFin);
+    if (!rHorario.valid) { showFieldError('horario-fin', rHorario.error); valid = false; }
+    else { hideFieldError('horario-fin'); }
+
+    if (!valid && typeof toastWarning === 'function') {
+        toastWarning('Revisa los campos marcados en rojo');
     }
-    return true;
+    return valid;
 }
 
 function construirDatosActualizados() {
     return {
         email: state.perfilData.email || state.usuario.email,
-        nombre: document.getElementById('nombre').value.trim(),
+        nombre: sanitizeText(document.getElementById('nombre').value.trim()),
         telefono: document.getElementById('telefono').value.trim(),
-        ubicacion: document.getElementById('ubicacion').value.trim(),
+        ubicacion: sanitizeText(document.getElementById('ubicacion').value.trim()),
         fechaNacimiento: document.getElementById('fechaNacimiento').value || '',
-        bio: document.getElementById('bio').value.trim(),
+        bio: sanitizeText(document.getElementById('bio').value.trim()),
         categorias: obtenerCategorias(),
         habilidades: state.habilidades,
         añosExperiencia: document.getElementById('años-experiencia').value,
@@ -81,7 +101,7 @@ function construirDatosActualizados() {
             diasDisponibles: obtenerDiasDisponibles(),
             horarioInicio: document.getElementById('horario-inicio').value || '',
             horarioFin: document.getElementById('horario-fin').value || '',
-            zonasTrabajoPreferidas: document.getElementById('zonas-trabajo').value.trim()
+            zonasTrabajoPreferidas: sanitizeText(document.getElementById('zonas-trabajo').value.trim())
         }
     };
 }
@@ -127,7 +147,7 @@ export async function guardarPerfil() {
     } catch (error) {
         console.error('Error al guardar perfil:', error);
         if (typeof toastError === 'function') {
-            toastError('Error al guardar el perfil');
+            toastError(mensajeErrorAmigable(error, 'guardar el perfil'));
         }
     }
 }

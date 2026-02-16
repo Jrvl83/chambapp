@@ -3,6 +3,10 @@
 // Modulo: perfil-trabajador/experiencia-habilidades.js
 // ============================================
 
+import { validarAnioExperiencia } from '../utils/validators.js';
+import { sanitizeText } from '../utils/sanitize.js';
+import { confirmar } from '../components/confirm-modal.js';
+
 let state = null;
 
 // ============================================
@@ -88,15 +92,26 @@ function obtenerDatosExperiencia() {
     if (!puesto) {
         if (typeof toastError === 'function') {
             toastError('El puesto es obligatorio');
-        } else {
-            alert('El puesto es obligatorio');
+        }
+        return null;
+    }
+
+    const rAnio = validarAnioExperiencia(inicio, fin);
+    if (!rAnio.valid) {
+        if (typeof toastError === 'function') {
+            toastError(rAnio.error);
         }
         return null;
     }
 
     const periodo = inicio && fin ? `${inicio} - ${fin}` : 'Sin fecha especificada';
 
-    return { puesto, empresa, periodo, descripcion };
+    return {
+        puesto: sanitizeText(puesto),
+        empresa: sanitizeText(empresa),
+        periodo,
+        descripcion: sanitizeText(descripcion)
+    };
 }
 
 export function guardarExperiencia() {
@@ -112,14 +127,20 @@ export function guardarExperiencia() {
     }
 }
 
-export function eliminarExperiencia(index) {
-    if (confirm('¿Estás seguro de eliminar esta experiencia?')) {
-        state.experiencias.splice(index, 1);
-        mostrarExperiencias();
+export async function eliminarExperiencia(index) {
+    const ok = await confirmar({
+        titulo: '¿Eliminar experiencia?',
+        mensaje: 'Se eliminará esta experiencia de tu perfil.',
+        textoConfirmar: 'Eliminar',
+        tipo: 'danger'
+    });
+    if (!ok) return;
 
-        if (typeof toastSuccess === 'function') {
-            toastSuccess('Experiencia eliminada');
-        }
+    state.experiencias.splice(index, 1);
+    mostrarExperiencias();
+
+    if (typeof toastSuccess === 'function') {
+        toastSuccess('Experiencia eliminada');
     }
 }
 

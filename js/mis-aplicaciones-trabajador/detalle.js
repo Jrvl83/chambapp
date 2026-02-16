@@ -6,6 +6,7 @@
 import { doc, getDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { fetchEmpleadorRating } from '../utils/employer-rating.js';
 import { generarDetalleOfertaHTML } from '../components/oferta-detalle.js';
+import { confirmar } from '../components/confirm-modal.js';
 
 let db = null;
 
@@ -56,10 +57,13 @@ export async function verOfertaCompleta(ofertaId) {
 // --- Cancelar aplicacion ---
 
 export async function cancelarAplicacion(aplicacionId, tituloOferta) {
-    const confirmar = confirm(
-        `¿Estás seguro que deseas cancelar tu aplicación a:\n\n"${tituloOferta}"?\n\nEsta acción no se puede deshacer.`
-    );
-    if (!confirmar) return;
+    const ok = await confirmar({
+        titulo: '¿Cancelar postulación?',
+        mensaje: `Se cancelará tu aplicación a "<strong>${tituloOferta}</strong>".<br><small>Esta acción no se puede deshacer.</small>`,
+        textoConfirmar: 'Cancelar postulación',
+        tipo: 'danger'
+    });
+    if (!ok) return;
 
     try {
         await deleteDoc(doc(db, 'aplicaciones', aplicacionId));

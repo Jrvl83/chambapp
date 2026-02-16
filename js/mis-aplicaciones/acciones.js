@@ -15,6 +15,8 @@ import {
     query,
     where
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { confirmar } from '../components/confirm-modal.js';
+import { mensajeErrorAmigable } from '../utils/error-handler.js';
 
 // Referencias inyectadas
 let db = null;
@@ -41,8 +43,13 @@ export function initAcciones(dbRef, sharedState, usuarioRef, cbs) {
 // ============================================
 
 async function aceptarAplicacion(aplicacionId, nombreTrabajador) {
-    const confirmar = confirm(`¿Deseas ACEPTAR la postulación de ${nombreTrabajador}?\n\nPodrás contactarlo por WhatsApp o teléfono.`);
-    if (!confirmar) return;
+    const ok = await confirmar({
+        titulo: 'Aceptar postulación',
+        mensaje: `¿Deseas aceptar la postulación de <strong>${nombreTrabajador}</strong>?<br><small>Podrás contactarlo por WhatsApp o teléfono.</small>`,
+        textoConfirmar: 'Aceptar',
+        tipo: 'info'
+    });
+    if (!ok) return;
 
     try {
         const aplicacion = state.todasLasAplicaciones.find(a => a.id === aplicacionId);
@@ -73,7 +80,7 @@ async function aceptarAplicacion(aplicacionId, nombreTrabajador) {
         if (typeof toastError === 'function') {
             const msg = error.message === 'No hay vacantes disponibles'
                 ? 'Las vacantes ya fueron cubiertas'
-                : 'Error al aceptar la postulación';
+                : mensajeErrorAmigable(error, 'aceptar la postulación');
             toastError(msg);
         }
     }
@@ -129,8 +136,13 @@ async function actualizarOfertaAlAceptar(aplicacion, nombreTrabajador) {
 // ============================================
 
 async function rechazarAplicacion(aplicacionId, nombreTrabajador) {
-    const confirmar = confirm(`¿Estás seguro de RECHAZAR la postulación de ${nombreTrabajador}?\n\nEsta acción no se puede deshacer.`);
-    if (!confirmar) return;
+    const ok = await confirmar({
+        titulo: '¿Rechazar postulación?',
+        mensaje: `Se rechazará la postulación de <strong>${nombreTrabajador}</strong>.<br><small>Esta acción no se puede deshacer.</small>`,
+        textoConfirmar: 'Rechazar',
+        tipo: 'danger'
+    });
+    if (!ok) return;
 
     try {
         await updateDoc(doc(db, 'aplicaciones', aplicacionId), {
@@ -152,9 +164,7 @@ async function rechazarAplicacion(aplicacionId, nombreTrabajador) {
     } catch (error) {
         console.error('Error al rechazar aplicación:', error);
         if (typeof toastError === 'function') {
-            toastError('Error al rechazar la postulación');
-        } else {
-            alert('Error al rechazar la postulación');
+            toastError(mensajeErrorAmigable(error, 'rechazar la postulación'));
         }
     }
 }
@@ -164,8 +174,13 @@ async function rechazarAplicacion(aplicacionId, nombreTrabajador) {
 // ============================================
 
 async function marcarCompletado(aplicacionId, nombreTrabajador, tituloOferta) {
-    const confirmar = confirm(`¿El trabajo "${tituloOferta}" con ${nombreTrabajador} ha sido COMPLETADO?\n\nDespués podrás calificar al trabajador.`);
-    if (!confirmar) return;
+    const ok = await confirmar({
+        titulo: '¿Trabajo completado?',
+        mensaje: `¿El trabajo "<strong>${tituloOferta}</strong>" con ${nombreTrabajador} ha sido completado?<br><small>Después podrás calificar al trabajador.</small>`,
+        textoConfirmar: 'Completado',
+        tipo: 'info'
+    });
+    if (!ok) return;
 
     try {
         const aplicacion = state.todasLasAplicaciones.find(a => a.id === aplicacionId);
@@ -190,7 +205,7 @@ async function marcarCompletado(aplicacionId, nombreTrabajador, tituloOferta) {
     } catch (error) {
         console.error('Error al marcar como completado:', error);
         if (typeof toastError === 'function') {
-            toastError('Error al marcar como completado');
+            toastError(mensajeErrorAmigable(error, 'marcar como completado'));
         }
     }
 }
