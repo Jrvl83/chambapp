@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 12 Febrero 2026 (sesión 14)
+**Última actualización:** 16 Febrero 2026 (sesión 15)
 
 ---
 
@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ██████████████████░░░░░░░░░░ 63% (38/60 tareas)
+FASE 1: ███████████████████░░░░░░░░░ 65% (39/60 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  20% del proyecto (38/192 tareas)
+TOTAL:  20% del proyecto (39/192 tareas)
 ```
 
 > **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + 3 tareas pendientes nuevas (45-48 sin las ya contadas) = 60 tareas totales.
@@ -57,12 +57,14 @@ TOTAL:  20% del proyecto (38/192 tareas)
 - Dashboard diferenciado por rol
 - Cards compactas horizontales en móvil
 - Perfil público de trabajador (read-only para empleadores)
+- Validaciones inline y error states en formularios
+- Modal de confirmación customizado (reemplaza confirm() nativo)
 
 ---
 
 ## FASE 1: EXPERIENCIA WOW (60 tareas)
 
-### Tareas Completadas (32)
+### Tareas Completadas (33)
 
 | # | Tarea | Fecha |
 |---|-------|-------|
@@ -74,17 +76,17 @@ TOTAL:  20% del proyecto (38/192 tareas)
 | 23-24 | Filtros avanzados dashboard | 22 Ene |
 | 27-29 | Notificaciones push + centro in-app | 26-27 Ene |
 | 31-32 | Micro-interacciones y empty states | 30 Ene |
+| 33 | Error states, validaciones inline, modal confirmación, sanitización | 16 Feb |
 | 34 | Loading states (spinner centrado) | 30 Ene |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (15)
+### Tareas Pendientes (14)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
-| 33 | Error states y validaciones | Media |
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
 | 36 | Dark mode (opcional) | Baja |
 | 37-39 | Performance y PWA | Alta (al final) |
@@ -305,6 +307,9 @@ chambapp/
 │   │   ├── formatting.js              # Fechas, estrellas, moneda
 │   │   ├── image-utils.js             # Optimización/validación imágenes
 │   │   ├── dom-helpers.js             # escapeHtml, crearElemento, etc.
+│   │   ├── validators.js              # Validaciones puras (nombre, tel, edad, horarios)
+│   │   ├── form-errors.js             # UI errores inline (showFieldError/hideFieldError)
+│   │   ├── error-handler.js           # Mensajes amigables + toast retry
 │   │   ├── calificacion-utils.js      # Utilidad compartida de calificaciones
 │   │   ├── employer-rating.js         # Rating del empleador
 │   │   ├── google-maps.js             # Carga Google Maps API
@@ -319,6 +324,7 @@ chambapp/
 │   │   ├── oferta-card.js             # Card de oferta reutilizable
 │   │   ├── oferta-detalle.js          # Detalle de oferta compartido (3 páginas)
 │   │   ├── rating-input.js            # Input de calificación con estrellas
+│   │   ├── confirm-modal.js           # Modal confirmación (reemplaza confirm())
 │   │   ├── bottom-nav.js              # Navegación inferior móvil
 │   │   ├── guided-tour.js             # Motor de guided tours
 │   │   ├── filtros-avanzados.js       # Entry point (legacy)
@@ -469,15 +475,17 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 12 Febrero 2026 (sesión 14)
+> **Última sesión:** 16 Febrero 2026 (sesión 15)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
 - ✅ **CSS modal unificado:** `css/modal.css` reemplaza duplicados en 8 archivos (~740 líneas eliminadas)
 - ✅ **Detalle de oferta compartido:** `js/components/oferta-detalle.js` + `css/oferta-detalle.css` (3 páginas)
 - ✅ **UX mis-aplicaciones-trabajador:** Prioridad de contenido corregida (~570px→190px sobre cards), contacto colapsable, stats como pills filtro, CSS 855→522 líneas
+- ✅ **Error states y validaciones (Task 33):** validators.js, form-errors.js, confirm-modal.js, error-handler.js + sanitización en guardados
 
 ### Sesiones
+- **Sesión 15 (16/02/26):** Task 33 - Error states y validaciones: 4 módulos nuevos (validators.js, form-errors.js, confirm-modal.js, error-handler.js). Validaciones inline en perfiles trabajador/empleador (nombre, teléfono 9 dígitos, edad mínima 18, horarios). Modal de confirmación customizado reemplaza 6 confirm() nativos. Sanitización con sanitizeText() en guardado de perfiles y ofertas. Validación onblur en campos obligatorios. Mensajes de error contextuales con detección red/permisos y botón "Reintentar".
 - **Sesión 14 (12/02/26):** UX mejoras dashboard empleador: saludo contextual (reemplaza alerta amarilla), stats "Pendientes" con urgencia, cards ordenadas por prioridad, ocultar "Ver Candidatos" si 0 postulaciones, badge singular/plural, fecha corta, salario "S/.", bottom nav "Talento", botón "Nueva Oferta" outline. Fix settings.local.json corrupto.
 - **Sesión 13 (11/02/26):** Perfil público de trabajador (`perfil-publico.html` + 2 módulos JS + CSS). Página read-only para que empleadores evalúen trabajadores antes de aceptar/rechazar. Link "Ver Perfil" en cards de mis-aplicaciones. UX mejoras perfil-trabajador (save floating inteligente, CSS compactación, distribución condicional).
 - **Sesión 12 (11/02/26):** Actualización de todos los MD con estado actual del proyecto.
@@ -524,9 +532,9 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **Task 33** - Error states y validaciones
-2. **Task 35** - Accesibilidad WCAG 2.1 AA
-3. **Tasks 37-39** - Performance y PWA
+1. **Task 35** - Accesibilidad WCAG 2.1 AA
+2. **Tasks 37-39** - Performance y PWA
+3. **Tasks 40-44** - Testing y QA
 4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
 ### Notas técnicas
@@ -538,8 +546,12 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - **Vacantes:** oferta.vacantes (1-20), aceptadosCount, trabajadoresAceptados[]
 - **Flujo vacantes:** activa (aceptando) → en_curso (todas llenas) → completada (todos terminaron)
 - **Servidor local:** usar `npx http-server -p 8080 -c-1` (preserva query strings necesarios para editar/reutilizar ofertas)
+- **Validaciones:** `validators.js` retorna `{ valid, error }`, `form-errors.js` maneja UI (showFieldError/hideFieldError)
+- **Confirm modal:** `confirmar({titulo, mensaje, tipo})` retorna `Promise<boolean>`, usa `css/modal.css`
+- **Error handler:** `mensajeErrorAmigable(error, contexto)` detecta red/permisos, `toastErrorConRetry(msg, fn)` agrega "Reintentar"
+- **Sanitización:** `sanitizeText()` de sanitize.js aplicado en guardado de perfiles y ofertas (previene XSS)
 
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 3.9
+**Versión documento:** 4.0
