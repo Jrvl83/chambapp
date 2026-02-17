@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAPP
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 16 Febrero 2026 (sesión 15)
+**Última actualización:** 17 Febrero 2026 (sesión 16)
 
 ---
 
@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ███████████████████░░░░░░░░░ 65% (39/60 tareas)
+FASE 1: █████████████████████░░░░░░░ 70% (42/60 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  20% del proyecto (39/192 tareas)
+TOTAL:  22% del proyecto (42/192 tareas)
 ```
 
 > **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + 3 tareas pendientes nuevas (45-48 sin las ya contadas) = 60 tareas totales.
@@ -59,12 +59,14 @@ TOTAL:  20% del proyecto (39/192 tareas)
 - Perfil público de trabajador (read-only para empleadores)
 - Validaciones inline y error states en formularios
 - Modal de confirmación customizado (reemplaza confirm() nativo)
+- PWA instalable (Service Worker con cacheo, install prompt, offline page)
+- Performance: resource hints, defer scripts, lazy CSS/imágenes, Firestore offline
 
 ---
 
 ## FASE 1: EXPERIENCIA WOW (60 tareas)
 
-### Tareas Completadas (33)
+### Tareas Completadas (36)
 
 | # | Tarea | Fecha |
 |---|-------|-------|
@@ -78,18 +80,18 @@ TOTAL:  20% del proyecto (39/192 tareas)
 | 31-32 | Micro-interacciones y empty states | 30 Ene |
 | 33 | Error states, validaciones inline, modal confirmación, sanitización | 16 Feb |
 | 34 | Loading states (spinner centrado) | 30 Ene |
+| 37-39 | Performance + PWA (SW caching, offline, install prompt, lazy CSS/imgs, Firestore persistence) | 17 Feb |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (14)
+### Tareas Pendientes (11)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
 | 36 | Dark mode (opcional) | Baja |
-| 37-39 | Performance y PWA | Alta (al final) |
 | 40-44 | Testing y QA | Alta |
 | 45-48 | Panel de administración | Media |
 
@@ -262,7 +264,9 @@ chambapp/
 ├── historial-ofertas.html              # Historial de ofertas (empleador)
 ├── historial-calificaciones.html       # Historial de calificaciones
 ├── notificaciones.html                 # Centro de notificaciones
-├── manifest.json, firebase-messaging-sw.js
+├── offline.html                        # Fallback offline PWA
+├── manifest.json                      # PWA manifest (scope: "/")
+├── firebase-messaging-sw.js           # Service Worker (FCM + cacheo PWA)
 │
 ├── css/
 │   ├── design-system.css               # Variables CSS, tokens, reset
@@ -384,6 +388,10 @@ chambapp/
 │   │   ├── index.js                   # Coordinador + render
 │   │   └── templates.js              # Templates HTML puros
 │   │
+│   ├── pwa/
+│   │   ├── install-prompt.js          # Banner instalación PWA (cooldown 7 días)
+│   │   └── sw-update.js              # Detección nuevo SW + toast actualización
+│   │
 │   ├── notifications/
 │   │   └── fcm-init.js               # Inicialización FCM
 │   │
@@ -475,7 +483,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 16 Febrero 2026 (sesión 15)
+> **Última sesión:** 17 Febrero 2026 (sesión 16)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
@@ -483,8 +491,10 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **Detalle de oferta compartido:** `js/components/oferta-detalle.js` + `css/oferta-detalle.css` (3 páginas)
 - ✅ **UX mis-aplicaciones-trabajador:** Prioridad de contenido corregida (~570px→190px sobre cards), contacto colapsable, stats como pills filtro, CSS 855→522 líneas
 - ✅ **Error states y validaciones (Task 33):** validators.js, form-errors.js, confirm-modal.js, error-handler.js + sanitización en guardados
+- ✅ **Performance + PWA (Tasks 37-39):** SW con cacheo, offline page, install prompt, lazy CSS/imgs, Firestore persistence, iOS standalone fixes
 
 ### Sesiones
+- **Sesión 16 (17/02/26):** Tasks 37-39 - Performance + PWA completa. Sub-tasks: 37A resource hints + defer en 14 HTML, 37B lazy loading imágenes dinámicas, 38A Firestore offline persistence, 38B CSS no-crítico diferido (media="print"), 39A Service Worker con cacheo (Cache First/Network First/SWR), 39B offline.html, 39C install prompt + manifest update, 39D SW update notification. Fixes iOS: scope:"/" en manifest, apple-mobile-web-app-capable + link manifest en todos los HTML, safe-area-inset-top en header-simple.css para notch. 22 archivos modificados, 3 nuevos (offline.html, install-prompt.js, sw-update.js).
 - **Sesión 15 (16/02/26):** Task 33 - Error states y validaciones: 4 módulos nuevos (validators.js, form-errors.js, confirm-modal.js, error-handler.js). Validaciones inline en perfiles trabajador/empleador (nombre, teléfono 9 dígitos, edad mínima 18, horarios). Modal de confirmación customizado reemplaza 6 confirm() nativos. Sanitización con sanitizeText() en guardado de perfiles y ofertas. Validación onblur en campos obligatorios. Mensajes de error contextuales con detección red/permisos y botón "Reintentar".
 - **Sesión 14 (12/02/26):** UX mejoras dashboard empleador: saludo contextual (reemplaza alerta amarilla), stats "Pendientes" con urgencia, cards ordenadas por prioridad, ocultar "Ver Candidatos" si 0 postulaciones, badge singular/plural, fecha corta, salario "S/.", bottom nav "Talento", botón "Nueva Oferta" outline. Fix settings.local.json corrupto.
 - **Sesión 13 (11/02/26):** Perfil público de trabajador (`perfil-publico.html` + 2 módulos JS + CSS). Página read-only para que empleadores evalúen trabajadores antes de aceptar/rechazar. Link "Ver Perfil" en cards de mis-aplicaciones. UX mejoras perfil-trabajador (save floating inteligente, CSS compactación, distribución condicional).
@@ -533,8 +543,8 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 
 ### Próximas tareas sugeridas
 1. **Task 35** - Accesibilidad WCAG 2.1 AA
-2. **Tasks 37-39** - Performance y PWA
-3. **Tasks 40-44** - Testing y QA
+2. **Tasks 40-44** - Testing y QA
+3. **Tasks 45-48** - Panel de administración
 4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
 
 ### Notas técnicas
@@ -550,8 +560,13 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - **Confirm modal:** `confirmar({titulo, mensaje, tipo})` retorna `Promise<boolean>`, usa `css/modal.css`
 - **Error handler:** `mensajeErrorAmigable(error, contexto)` detecta red/permisos, `toastErrorConRetry(msg, fn)` agrega "Reintentar"
 - **Sanitización:** `sanitizeText()` de sanitize.js aplicado en guardado de perfiles y ofertas (previene XSS)
+- **PWA Service Worker:** `firebase-messaging-sw.js` maneja FCM + cacheo (Cache First para estáticos, Network First para HTML, SWR para Firebase Storage). Nunca cachear auth/firestore/maps endpoints.
+- **PWA iOS:** Requiere `apple-mobile-web-app-capable`, `<link rel="manifest">`, y `scope: "/"` en manifest.json en CADA HTML. Sin esto, iOS abre Safari al navegar entre páginas.
+- **Notch iOS:** `header-simple.css` usa `calc(1rem + env(safe-area-inset-top, 0))` para padding-top. Dashboard usa `env(safe-area-inset-top)` en `dashboard-main.css`.
+- **CSS cache bust:** Cambiar `?v=N` al modificar CSS cacheados (header-simple.css?v=3)
+- **Firestore offline:** `enableIndexedDbPersistence(db)` en firebase-init.js (best-effort, no await)
 
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 4.0
+**Versión documento:** 5.0
