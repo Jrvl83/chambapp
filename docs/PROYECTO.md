@@ -90,13 +90,13 @@ TOTAL:  22% del proyecto (42/192 tareas)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
-| 35 | Accesibilidad WCAG 2.1 AA | Media |
-| 36 | Dark mode (opcional) | Baja |
-| 40-44 | Testing y QA | Alta |
-| 45-48 | Panel de administración | Media |
+| 51 | Auditoría de seguridad proactiva - API keys hardcodeadas (incl. commits viejos), vulnerabilidades de dependencias, rutas sin auth, XSS/CSRF, secretos en config. Generar reporte priorizado | Alta |
 | 49 | Login/Registro con Google (Gmail) - botón "Continuar con Google" en login y register | Alta |
 | 50 | Email template brandeado ChambApp - template personalizado para verificación de email en Firebase Auth | Alta |
-| 51 | Auditoría de seguridad proactiva - API keys hardcodeadas (incl. commits viejos), vulnerabilidades de dependencias, rutas sin auth, XSS/CSRF, secretos en config. Generar reporte priorizado | Alta |
+| 40-44 | Testing y QA | Alta |
+| 45-48 | Panel de administración | Media |
+| 35 | Accesibilidad WCAG 2.1 AA | Media |
+| 36 | Dark mode (opcional) | Baja |
 
 ### Tareas Diferidas (7)
 - Tasks 18, 19, 20: Chat in-app (WhatsApp cubre la necesidad)
