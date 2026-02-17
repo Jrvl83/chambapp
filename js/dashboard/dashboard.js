@@ -10,6 +10,7 @@ import { calcularDistancia, formatearDistancia } from '../utils/distance.js';
 import { formatearFecha } from '../utils/formatting.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 import { crearOfertaCardTrabajador, crearOfertaCardEmpleador } from '../components/oferta-card.js';
+import { escapeHtml } from '../utils/dom-helpers.js';
 
 // Usar window.firebaseConfig (arquitectura original)
 const app = initializeApp(window.firebaseConfig);
@@ -304,8 +305,8 @@ function mostrarBadgeUbicacion(ubicacion) {
     }
 
     badge.innerHTML = `
-        <span class='ubicacion-texto' title='${ubicacion.direccionCompleta || ubicacion.distrito}'>
-            📍 ${ubicacion.distrito}
+        <span class="ubicacion-texto" title="${escapeHtml(ubicacion.direccionCompleta || ubicacion.distrito)}">
+            📍 ${escapeHtml(ubicacion.distrito)}
         </span>
         <button
             class='ubicacion-actualizar'
@@ -405,7 +406,7 @@ function actualizarHeaderUsuario(usuario) {
         // Extraer primer nombre para móvil
         const nombreCompleto = usuario.nombre || 'Usuario';
         const primerNombre = nombreCompleto.split(' ')[0];
-        userName.innerHTML = `Hola, ${primerNombre}`;
+        userName.textContent = `Hola, ${primerNombre}`;
         userName.title = nombreCompleto; // Tooltip con nombre completo
     }
 }
@@ -761,7 +762,7 @@ function renderizarActividadReciente(aplicacionesSnap) {
             <div class="actividad-item">
                 <div class="actividad-avatar">${icono}</div>
                 <div class="actividad-content">
-                    <p class="actividad-texto"><strong>${nombreTrabajador}</strong> ${accion} "${tituloOferta}"</p>
+                    <p class="actividad-texto"><strong>${escapeHtml(nombreTrabajador)}</strong> ${accion} "${escapeHtml(tituloOferta)}"</p>
                     <span class="actividad-tiempo">${tiempoRelativo}</span>
                 </div>
                 <a href="mis-aplicaciones.html" class="actividad-action">Ver</a>
@@ -1178,9 +1179,9 @@ window.verDetalle = async function(id) {
         const modalBody = document.getElementById('modal-body');
         modalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${oferta.titulo}</h2>
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${escapeHtml(oferta.titulo)}</h2>
                 <span class="oferta-categoria ${oferta.categoria}" style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
-                    ${oferta.categoria}
+                    ${escapeHtml(oferta.categoria)}
                 </span>
             </div>
 
@@ -1188,27 +1189,27 @@ window.verDetalle = async function(id) {
 
             <div style="margin-bottom: 1.5rem;">
                 <h3 style="margin-bottom: 0.5rem;">📝 Descripción</h3>
-                <p style="color: var(--gray); line-height: 1.6;">${oferta.descripcion}</p>
+                <p style="color: var(--gray); line-height: 1.6;">${escapeHtml(oferta.descripcion)}</p>
             </div>
 
             <div style="background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div><strong>💰 Salario:</strong><br>${oferta.salario}</div>
-                    <div><strong>📍 Ubicación:</strong><br>${ubicacionTexto}</div>
-                    <div><strong>⏱️ Duración:</strong><br>${oferta.duracion || 'No especificada'}</div>
-                    <div><strong>🕐 Horario:</strong><br>${oferta.horario || 'No especificado'}</div>
+                    <div><strong>💰 Salario:</strong><br>${escapeHtml(oferta.salario)}</div>
+                    <div><strong>📍 Ubicación:</strong><br>${escapeHtml(ubicacionTexto)}</div>
+                    <div><strong>⏱️ Duración:</strong><br>${escapeHtml(oferta.duracion || 'No especificada')}</div>
+                    <div><strong>🕐 Horario:</strong><br>${escapeHtml(oferta.horario || 'No especificado')}</div>
                 </div>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
                 <h3 style="margin-bottom: 0.5rem;">📋 Requisitos</h3>
-                <p><strong>Experiencia:</strong> ${oferta.experiencia || 'No especificada'}</p>
-                <p><strong>Habilidades:</strong> ${oferta.habilidades || 'No especificadas'}</p>
+                <p><strong>Experiencia:</strong> ${escapeHtml(oferta.experiencia || 'No especificada')}</p>
+                <p><strong>Habilidades:</strong> ${escapeHtml(oferta.habilidades || 'No especificadas')}</p>
             </div>
 
             <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
                 <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
-                <span style="color: var(--dark);">${oferta.empleadorNombre || 'Empleador'}</span>
+                <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre || 'Empleador')}</span>
             </div>
 
             <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
@@ -1263,7 +1264,7 @@ window.mostrarFormularioPostulacion = async function(ofertaId) {
         modalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Postular a:</h2>
-                <h3 style="color: var(--dark);">${oferta.titulo}</h3>
+                <h3 style="color: var(--dark);">${escapeHtml(oferta.titulo)}</h3>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
@@ -1658,7 +1659,7 @@ window.eliminarOferta = function(ofertaId, titulo) {
             <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
             <h3 style="margin-bottom: 0.5rem; color: var(--dark);">¿Eliminar oferta?</h3>
             <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
-                "${titulo}"<br>
+                "${escapeHtml(titulo)}"<br>
                 <small>Esta acción no se puede deshacer.</small>
             </p>
             <div style="display: flex; gap: 0.75rem;">

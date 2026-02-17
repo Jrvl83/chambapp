@@ -16,4 +16,3 @@ const firebaseConfig = {
 // Exportar a window para scripts no-module
 window.firebaseConfig = firebaseConfig;
 
-console.log('✅ Firebase config cargado');

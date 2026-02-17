@@ -2,7 +2,9 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Usuarios - lectura publica, escritura solo el propio usuario
+    // Usuarios - lectura publica (necesario para perfil-publico.html),
+    // escritura solo el propio usuario.
+    // TODO: Separar datos sensibles (fcmToken, email) a subcoleccion privada
     match /usuarios/{userId} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.uid == userId;
@@ -13,22 +15,30 @@ service cloud.firestore {
       }
     }
 
-    // Ofertas - lectura publica, escritura usuarios autenticados
+    // Ofertas - lectura publica, solo empleadores pueden crear
     match /ofertas/{ofertaId} {
       allow read: if true;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.tipo == 'empleador';
       allow update, delete: if request.auth != null &&
         (resource.data.usuarioId == request.auth.uid ||
          resource.data.empleadorId == request.auth.uid ||
          resource.data.empleadorEmail == request.auth.token.email);
     }
 
-    // Aplicaciones - lectura y escritura usuarios autenticados
-    // Nota: La seguridad se maneja en las queries (filtran por email/id del usuario)
+    // Aplicaciones - lectura autenticada, escritura con ownership check.
+    // Nota: read no puede tener resource.data checks porque las queries usan
+    // campos variados (aplicanteEmail, empleadorEmail, ofertaId) que no coinciden
+    // con los campos de la regla, y Firestore rechaza list queries si no puede
+    // probar que todos los resultados cumplen la regla.
     match /aplicaciones/{aplicacionId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
-      allow update: if request.auth != null;
+      allow update: if request.auth != null
+        && (resource.data.aplicanteId == request.auth.uid
+            || resource.data.empleadorId == request.auth.uid
+            || resource.data.aplicanteEmail == request.auth.token.email
+            || resource.data.empleadorEmail == request.auth.token.email);
     }
 
     // Calificaciones - lectura publica, escritura usuarios autenticados

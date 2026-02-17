@@ -24,3 +24,6 @@ nul
 # Environment
 .env
 .env.local
+
+# Lighthouse reports (contienen API keys capturadas)
+docs/lighthouse-*.json

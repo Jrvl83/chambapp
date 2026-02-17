@@ -10,7 +10,8 @@
 // 2. Selecciona cada API key
 // 3. En "Restricciones de aplicacion", selecciona "Sitios web HTTP"
 // 4. Agrega tus dominios permitidos:
-//    - https://jrvl83.github.io/*
+//    - https://chambapp-7785b.web.app/*
+//    - https://chambapp-7785b.firebaseapp.com/*
 //    - http://localhost:*
 // 5. En "Restricciones de API", limita a solo las APIs necesarias:
 //    - Maps JavaScript API
@@ -28,15 +29,8 @@
  */
 export const GOOGLE_MAPS_API_KEY = 'AIzaSyBxopsd9CPAU2CSV91z8YAw_upxochOGYE';
 
-/**
- * @deprecated - Key inválida (REQUEST_DENIED). Usar GOOGLE_MAPS_API_KEY en su lugar.
- */
-export const GOOGLE_GEOCODING_API_KEY = 'AIzaSyBxUb73baTPSq_nvX5vCjGN_d_ctEC8ySs';
-
 // ============================================
 // COMPATIBILIDAD CON SCRIPTS NO-MODULE
 // ============================================
 window.GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEY;
-window.GOOGLE_GEOCODING_API_KEY = GOOGLE_GEOCODING_API_KEY;
 
-console.log('✅ API Keys cargadas');

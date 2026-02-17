@@ -20,6 +20,7 @@ import {
     runTransaction
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
+import { escapeHtml } from './utils/dom-helpers.js';
 import { RatingInput, inicializarContadorComentario, configurarCierreModal, TEXTOS_ESTRELLAS } from './components/rating-input.js';
 
 // Inicializar Firebase
@@ -300,7 +301,7 @@ function crearGrupoOferta(ofertaId, grupo) {
         <div class="oferta-grupo">
             <div class="oferta-grupo-header">
                 <div class="oferta-grupo-info">
-                    <h3 class="oferta-grupo-titulo">📋 ${grupo.titulo}</h3>
+                    <h3 class="oferta-grupo-titulo">📋 ${escapeHtml(grupo.titulo)}</h3>
                     <div class="oferta-grupo-meta">
                         <span class="oferta-categoria-badge">${categoriaLabel}</span>
                         <span class="oferta-aplicantes-count">👥 ${cantidadAplicantes} postulante${cantidadAplicantes !== 1 ? 's' : ''}</span>
@@ -377,7 +378,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
             <div class="contacto-aceptado">
                 <div class="contacto-info">
                     <span class="contacto-label">📱 Contacto:</span>
-                    <span class="contacto-telefono">${telefono || 'No disponible'}</span>
+                    <span class="contacto-telefono">${escapeHtml(telefono || 'No disponible')}</span>
                 </div>
                 <div class="contacto-botones">
                     ${telefono ? `
@@ -445,8 +446,8 @@ function crearAplicacionCard(aplicacion, ofertaId) {
                 <div class="aplicacion-trabajador">
                     <div class="aplicacion-avatar">👤</div>
                     <div>
-                        <div class="aplicacion-nombre">${nombre}</div>
-                        <div class="aplicacion-email">${email}</div>
+                        <div class="aplicacion-nombre">${escapeHtml(nombre)}</div>
+                        <div class="aplicacion-email">${escapeHtml(email)}</div>
                         ${ratingHTML}
                     </div>
                 </div>
@@ -457,7 +458,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
                 ${telefono && estado !== 'aceptado' ? `
                 <div class="info-item">
                     <span class="info-label">📱 Teléfono</span>
-                    <span class="info-value">${telefono}</span>
+                    <span class="info-value">${escapeHtml(telefono)}</span>
                 </div>
                 ` : ''}
                 <div class="info-item">
@@ -468,7 +469,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
 
             <div class="aplicacion-mensaje">
                 <strong>💬 Mensaje del postulante:</strong><br>
-                ${mensaje}
+                ${escapeHtml(mensaje)}
             </div>
 
             <div class="aplicacion-actions">

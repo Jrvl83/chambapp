@@ -87,7 +87,7 @@ function actualizarHeaderUsuario(usuario) {
     if (userName) {
         const nombreCompleto = usuario.nombre || 'Usuario';
         const primerNombre = nombreCompleto.split(' ')[0];
-        userName.innerHTML = `Hola, ${primerNombre}`;
+        userName.textContent = `Hola, ${primerNombre}`;
         userName.title = nombreCompleto;
     }
 }

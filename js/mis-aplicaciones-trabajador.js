@@ -8,6 +8,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, orderBy, addDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha } from './utils/formatting.js';
+import { escapeHtml } from './utils/dom-helpers.js';
 import { RatingInput, inicializarContadorComentario, configurarCierreModal, TEXTOS_ESTRELLAS } from './components/rating-input.js';
 
 // Inicializar Firebase
@@ -204,16 +205,16 @@ function crearAplicacionCard(aplicacion) {
                 <div class="contacto-datos">
                     <div class="dato-item">
                         <span class="dato-label">Nombre:</span>
-                        <span class="dato-valor">${empleadorNombre}</span>
+                        <span class="dato-valor">${escapeHtml(empleadorNombre)}</span>
                     </div>
                     <div class="dato-item">
                         <span class="dato-label">Email:</span>
-                        <span class="dato-valor">${empleadorEmail}</span>
+                        <span class="dato-valor">${escapeHtml(empleadorEmail)}</span>
                     </div>
                     ${empleadorTelefono ? `
                     <div class="dato-item">
                         <span class="dato-label">Teléfono:</span>
-                        <span class="dato-valor">${empleadorTelefono}</span>
+                        <span class="dato-valor">${escapeHtml(empleadorTelefono)}</span>
                     </div>
                     ` : ''}
                 </div>
@@ -269,9 +270,9 @@ function crearAplicacionCard(aplicacion) {
         <div class="aplicacion-card ${config.clase} touchable hover-lift">
             <div class="aplicacion-header">
                 <div class="aplicacion-info">
-                    <div class="aplicacion-titulo">${aplicacion.ofertaTitulo}</div>
-                    <span class="aplicacion-categoria">${getCategoriaLabel(aplicacion.ofertaCategoria)}</span>
-                    <div class="aplicacion-empleador">👤 ${aplicacion.empleadorNombre}</div>
+                    <div class="aplicacion-titulo">${escapeHtml(aplicacion.ofertaTitulo)}</div>
+                    <span class="aplicacion-categoria">${escapeHtml(getCategoriaLabel(aplicacion.ofertaCategoria))}</span>
+                    <div class="aplicacion-empleador">👤 ${escapeHtml(aplicacion.empleadorNombre)}</div>
                 </div>
                 <div class="aplicacion-estado">
                     <span class="estado-badge ${config.clase}">
@@ -289,7 +290,7 @@ function crearAplicacionCard(aplicacion) {
 
             <div class="aplicacion-mensaje">
                 <strong>💬 Tu mensaje:</strong>
-                <p>${aplicacion.mensaje}</p>
+                <p>${escapeHtml(aplicacion.mensaje)}</p>
             </div>
 
             <div class="aplicacion-actions">
@@ -359,9 +360,9 @@ async function verOfertaCompleta(ofertaId) {
 
         const modalBody = `
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${oferta.titulo}</h2>
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${escapeHtml(oferta.titulo)}</h2>
                 <span style="background: var(--light); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600;">
-                    ${getCategoriaLabel(oferta.categoria)}
+                    ${escapeHtml(getCategoriaLabel(oferta.categoria))}
                 </span>
             </div>
 
@@ -369,7 +370,7 @@ async function verOfertaCompleta(ofertaId) {
 
             <div style="margin-bottom: 1.5rem;">
                 <h3 style="color: var(--dark); margin-bottom: 0.75rem;">📝 Descripción</h3>
-                <p style="color: var(--gray); line-height: 1.6;">${oferta.descripcion}</p>
+                <p style="color: var(--gray); line-height: 1.6;">${escapeHtml(oferta.descripcion)}</p>
             </div>
 
             <div style="background: var(--light); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
@@ -377,27 +378,27 @@ async function verOfertaCompleta(ofertaId) {
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div>
                         <strong>📍 Ubicación:</strong><br>
-                        ${oferta.ubicacion?.texto_completo || oferta.ubicacion || 'No especificada'}
+                        ${escapeHtml(oferta.ubicacion?.texto_completo || oferta.ubicacion || 'No especificada')}
                     </div>
                     <div>
                         <strong>💰 Salario:</strong><br>
-                        ${oferta.salario}
+                        ${escapeHtml(oferta.salario)}
                     </div>
                     <div>
                         <strong>⏱️ Duración:</strong><br>
-                        ${oferta.duracion || 'No especificada'}
+                        ${escapeHtml(oferta.duracion || 'No especificada')}
                     </div>
                     <div>
                         <strong>🕐 Horario:</strong><br>
-                        ${oferta.horario || 'No especificado'}
+                        ${escapeHtml(oferta.horario || 'No especificado')}
                     </div>
                 </div>
             </div>
 
             <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--primary);">
                 <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
-                <span style="color: var(--dark);">${oferta.empleadorNombre}</span><br>
-                <span style="color: var(--gray); font-size: 0.875rem;">📧 ${oferta.empleadorEmail}</span>
+                <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre)}</span><br>
+                <span style="color: var(--gray); font-size: 0.875rem;">📧 ${escapeHtml(oferta.empleadorEmail)}</span>
             </div>
 
             <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">

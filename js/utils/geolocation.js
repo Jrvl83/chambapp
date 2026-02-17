@@ -4,7 +4,7 @@
 // Task 9: Geolocalización completa
 // ============================================
 
-import { GOOGLE_GEOCODING_API_KEY } from '../config/api-keys.js';
+import { GOOGLE_MAPS_API_KEY } from '../config/api-keys.js';
 import { calcularDistanciaCoords, formatearDistancia } from './distance.js';
 
 /**
@@ -61,7 +61,7 @@ export async function geocodificar(coords) {
     const { lat, lng } = coords;
     
     // Google Geocoding API
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_GEOCODING_API_KEY}&language=es`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}&language=es`;
     
     try {
         const response = await fetch(url);

@@ -6,6 +6,7 @@
  */
 
 import { formatearFecha, esHoy } from '../utils/formatting.js';
+import { escapeHtml } from '../utils/dom-helpers.js';
 
 /**
  * Obtiene el texto de ubicación de una oferta
@@ -57,7 +58,7 @@ function generarImagenHTML(oferta) {
     const tieneImagen = oferta.imagenesURLs && oferta.imagenesURLs.length > 0;
     if (!tieneImagen) return '';
 
-    return `<div class="oferta-imagen"><img src="${oferta.imagenesURLs[0]}" alt="${oferta.titulo || 'Oferta'}" loading="lazy"></div>`;
+    return `<div class="oferta-imagen"><img src="${oferta.imagenesURLs[0]}" alt="${escapeHtml(oferta.titulo || 'Oferta')}" loading="lazy"></div>`;
 }
 
 /**
@@ -102,13 +103,13 @@ function templateCardTrabajador(oferta, id, datos) {
             ${datos.imagenHTML}
             <div class="oferta-card-body">
                 <div class="oferta-header">
-                    <span class="oferta-categoria ${cat}">${datos.categoriaDisplay}</span>
+                    <span class="oferta-categoria ${cat}">${escapeHtml(datos.categoriaDisplay)}</span>
                     <span class="oferta-fecha ${claseHoy}">${formatearFecha(datos.fechaRef)}</span>
                 </div>
-                <h3 class="oferta-titulo">${oferta.titulo}</h3>
-                <span class="detalle detalle-salario">💰 ${oferta.salario}</span>
+                <h3 class="oferta-titulo">${escapeHtml(oferta.titulo)}</h3>
+                <span class="detalle detalle-salario">💰 ${escapeHtml(oferta.salario)}</span>
                 <div class="oferta-detalles">
-                    <span class="detalle">📍 ${datos.ubicacionTexto}</span>
+                    <span class="detalle">📍 ${escapeHtml(datos.ubicacionTexto)}</span>
                     ${datos.distanciaBadge}
                     ${(oferta.vacantes || 1) > 1 ? `<span class="detalle">👥 ${oferta.vacantes} vacantes</span>` : ''}
                 </div>
@@ -152,7 +153,7 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
             ${imagenHTML}
             <div class="oferta-card-body">
                 <div class="oferta-header">
-                    <span class="oferta-categoria ${oferta.categoria || 'otros'}">${categoriaDisplay}</span>
+                    <span class="oferta-categoria ${oferta.categoria || 'otros'}">${escapeHtml(categoriaDisplay)}</span>
                     <div class="oferta-header-right">
                         <span class="oferta-fecha">${formatearFecha(oferta.fechaActualizacion || oferta.fechaCreacion, 'corto')}</span>
                         <div class="oferta-menu-container">
@@ -170,10 +171,10 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
                         </div>
                     </div>
                 </div>
-                <h3 class="oferta-titulo">${oferta.titulo}</h3>
+                <h3 class="oferta-titulo">${escapeHtml(oferta.titulo)}</h3>
                 <div class="oferta-detalles">
-                    <span class="detalle">📍 ${ubicacionTexto}</span>
-                    <span class="detalle detalle-salario">S/. ${oferta.salario}</span>
+                    <span class="detalle">📍 ${escapeHtml(ubicacionTexto)}</span>
+                    <span class="detalle detalle-salario">S/. ${escapeHtml(oferta.salario)}</span>
                 </div>
                 <div class="oferta-footer">
                     <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
@@ -211,12 +212,12 @@ export function crearOfertaPreviewMapa(ofertaData, ofertaId, opciones = {}) {
     }
 
     return `
-        <span class="preview-categoria ${ofertaData.categoria}">${ofertaData.categoria || 'otros'}</span>
-        <h3 class="preview-titulo">${ofertaData.titulo}</h3>
-        <p class="preview-descripcion">${ofertaData.descripcion?.substring(0, 100) || ''}...</p>
+        <span class="preview-categoria ${ofertaData.categoria}">${escapeHtml(ofertaData.categoria || 'otros')}</span>
+        <h3 class="preview-titulo">${escapeHtml(ofertaData.titulo)}</h3>
+        <p class="preview-descripcion">${escapeHtml(ofertaData.descripcion?.substring(0, 100) || '')}...</p>
         <div class="preview-detalles">
-            <span class="preview-detalle">💰 ${ofertaData.salario || 'A convenir'}</span>
-            <span class="preview-detalle">📍 ${ubicacionTexto}</span>
+            <span class="preview-detalle">💰 ${escapeHtml(ofertaData.salario || 'A convenir')}</span>
+            <span class="preview-detalle">📍 ${escapeHtml(ubicacionTexto)}</span>
             ${distanciaBadge}
             ${(ofertaData.vacantes || 1) > 1 ? `<span class="preview-detalle">👥 ${ofertaData.vacantes} vacantes</span>` : ''}
         </div>

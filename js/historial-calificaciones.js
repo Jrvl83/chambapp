@@ -7,6 +7,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
+import { escapeHtml } from './utils/dom-helpers.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -193,8 +194,8 @@ function crearCardCalificacion(cal) {
                 <div class="calificacion-persona">
                     <div class="calificacion-avatar">${avatar}</div>
                     <div class="calificacion-info">
-                        <span class="calificacion-nombre">${nombre || 'Empleador'}</span>
-                        <span class="calificacion-trabajo">${cal.ofertaTitulo || 'Trabajo'}</span>
+                        <span class="calificacion-nombre">${escapeHtml(nombre || 'Empleador')}</span>
+                        <span class="calificacion-trabajo">${escapeHtml(cal.ofertaTitulo || 'Trabajo')}</span>
                     </div>
                 </div>
                 <div class="calificacion-meta">
@@ -204,13 +205,13 @@ function crearCardCalificacion(cal) {
             </div>
             ${cal.comentario ? `
                 <div class="calificacion-comentario">
-                    <p>"${cal.comentario}"</p>
+                    <p>"${escapeHtml(cal.comentario)}"</p>
                 </div>
             ` : ''}
             ${cal.respuesta ? `
                 <div class="calificacion-respuesta">
                     <span class="respuesta-label">${esRecibida ? 'Tu respuesta:' : 'Respuesta del empleador:'}</span>
-                    <p>"${cal.respuesta}"</p>
+                    <p>"${escapeHtml(cal.respuesta)}"</p>
                 </div>
             ` : ''}
         </div>
