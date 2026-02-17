@@ -57,7 +57,7 @@ function renderGaleriaHTML(imagenesURLs) {
     if (!imagenesURLs || imagenesURLs.length === 0) return '';
 
     const imagenes = imagenesURLs.map((url, i) =>
-        `<img src="${url}" alt="Foto ${i + 1}" onclick="window.open('${url}', '_blank')">`
+        `<img src="${url}" alt="Foto ${i + 1}" loading="lazy" onclick="window.open('${url}', '_blank')">`
     ).join('');
 
     return `<div class="detalle-galeria">${imagenes}</div>`;

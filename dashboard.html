@@ -11,6 +11,9 @@
     <!-- Google Fonts - Poppins + Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- Favicon y App Icons -->
@@ -26,15 +29,15 @@
     <link rel="stylesheet" href="css/dashboard-main.css">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/modal.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
-    <link rel="stylesheet" href="css/oferta-detalle.css">
+    <link rel="stylesheet" href="css/oferta-detalle.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/filtros-avanzados.css">
     <link rel="stylesheet" href="css/bottom-nav.css">
     <link rel="stylesheet" href="css/dashboard-empleador.css">
-    <link rel="stylesheet" href="css/notifications.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/notifications.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/animations.css" media="print" onload="this.media='all'">
 
     <!-- Intro.js Onboarding - Carga condicional -->
     <script>
@@ -339,15 +342,22 @@
     </div>
     
     <!-- Scripts -->
-    <script src="js/config/firebase-config.js"></script>
-    <script src="js/toast.js"></script>
-    <script src="js/components/guided-tour.js"></script>
-    <script src="js/config/tours.js"></script>
+    <script src="js/config/firebase-config.js" defer></script>
+    <script src="js/toast.js" defer></script>
+    <script src="js/components/guided-tour.js" defer></script>
+    <script src="js/config/tours.js" defer></script>
     <script type="module" src="js/components/filtros-avanzados/index.js"></script>
-    <script src="js/components/bottom-nav.js"></script>
+    <script src="js/components/bottom-nav.js" defer></script>
 
     <!-- Dashboard JS modular (Fase 4 refactorización) -->
     <script type="module" src="js/dashboard/index.js"></script>
+
+    <!-- PWA: Install prompt + SW update -->
+    <script type="module" src="js/pwa/install-prompt.js"></script>
+    <script type="module">
+        import { initSWUpdate } from './js/pwa/sw-update.js';
+        initSWUpdate();
+    </script>
     
     <!-- Guided Tour -->
     <script>

@@ -1,6 +1,6 @@
 // ============================================
 // FIREBASE MESSAGING SERVICE WORKER
-// ChambApp - Notificaciones Push
+// ChambApp - Notificaciones Push + PWA Caching
 // ============================================
 
 // Importar Firebase compat (requerido para Service Workers)
@@ -47,33 +47,23 @@ messaging.onBackgroundMessage((payload) => {
 // MANEJAR CLICK EN NOTIFICACION
 // ============================================
 self.addEventListener('notificationclick', (event) => {
-    console.log('[SW ChambApp] Click en notificacion:', event);
-
-    // Cerrar la notificacion
     event.notification.close();
 
-    // Determinar URL a abrir segun la accion o datos
     let urlToOpen = '/dashboard.html';
 
-    if (event.action === 'cerrar') {
-        return; // Solo cerrar, no abrir nada
-    }
+    if (event.action === 'cerrar') return;
 
-    // Obtener URL de los datos de la notificacion
     if (event.notification.data && event.notification.data.url) {
         urlToOpen = event.notification.data.url;
     }
 
-    // Abrir o enfocar la ventana
     event.waitUntil(
         clients.matchAll({
             type: 'window',
             includeUncontrolled: true
         }).then((windowClients) => {
-            // Buscar si ya hay una ventana de ChambApp abierta
             for (const client of windowClients) {
                 if (client.url.includes(self.location.origin) && 'focus' in client) {
-                    // Enfocar y navegar
                     return client.focus().then(() => {
                         if (client.url !== self.location.origin + urlToOpen) {
                             return client.navigate(urlToOpen);
@@ -81,21 +71,182 @@ self.addEventListener('notificationclick', (event) => {
                     });
                 }
             }
-            // Si no hay ventana abierta, abrir una nueva
             return clients.openWindow(urlToOpen);
         })
     );
 });
 
 // ============================================
-// INSTALACION DEL SERVICE WORKER
+// PWA CACHING - ChambApp
+// ============================================
+
+const CACHE_VERSION = 'chambapp-v1';
+const STATIC_CACHE = CACHE_VERSION + '-static';
+const PAGES_CACHE = CACHE_VERSION + '-pages';
+const IMAGES_CACHE = CACHE_VERSION + '-images';
+
+// Assets to pre-cache on install
+const PRECACHE_ASSETS = [
+    '/offline.html',
+    '/css/design-system.css',
+    '/css/components.css',
+    '/css/toast.css',
+    '/css/bottom-nav.css',
+    '/css/accessibility.css',
+    '/css/animations.css',
+    '/css/dashboard-main.css',
+    '/css/dashboard-empleador.css',
+    '/assets/icons/icon-192.png',
+    '/assets/icons/icon-512.png',
+    '/assets/logo/logo-icono.png',
+    '/assets/logo/logo-completo.png',
+    '/manifest.json'
+];
+
+// URLs that should NEVER be cached (auth, realtime data, maps)
+const NEVER_CACHE = [
+    'identitytoolkit.googleapis.com',
+    'securetoken.googleapis.com',
+    'firestore.googleapis.com',
+    'fcmregistrations.googleapis.com',
+    'firebaseinstallations.googleapis.com',
+    'maps.googleapis.com',
+    'maps.gstatic.com'
+];
+
+// ============================================
+// CACHING STRATEGIES
+// ============================================
+
+function cacheFirst(request, cacheName) {
+    return caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request).then((response) => {
+            if (response.ok) {
+                const clone = response.clone();
+                caches.open(cacheName).then((c) => c.put(request, clone));
+            }
+            return response;
+        });
+    });
+}
+
+function networkFirst(request) {
+    return fetch(request).then((response) => {
+        if (response.ok) {
+            const clone = response.clone();
+            caches.open(PAGES_CACHE).then((c) => c.put(request, clone));
+        }
+        return response;
+    }).catch(() => {
+        return caches.match(request).then((cached) => {
+            return cached || caches.match('/offline.html');
+        });
+    });
+}
+
+function staleWhileRevalidate(request, cacheName) {
+    return caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request).then((response) => {
+            if (response.ok) {
+                const clone = response.clone();
+                caches.open(cacheName).then((c) => c.put(request, clone));
+            }
+            return response;
+        }).catch(() => cached);
+
+        return cached || fetchPromise;
+    });
+}
+
+function isStaticAsset(pathname) {
+    return /\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|woff2?)$/i.test(pathname);
+}
+
+function shouldNeverCache(url) {
+    return NEVER_CACHE.some((pattern) => url.includes(pattern));
+}
+
+// ============================================
+// FETCH EVENT - Route requests to strategies
+// ============================================
+self.addEventListener('fetch', (event) => {
+    const url = new URL(event.request.url);
+
+    // Skip non-GET requests
+    if (event.request.method !== 'GET') return;
+
+    // Skip non-http(s)
+    if (!url.protocol.startsWith('http')) return;
+
+    // Skip never-cache URLs (auth, firestore, maps)
+    if (shouldNeverCache(url.href)) return;
+
+    // Firebase Storage images -> Stale While Revalidate
+    if (url.hostname.includes('firebasestorage.googleapis.com')) {
+        event.respondWith(staleWhileRevalidate(event.request, IMAGES_CACHE));
+        return;
+    }
+
+    // Google Fonts -> Cache First
+    if (url.hostname.includes('fonts.googleapis.com') ||
+        url.hostname.includes('fonts.gstatic.com')) {
+        event.respondWith(cacheFirst(event.request, STATIC_CACHE));
+        return;
+    }
+
+    // Firebase SDK (gstatic) -> Cache First
+    if (url.hostname === 'www.gstatic.com') {
+        event.respondWith(cacheFirst(event.request, STATIC_CACHE));
+        return;
+    }
+
+    // HTML pages -> Network First with offline fallback
+    if (event.request.mode === 'navigate' || url.pathname.endsWith('.html')) {
+        event.respondWith(networkFirst(event.request));
+        return;
+    }
+
+    // Static assets (CSS, JS, images, fonts) -> Cache First
+    if (isStaticAsset(url.pathname)) {
+        event.respondWith(cacheFirst(event.request, STATIC_CACHE));
+        return;
+    }
+});
+
+// ============================================
+// INSTALL - Pre-cache static assets
 // ============================================
 self.addEventListener('install', (event) => {
     console.log('[SW ChambApp] Service Worker instalado');
-    self.skipWaiting();
+    event.waitUntil(
+        caches.open(STATIC_CACHE)
+            .then((cache) => cache.addAll(PRECACHE_ASSETS))
+            .then(() => self.skipWaiting())
+    );
 });
 
+// ============================================
+// ACTIVATE - Clean old caches
+// ============================================
 self.addEventListener('activate', (event) => {
     console.log('[SW ChambApp] Service Worker activado');
-    event.waitUntil(clients.claim());
+    event.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.filter((key) => {
+                    return key.startsWith('chambapp-') && !key.startsWith(CACHE_VERSION);
+                }).map((key) => caches.delete(key))
+            );
+        }).then(() => clients.claim())
+    );
+});
+
+// ============================================
+// MESSAGE - Handle skip waiting from client
+// ============================================
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });

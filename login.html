@@ -11,6 +11,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
     <!-- Favicon y App Icons -->
@@ -25,7 +28,7 @@
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/animations.css" media="print" onload="this.media='all'">
 </head>
 <body>
     <main>
@@ -95,8 +98,8 @@
     </main>
 
     <!-- Scripts -->
-    <script src="js/toast.js"></script>
-    <script src="js/config/firebase-config.js"></script>
+    <script src="js/toast.js" defer></script>
+    <script src="js/config/firebase-config.js" defer></script>
 
     <!-- Script de login (ahora externo y organizado) -->
     <script type="module" src="js/auth/login.js"></script>

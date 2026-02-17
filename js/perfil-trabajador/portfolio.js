@@ -47,7 +47,7 @@ export function cargarPortfolio() {
         const card = document.createElement('div');
         card.className = 'portfolio-item';
         card.innerHTML = `
-            <img src="${url}" alt="Trabajo ${index + 1}" onclick="abrirLightbox(${index})">
+            <img src="${url}" alt="Trabajo ${index + 1}" loading="lazy" onclick="abrirLightbox(${index})">
             <button class="btn-eliminar-portfolio" onclick="eliminarFotoPortfolio(${index})">
                 🗑️
             </button>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0066FF">
+    <title>Sin Conexion - ChambApp</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F7FAFC;
+            color: #1A1D23;
+            padding: 1.5rem;
+        }
+        .offline-container {
+            text-align: center;
+            max-width: 360px;
+        }
+        .offline-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 20px;
+        }
+        .offline-emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #0F1419;
+        }
+        p {
+            font-size: 0.95rem;
+            color: #4A5568;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+        .btn-retry {
+            display: inline-block;
+            background: #0066FF;
+            color: #fff;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .btn-retry:active { background: #0052CC; }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <img src="/assets/icons/icon-192.png" alt="ChambApp" class="offline-icon">
+        <div class="offline-emoji">📡</div>
+        <h1>Sin conexion</h1>
+        <p>No pudimos cargar esta pagina. Revisa tu conexion a internet y vuelve a intentar.</p>
+        <button class="btn-retry" onclick="location.reload()">Reintentar</button>
+    </div>
+</body>
+</html>
