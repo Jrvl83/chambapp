@@ -24,7 +24,7 @@
 @media (max-width: 768px) {
     .toast-container {
         bottom: 1rem;
-        max-width: 95%;
+        width: 95%;
     }
 }
 

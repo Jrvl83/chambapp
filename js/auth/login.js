@@ -6,7 +6,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut }
     from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, getDoc }
+import { getFirestore, doc, getDoc, collection, query, where, getDocs }
     from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { iniciarSesionGoogle, crearPerfilGoogle, obtenerMensajeErrorGoogle, esIOSStandalone }
     from './google-auth.js';
@@ -226,6 +226,22 @@ async function handleGoogleLogin() {
 }
 
 /**
+ * Verificar si un email está registrado con Google
+ */
+async function esUsuarioGoogle(email) {
+    try {
+        const q = query(collection(db, 'usuarios'), where('email', '==', email));
+        const snap = await getDocs(q);
+        if (snap.empty) return false;
+        const data = snap.docs[0].data();
+        return data.authProvider === 'google';
+    } catch (err) {
+        console.error('Error verificando proveedor:', err);
+        return false;
+    }
+}
+
+/**
  * Recuperar contraseña
  */
 async function handleForgotPassword(e) {
@@ -238,13 +254,18 @@ async function handleForgotPassword(e) {
         return;
     }
 
+    // Verificar si es cuenta de Google
+    if (await esUsuarioGoogle(email)) {
+        toastInfo('Esta cuenta usa Google para iniciar sesión. Usa el botón "Continuar con Google".', 5000);
+        return;
+    }
+
     try {
         await sendPasswordResetEmail(auth, email);
     } catch (error) {
         // No revelar si el email existe (seguridad)
     }
 
-    // Siempre mostrar éxito para no revelar emails registrados
     toastSuccess('Si el email está registrado, recibirás instrucciones para restablecer tu contraseña.');
 }
 
