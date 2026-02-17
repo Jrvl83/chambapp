@@ -81,16 +81,16 @@ TOTAL:  22% del proyecto (42/192 tareas)
 | 33 | Error states, validaciones inline, modal confirmación, sanitización | 16 Feb |
 | 34 | Loading states (spinner centrado) | 30 Ene |
 | 37-39 | Performance + PWA (SW caching, offline, install prompt, lazy CSS/imgs, Firestore persistence) | 17 Feb |
+| 51 | Auditoría de seguridad: XSS prevention (escapeHtml en 6 archivos), Firestore/Storage rules endurecidas, limpieza config/keys, SW reload fix, Firestore persistence API migrada | 17 Feb |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (14)
+### Tareas Pendientes (13)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
-| 51 | Auditoría de seguridad proactiva - API keys hardcodeadas (incl. commits viejos), vulnerabilidades de dependencias, rutas sin auth, XSS/CSRF, secretos en config. Generar reporte priorizado | Alta |
 | 49 | Login/Registro con Google (Gmail) - botón "Continuar con Google" en login y register | Alta |
 | 50 | Email template brandeado ChambApp - template personalizado para verificación de email en Firebase Auth | Alta |
 | 40-44 | Testing y QA | Alta |
@@ -495,8 +495,10 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **UX mis-aplicaciones-trabajador:** Prioridad de contenido corregida (~570px→190px sobre cards), contacto colapsable, stats como pills filtro, CSS 855→522 líneas
 - ✅ **Error states y validaciones (Task 33):** validators.js, form-errors.js, confirm-modal.js, error-handler.js + sanitización en guardados
 - ✅ **Performance + PWA (Tasks 37-39):** SW con cacheo, offline page, install prompt, lazy CSS/imgs, Firestore persistence, iOS standalone fixes
+- ✅ **Auditoría de seguridad (Task 51):** escapeHtml en 6 archivos, Firestore/Storage rules endurecidas, limpieza config, SW reload fix, Firestore persistence API migrada
 
 ### Sesiones
+- **Sesión 17 (17/02/26):** Task 51 - Auditoría de seguridad proactiva. XSS prevention: escapeHtml() aplicado en 6 archivos (historial-calificaciones, oferta-card, dashboard, index, mis-aplicaciones-trabajador, mis-aplicaciones). Firestore rules: ofertas create restringido a empleadores, aplicaciones update con ownership check (uid+email). Storage rules: ofertas solo imágenes <5MB. Limpieza: eliminados console.log de config, document.write→createElement en 3 HTML, eliminados 6 Lighthouse JSONs con API keys, eliminada GOOGLE_GEOCODING_API_KEY deprecated, geolocation.js migrado a GOOGLE_MAPS_API_KEY. Creado docs/SEGURIDAD.md con checklist acciones manuales GCP. Fix SW: controllerchange solo recarga si había controller previo (evita recarga doble en primera visita). Migrado enableIndexedDbPersistence() a initializeFirestore() con persistentLocalCache. 20 archivos modificados.
 - **Sesión 16 (17/02/26):** Tasks 37-39 - Performance + PWA completa. Sub-tasks: 37A resource hints + defer en 14 HTML, 37B lazy loading imágenes dinámicas, 38A Firestore offline persistence, 38B CSS no-crítico diferido (media="print"), 39A Service Worker con cacheo (Cache First/Network First/SWR), 39B offline.html, 39C install prompt + manifest update, 39D SW update notification. Fixes iOS: scope:"/" en manifest, apple-mobile-web-app-capable + link manifest en todos los HTML, safe-area-inset-top en header-simple.css para notch. 22 archivos modificados, 3 nuevos (offline.html, install-prompt.js, sw-update.js).
 - **Sesión 15 (16/02/26):** Task 33 - Error states y validaciones: 4 módulos nuevos (validators.js, form-errors.js, confirm-modal.js, error-handler.js). Validaciones inline en perfiles trabajador/empleador (nombre, teléfono 9 dígitos, edad mínima 18, horarios). Modal de confirmación customizado reemplaza 6 confirm() nativos. Sanitización con sanitizeText() en guardado de perfiles y ofertas. Validación onblur en campos obligatorios. Mensajes de error contextuales con detección red/permisos y botón "Reintentar".
 - **Sesión 14 (12/02/26):** UX mejoras dashboard empleador: saludo contextual (reemplaza alerta amarilla), stats "Pendientes" con urgencia, cards ordenadas por prioridad, ocultar "Ver Candidatos" si 0 postulaciones, badge singular/plural, fecha corta, salario "S/.", bottom nav "Talento", botón "Nueva Oferta" outline. Fix settings.local.json corrupto.
@@ -545,10 +547,11 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **Task 35** - Accesibilidad WCAG 2.1 AA
-2. **Tasks 40-44** - Testing y QA
-3. **Tasks 45-48** - Panel de administración
-4. **Fase 2: Diferenciación** - Sistema freemium, verificación DNI
+1. **Task 49** - Login/Registro con Google (Gmail)
+2. **Task 50** - Email template brandeado
+3. **Tasks 40-44** - Testing y QA
+4. **Tasks 45-48** - Panel de administración
+5. **Task 35** - Accesibilidad WCAG 2.1 AA
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
@@ -567,9 +570,14 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - **PWA iOS:** Requiere `apple-mobile-web-app-capable`, `<link rel="manifest">`, y `scope: "/"` en manifest.json en CADA HTML. Sin esto, iOS abre Safari al navegar entre páginas.
 - **Notch iOS:** `header-simple.css` usa `calc(1rem + env(safe-area-inset-top, 0))` para padding-top. Dashboard usa `env(safe-area-inset-top)` en `dashboard-main.css`.
 - **CSS cache bust:** Cambiar `?v=N` al modificar CSS cacheados (header-simple.css?v=3)
-- **Firestore offline:** `enableIndexedDbPersistence(db)` en firebase-init.js (best-effort, no await)
+- **Firestore offline:** `initializeFirestore()` con `persistentLocalCache` + `persistentMultipleTabManager` en firebase-init.js
+- **XSS prevention:** `escapeHtml()` de dom-helpers.js en todo innerHTML con datos de usuario. `textContent` para texto plano.
+- **Firestore rules:** ofertas create solo empleadores, aplicaciones update con ownership (uid+email). Read de aplicaciones no puede tener resource.data checks (rompe list queries).
+- **Storage rules:** ofertas/ solo imágenes <5MB
+- **SW reload:** `controllerchange` solo recarga si `hadController` (evita recarga en primera instalación)
+- **Seguridad:** checklist de acciones manuales en `docs/SEGURIDAD.md`
 
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 5.0
+**Versión documento:** 6.0
