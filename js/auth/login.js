@@ -4,14 +4,18 @@
 // ============================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut }
+    from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, getDoc }
+    from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { iniciarSesionGoogle, crearPerfilGoogle, obtenerMensajeErrorGoogle, esIOSStandalone }
+    from './google-auth.js';
+import { escapeHtml } from '../utils/dom-helpers.js';
 
 // ============================================
 // INICIALIZACIÓN FIREBASE
 // ============================================
 
-// Inicializar Firebase con config global
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -22,6 +26,7 @@ const db = getFirestore(app);
 
 const loginForm = document.getElementById('loginForm');
 const btnLogin = document.getElementById('btn-login');
+const btnGoogle = document.getElementById('btn-google');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const passwordToggle = document.getElementById('password-toggle');
@@ -32,7 +37,6 @@ const passwordToggle = document.getElementById('password-toggle');
 
 /**
  * Toggle password visibility
- * Alterna entre mostrar/ocultar contraseña
  */
 function togglePassword() {
     if (passwordInput.type === 'password') {
@@ -48,51 +52,37 @@ function togglePassword() {
 
 /**
  * Validar campos del formulario
- * @returns {boolean} - true si válido, false si inválido
  */
 function validarCampos(email, password) {
     if (!email || !password) {
         toastWarning('Por favor completa todos los campos');
         return false;
     }
-    
-    // Validar formato email básico
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
         toastWarning('Por favor ingresa un email válido');
         return false;
     }
-    
     return true;
 }
 
 /**
- * Manejar errores de Firebase Auth
- * Convierte códigos de error técnicos a mensajes amigables
- * @param {Object} error - Error de Firebase
- * @returns {string} - Mensaje amigable
+ * Manejar errores de Firebase Auth (email/password)
  */
 function obtenerMensajeError(error) {
-    console.error('Error al iniciar sesión:', error);
-    
-    switch(error.code) {
+    switch (error.code) {
         case 'auth/invalid-credential':
         case 'auth/wrong-password':
         case 'auth/user-not-found':
             return 'Email o contraseña incorrectos. Verifica tus datos e intenta de nuevo.';
-            
         case 'auth/invalid-email':
             return 'El email ingresado no es válido. Verifica el formato.';
-            
         case 'auth/user-disabled':
             return 'Esta cuenta ha sido deshabilitada. Contacta a soporte.';
-            
         case 'auth/too-many-requests':
             return 'Demasiados intentos fallidos. Espera unos minutos e intenta de nuevo.';
-            
         case 'auth/network-request-failed':
             return 'Sin conexión a internet. Verifica tu conexión y vuelve a intentar.';
-            
         default:
             return 'Error al iniciar sesión. Intenta de nuevo más tarde.';
     }
@@ -100,94 +90,176 @@ function obtenerMensajeError(error) {
 
 /**
  * Actualizar estado del botón de login
- * @param {boolean} loading - Si está en estado de carga
  */
 function actualizarBotonLogin(loading) {
+    btnLogin.disabled = loading;
+    btnLogin.classList.toggle('loading', loading);
+    btnLogin.textContent = loading ? 'Iniciando sesión...' : 'Iniciar Sesión';
+}
+
+/**
+ * Actualizar estado del botón de Google
+ */
+function actualizarBotonGoogle(loading) {
+    btnGoogle.disabled = loading;
     if (loading) {
-        btnLogin.disabled = true;
-        btnLogin.classList.add('loading');
-        btnLogin.textContent = 'Iniciando sesión...';
-    } else {
-        btnLogin.disabled = false;
-        btnLogin.classList.remove('loading');
-        btnLogin.textContent = 'Iniciar Sesión';
+        btnGoogle.dataset.originalHtml = btnGoogle.innerHTML;
+        btnGoogle.textContent = 'Conectando...';
+    } else if (btnGoogle.dataset.originalHtml) {
+        btnGoogle.innerHTML = btnGoogle.dataset.originalHtml;
     }
 }
 
 /**
- * Manejar el proceso de login
- * @param {Event} e - Evento del formulario
+ * Guardar usuario en localStorage y redirigir
+ */
+function loginExitoso(userData) {
+    localStorage.setItem('usuarioChambApp', JSON.stringify(userData));
+    const nombre = escapeHtml(userData.nombre || 'usuario');
+    toastSuccess(`¡Bienvenido de vuelta, ${nombre}!`);
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+}
+
+/**
+ * Mostrar modal de selección de rol
+ * @returns {Promise<string|null>} 'trabajador', 'empleador', o null si canceló
+ */
+function mostrarModalRol() {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('modal-rol-google');
+        modal.style.display = 'flex';
+
+        function cleanup() {
+            cards.forEach(c => c.removeEventListener('click', handleCardClick));
+            modal.removeEventListener('click', handleOverlayClick);
+            modal.style.display = 'none';
+        }
+
+        const cards = modal.querySelectorAll('.role-card');
+        function handleCardClick(e) {
+            cleanup();
+            resolve(e.currentTarget.dataset.type);
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === modal) {
+                cleanup();
+                resolve(null);
+            }
+        }
+
+        cards.forEach(c => c.addEventListener('click', handleCardClick));
+        modal.addEventListener('click', handleOverlayClick);
+    });
+}
+
+// ============================================
+// HANDLERS
+// ============================================
+
+/**
+ * Login con email/password
  */
 async function handleLogin(e) {
     e.preventDefault();
-
-    // Obtener valores
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    // Validar
-    if (!validarCampos(email, password)) {
-        return;
-    }
+    if (!validarCampos(email, password)) return;
 
-    // Mostrar loading
     actualizarBotonLogin(true);
 
     try {
-        // 1. Iniciar sesión en Firebase Auth
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        const userDoc = await getDoc(doc(db, 'usuarios', userCredential.user.uid));
 
-        // 2. Obtener datos completos del usuario desde Firestore
-        const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-        
         if (!userDoc.exists()) {
             throw new Error('No se encontraron datos del usuario');
         }
 
-        const userData = userDoc.data();
-        
-        // 3. Guardar en localStorage incluyendo el UID
-        const usuarioCompleto = {
-            ...userData,
-            uid: user.uid
-        };
-        localStorage.setItem('usuarioChambApp', JSON.stringify(usuarioCompleto));
-
-        // 4. Mostrar mensaje de éxito
-        toastSuccess(`¡Bienvenido de vuelta, ${userData.nombre}!`);
-
-        // 5. Redirigir al dashboard
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1000);
-
+        loginExitoso({ ...userDoc.data(), uid: userCredential.user.uid });
     } catch (error) {
-        // Restaurar botón
         actualizarBotonLogin(false);
-
-        // Mostrar error amigable
-        const mensaje = obtenerMensajeError(error);
-        toastError(mensaje);
+        toastError(obtenerMensajeError(error));
     }
+}
+
+/**
+ * Login con Google
+ */
+async function handleGoogleLogin() {
+    if (esIOSStandalone()) {
+        toastWarning('Para usar Google, abre ChambApp en Safari.');
+        return;
+    }
+
+    actualizarBotonGoogle(true);
+
+    try {
+        const { user, userData, isNewUser } = await iniciarSesionGoogle(auth, db);
+
+        if (!isNewUser) {
+            loginExitoso(userData);
+            return;
+        }
+
+        // Usuario nuevo: pedir tipo
+        actualizarBotonGoogle(false);
+        const tipo = await mostrarModalRol();
+
+        if (!tipo) {
+            // Usuario canceló el modal: limpiar sesión de Google
+            await signOut(auth);
+            return;
+        }
+
+        actualizarBotonGoogle(true);
+        const nuevoUsuario = await crearPerfilGoogle(db, user, tipo);
+        localStorage.setItem('usuarioChambApp', JSON.stringify(nuevoUsuario));
+        toastSuccess('¡Cuenta creada exitosamente!');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+    } catch (error) {
+        actualizarBotonGoogle(false);
+        const mensaje = obtenerMensajeErrorGoogle(error);
+        if (mensaje) toastError(mensaje);
+    }
+}
+
+/**
+ * Recuperar contraseña
+ */
+async function handleForgotPassword(e) {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+
+    if (!email) {
+        toastWarning('Ingresa tu email para recuperar tu contraseña');
+        emailInput.focus();
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+        // No revelar si el email existe (seguridad)
+    }
+
+    // Siempre mostrar éxito para no revelar emails registrados
+    toastSuccess('Si el email está registrado, recibirás instrucciones para restablecer tu contraseña.');
 }
 
 // ============================================
 // EVENT LISTENERS
 // ============================================
 
-// Formulario de login
 loginForm.addEventListener('submit', handleLogin);
+btnGoogle.addEventListener('click', handleGoogleLogin);
 
-// Toggle password (exponer función globalmente)
+document.getElementById('forgot-password-link')
+    .addEventListener('click', handleForgotPassword);
+
 window.togglePassword = togglePassword;
 
-// Focus automático en email al cargar
 window.addEventListener('load', () => {
     emailInput.focus();
 });
-
-// ============================================
-// EXPORTS (si necesario en futuro)
-// ============================================
-// export { handleLogin, togglePassword };

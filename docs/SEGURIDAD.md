@@ -34,6 +34,68 @@
 firebase deploy --only firestore:rules,storage
 ```
 
+### 5. Habilitar Google Sign-In en Firebase
+- [ ] Ir a: Firebase Console > Authentication > Sign-in method
+- [ ] Click en "Google"
+- [ ] Habilitar toggle
+- [ ] Nombre público del proyecto: `ChambApp`
+- [ ] Email de soporte: (email del proyecto)
+- [ ] Guardar
+
+### 6. Configurar Email Templates Brandeados
+- [ ] Ir a: Firebase Console > Authentication > Templates
+
+**Template: Verificación de email**
+- [ ] Sender name: `ChambApp`
+- [ ] Subject: `Verifica tu email - ChambApp`
+- [ ] Personalizar mensaje con HTML:
+
+```html
+<div style="max-width:520px;margin:0 auto;font-family:'Inter',-apple-system,sans-serif;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+  <div style="background:linear-gradient(135deg,#0066FF,#0052CC);padding:32px 24px;text-align:center;">
+    <h1 style="color:#fff;font-size:24px;margin:0;font-weight:700;">ChambApp</h1>
+    <p style="color:rgba(255,255,255,0.9);font-size:14px;margin:8px 0 0;">Tu próxima chamba está aquí</p>
+  </div>
+  <div style="padding:32px 24px;">
+    <h2 style="color:#1e293b;font-size:20px;margin:0 0 16px;">Verifica tu email</h2>
+    <p style="color:#475569;font-size:16px;line-height:1.6;margin:0 0 24px;">
+      Hola, gracias por registrarte en ChambApp. Para completar tu registro, verifica tu email haciendo clic en el botón:
+    </p>
+    <div style="text-align:center;margin:24px 0;">
+      <a href="%LINK%" style="display:inline-block;background:linear-gradient(135deg,#0066FF,#0052CC);color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-size:16px;font-weight:600;">
+        Verificar Email
+      </a>
+    </div>
+    <p style="color:#94a3b8;font-size:13px;line-height:1.5;">
+      Si no creaste una cuenta en ChambApp, puedes ignorar este email.
+    </p>
+  </div>
+  <div style="background:#f1f5f9;padding:20px 24px;text-align:center;border-top:1px solid #e2e8f0;">
+    <p style="color:#94a3b8;font-size:12px;margin:0;">© 2026 ChambApp - Conectando talento con oportunidades en Perú</p>
+  </div>
+</div>
+```
+
+**Template: Restablecimiento de contraseña**
+- [ ] Subject: `Restablece tu contraseña - ChambApp`
+- [ ] Mismo header/footer, cambiar body a:
+
+```html
+    <h2 style="color:#1e293b;font-size:20px;margin:0 0 16px;">Restablece tu contraseña</h2>
+    <p style="color:#475569;font-size:16px;line-height:1.6;margin:0 0 24px;">
+      Recibimos una solicitud para restablecer la contraseña de tu cuenta en ChambApp. Haz clic en el botón para crear una nueva:
+    </p>
+    <div style="text-align:center;margin:24px 0;">
+      <a href="%LINK%" style="display:inline-block;background:linear-gradient(135deg,#0066FF,#0052CC);color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-size:16px;font-weight:600;">
+        Restablecer Contraseña
+      </a>
+    </div>
+    <p style="color:#94a3b8;font-size:13px;line-height:1.5;">
+      Si no solicitaste esto, puedes ignorar este email. Tu contraseña no cambiará.<br>
+      Este enlace expira en 1 hora.
+    </p>
+```
+
 ## Fixes Implementados (17/02/26)
 
 ### XSS Prevention

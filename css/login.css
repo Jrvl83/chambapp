@@ -208,6 +208,136 @@ main {
     font-size: var(--text-sm);
 }
 
+/* ============================================
+   AUTH DIVIDER & GOOGLE SIGN-IN
+   ============================================ */
+
+/* Divider "o" */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.auth-divider span {
+    color: var(--gray-500);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Google button */
+.btn-google {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    background: var(--white);
+    color: var(--dark);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all var(--transition-fast);
+}
+
+.btn-google:hover:not(:disabled) {
+    border-color: var(--gray-400);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.btn-google:active:not(:disabled) {
+    transform: scale(0.98);
+    background: var(--gray-50);
+}
+
+.btn-google:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-google .google-icon {
+    flex-shrink: 0;
+}
+
+/* ============================================
+   MODAL SELECCIÓN DE ROL (Google login)
+   ============================================ */
+
+.modal-rol-body {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.modal-rol-body h3 {
+    color: var(--dark);
+    font-size: var(--text-xl);
+    margin: 0.5rem 0;
+}
+
+.modal-rol-body p {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
+}
+
+.google-role-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.google-role-cards .role-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+}
+
+.google-role-cards .role-card:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.google-role-cards .role-card-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.google-role-cards .role-card-title {
+    font-weight: var(--font-semibold);
+    color: var(--dark);
+    font-size: var(--text-base);
+}
+
+.google-role-cards .role-card-desc {
+    color: var(--gray-500);
+    font-size: var(--text-sm);
+    margin-top: 0.125rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .login-container {

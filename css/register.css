@@ -450,6 +450,22 @@ main {
     font-weight: var(--font-semibold);
 }
 
+/* Google Sign-Up (Step 1) */
+#google-register-section { margin-top: 0.5rem; }
+.auth-divider { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.auth-divider span { color: var(--gray-500); font-size: var(--text-sm); font-weight: var(--font-medium); }
+.btn-google {
+    width: 100%; min-height: 44px; padding: 0.75rem 1rem;
+    background: var(--white); color: var(--dark);
+    border: 2px solid var(--border); border-radius: var(--radius-lg);
+    font-size: var(--text-base); font-weight: var(--font-medium); font-family: inherit;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 0.75rem; transition: all var(--transition-fast);
+}
+.btn-google:hover:not(:disabled) { border-color: var(--gray-400); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* Responsive */
 @media (max-width: 768px) {
     body {
