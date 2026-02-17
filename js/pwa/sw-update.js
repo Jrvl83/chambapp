@@ -16,9 +16,13 @@ export function initSWUpdate() {
         listenForUpdates(registration);
     });
 
-    // Recargar cuando el nuevo SW toma control
+    // Recargar cuando un nuevo SW reemplaza al anterior.
+    // Solo si ya habia un controller (es update, no primera instalacion).
+    const hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
+        if (hadController) {
+            window.location.reload();
+        }
     });
 }
 

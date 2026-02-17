@@ -5,7 +5,7 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { getFirestore, enableIndexedDbPersistence } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getStorage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
 // Configuracion de Firebase
@@ -23,17 +23,10 @@ const app = initializeApp(firebaseConfig);
 
 // Inicializar servicios
 const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// Habilitar persistencia offline (best-effort)
-enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-        console.warn('[Firestore] Persistence: multiple tabs open');
-    } else if (err.code === 'unimplemented') {
-        console.warn('[Firestore] Persistence: browser not supported');
-    }
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
 });
+const storage = getStorage(app);
 
 // ============================================
 // EXPORTACIONES ES6 MODULE
