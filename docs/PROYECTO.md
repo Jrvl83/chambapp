@@ -86,7 +86,7 @@ TOTAL:  22% del proyecto (42/192 tareas)
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (13)
+### Tareas Pendientes (14)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
@@ -96,6 +96,7 @@ TOTAL:  22% del proyecto (42/192 tareas)
 | 45-48 | Panel de administración | Media |
 | 49 | Login/Registro con Google (Gmail) - botón "Continuar con Google" en login y register | Alta |
 | 50 | Email template brandeado ChambApp - template personalizado para verificación de email en Firebase Auth | Alta |
+| 51 | Auditoría de seguridad proactiva - API keys hardcodeadas (incl. commits viejos), vulnerabilidades de dependencias, rutas sin auth, XSS/CSRF, secretos en config. Generar reporte priorizado | Alta |
 
 ### Tareas Diferidas (7)
 - Tasks 18, 19, 20: Chat in-app (WhatsApp cubre la necesidad)
