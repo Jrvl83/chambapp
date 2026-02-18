@@ -280,6 +280,9 @@
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--dark);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .aplicacion-email {
@@ -1109,11 +1112,12 @@
     background: var(--avatar-color, var(--primary));
 }
 
-/* Badge: siempre alineado arriba del row */
+/* Badge: siempre top-right, no se estira ni sale del card */
 .aplicacion-header .badge {
     align-self: flex-start;
     flex-shrink: 0;
     margin-left: 0.5rem;
+    white-space: nowrap;
 }
 
 /* --- Info del trabajador compacta --- */
@@ -1121,6 +1125,13 @@
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
+    min-width: 0;
+}
+
+/* .aplicacion-trabajador toma el espacio disponible y puede encogerse,
+   dejando siempre espacio para el badge sin que se salga del card */
+.aplicacion-trabajador {
+    flex: 1;
     min-width: 0;
 }
 
@@ -1291,6 +1302,11 @@
 
 .urgencia-link:hover { text-decoration: underline; }
 
+/* btn-ver-perfil: evitar que se estire al ancho del flex-column padre */
+.btn-ver-perfil {
+    align-self: flex-start;
+}
+
 /* --- "Ver perfil completo" prominente en pendientes --- */
 .btn-ver-perfil--pendiente {
     background: var(--primary);
@@ -1351,26 +1367,31 @@
     font-style: italic;
 }
 
-/* Completado: acción administrativa separada del contacto */
+/* Completado: botón outline morado — claramente clickeable, secundario al WhatsApp */
 .btn-marcar-completado {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     width: 100%;
     background: none;
-    border: none;
-    border-top: 1px solid var(--border);
-    color: var(--gray);
-    font-size: 0.8125rem;
+    border: 1.5px solid var(--completado);
+    border-radius: 10px;
+    color: var(--completado);
+    font-size: 0.875rem;
+    font-weight: 600;
     text-align: center;
-    padding: 0.625rem;
+    padding: 0.75rem 1rem;
     margin-top: 0.75rem;
     cursor: pointer;
     font-family: inherit;
-    transition: color 0.2s;
-    line-height: 1.3;
-    word-break: keep-all;
+    transition: all 0.2s;
 }
 
-.btn-marcar-completado:hover { color: var(--completado); }
+.btn-marcar-completado:hover {
+    background: var(--completado);
+    color: white;
+}
 
 /* --- Card rechazado: colapsada por defecto --- */
 .aplicacion-card--colapsada {

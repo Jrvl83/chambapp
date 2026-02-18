@@ -109,7 +109,7 @@ function crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, titu
         <div class="contacto-aceptado">${contactoHTML}</div>
         <button class="btn-marcar-completado"
                 onclick="marcarCompletado('${aplicacion.id}', '${nombreEscapado}', '${tituloEscapado}')">
-            ¿El trabajo terminó? Marcarlo como completado →
+            🏁 Marcar trabajo como completado
         </button>
     `;
 }
@@ -179,9 +179,8 @@ function crearVerPerfilLink(aplicacion) {
     if (!aplicacion.aplicanteId) return '';
     const esPendiente = (aplicacion.estado || 'pendiente') === 'pendiente';
     const clase = esPendiente ? 'btn-ver-perfil btn-ver-perfil--pendiente' : 'btn-ver-perfil';
-    const label = esPendiente ? 'Ver perfil completo →' : 'Ver perfil →';
     return `<a href="perfil-publico.html?id=${aplicacion.aplicanteId}"
-               class="${clase}" onclick="event.stopPropagation()">${label}</a>`;
+               class="${clase}" onclick="event.stopPropagation()">Ver Perfil</a>`;
 }
 
 // ============================================
@@ -258,7 +257,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
                         ${crearVerPerfilLink(aplicacion)}
                     </div>
                 </div>
-                ${crearBadgeEstado(estado)}
+                ${estado !== 'pendiente' ? crearBadgeEstado(estado) : ''}
             </div>
             ${mensajeHTML}
             <div class="aplicacion-actions">
