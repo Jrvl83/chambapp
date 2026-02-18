@@ -7,13 +7,8 @@
 
 import { formatearFecha } from '../utils/formatting.js';
 
-// Referencia al estado compartido
 let state = null;
 
-/**
- * Inicializa el módulo de cards
- * @param {Object} sharedState - Estado compartido
- */
 export function initCards(sharedState) {
     state = sharedState;
 }
@@ -42,13 +37,24 @@ function getCategoriaLabel(categoria) {
 
 function crearBadgeEstado(estado) {
     const estados = {
-        'pendiente': { texto: 'PENDIENTE', clase: 'pendiente' },
-        'aceptado': { texto: 'ACEPTADO', clase: 'aceptado' },
-        'rechazado': { texto: 'RECHAZADO', clase: 'rechazado' },
-        'completado': { texto: 'COMPLETADO', clase: 'completado' }
+        'pendiente': { texto: 'Pendiente', clase: 'pendiente' },
+        'aceptado':  { texto: 'Aceptado',  clase: 'aceptado'  },
+        'rechazado': { texto: 'Rechazado', clase: 'rechazado' },
+        'completado':{ texto: 'Completado',clase: 'completado'}
     };
     const config = estados[estado] || estados['pendiente'];
     return `<span class="badge ${config.clase}">${config.texto}</span>`;
+}
+
+// Avatar con iniciales del nombre (color determinista)
+function crearAvatarHTML(nombre) {
+    const palabras = (nombre || 'T').trim().split(/\s+/);
+    const iniciales = palabras.length >= 2
+        ? palabras[0][0] + palabras[1][0]
+        : palabras[0].substring(0, 2);
+    const colores = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#0891b2', '#db2777'];
+    const color = colores[(nombre || '').charCodeAt(0) % colores.length];
+    return `<div class="aplicacion-avatar" style="--avatar-color:${color}">${iniciales.toUpperCase()}</div>`;
 }
 
 // ============================================
@@ -58,21 +64,25 @@ function crearBadgeEstado(estado) {
 function crearBotonesPendiente(aplicacionId, nombreEscapado, vacantesLlenas) {
     if (vacantesLlenas) {
         return `
-            <div class="estado-final">
-                <span class="texto-rechazado">Vacantes cubiertas</span>
+            <div class="aplicacion-actions-pendiente">
+                <div class="estado-final">
+                    <span class="texto-rechazado">Vacantes cubiertas</span>
+                </div>
+                <button class="btn btn-danger btn-accion" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
+                    ❌ Rechazar
+                </button>
             </div>
-            <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                ❌ Rechazar
-            </button>
         `;
     }
     return `
-        <button class="btn btn-success btn-sm" onclick="aceptarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-            ✅ Aceptar
-        </button>
-        <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-            ❌ Rechazar
-        </button>
+        <div class="aplicacion-actions-pendiente">
+            <button class="btn btn-success btn-accion" onclick="aceptarAplicacion('${aplicacionId}', '${nombreEscapado}')">
+                ✅ Aceptar
+            </button>
+            <button class="btn btn-danger btn-accion" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
+                ❌ Rechazar
+            </button>
+        </div>
     `;
 }
 
@@ -83,26 +93,24 @@ function crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, titu
     const telefonoLimpio = telefono ? telefono.replace(/\D/g, '') : '';
     const telefonoWhatsApp = telefonoLimpio.startsWith('51') ? telefonoLimpio : `51${telefonoLimpio}`;
 
-    return `
-        <div class="contacto-aceptado">
-            <div class="contacto-info">
-                <span class="contacto-label">📱 Contacto:</span>
-                <span class="contacto-telefono">${telefono || 'No disponible'}</span>
-            </div>
-            <div class="contacto-botones">
-                ${telefono ? `
-                    <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
-                       target="_blank"
-                       class="btn btn-whatsapp btn-sm">
-                        <span class="whatsapp-icon">📱</span> WhatsApp
-                    </a>
-                    <a href="tel:${telefono}" class="btn btn-primary btn-sm">📞 Llamar</a>
-                ` : ''}
-                <button class="btn btn-completado btn-sm" onclick="marcarCompletado('${aplicacion.id}', '${nombreEscapado}', '${tituloEscapado}')">
-                    🏁 Marcar Completado
-                </button>
-            </div>
+    const contactoHTML = telefono ? `
+        <div class="contacto-info">
+            <span class="contacto-label">📱</span>
+            <span class="contacto-telefono">${telefono}</span>
         </div>
+        <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
+           target="_blank" class="btn btn-whatsapp btn-whatsapp-cta">
+            📱 Contactar por WhatsApp
+        </a>
+        <a href="tel:${telefono}" class="btn-llamar-link">📞 Llamar también</a>
+    ` : `<p class="sin-telefono">Sin número de contacto registrado</p>`;
+
+    return `
+        <div class="contacto-aceptado">${contactoHTML}</div>
+        <button class="btn-marcar-completado"
+                onclick="marcarCompletado('${aplicacion.id}', '${nombreEscapado}', '${tituloEscapado}')">
+            ¿El trabajo terminó? Marcarlo como completado →
+        </button>
     `;
 }
 
@@ -113,8 +121,7 @@ function crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado) {
                 <span class="texto-completado">✅ Trabajo completado</span>
                 <div class="estado-calificado">
                     <span class="calificacion-mostrada">
-                        <span class="estrella-filled">★</span>
-                        Calificado
+                        <span class="estrella-filled">★</span> Calificado
                     </span>
                 </div>
             </div>
@@ -144,15 +151,10 @@ function crearBotonesAccion(aplicacion, ofertaId) {
     const ofertaInfo = state.ofertasCache[ofertaId] || {};
     const vacantesLlenas = (ofertaInfo.aceptadosCount || 0) >= (ofertaInfo.vacantes || 1);
 
-    if (estado === 'pendiente') {
-        return crearBotonesPendiente(aplicacion.id, nombreEscapado, vacantesLlenas);
-    } else if (estado === 'aceptado') {
-        return crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, tituloEscapado);
-    } else if (estado === 'rechazado') {
-        return `<div class="estado-final"><span class="texto-rechazado">Postulación rechazada</span></div>`;
-    } else if (estado === 'completado') {
-        return crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado);
-    }
+    if (estado === 'pendiente') return crearBotonesPendiente(aplicacion.id, nombreEscapado, vacantesLlenas);
+    if (estado === 'aceptado') return crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, tituloEscapado);
+    if (estado === 'rechazado') return `<div class="estado-final"><span class="texto-rechazado">Postulación rechazada</span></div>`;
+    if (estado === 'completado') return crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado);
     return '';
 }
 
@@ -164,76 +166,101 @@ function crearRatingHTML(email, emailEscapado, nombreEscapado) {
     const ratingInfo = state.trabajadoresRatings[email] || { promedio: 0, total: 0 };
 
     if (ratingInfo.total > 0) {
-        return `<div class="trabajador-rating clickable" onclick="verDetalleCalificaciones('${emailEscapado}', '${nombreEscapado}')">
-                   <span class="rating-estrella">★</span>
-                   <span class="rating-numero">${ratingInfo.promedio.toFixed(1)}</span>
-                   <span class="rating-total">(${ratingInfo.total})</span>
-                   <span class="rating-ver">👁️</span>
-               </div>`;
+        return `<span class="trabajador-rating clickable" onclick="verDetalleCalificaciones('${emailEscapado}', '${nombreEscapado}')">
+                    <span class="rating-estrella">★</span>
+                    <span class="rating-numero">${ratingInfo.promedio.toFixed(1)}</span>
+                    <span class="rating-total">(${ratingInfo.total})</span>
+                </span>`;
     }
-    return `<div class="trabajador-rating sin-rating">
-               <span class="rating-texto">Sin calificaciones aún</span>
-           </div>`;
+    return '';
 }
-
-// ============================================
-// VER PERFIL LINK
-// ============================================
 
 function crearVerPerfilLink(aplicacion) {
     if (!aplicacion.aplicanteId) return '';
+    const esPendiente = (aplicacion.estado || 'pendiente') === 'pendiente';
+    const clase = esPendiente ? 'btn-ver-perfil btn-ver-perfil--pendiente' : 'btn-ver-perfil';
+    const label = esPendiente ? 'Ver perfil completo →' : 'Ver perfil →';
     return `<a href="perfil-publico.html?id=${aplicacion.aplicanteId}"
-               class="btn-ver-perfil" onclick="event.stopPropagation()">👤 Ver Perfil</a>`;
+               class="${clase}" onclick="event.stopPropagation()">${label}</a>`;
 }
 
 // ============================================
-// CARD DE APLICACIÓN
+// CARD RECHAZADO — colapsada por defecto
+// ============================================
+
+function crearCardRechazadaColapsada(aplicacion) {
+    const nombre = aplicacion.aplicanteNombre || 'Trabajador';
+    const fecha = formatearFecha(aplicacion.fechaAplicacion);
+    const mensajeHTML = aplicacion.mensaje && aplicacion.mensaje !== 'Sin mensaje'
+        ? `<p class="aplicacion-mensaje-texto">"${aplicacion.mensaje}"</p>` : '';
+
+    return `
+        <div class="aplicacion-card estado-rechazado aplicacion-card--colapsada"
+             onclick="toggleCardRechazada(this)">
+            <div class="card-rechazada-row">
+                ${crearAvatarHTML(nombre)}
+                <span class="card-rechazada-nombre">${nombre}</span>
+                <span class="card-rechazada-fecha">${fecha}</span>
+                <span class="badge rechazado">Rechazado</span>
+                <span class="card-expand-icon">›</span>
+            </div>
+            <div class="card-rechazada-detalles">
+                <p class="aplicacion-email">${aplicacion.aplicanteEmail || ''}</p>
+                ${mensajeHTML}
+                <div class="estado-final">
+                    <span class="texto-rechazado">Postulación rechazada</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function toggleCardRechazada(el) {
+    el.classList.toggle('aplicacion-card--expandida');
+}
+
+// ============================================
+// CARD DE APLICACIÓN — layout compacto
 // ============================================
 
 function crearAplicacionCard(aplicacion, ofertaId) {
     const estado = aplicacion.estado || 'pendiente';
+
+    if (estado === 'rechazado') return crearCardRechazadaColapsada(aplicacion);
+
     const nombre = aplicacion.aplicanteNombre || 'Trabajador';
-    const email = aplicacion.aplicanteEmail || 'No disponible';
-    const telefono = aplicacion.aplicanteTelefono || null;
-    const mensaje = aplicacion.mensaje || 'Sin mensaje';
+    const email = aplicacion.aplicanteEmail || '';
+    const mensaje = aplicacion.mensaje || '';
     const fecha = formatearFecha(aplicacion.fechaAplicacion);
 
     const emailEscapado = escaparParaHTML(email);
     const nombreEscapado = escaparParaHTML(nombre);
 
+    const mensajeHTML = mensaje && mensaje !== 'Sin mensaje'
+        ? `<p class="aplicacion-mensaje-texto">"${mensaje}"</p>`
+        : '';
+
     return `
-        <div class="aplicacion-card estado-${estado} touchable hover-lift">
+        <div class="aplicacion-card estado-${estado}">
             <div class="aplicacion-header">
                 <div class="aplicacion-trabajador">
-                    <div class="aplicacion-avatar">👤</div>
-                    <div>
-                        <div class="aplicacion-nombre">${nombre}</div>
-                        <div class="aplicacion-email">${email}</div>
-                        ${crearRatingHTML(email, emailEscapado, nombreEscapado)}
+                    ${crearAvatarHTML(nombre)}
+                    <div class="aplicacion-trabajador-info">
+                        <div class="aplicacion-nombre-row">
+                            <span class="aplicacion-nombre">${nombre}</span>
+                            ${crearRatingHTML(email, emailEscapado, nombreEscapado)}
+                        </div>
+                        <div class="aplicacion-meta-row">
+                            <span class="aplicacion-email">${email}</span>
+                            <span class="aplicacion-sep">·</span>
+                            <span class="aplicacion-fecha">${fecha}</span>
+                        </div>
                         ${crearVerPerfilLink(aplicacion)}
                     </div>
                 </div>
                 ${crearBadgeEstado(estado)}
             </div>
-
-            <div class="aplicacion-info">
-                ${telefono && estado !== 'aceptado' ? `
-                <div class="info-item">
-                    <span class="info-label">📱 Teléfono</span>
-                    <span class="info-value">${telefono}</span>
-                </div>
-                ` : ''}
-                <div class="info-item">
-                    <span class="info-label">📅 Fecha postulación</span>
-                    <span class="info-value">${fecha}</span>
-                </div>
-            </div>
-
-            <div class="aplicacion-mensaje">
-                <strong>💬 Mensaje del postulante:</strong><br>
-                ${mensaje}
-            </div>
-
+            ${mensajeHTML}
             <div class="aplicacion-actions">
                 ${crearBotonesAccion(aplicacion, ofertaId)}
             </div>
@@ -245,38 +272,45 @@ function crearAplicacionCard(aplicacion, ofertaId) {
 // GRUPO DE OFERTA
 // ============================================
 
-/**
- * Crea el HTML de un grupo de aplicaciones agrupadas por oferta
- * @param {string} ofertaId - ID de la oferta
- * @param {Object} grupo - Datos del grupo {titulo, categoria, aplicaciones}
- * @returns {string} HTML del grupo
- */
+const ORDEN_ESTADO = { pendiente: 0, aceptado: 1, completado: 2, rechazado: 3 };
+
 export function crearGrupoOferta(ofertaId, grupo) {
     const categoriaLabel = getCategoriaLabel(grupo.categoria);
-    const cantidadAplicantes = grupo.aplicaciones.length;
     const ofertaInfo = state.ofertasCache[ofertaId] || {};
     const vacantes = ofertaInfo.vacantes || 1;
     const aceptadosCount = ofertaInfo.aceptadosCount || 0;
 
+    // Pendientes primero dentro del grupo
+    const sorted = [...grupo.aplicaciones].sort((a, b) =>
+        (ORDEN_ESTADO[a.estado || 'pendiente'] || 0) - (ORDEN_ESTADO[b.estado || 'pendiente'] || 0)
+    );
+
+    const pendientesCount = sorted.filter(a => (a.estado || 'pendiente') === 'pendiente').length;
+    const tienePendientes = pendientesCount > 0;
+    const total = sorted.length;
+
     const vacantesHTML = vacantes > 1
-        ? `<span class="oferta-vacantes-badge">${aceptadosCount}/${vacantes} vacantes cubiertas</span>`
+        ? `<span class="oferta-vacantes-badge">${aceptadosCount}/${vacantes} vacantes</span>`
         : '';
 
-    let aplicacionesHTML = '';
-    grupo.aplicaciones.forEach(aplicacion => {
-        aplicacionesHTML += crearAplicacionCard(aplicacion, ofertaId);
-    });
+    const pendientesHTML = tienePendientes
+        ? `<span class="pendientes-badge">${pendientesCount} pendiente${pendientesCount !== 1 ? 's' : ''}</span>`
+        : '';
+
+    const aplicacionesHTML = sorted.map(a => crearAplicacionCard(a, ofertaId)).join('');
 
     return `
-        <div class="oferta-grupo">
+        <div class="oferta-grupo ${tienePendientes ? 'oferta-grupo--urgente' : ''}">
             <div class="oferta-grupo-header">
-                <div class="oferta-grupo-info">
-                    <h3 class="oferta-grupo-titulo">📋 ${grupo.titulo}</h3>
-                    <div class="oferta-grupo-meta">
-                        <span class="oferta-categoria-badge">${categoriaLabel}</span>
-                        <span class="oferta-aplicantes-count">👥 ${cantidadAplicantes} postulante${cantidadAplicantes !== 1 ? 's' : ''}</span>
-                        ${vacantesHTML}
-                    </div>
+                <div class="oferta-grupo-titulo-row">
+                    ${tienePendientes ? '<span class="grupo-urgencia-dot"></span>' : ''}
+                    <h3 class="oferta-grupo-titulo">${grupo.titulo}</h3>
+                </div>
+                <div class="oferta-grupo-meta">
+                    <span class="oferta-categoria-badge ${grupo.categoria || 'otros'}">${categoriaLabel}</span>
+                    <span class="oferta-aplicantes-count">${total} postulante${total !== 1 ? 's' : ''}</span>
+                    ${pendientesHTML}
+                    ${vacantesHTML}
                 </div>
             </div>
             <div class="oferta-grupo-aplicaciones">
@@ -284,4 +318,8 @@ export function crearGrupoOferta(ofertaId, grupo) {
             </div>
         </div>
     `;
+}
+
+export function registrarFuncionesGlobalesCards() {
+    window.toggleCardRechazada = toggleCardRechazada;
 }

@@ -75,8 +75,15 @@ function renderizarGrupos(container, emptyState, grupos) {
     emptyState.style.display = 'none';
     container.innerHTML = '';
 
-    for (const ofertaId in grupos) {
-        container.innerHTML += crearGrupoOferta(ofertaId, grupos[ofertaId]);
+    // Grupos con pendientes primero, luego por total de aplicaciones
+    const ordenados = Object.entries(grupos).sort(([, a], [, b]) => {
+        const aPend = a.aplicaciones.filter(x => (x.estado || 'pendiente') === 'pendiente').length;
+        const bPend = b.aplicaciones.filter(x => (x.estado || 'pendiente') === 'pendiente').length;
+        return bPend - aPend;
+    });
+
+    for (const [ofertaId, grupo] of ordenados) {
+        container.innerHTML += crearGrupoOferta(ofertaId, grupo);
     }
 }
 

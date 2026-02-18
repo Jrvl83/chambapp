@@ -18,7 +18,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Sub-módulos
-import { initCards } from './cards.js';
+import { initCards, registrarFuncionesGlobalesCards } from './cards.js';
 import { initAcciones, registrarFuncionesGlobalesAcciones } from './acciones.js';
 import {
     initCalificaciones,
@@ -89,6 +89,7 @@ initCalificaciones(db, auth, usuario, state, { recargarUI });
 registrarFuncionesGlobalesAcciones();
 registrarFuncionesGlobalesCalificaciones();
 registrarFuncionesGlobalesFiltros();
+registrarFuncionesGlobalesCards();
 
 // ============================================
 // CARGAR DATOS
@@ -214,6 +215,21 @@ async function cargarDatosOfertas() {
 // ACTUALIZAR ESTADÍSTICAS
 // ============================================
 
+function actualizarBannerUrgencia(pendientes) {
+    const banner = document.getElementById('urgencia-banner');
+    if (!banner) return;
+    if (pendientes > 0) {
+        const textoEl = document.getElementById('urgencia-texto');
+        if (textoEl) {
+            const s = pendientes !== 1 ? 's' : '';
+            textoEl.innerHTML = `Tienes <strong>${pendientes}</strong> candidato${s} esperando tu decisión`;
+        }
+        banner.style.display = 'flex';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
 async function actualizarEstadisticas() {
     const total = state.todasLasAplicaciones.length;
     const pendientes = state.todasLasAplicaciones.filter(a => !a.estado || a.estado === 'pendiente').length;
@@ -223,6 +239,7 @@ async function actualizarEstadisticas() {
     document.getElementById('total-aplicaciones').textContent = total;
     document.getElementById('pendientes').textContent = pendientes;
     document.getElementById('aceptados').textContent = aceptados + completados;
+    actualizarBannerUrgencia(pendientes);
 
     try {
         const ofertasQuery = query(

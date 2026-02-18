@@ -799,7 +799,7 @@
 }
 
 .perfil-rating-pill .estrella-filled {
-    color: #fbbf24;
+    color: var(--warning);
     font-size: 1rem;
 }
 

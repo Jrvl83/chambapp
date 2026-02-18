@@ -197,6 +197,7 @@
     height: 220px;
     object-fit: cover;
     display: block;
+    cursor: pointer;
 }
 
 /* Salario pill (consistente con cards) */

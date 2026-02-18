@@ -46,7 +46,7 @@ function extraerUbicacionTexto(ubicacion) {
 function renderHeroHTML(imagenesURLs) {
     if (!imagenesURLs || imagenesURLs.length === 0) return '';
     const url = imagenesURLs[0];
-    return `<div class="detalle-hero"><img src="${url}" alt="Imagen principal" onclick="window.open('${url}', '_blank')" style="cursor:pointer"></div>`;
+    return `<div class="detalle-hero"><img src="${url}" alt="Imagen principal" onclick="window.open('${url}', '_blank')"></div>`;
 }
 
 function renderHeaderHTML(oferta) {
