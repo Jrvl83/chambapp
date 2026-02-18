@@ -367,6 +367,74 @@
 .empleador-rating-badge .rating-numero { color: #92400e; }
 .empleador-rating-badge .rating-total { color: #a16207; font-size: 0.7rem; }
 
+/* --- FASE 3: Secciones + Subtítulos --- */
+
+/* Secciones de agrupación */
+.aplicaciones-seccion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Divider label tipo ALL CAPS — el padding-top separa visualmente las secciones */
+.seccion-divider {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gray-400, #94a3b8);
+    margin: 0.75rem 0 0.25rem;
+}
+
+.aplicaciones-seccion:first-child .seccion-divider {
+    margin-top: 0;
+}
+
+/* Dot de atención en sección REQUIERE ACCIÓN */
+.seccion-accion .seccion-divider::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary);
+    margin-right: 6px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+/* Subtítulo contextual debajo de los meta datos */
+.aplicacion-subtitulo {
+    font-size: var(--text-sm);
+    margin: 0.25rem 0 0;
+    line-height: 1.4;
+}
+
+.aplicacion-subtitulo--accion {
+    color: var(--secondary-dark);
+    font-weight: 500;
+}
+
+.aplicacion-subtitulo--rechazo {
+    color: var(--gray);
+}
+
+.subtitulo-link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.subtitulo-link:hover {
+    text-decoration: underline;
+}
+
+/* Card rechazada: tono más apagado */
+.aplicacion-card.rechazado {
+    opacity: 0.75;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .container { padding: 1rem; }

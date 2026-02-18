@@ -596,11 +596,11 @@ const optimizedBlob = await optimizarImagen(file, maxWidth, maxHeight, quality);
 ### 16.1 Meta Tags Requeridos
 ```html
 <head>
-    <title>ChambApp - Encuentra trabajo en Perú</title>
+    <title>ChambaYa - Encuentra trabajo en Perú</title>
     <meta name="description" content="Marketplace de trabajos temporales...">
 
     <!-- Open Graph (Facebook, WhatsApp) -->
-    <meta property="og:title" content="ChambApp">
+    <meta property="og:title" content="ChambaYa">
     <meta property="og:description" content="Encuentra chambas cerca de ti">
     <meta property="og:image" content="/assets/logo/og-image.png">
     <meta property="og:url" content="https://chambapp-7785b.web.app">

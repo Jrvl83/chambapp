@@ -180,3 +180,75 @@
     padding: 0.875rem;
     font-size: 1rem;
 }
+
+/* ============================================
+   FASE 2: UX/UI Upgrades
+   ============================================ */
+
+/* Hero — primera imagen a ancho completo */
+.detalle-hero {
+    margin: -1.5rem -1.5rem 1.25rem;
+    overflow: hidden;
+    max-height: 220px;
+}
+
+.detalle-hero img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Salario pill (consistente con cards) */
+.detalle-grid .oferta-salario-pill {
+    font-size: var(--text-sm);
+}
+
+/* Detalle-item que ocupa ambas columnas */
+.detalle-item--full {
+    grid-column: 1 / -1;
+}
+
+/* Spots dots */
+.spots-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.spots-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.spot-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gray-200);
+}
+
+.spot-dot--ok { background: var(--secondary); }
+.spot-dot--urgente { background: var(--primary); }
+.spot-dot--critico { background: var(--danger); }
+
+.spots-label {
+    font-size: 0.8125rem;
+    color: var(--gray);
+}
+
+/* Pago total estimado */
+.detalle-pago-total {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--secondary-dark);
+}
+
+/* Trust message bajo el botón postular */
+.detalle-trust-msg {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--gray);
+    margin-top: 0.625rem;
+}

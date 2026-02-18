@@ -1,13 +1,13 @@
-# PROYECTO CHAMBAPP
+# PROYECTO CHAMBAYA (ex-ChambApp)
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 17 Febrero 2026 (sesión 16)
+**Última actualización:** 17 Febrero 2026 (sesión 18)
 
 ---
 
 ## RESUMEN EJECUTIVO
 
-ChambApp conecta trabajadores ("chamberos") con empleadores para trabajos temporales en Perú. Diferenciador clave: **0% comisiones** (competidores cobran 15-25%).
+ChambaYa conecta trabajadores ("chamberos") con empleadores para trabajos temporales en Perú. Diferenciador clave: **0% comisiones** (competidores cobran 15-25%).
 
 ### URLs
 | Entorno | URL |
@@ -31,15 +31,15 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: █████████████████████░░░░░░░ 70% (42/60 tareas)
+FASE 1: ████████████████████████░░░░ 71% (44/62 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  22% del proyecto (42/192 tareas)
+TOTAL:  23% del proyecto (44/194 tareas)
 ```
 
-> **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + 3 tareas pendientes nuevas (45-48 sin las ya contadas) = 60 tareas totales.
+> **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + tareas nuevas (49-51) = 62 tareas totales.
 
 ### Features Implementadas
 - Registro/Login con Firebase Auth
@@ -60,13 +60,15 @@ TOTAL:  22% del proyecto (42/192 tareas)
 - Validaciones inline y error states en formularios
 - Modal de confirmación customizado (reemplaza confirm() nativo)
 - PWA instalable (Service Worker con cacheo, install prompt, offline page)
+- Login con Google (Gmail) + detección automática de cuentas Google
+- Emails brandeados ChambaYa (verificación + reset password)
 - Performance: resource hints, defer scripts, lazy CSS/imágenes, Firestore offline
 
 ---
 
 ## FASE 1: EXPERIENCIA WOW (60 tareas)
 
-### Tareas Completadas (36)
+### Tareas Completadas (38)
 
 | # | Tarea | Fecha |
 |---|-------|-------|
@@ -81,18 +83,17 @@ TOTAL:  22% del proyecto (42/192 tareas)
 | 33 | Error states, validaciones inline, modal confirmación, sanitización | 16 Feb |
 | 34 | Loading states (spinner centrado) | 30 Ene |
 | 37-39 | Performance + PWA (SW caching, offline, install prompt, lazy CSS/imgs, Firestore persistence) | 17 Feb |
+| 49-50 | Login con Google (Gmail) + Email templates brandeados ChambaYa | 17 Feb |
 | 51 | Auditoría de seguridad: XSS prevention (escapeHtml en 6 archivos), Firestore/Storage rules endurecidas, limpieza config/keys, SW reload fix, Firestore persistence API migrada | 17 Feb |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (13)
+### Tareas Pendientes (11)
 
 | # | Tarea | Prioridad |
 |---|-------|-----------|
-| 49 | Login/Registro con Google (Gmail) - botón "Continuar con Google" en login y register | Alta |
-| 50 | Email template brandeado ChambApp - template personalizado para verificación de email en Firebase Auth | Alta |
 | 40-44 | Testing y QA | Alta |
 | 45-48 | Panel de administración | Media |
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
@@ -164,7 +165,7 @@ Ofertas visibles para trabajadores:
 > **Objetivo:** Centralizar y reparar el sistema de guided tours (tutoriales de primera visita) que se rompieron durante actualizaciones.
 
 ### Problema
-ChambApp tenía guided tours en varias páginas pero se rompieron con las actualizaciones de HTML/CSS. Además, el código de tours estaba mezclado dentro de cada página (no centralizado), lo que dificulta el mantenimiento.
+La app tenía guided tours en varias páginas pero se rompieron con las actualizaciones de HTML/CSS. Además, el código de tours estaba mezclado dentro de cada página (no centralizado), lo que dificulta el mantenimiento.
 
 ### Tareas
 
@@ -308,7 +309,8 @@ chambapp/
 │   │
 │   ├── auth/
 │   │   ├── login.js                    # Login
-│   │   └── register.js                 # Registro
+│   │   ├── register.js                 # Registro
+│   │   └── google-auth.js             # Login con Google (Gmail)
 │   │
 │   ├── utils/
 │   │   ├── formatting.js              # Fechas, estrellas, moneda
@@ -422,6 +424,7 @@ chambapp/
 └── docs/
     ├── PROYECTO.md                    # Este archivo
     ├── REGLAS_DESARROLLO.md           # Estándares de código
+    ├── SEGURIDAD.md                   # Checklist de seguridad y acciones manuales
     ├── PLAN_REFACTORIZACION.md        # Plan refactorización CSS
     ├── PLAN_REFACTORIZACION_JS.md     # Plan modularización JS
     ├── PLAN_GUIDED_TOURS.md           # Plan guided tours (completado)
@@ -486,7 +489,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 17 Febrero 2026 (sesión 16)
+> **Última sesión:** 17 Febrero 2026 (sesión 18)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
@@ -496,8 +499,11 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **Error states y validaciones (Task 33):** validators.js, form-errors.js, confirm-modal.js, error-handler.js + sanitización en guardados
 - ✅ **Performance + PWA (Tasks 37-39):** SW con cacheo, offline page, install prompt, lazy CSS/imgs, Firestore persistence, iOS standalone fixes
 - ✅ **Auditoría de seguridad (Task 51):** escapeHtml en 6 archivos, Firestore/Storage rules endurecidas, limpieza config, SW reload fix, Firestore persistence API migrada
+- ✅ **Login con Google (Tasks 49-50):** google-auth.js, botón "Continuar con Google" en login/register, detección cuentas Google en forgot password, email templates brandeados ChambaYa
+- ✅ **Rebrand ChambApp → ChambaYa:** 15 HTML, manifest, 13 JS, docs. Nuevo logo CY monogram. Keys internos y Firebase config sin cambio.
 
 ### Sesiones
+- **Sesión 18 (17/02/26):** Tasks 49-50 + Rebrand. Login con Google: google-auth.js con GoogleAuthProvider, botón "Continuar con Google" en login.html y register.html, detección automática de cuentas Google en forgot password (muestra toast "usa Google para iniciar sesión"). Email templates brandeados con diseño ChambaYa (verificación + reset password) documentados en SEGURIDAD.md. Fix toast móvil angosto (css/toast.css width:95%). Rebrand ChambApp → ChambaYa: 15 HTML, manifest.json, 13 JS (solo textos visibles, keys internos sin cambio). Nuevo logo CY monogram generado con sharp en todos los tamaños PWA. 43 archivos modificados.
 - **Sesión 17 (17/02/26):** Task 51 - Auditoría de seguridad proactiva. XSS prevention: escapeHtml() aplicado en 6 archivos (historial-calificaciones, oferta-card, dashboard, index, mis-aplicaciones-trabajador, mis-aplicaciones). Firestore rules: ofertas create restringido a empleadores, aplicaciones update con ownership check (uid+email). Storage rules: ofertas solo imágenes <5MB. Limpieza: eliminados console.log de config, document.write→createElement en 3 HTML, eliminados 6 Lighthouse JSONs con API keys, eliminada GOOGLE_GEOCODING_API_KEY deprecated, geolocation.js migrado a GOOGLE_MAPS_API_KEY. Creado docs/SEGURIDAD.md con checklist acciones manuales GCP. Fix SW: controllerchange solo recarga si había controller previo (evita recarga doble en primera visita). Migrado enableIndexedDbPersistence() a initializeFirestore() con persistentLocalCache. 20 archivos modificados.
 - **Sesión 16 (17/02/26):** Tasks 37-39 - Performance + PWA completa. Sub-tasks: 37A resource hints + defer en 14 HTML, 37B lazy loading imágenes dinámicas, 38A Firestore offline persistence, 38B CSS no-crítico diferido (media="print"), 39A Service Worker con cacheo (Cache First/Network First/SWR), 39B offline.html, 39C install prompt + manifest update, 39D SW update notification. Fixes iOS: scope:"/" en manifest, apple-mobile-web-app-capable + link manifest en todos los HTML, safe-area-inset-top en header-simple.css para notch. 22 archivos modificados, 3 nuevos (offline.html, install-prompt.js, sw-update.js).
 - **Sesión 15 (16/02/26):** Task 33 - Error states y validaciones: 4 módulos nuevos (validators.js, form-errors.js, confirm-modal.js, error-handler.js). Validaciones inline en perfiles trabajador/empleador (nombre, teléfono 9 dígitos, edad mínima 18, horarios). Modal de confirmación customizado reemplaza 6 confirm() nativos. Sanitización con sanitizeText() en guardado de perfiles y ofertas. Validación onblur en campos obligatorios. Mensajes de error contextuales con detección red/permisos y botón "Reintentar".
@@ -547,11 +553,10 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - Overlay: div `#filtros-overlay` con clase `.active`
 
 ### Próximas tareas sugeridas
-1. **Task 49** - Login/Registro con Google (Gmail)
-2. **Task 50** - Email template brandeado
-3. **Tasks 40-44** - Testing y QA
-4. **Tasks 45-48** - Panel de administración
-5. **Task 35** - Accesibilidad WCAG 2.1 AA
+1. **Tasks 40-44** - Testing y QA
+2. **Tasks 45-48** - Panel de administración
+3. **Task 35** - Accesibilidad WCAG 2.1 AA
+4. **Task 36** - Dark mode (opcional)
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
@@ -580,4 +585,4 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 ---
 
 **Fundador:** Joel (jrvl83)
-**Versión documento:** 6.0
+**Versión documento:** 7.0

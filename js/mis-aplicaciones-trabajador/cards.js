@@ -61,7 +61,17 @@ export function getCategoriaLabel(categoria) {
     return CATEGORIA_LABELS[categoria] || categoria;
 }
 
-// --- Mostrar aplicaciones ---
+// --- Clasificación por sección ---
+
+function getSeccion(aplicacion) {
+    const estado = aplicacion.estado || 'pendiente';
+    if (estado === 'aceptado') return 'accion';
+    if (estado === 'completado' && !aplicacion.calificadoPorTrabajador) return 'accion';
+    if (estado === 'pendiente') return 'revision';
+    return 'historial'; // rechazado + completado ya calificado
+}
+
+// --- Mostrar aplicaciones con secciones ---
 
 export function mostrarAplicaciones(aplicaciones) {
     const container = document.getElementById('aplicaciones-container');
@@ -75,8 +85,28 @@ export function mostrarAplicaciones(aplicaciones) {
 
     container.style.display = 'flex';
     document.getElementById('empty-state').style.display = 'none';
-    container.innerHTML = aplicaciones.map(a => crearAplicacionCard(a)).join('');
+
+    const accion   = aplicaciones.filter(a => getSeccion(a) === 'accion');
+    const revision = aplicaciones.filter(a => getSeccion(a) === 'revision');
+    const historial = aplicaciones.filter(a => getSeccion(a) === 'historial');
+
+    let html = '';
+    if (accion.length > 0)    html += renderSeccion('REQUIERE ACCIÓN', accion, 'seccion-accion');
+    if (revision.length > 0)  html += renderSeccion('EN REVISIÓN', revision, 'seccion-revision');
+    if (historial.length > 0) html += renderSeccion('HISTORIAL', historial, 'seccion-historial');
+
+    container.innerHTML = html;
     actualizarResultadosInfo(aplicaciones.length, state.todasLasAplicaciones.length);
+}
+
+function renderSeccion(titulo, aplicaciones, clase) {
+    const cards = aplicaciones.map(a => crearAplicacionCard(a)).join('');
+    return `
+        <div class="aplicaciones-seccion ${clase}">
+            <p class="seccion-divider">${titulo}</p>
+            ${cards}
+        </div>
+    `;
 }
 
 function actualizarResultadosInfo(cantidad, total) {
@@ -103,8 +133,29 @@ function crearAplicacionCard(aplicacion) {
     const estado = aplicacion.estado || 'pendiente';
     const config = ESTADO_CONFIG[estado] || ESTADO_CONFIG['pendiente'];
     const ctaPrincipal = renderCtaPrincipal(aplicacion, estado);
+    const subtitulo = renderSubtituloEstado(estado, aplicacion);
 
-    return renderCardHTML(aplicacion, config, fecha, ctaPrincipal);
+    return renderCardHTML(aplicacion, config, fecha, ctaPrincipal, subtitulo);
+}
+
+// Subtítulo contextual debajo de los meta datos
+function renderSubtituloEstado(estado, aplicacion) {
+    if (estado === 'aceptado') {
+        return `<p class="aplicacion-subtitulo aplicacion-subtitulo--accion">
+            📲 Coordina los detalles con el empleador por WhatsApp
+        </p>`;
+    }
+    if (estado === 'completado' && !aplicacion.calificadoPorTrabajador) {
+        return `<p class="aplicacion-subtitulo aplicacion-subtitulo--accion">
+            ⭐ Cuéntanos cómo te fue — califica al empleador
+        </p>`;
+    }
+    if (estado === 'rechazado') {
+        return `<p class="aplicacion-subtitulo aplicacion-subtitulo--rechazo">
+            Esta vez no fue · <a href="mapa-ofertas.html" class="subtitulo-link" onclick="event.stopPropagation()">Hay más ofertas disponibles hoy</a>
+        </p>`;
+    }
+    return '';
 }
 
 function renderCtaPrincipal(aplicacion, estado) {
@@ -171,7 +222,7 @@ function crearEmpleadorRatingHTML(empleadorId) {
     </span>`;
 }
 
-function renderCardHTML(app, config, fecha, ctaPrincipal) {
+function renderCardHTML(app, config, fecha, ctaPrincipal, subtitulo) {
     const catKey = app.ofertaCategoria || 'otros';
     const rating = crearEmpleadorRatingHTML(app.empleadorId);
     const salario = app.ofertaSalario
@@ -193,6 +244,7 @@ function renderCardHTML(app, config, fecha, ctaPrincipal) {
                 <span>👤 ${escapeHtml(app.empleadorNombre)} ${rating}</span>
                 ${salario}
             </div>
+            ${subtitulo}
             ${ctaPrincipal ? `<div class="aplicacion-cta" onclick="event.stopPropagation();">${ctaPrincipal}</div>` : ''}
         </div>
     `;

@@ -1,4 +1,4 @@
-# UX/UI GUIA MAESTRA - CHAMBAPP
+# UX/UI GUIA MAESTRA - CHAMBAYA
 
 **Documento de Identidad Visual y Mejoras UX**
 **Versión:** 1.3
@@ -9,7 +9,7 @@
 
 ## RESUMEN EJECUTIVO
 
-ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores ("chamberos") con empleadores. La app debe transmitir **confianza**, **velocidad** y **accesibilidad** para un público diverso que incluye personas con distintos niveles de alfabetización digital.
+ChambaYa es un marketplace de trabajo temporal en Perú que conecta trabajadores ("chamberos") con empleadores. La app debe transmitir **confianza**, **velocidad** y **accesibilidad** para un público diverso que incluye personas con distintos niveles de alfabetización digital.
 
 ---
 
@@ -85,7 +85,7 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 
 ## 2. IDENTIDAD DE MARCA PROPUESTA
 
-### 2.1 Personalidad de ChambApp
+### 2.1 Personalidad de ChambaYa
 
 | Atributo | Descripción |
 |----------|-------------|
@@ -110,7 +110,7 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 | Carga | "Cargando ofertas..." | "Buscando las mejores chambas para ti..." |
 | Onboarding | "Completa tu perfil para comenzar" | "¡Hola! Cuéntanos qué sabes hacer" |
 
-### 2.4 Vocabulario ChambApp
+### 2.4 Vocabulario ChambaYa
 
 > **Nota:** En la UI se usa terminología formal. El vocabulario coloquial ("chamba", "chambero") se reserva para la marca y comunicación externa.
 
@@ -131,7 +131,7 @@ ChambApp es un marketplace de trabajo temporal en Perú que conecta trabajadores
 
 ```css
 :root {
-    /* PRIMARY - Azul ChambApp (Confianza, Profesionalismo) */
+    /* PRIMARY - Azul ChambaYa (Confianza, Profesionalismo) */
     --primary: #0066FF;
     --primary-hover: #0052CC;
     --primary-light: #E6F2FF;
@@ -276,8 +276,8 @@ El header de TODAS las páginas secundarias está centralizado en `css/header-si
 <header class="header">
     <div class="header-content">
         <a href="dashboard.html" class="logo">
-            <img src="/assets/logo/logo-icono.png" alt="ChambApp" class="logo-img">
-            <span class="logo-text">ChambApp</span>
+            <img src="/assets/logo/logo-icono.png" alt="ChambaYa" class="logo-img">
+            <span class="logo-text">ChambaYa</span>
         </a>
         <a href="dashboard.html" class="btn-volver">← Volver al Dashboard</a>
     </div>

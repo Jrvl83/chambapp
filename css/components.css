@@ -554,6 +554,31 @@ input[type="radio"] {
     font-weight: var(--font-semibold);
 }
 
+/* Precio de oferta como pill teal (Fase 1 UX) */
+.oferta-salario-pill {
+    display: inline-flex;
+    align-items: center;
+    background: var(--secondary-light);
+    color: var(--secondary-dark);
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.4;
+}
+
+/* Urgencia de vacantes (Fase 1 UX) */
+.oferta-spots {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-400);
+}
+
+.oferta-spots--urgente { color: var(--primary); }
+.oferta-spots--critico { color: var(--danger); }
+
 /* ============================================
    5. MODALS → Movido a css/modal.css
    ============================================ */

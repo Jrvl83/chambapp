@@ -1770,7 +1770,7 @@ a.stat-card-link:focus-visible {
         flex-direction: row;
         padding: 0;
         border-left: 4px solid var(--cat-otros);
-        border-radius: 8px;
+        border-radius: var(--radius-lg);
     }
 
     /* Borde izquierdo por categoría */
@@ -1836,6 +1836,23 @@ a.stat-card-link:focus-visible {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    /* Precio pill compacto en móvil */
+    .oferta-salario-pill {
+        font-size: 0.6875rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    /* Fila título+precio compacta */
+    .oferta-titulo-row {
+        gap: 0.375rem;
+        margin-bottom: 0.125rem;
+    }
+
+    /* Spots inline compactos */
+    .oferta-spots {
+        font-size: 0.6875rem;
     }
 
     /* Ocultar descripción en móvil */
@@ -1996,6 +2013,49 @@ a.stat-card-link:focus-visible {
         font-size: 0.5625rem;
     }
 }
+
+/* ============================================
+   FASE 1: UX/UI UPGRADES
+   ============================================ */
+
+/* Cards más redondeadas (de AC — 16px) */
+.oferta-card {
+    border-radius: var(--radius-xl);
+}
+
+/* Fila título + precio en misma línea */
+.oferta-titulo-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.oferta-titulo-row .oferta-titulo {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Categoría outline en cards — la barra superior ya da el color (de PL) */
+.oferta-card .oferta-categoria {
+    background: transparent !important;
+    border: 1px solid;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    padding: 0.2rem 0.5rem;
+}
+
+.oferta-card .oferta-categoria.construccion  { color: var(--cat-construccion); border-color: var(--cat-construccion); }
+.oferta-card .oferta-categoria.limpieza      { color: var(--cat-limpieza);     border-color: var(--cat-limpieza); }
+.oferta-card .oferta-categoria.gasfiteria    { color: var(--cat-gasfiteria);   border-color: var(--cat-gasfiteria); }
+.oferta-card .oferta-categoria.electricidad  { color: var(--cat-electricidad); border-color: var(--cat-electricidad); }
+.oferta-card .oferta-categoria.carpinteria   { color: var(--cat-carpinteria);  border-color: var(--cat-carpinteria); }
+.oferta-card .oferta-categoria.jardineria    { color: var(--cat-jardineria);   border-color: var(--cat-jardineria); }
+.oferta-card .oferta-categoria.pintura       { color: var(--cat-pintura);      border-color: var(--cat-pintura); }
+.oferta-card .oferta-categoria.mecanica      { color: var(--cat-mecanica);     border-color: var(--cat-mecanica); }
+.oferta-card .oferta-categoria.otros         { color: var(--cat-otros);        border-color: var(--cat-otros); }
 
 /* ============================================
    TASK 11: BADGE DE DISTANCIA

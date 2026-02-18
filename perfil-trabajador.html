@@ -326,16 +326,17 @@
                 </div>
                 <div class="profile-info">
                     <h1 id="profile-name">Cargando perfil...</h1>
+                    <!-- Rating pill prominente - Fase 4 -->
+                    <div class="perfil-rating-pill" id="badge-calificacion" style="display: none;">
+                        <span class="estrella-filled">★</span>
+                        <span class="calificacion-numero" id="perfil-promedio">0.0</span>
+                        <span class="calificacion-sep">·</span>
+                        <span class="calificacion-count" id="perfil-total-calificaciones">0 reseñas</span>
+                    </div>
                     <p class="profile-email" id="profile-email">email@ejemplo.com</p>
                     <div class="profile-badges">
                         <span class="badge badge-trabajador">👷 Trabajador</span>
                         <span class="badge badge-verificado" id="badge-completado" style="display: none;">✅ Perfil Completo</span>
-                        <!-- Badge de Calificacion - Task 13 -->
-                        <div class="badge-calificacion" id="badge-calificacion" style="display: none;">
-                            <span class="estrella-filled">★</span>
-                            <span class="calificacion-numero" id="perfil-promedio">0.0</span>
-                            <span class="calificacion-count" id="perfil-total-calificaciones">(0)</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -356,6 +357,18 @@
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             <p class="completeness-tip" id="completeness-tip">Completa tu perfil para recibir más oportunidades</p>
+        </div>
+
+        <!-- Stats Row - Fase 4 -->
+        <div class="perfil-stats-row" id="perfil-stats-row" style="display: none;">
+            <div class="perfil-stat-card">
+                <span class="perfil-stat-numero" id="stat-completados">--</span>
+                <span class="perfil-stat-label">Trabajos completados</span>
+            </div>
+            <div class="perfil-stat-card">
+                <span class="perfil-stat-numero" id="stat-ingresos">--</span>
+                <span class="perfil-stat-label">Ingresos aprox.</span>
+            </div>
         </div>
 
         <!-- Tabs Navigation -->

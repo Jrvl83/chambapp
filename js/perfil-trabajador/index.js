@@ -6,7 +6,7 @@
 // Firebase
 import { auth, db, storage } from '../config/firebase-init.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { generarEstrellasHTML } from '../utils/formatting.js';
 import { validarNombre, validarTelefono, validarEdadMinima, validarHorarios } from '../utils/validators.js';
 import { validateField, hideFieldError, showFieldError } from '../utils/form-errors.js';
@@ -104,6 +104,7 @@ function cargarTodosLosDatos() {
     calcularCompletitud();
     cargarCalificacionPerfil();
     cargarResenasRecibidas();
+    cargarStats();
 }
 
 async function cargarPerfil() {
@@ -218,25 +219,55 @@ function calcularCompletitud() {
 // CALIFICACION DEL PERFIL
 // ============================================
 function cargarCalificacionPerfil() {
-    const badgeCalificacion = document.getElementById('badge-calificacion');
+    const pill = document.getElementById('badge-calificacion');
     const promedioEl = document.getElementById('perfil-promedio');
     const totalEl = document.getElementById('perfil-total-calificaciones');
 
-    if (!badgeCalificacion) return;
+    if (!pill) return;
 
     const promedio = state.perfilData.calificacionPromedio || 0;
     const total = state.perfilData.totalCalificaciones || 0;
 
     if (total === 0) {
-        badgeCalificacion.style.display = 'inline-flex';
-        badgeCalificacion.classList.add('sin-calificaciones');
-        promedioEl.textContent = '-';
-        totalEl.textContent = '(Sin calificaciones)';
-    } else {
-        badgeCalificacion.style.display = 'inline-flex';
-        badgeCalificacion.classList.remove('sin-calificaciones');
-        promedioEl.textContent = promedio.toFixed(1);
-        totalEl.textContent = `(${total})`;
+        pill.style.display = 'none';
+        return;
+    }
+
+    promedioEl.textContent = promedio.toFixed(1);
+    totalEl.textContent = `${total} reseña${total !== 1 ? 's' : ''}`;
+    pill.style.display = 'inline-flex';
+}
+
+async function cargarStats() {
+    const statsRow = document.getElementById('perfil-stats-row');
+    if (!statsRow || !state.usuario?.email) return;
+
+    try {
+        const q = query(
+            collection(db, 'aplicaciones'),
+            where('email', '==', state.usuario.email),
+            where('estado', '==', 'completado')
+        );
+        const snap = await getDocs(q);
+        const completados = snap.docs.map(d => d.data());
+        const count = completados.length;
+
+        if (count === 0) return;
+
+        let ingresos = 0;
+        let tieneIngresos = false;
+        completados.forEach(app => {
+            const match = (app.ofertaSalario || '').match(/\d+/);
+            if (match) { ingresos += parseInt(match[0], 10); tieneIngresos = true; }
+        });
+
+        document.getElementById('stat-completados').textContent = count;
+        document.getElementById('stat-ingresos').textContent = tieneIngresos
+            ? `S/. ${ingresos.toLocaleString('es-PE')}`
+            : '--';
+        statsRow.style.display = 'flex';
+    } catch (e) {
+        // Stats son opcionales, silenciar error
     }
 }
 

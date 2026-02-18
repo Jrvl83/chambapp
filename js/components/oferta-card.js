@@ -50,6 +50,22 @@ export function generarDistanciaBadge(distanciaKm, formatearDistancia, claseBase
 }
 
 /**
+ * Genera el HTML del indicador de vacantes con urgencia visual por color
+ * @param {number|null} vacantes
+ * @returns {string}
+ */
+function generarSpotsHTML(vacantes) {
+    if (!vacantes || vacantes <= 0) return '';
+    if (vacantes === 1) {
+        return `<span class="oferta-spots oferta-spots--critico">• 1 lugar disponible</span>`;
+    }
+    if (vacantes === 2) {
+        return `<span class="oferta-spots oferta-spots--urgente">• 2 lugares disponibles</span>`;
+    }
+    return `<span class="oferta-spots">• ${vacantes} lugares</span>`;
+}
+
+/**
  * Genera HTML para la imagen principal de una oferta
  * @param {Object} oferta - Datos de la oferta
  * @returns {string} HTML de la imagen o string vacío
@@ -96,6 +112,7 @@ function templateCardTrabajador(oferta, id, datos) {
     const claseHoy = esHoy(datos.fechaRef) ? 'oferta-fecha--hoy' : '';
     const cat = oferta.categoria || 'otros';
     const badgeAplico = datos.yaAplico ? '<span class="oferta-badge">✅ Ya aplicaste</span>' : '';
+    const spotsHTML = generarSpotsHTML(oferta.vacantes);
 
     return `
         <div class="oferta-card touchable hover-lift ${datos.tieneImagen ? 'con-imagen' : ''}" data-categoria="${cat}" onclick="verDetalle('${id}')">
@@ -106,12 +123,14 @@ function templateCardTrabajador(oferta, id, datos) {
                     <span class="oferta-categoria ${cat}">${escapeHtml(datos.categoriaDisplay)}</span>
                     <span class="oferta-fecha ${claseHoy}">${formatearFecha(datos.fechaRef)}</span>
                 </div>
-                <h3 class="oferta-titulo">${escapeHtml(oferta.titulo)}</h3>
-                <span class="detalle detalle-salario">💰 ${escapeHtml(oferta.salario)}</span>
+                <div class="oferta-titulo-row">
+                    <h3 class="oferta-titulo">${escapeHtml(oferta.titulo)}</h3>
+                    <span class="oferta-salario-pill">${escapeHtml(oferta.salario)}</span>
+                </div>
                 <div class="oferta-detalles">
                     <span class="detalle">📍 ${escapeHtml(datos.ubicacionTexto)}</span>
                     ${datos.distanciaBadge}
-                    ${(oferta.vacantes || 1) > 1 ? `<span class="detalle">👥 ${oferta.vacantes} vacantes</span>` : ''}
+                    ${spotsHTML}
                 </div>
                 ${badgeAplico ? `<div class="oferta-footer">${badgeAplico}</div>` : ''}
             </div>
@@ -174,7 +193,7 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
                 <h3 class="oferta-titulo">${escapeHtml(oferta.titulo)}</h3>
                 <div class="oferta-detalles">
                     <span class="detalle">📍 ${escapeHtml(ubicacionTexto)}</span>
-                    <span class="detalle detalle-salario">S/. ${escapeHtml(oferta.salario)}</span>
+                    <span class="oferta-salario-pill">${escapeHtml(oferta.salario)}</span>
                 </div>
                 <div class="oferta-footer">
                     <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
@@ -216,10 +235,10 @@ export function crearOfertaPreviewMapa(ofertaData, ofertaId, opciones = {}) {
         <h3 class="preview-titulo">${escapeHtml(ofertaData.titulo)}</h3>
         <p class="preview-descripcion">${escapeHtml(ofertaData.descripcion?.substring(0, 100) || '')}...</p>
         <div class="preview-detalles">
-            <span class="preview-detalle">💰 ${escapeHtml(ofertaData.salario || 'A convenir')}</span>
+            <span class="oferta-salario-pill">${escapeHtml(ofertaData.salario || 'A convenir')}</span>
             <span class="preview-detalle">📍 ${escapeHtml(ubicacionTexto)}</span>
             ${distanciaBadge}
-            ${(ofertaData.vacantes || 1) > 1 ? `<span class="preview-detalle">👥 ${ofertaData.vacantes} vacantes</span>` : ''}
+            ${generarSpotsHTML(ofertaData.vacantes)}
         </div>
         <div class="preview-acciones">
             <button class="btn btn-secondary" onclick="cerrarPreview()">Cerrar</button>

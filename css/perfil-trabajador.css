@@ -782,7 +782,76 @@
 }
 
 /* ============================================
-   BADGE DE CALIFICACION - Task 13
+   FASE 4: Rating pill + Stats row
+   ============================================ */
+
+/* Rating pill prominente (encima del email, sobre fondo azul del header) */
+.perfil-rating-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0.375rem 0.875rem;
+    border-radius: var(--radius-full);
+    margin-bottom: 0.625rem;
+    width: fit-content;
+}
+
+.perfil-rating-pill .estrella-filled {
+    color: #fbbf24;
+    font-size: 1rem;
+}
+
+.perfil-rating-pill .calificacion-numero {
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+}
+
+.perfil-rating-pill .calificacion-sep {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.perfil-rating-pill .calificacion-count {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Stats row de trabajos completados */
+.perfil-stats-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.perfil-stat-card {
+    flex: 1;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+}
+
+.perfil-stat-numero {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+}
+
+.perfil-stat-label {
+    font-size: 0.75rem;
+    color: var(--gray-400, #94a3b8);
+}
+
+/* ============================================
+   BADGE DE CALIFICACION - Task 13 (legacy, mantenido para compatibilidad)
    ============================================ */
 .badge-calificacion {
     display: inline-flex;

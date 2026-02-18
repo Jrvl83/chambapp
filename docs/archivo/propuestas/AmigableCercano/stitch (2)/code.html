@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Application Status</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6B9AC4", // Soft Denim Blue
+                        "primary-dark": "#507595",
+                        "background-light": "#F7F9FA", // Cool White
+                        "background-dark": "#111a21",
+                        "surface-light": "#FFFFFF",
+                        "text-main": "#4A5568", // Slate Grey
+                        "text-muted": "#A0AEC0",
+                        "accent-mint": "#81E6D9", // Soft Mint
+                        "accent-mint-dark": "#63b3aa",
+                        "warning-peach": "#FBD38D",
+                        "error-soft": "#FEB2B2", // Soft Red/Pink for rejection
+                    },
+                    fontFamily: {
+                        "display": ["Quicksand", "sans-serif"],
+                        "body": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "card": "24px",
+                        "pill": "9999px",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "3rem",
+                    },
+                    boxShadow: {
+                        "soft": "0 10px 40px -10px rgba(107, 154, 196, 0.1)",
+                        "inner-soft": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main antialiased min-h-screen flex flex-col items-center">
+<!-- Mobile Container -->
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen flex flex-col relative shadow-2xl overflow-hidden">
+<!-- Header -->
+<header class="pt-8 pb-4 px-6 flex items-center justify-between sticky top-0 z-20 bg-background-light/90 backdrop-blur-md">
+<button class="w-10 h-10 rounded-full bg-surface-light shadow-sm flex items-center justify-center text-text-main hover:bg-gray-50 transition-colors">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-text-main">My Applications</h1>
+<button class="w-10 h-10 rounded-full bg-surface-light shadow-sm flex items-center justify-center text-text-main hover:bg-gray-50 transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-accent-mint rounded-full border border-white"></span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-6 pb-24 overflow-y-auto no-scrollbar space-y-6">
+<!-- Intro / Stats -->
+<div class="flex gap-4 mb-2">
+<div class="flex-1 bg-surface-light rounded-card p-4 shadow-soft flex flex-col items-center justify-center gap-1">
+<span class="text-3xl font-bold text-primary">3</span>
+<span class="text-xs font-bold uppercase tracking-wider text-text-muted">Active</span>
+</div>
+<div class="flex-1 bg-surface-light rounded-card p-4 shadow-soft flex flex-col items-center justify-center gap-1">
+<span class="text-3xl font-bold text-accent-mint-dark">1</span>
+<span class="text-xs font-bold uppercase tracking-wider text-text-muted">Interviews</span>
+</div>
+</div>
+<!-- Active Application Card (Interview Stage) -->
+<div class="bg-surface-light rounded-card p-5 shadow-soft flex flex-col gap-5 transform transition-all hover:scale-[1.02] duration-300">
+<!-- Header -->
+<div class="flex justify-between items-start">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border-2 border-white shadow-sm">
+<img alt="Two happy dogs running in a park" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnEJnSuzuzdBVBrWElEHA6MeqcGRhD8AVSTvRgfPGrTVelfDguuphqsX1stktVh7EQKiLMd2ssKYQ8ShJwp57PTejm4V146VcLMV9zgmSIiyaVHAAife-FJuX4oEwr1TelTLeMLVciFTuS-tZg_o56kzV5v5H0sYluJyAr_HApowhPASGOSuKxOMZ9JYnuKoBlHPRLYjxHacanmkYihuAnnA4GJT6AkQVVfxb3ZoMd-SH3ho-pK0IXM4I_CmWEN_jW41Z6C4vy5UQ"/>
+</div>
+<div>
+<h3 class="font-bold text-lg text-text-main leading-tight">Dog Walker</h3>
+<p class="text-sm text-text-muted font-medium">Wag &amp; Walk</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-accent-mint/20 text-accent-mint-dark text-xs font-bold rounded-pill">
+                        $25/hr
+                    </span>
+</div>
+<!-- Progress Section -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end mb-1">
+<span class="text-sm font-bold text-primary">Interview Scheduled</span>
+<span class="text-xs text-text-muted font-medium">75%</span>
+</div>
+<div class="h-3 w-full bg-[#EDF2F7] rounded-pill overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full w-3/4 bg-accent-mint rounded-pill shadow-[0_0_10px_rgba(129,230,217,0.4)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-text-muted font-medium mt-1 px-1">
+<span>Sent</span>
+<span>Viewed</span>
+<span class="text-primary font-bold">Interview</span>
+<span>Hired</span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-2 border-t border-gray-50 flex gap-3">
+<button class="flex-1 h-10 rounded-pill border border-primary text-primary hover:bg-primary/5 flex items-center justify-center gap-2 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+                        Message
+                    </button>
+<button class="h-10 w-10 rounded-full bg-gray-50 text-text-muted flex items-center justify-center hover:text-text-main transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Active Application Card (Viewed Stage) -->
+<div class="bg-surface-light rounded-card p-5 shadow-soft flex flex-col gap-5 transform transition-all hover:scale-[1.02] duration-300">
+<!-- Header -->
+<div class="flex justify-between items-start">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border-2 border-white shadow-sm">
+<img alt="Abstract colorful gradient shapes representing creativity" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc6g1RK9wus9SFHXt45Cm2iGWPJQzOJpNDLpbyu0Twf9_1Jzcz-AZ2DmKsQuwfQEUifzP0kEwNI2lpwSYxYDFdxJSX30qU94YsKi6Zvx6HImbvZCNO9yonSKHLFUNQW1IDbNIb6teVV5q3aSZRQH4Aw6MGhv-xjI_WnUymyIofdClDYpjVjE362RwYqGq7On8vcdePWXw7aB4XXfipMD2d2nHOcUYAtEUeovi5uQRnLi48YdnbeOssWGOzZ_23Nu53XjkZvCvVjvs"/>
+</div>
+<div>
+<h3 class="font-bold text-lg text-text-main leading-tight">Graphic Designer</h3>
+<p class="text-sm text-text-muted font-medium">Creative Co.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-accent-mint/20 text-accent-mint-dark text-xs font-bold rounded-pill">
+                        $40/hr
+                    </span>
+</div>
+<!-- Progress Section -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end mb-1">
+<span class="text-sm font-bold text-primary">Application Viewed</span>
+<span class="text-xs text-text-muted font-medium">50%</span>
+</div>
+<div class="h-3 w-full bg-[#EDF2F7] rounded-pill overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full w-1/2 bg-accent-mint rounded-pill shadow-[0_0_10px_rgba(129,230,217,0.4)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-text-muted font-medium mt-1 px-1">
+<span>Sent</span>
+<span class="text-primary font-bold">Viewed</span>
+<span>Interview</span>
+<span>Hired</span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-2 border-t border-gray-50 flex gap-3">
+<button class="flex-1 h-10 rounded-pill border border-gray-200 text-text-main hover:border-primary hover:text-primary hover:bg-primary/5 flex items-center justify-center gap-2 text-sm font-bold transition-colors">
+<span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+                        Message
+                    </button>
+<button class="h-10 w-10 rounded-full bg-gray-50 text-text-muted flex items-center justify-center hover:text-text-main transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Active Application Card (Sent Stage) -->
+<div class="bg-surface-light rounded-card p-5 shadow-soft flex flex-col gap-5 transform transition-all hover:scale-[1.02] duration-300">
+<!-- Header -->
+<div class="flex justify-between items-start">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex-shrink-0 border-2 border-white shadow-sm">
+<img alt="Coffee latte art in a cozy cafe setting" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYfCEFqM3cPsHHsKpbIOlA3wbXHm95_QgD_ZUeQ1J3Z1IY6NUh-qjesCBoqEX3G7BovyERC5_jT-R8QfrXQjHXUVF6Gyj8nVzVFJYK9VYN5O2c2n-gnqkO-XIh3vIFh4QnBtShHwTazbDPm_k7OCWgK30KPTqNlIEAKlGnxSQhtlEcQlS26oXgPy3-_lG3PAMVDixawcBWXvI4kR3p8lAqQ9hDgIe-yHTUaTMvGD6cBbPRBaaxA7bu8XYIsfTpaEq_QwSWQ22YD5I"/>
+</div>
+<div>
+<h3 class="font-bold text-lg text-text-main leading-tight">Barista</h3>
+<p class="text-sm text-text-muted font-medium">Morning Brew</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-accent-mint/20 text-accent-mint-dark text-xs font-bold rounded-pill">
+                        $18/hr
+                    </span>
+</div>
+<!-- Progress Section -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end mb-1">
+<span class="text-sm font-bold text-primary">Application Sent</span>
+<span class="text-xs text-text-muted font-medium">25%</span>
+</div>
+<div class="h-3 w-full bg-[#EDF2F7] rounded-pill overflow-hidden relative">
+<div class="absolute top-0 left-0 h-full w-1/4 bg-accent-mint rounded-pill shadow-[0_0_10px_rgba(129,230,217,0.4)]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-text-muted font-medium mt-1 px-1">
+<span class="text-primary font-bold">Sent</span>
+<span>Viewed</span>
+<span>Interview</span>
+<span>Hired</span>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-2 border-t border-gray-50 flex gap-3">
+<button class="flex-1 h-10 rounded-pill border border-gray-200 text-text-muted flex items-center justify-center gap-2 text-sm font-bold cursor-not-allowed opacity-70">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+                        Message
+                    </button>
+</div>
+</div>
+<!-- Rejected Application Card -->
+<div class="bg-gray-50/80 rounded-card p-5 border border-gray-100 flex flex-col gap-5 opacity-90 hover:opacity-100 transition-opacity">
+<!-- Header -->
+<div class="flex justify-between items-start opacity-70 grayscale-[50%]">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 border-2 border-white shadow-sm">
+<img alt="Modern office interior with blurred people working" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALmZ73vLzDF_YrDC4YdMKVdkyOmX-8WPeb8Fm-4xlKYJgltaz9wJZNIfSPZRK_dC05w9ogFzFC0asVWPuCy7UN3ycrBIT5LhsX4R8hWEoziOe3-1L5xPP0mhLRmRx6vLeg8oU9p13s3AVTY4s3ePY1dib2kkPfHw9_CWiHpIWk-weaLmO9Wlzoyzwr4uAUQ0pxH9kNi1IZny0NJYOL83waoRqD5lEtB6yQvONO_jrlrD8bAPSVPhRuyy4Pf0gpBgA64KH30oEB3S8"/>
+</div>
+<div>
+<h3 class="font-bold text-lg text-text-main leading-tight">Admin Assistant</h3>
+<p class="text-sm text-text-muted font-medium">TechStart Inc.</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-gray-200 text-text-muted text-xs font-bold rounded-pill">
+                        Closed
+                    </span>
+</div>
+<!-- Progress Section -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end mb-1">
+<span class="text-sm font-bold text-error-soft/90">Not this time</span>
+</div>
+<div class="h-3 w-full bg-[#EDF2F7] rounded-pill overflow-hidden relative">
+<!-- Full width red bar for rejection -->
+<div class="absolute top-0 left-0 h-full w-full bg-error-soft rounded-pill"></div>
+</div>
+<p class="text-xs text-text-muted mt-1 leading-relaxed">
+                        Don't worry! New opportunities that match your skills are posted daily.
+                    </p>
+</div>
+<!-- Footer Actions -->
+<div class="pt-2 border-t border-gray-100 flex gap-3">
+<button class="flex-1 h-10 rounded-pill border border-gray-200 text-text-main hover:bg-gray-100 flex items-center justify-center gap-2 text-sm font-bold transition-colors">
+                        Archive
+                    </button>
+</div>
+</div>
+<!-- Bottom Spacer for nav bar -->
+<div class="h-8"></div>
+</main>
+<!-- Floating Bottom Navigation -->
+<nav class="absolute bottom-6 left-4 right-4 bg-surface-light rounded-pill shadow-[0_8px_30px_rgba(0,0,0,0.08)] px-6 py-3 flex justify-between items-center z-30 border border-gray-50">
+<a class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-primary transition-colors w-12 group" href="#">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">cottage</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-primary transition-colors w-12 group" href="#">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">search</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-primary w-12 relative" href="#">
+<div class="absolute -top-10 bg-primary/10 rounded-full p-2">
+<span class="material-symbols-outlined text-[28px] text-primary fill-current">description</span>
+</div>
+<div class="w-1 h-1 bg-primary rounded-full mt-1"></div>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-text-muted hover:text-primary transition-colors w-12 group" href="#">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">person</span>
+</a>
+</nav>
+</div>
+</body></html>

@@ -24,6 +24,7 @@ export function generarDetalleOfertaHTML(oferta, ofertaId, ratingData, opciones 
     const ubicacionTexto = extraerUbicacionTexto(oferta.ubicacion);
 
     return `
+        ${renderHeroHTML(oferta.imagenesURLs)}
         ${renderHeaderHTML(oferta)}
         ${renderGaleriaHTML(oferta.imagenesURLs)}
         ${renderDescripcionHTML(oferta)}
@@ -41,6 +42,13 @@ function extraerUbicacionTexto(ubicacion) {
     return ubicacion || 'No especificada';
 }
 
+// Hero: primera imagen a ancho completo (clickeable para ver completa)
+function renderHeroHTML(imagenesURLs) {
+    if (!imagenesURLs || imagenesURLs.length === 0) return '';
+    const url = imagenesURLs[0];
+    return `<div class="detalle-hero"><img src="${url}" alt="Imagen principal" onclick="window.open('${url}', '_blank')" style="cursor:pointer"></div>`;
+}
+
 function renderHeaderHTML(oferta) {
     const titulo = escapeHtml(oferta.titulo || '');
     const categoria = oferta.categoria || 'otros';
@@ -53,6 +61,7 @@ function renderHeaderHTML(oferta) {
     `;
 }
 
+// Galería: miniaturas de todas las imágenes (incluyendo la del hero)
 function renderGaleriaHTML(imagenesURLs) {
     if (!imagenesURLs || imagenesURLs.length === 0) return '';
 
@@ -72,11 +81,45 @@ function renderDescripcionHTML(oferta) {
     `;
 }
 
+// Dots visuales de vacantes disponibles
+function renderSpotsHTML(vacantes) {
+    if (!vacantes || vacantes <= 0) return '';
+    const count = Math.min(vacantes, 5);
+    const mod = vacantes === 1 ? '--critico' : vacantes === 2 ? '--urgente' : '--ok';
+    const dots = Array.from({ length: count }, () =>
+        `<span class="spot-dot spot-dot${mod}"></span>`
+    ).join('');
+    const texto = vacantes === 1 ? '1 lugar disponible' : `${vacantes} lugares disponibles`;
+    return `<div class="spots-row"><div class="spots-dots">${dots}</div><span class="spots-label">${texto}</span></div>`;
+}
+
+// Estima pago total si salario y duración son numéricos parseables
+function calcularPagoTotal(salario, duracion) {
+    if (!salario || !duracion) return null;
+    const montoMatch = salario.match(/[\d]+/);
+    const diasMatch = duracion.match(/(\d+)\s*(d[ií]a|semana|mes)/i);
+    if (!montoMatch || !diasMatch) return null;
+    const monto = parseInt(montoMatch[0], 10);
+    let dias = parseInt(diasMatch[1], 10);
+    const unidad = diasMatch[2].toLowerCase();
+    if (unidad.startsWith('semana')) dias *= 7;
+    if (unidad.startsWith('mes')) dias *= 30;
+    const total = monto * dias;
+    return total > 0 ? total : null;
+}
+
 function renderGridInfoHTML(oferta, ubicacionTexto) {
-    const vacantesHTML = (oferta.vacantes || 1) > 1
-        ? `<div class="detalle-item">
+    const pagoTotal = calcularPagoTotal(oferta.salario, oferta.duracion);
+    const pagoTotalHTML = pagoTotal
+        ? `<div class="detalle-item detalle-item--full">
+               <strong>💵 Pago estimado total</strong>
+               <span class="detalle-pago-total">S/. ${pagoTotal.toLocaleString('es-PE')}</span>
+           </div>`
+        : '';
+    const spotsHTML = (oferta.vacantes || 0) > 0
+        ? `<div class="detalle-item detalle-item--full">
                <strong>👥 Vacantes</strong>
-               <span>${oferta.vacantes} personas</span>
+               ${renderSpotsHTML(oferta.vacantes)}
            </div>`
         : '';
 
@@ -84,7 +127,7 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
         <div class="detalle-grid">
             <div class="detalle-item">
                 <strong>💰 Salario</strong>
-                <span>${escapeHtml(oferta.salario || 'A convenir')}</span>
+                <span class="oferta-salario-pill">${escapeHtml(oferta.salario || 'A convenir')}</span>
             </div>
             <div class="detalle-item">
                 <strong>📍 Ubicación</strong>
@@ -98,7 +141,8 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
                 <strong>🕐 Horario</strong>
                 <span>${escapeHtml(oferta.horario || 'No especificado')}</span>
             </div>
-            ${vacantesHTML}
+            ${pagoTotalHTML}
+            ${spotsHTML}
         </div>
     `;
 }
@@ -144,12 +188,16 @@ function renderEmpleadorHTML(oferta, ratingData, mostrarEmail) {
 function renderAccionesHTML(ofertaId, opciones) {
     const cerrarFn = opciones.onCerrarFn || 'cerrarModal';
     let botonPostular = '';
+    let trustMsg = '';
 
     if (opciones.mostrarPostulacion) {
         const postularFn = opciones.onPostularFn || 'mostrarFormularioPostulacion';
-        botonPostular = opciones.yaAplico
-            ? `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">✅ Ya postulaste</button>`
-            : `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">📝 Postular a esta oferta</button>`;
+        if (opciones.yaAplico) {
+            botonPostular = `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">✅ Ya postulaste</button>`;
+        } else {
+            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">📝 Postular a esta oferta</button>`;
+            trustMsg = `<p class="detalle-trust-msg">Sin costos ocultos · Puedes cancelar tu postulación</p>`;
+        }
     }
 
     return `
@@ -157,5 +205,6 @@ function renderAccionesHTML(ofertaId, opciones) {
             <button class="btn btn-secondary" onclick="${cerrarFn}()">Cerrar</button>
             ${botonPostular}
         </div>
+        ${trustMsg}
     `;
 }

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Job Details - Dog Walker</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#489ce5", // Soft Denim Blue vibe but using requested hex
+                        "primary-dark": "#367bb8",
+                        "accent-mint": "#81E6D9",
+                        "background-light": "#F7F9FA",
+                        "background-dark": "#111a21",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1e2936",
+                        "text-main": "#4A5568",
+                        "text-muted": "#A0AEC0",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "body": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem", 
+                        "lg": "1.5rem", 
+                        "xl": "2rem", 
+                        "2xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "soft": "0 10px 40px -10px rgba(72, 156, 229, 0.15)",
+                        "inner-soft": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar hide */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Smooth fade for read more */
+        .fade-mask {
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+
+        /* Blob background */
+        .blob-bg {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23489CE5' fill-opacity='0.05' d='M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.6,-46.6C91.4,-34.1,98.1,-19.2,95.8,-5.3C93.5,8.6,82.2,21.5,70.6,32.3C59,43.1,47.1,51.8,34.8,59.3C22.5,66.8,9.8,73.1,-1.8,76.2C-13.4,79.4,-25.5,79.3,-36.8,73.9C-48.1,68.5,-58.6,57.8,-66.6,45.4C-74.6,33,-80.1,19,-81.4,4.5C-82.7,-10,-79.8,-25,-71.4,-37.2C-63,-49.4,-49.1,-58.8,-35.3,-66.2C-21.5,-73.6,-7.8,-79,5.2,-88C18.2,-97,30.5,-109.6,44.7,-76.4Z' transform='translate(100 100)' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-text-main h-screen overflow-hidden flex flex-col relative selection:bg-accent-mint selection:text-primary-dark">
+<!-- Hero Section: Map/Image -->
+<div class="h-[45vh] w-full relative shrink-0">
+<!-- Back Button -->
+<button class="absolute top-6 left-6 z-20 flex h-12 w-12 items-center justify-center rounded-full bg-white/70 backdrop-blur-md shadow-sm text-text-main hover:bg-white transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">arrow_back</span>
+</button>
+<!-- Image Container with soft gradient overlay -->
+<div class="absolute inset-0 w-full h-full bg-slate-200" data-alt="Golden Retriever running happily in a park with soft sunlight" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAgCkIr78KjSRpF4M4XRceI0r6g_AS8P-G2wikMuDpfz518NDAG5KUHnF9drUFo_zOVYYexw6i3O8o_UNKr--0_Bl0ql1_X0oleHTzx1UHBlgOvgtFzp7h3N6zg6seeaLIpgOty3D2ClGzTS4yb6GGSZUUXHEsbFiXTSuR75aMnvBU3FniPJY7zVHntc2_CppQZKGh-OuCCSW4XLnpxfCAArcpKnnYOoKFA80Dk7GHWBd3wWJFYODRPuN-z0QsA1OhM7uRrqGSwPjU'); background-size: cover; background-position: center;">
+<div class="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent"></div>
+</div>
+<!-- Map Location Pin (Visual Polish) -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center animate-bounce duration-[2000ms]">
+<div class="h-12 w-12 bg-white rounded-full flex items-center justify-center shadow-lg text-primary z-10">
+<span class="material-symbols-outlined filled">pets</span>
+</div>
+<div class="h-2 w-8 bg-black/20 rounded-full blur-[2px] mt-2"></div>
+</div>
+</div>
+<!-- Content Sheet -->
+<!-- Negative margin pulls it up over the image -->
+<div class="relative -mt-10 flex-1 flex flex-col bg-surface-light dark:bg-surface-dark rounded-t-[32px] shadow-2xl overflow-hidden z-10 w-full max-w-lg mx-auto border-t border-white/50">
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar p-6 pb-32">
+<!-- Handle bar for visual cue -->
+<div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 opacity-60"></div>
+<!-- Header Block -->
+<div class="flex justify-between items-start mb-6">
+<div class="flex-1 pr-4">
+<h1 class="text-3xl font-bold text-[#0e151b] dark:text-white leading-tight mb-2">Dog Walker Needed</h1>
+<div class="flex items-center gap-2 text-text-muted">
+<span class="material-symbols-outlined text-[18px]">business_center</span>
+<p class="text-sm font-medium">Paws &amp; Co.</p>
+<span class="material-symbols-outlined text-accent-mint text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<!-- Wage Badge -->
+<div class="flex flex-col items-end shrink-0">
+<div class="bg-accent-mint/30 text-primary-dark font-bold px-4 py-2 rounded-full text-lg shadow-sm backdrop-blur-sm border border-accent-mint/20">
+                        $25<span class="text-sm font-normal text-text-main opacity-80">/hr</span>
+</div>
+</div>
+</div>
+<!-- Info Bubbles Grid -->
+<div class="grid grid-cols-2 gap-3 mb-8">
+<!-- Duration -->
+<div class="bg-background-light dark:bg-gray-800 p-4 rounded-xl flex items-center gap-3">
+<div class="bg-white dark:bg-gray-700 p-2 rounded-full text-primary shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<div>
+<p class="text-xs text-text-muted font-bold uppercase tracking-wider">Duration</p>
+<p class="text-sm font-bold text-text-main dark:text-gray-200">60 Mins</p>
+</div>
+</div>
+<!-- Distance -->
+<div class="bg-background-light dark:bg-gray-800 p-4 rounded-xl flex items-center gap-3">
+<div class="bg-white dark:bg-gray-700 p-2 rounded-full text-primary shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined">distance</span>
+</div>
+<div>
+<p class="text-xs text-text-muted font-bold uppercase tracking-wider">Distance</p>
+<p class="text-sm font-bold text-text-main dark:text-gray-200">0.5 Miles</p>
+</div>
+</div>
+<!-- Skill Level -->
+<div class="bg-background-light dark:bg-gray-800 p-4 rounded-xl flex items-center gap-3">
+<div class="bg-white dark:bg-gray-700 p-2 rounded-full text-primary shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div>
+<p class="text-xs text-text-muted font-bold uppercase tracking-wider">Level</p>
+<p class="text-sm font-bold text-text-main dark:text-gray-200">Entry</p>
+</div>
+</div>
+<!-- Vacancies -->
+<div class="bg-background-light dark:bg-gray-800 p-4 rounded-xl flex items-center gap-3">
+<div class="bg-white dark:bg-gray-700 p-2 rounded-full text-primary shadow-sm flex items-center justify-center">
+<span class="material-symbols-outlined">group</span>
+</div>
+<div>
+<p class="text-xs text-text-muted font-bold uppercase tracking-wider">Spots</p>
+<p class="text-sm font-bold text-text-main dark:text-gray-200">1 Left</p>
+</div>
+</div>
+</div>
+<!-- Description -->
+<div class="mb-8">
+<h2 class="text-lg font-bold text-[#0e151b] dark:text-white mb-3">About the Job</h2>
+<div class="relative">
+<p class="text-text-main dark:text-gray-300 leading-relaxed fade-mask">
+                        We are looking for a friendly dog lover to walk our Golden Retriever, Max. He is very energetic and loves the park! Ideally, we need someone who can handle a bit of pulling on the leash at the start of the walk, but he calms down quickly. Please bring your own poop bags, we will provide treats.
+                    </p>
+<button class="text-primary font-bold text-sm mt-2 flex items-center gap-1 hover:underline">
+                        Read more 
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Employer Section (Mini) -->
+<div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm mb-6">
+<div class="flex items-center gap-3">
+<img alt="Portrait of Sarah, the employer" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" data-alt="Portrait of a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPElOWlqVNZUPAv-xnDAVayR7Mn6KPRNiEG1JqJGdvf4QIUj9_OHjZ-rY3OLR_lIgAvoFoGKcAh01kogaRGJG0N8CuzdLfa56pySKqiyZcWpcud-kPzJna78z61tR-_HbV47xQwyNFvvsdDTYwIn9Bwp_-eEInKrPKraw-xQmv88AoWCH4XqjCVrQuCSpOliWUg4WT4Wx4Yc-4dXxSBWgUmfQE8-7LLIvPAxAyOQuJ5Kb8E2L56nQO01WgCRa-8WP__CnPekuuxTo"/>
+<div>
+<p class="font-bold text-[#0e151b] dark:text-white">Sarah Jenkins</p>
+<p class="text-xs text-text-muted">Job Poster</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full bg-background-light dark:bg-gray-700 flex items-center justify-center text-text-main hover:bg-gray-200 transition-colors">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+</div>
+</div>
+<!-- Sticky Footer -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white to-transparent dark:from-[#1e2936] dark:via-[#1e2936] pt-12">
+<button class="group relative w-full bg-primary hover:bg-primary-dark text-white font-bold text-lg py-4 rounded-full shadow-soft hover:shadow-lg transition-all active:scale-[0.98] overflow-hidden">
+<span class="relative z-10 flex items-center justify-center gap-2">
+                    Apply Now
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</span>
+<!-- Soft sheen effect -->
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
+</button>
+<div class="text-center mt-3">
+<p class="text-xs text-text-muted">No hidden fees. Cancel anytime.</p>
+</div>
+</div>
+</div>
+</body></html>
