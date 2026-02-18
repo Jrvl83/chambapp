@@ -6,7 +6,7 @@
 // Firebase - Importar instancias centralizadas
 import { auth, db, storage } from './config/firebase-init.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { optimizarImagen, validarArchivoImagen } from './utils/image-utils.js';
 import { generarEstrellasHTML } from './utils/formatting.js';
@@ -74,6 +74,8 @@ async function cargarPerfil() {
         cargarDatosPersonales();
         cargarCalificacionBadge();
         cargarSeccionCalificaciones();
+        actualizarBarraCompletitud();
+        cargarStats();
 
     } catch (error) {
         console.error('Error al cargar perfil:', error);
@@ -95,7 +97,14 @@ function cargarDatosPersonales() {
     document.getElementById('email').value = perfilData.email || usuario.email;
     document.getElementById('telefono').value = perfilData.telefono || '';
     document.getElementById('ubicacion').value = perfilData.ubicacion || '';
-    
+
+    const bioEl = document.getElementById('bio');
+    if (bioEl) {
+        bioEl.value = perfilData.bio || '';
+        const bioCount = document.getElementById('bio-count');
+        if (bioCount) bioCount.textContent = bioEl.value.length;
+    }
+
     if (perfilData.fotoPerfilURL) {
         document.getElementById('avatar-preview').src = perfilData.fotoPerfilURL;
     } else {
@@ -234,11 +243,14 @@ async function guardarPerfil() {
         btnGuardar.disabled = true;
         btnGuardar.textContent = '💾 Guardando...';
 
+        const bio = (document.getElementById('bio')?.value || '').trim();
+
         const datosActualizados = {
             email: perfilData.email || usuario.email,
             nombre: sanitizeText(nombre),
             telefono: telefono,
             ubicacion: sanitizeText(ubicacion),
+            bio: sanitizeText(bio),
             tipo: 'empleador'
         };
         
@@ -265,7 +277,8 @@ async function guardarPerfil() {
         
         perfilData = { ...perfilData, ...datosActualizados };
         cargarDatosPersonales();
-        
+        actualizarBarraCompletitud();
+
         // Restaurar botón
         btnGuardar.disabled = false;
         btnGuardar.textContent = '💾 Guardar Cambios';
@@ -377,11 +390,72 @@ function renderBarrasDistribucion(distribucion, total) {
 }
 
 // ============================================
+// COMPLETITUD DEL PERFIL
+// ============================================
+function calcularCompletitud() {
+    const campos = [
+        !!perfilData.nombre,
+        !!perfilData.telefono,
+        !!perfilData.ubicacion,
+        !!perfilData.fotoPerfilURL,
+        !!(perfilData.bio && perfilData.bio.length > 10)
+    ];
+    const completados = campos.filter(Boolean).length;
+    return Math.round((completados / campos.length) * 100);
+}
+
+function actualizarBarraCompletitud() {
+    const porcentaje = calcularCompletitud();
+    const pct = document.getElementById('completeness-percentage');
+    const fill = document.getElementById('progress-fill');
+    const tip = document.getElementById('completeness-tip');
+    if (pct) pct.textContent = `${porcentaje}%`;
+    if (fill) fill.style.width = `${porcentaje}%`;
+    if (!tip) return;
+    if (porcentaje === 100) {
+        tip.textContent = '¡Perfil completo! Los trabajadores confiarán más en ti.';
+    } else if (!perfilData.fotoPerfilURL) {
+        tip.textContent = 'Agrega una foto de perfil para generar más confianza.';
+    } else if (!(perfilData.bio && perfilData.bio.length > 10)) {
+        tip.textContent = 'Agrega una descripción para que los trabajadores te conozcan.';
+    } else {
+        tip.textContent = 'Completa tu perfil para generar más confianza.';
+    }
+}
+
+// ============================================
+// STATS DEL EMPLEADOR
+// ============================================
+async function cargarStats() {
+    try {
+        const q = query(
+            collection(db, 'ofertas'),
+            where('empleadorId', '==', auth.currentUser.uid)
+        );
+        const snap = await getDocs(q);
+        if (snap.empty) return;
+
+        let totalContratados = 0;
+        snap.forEach(d => { totalContratados += d.data().aceptadosCount || 0; });
+
+        const statsRow = document.getElementById('perfil-stats-row');
+        if (statsRow) statsRow.style.display = 'flex';
+        const elOfertas = document.getElementById('stat-ofertas');
+        const elContratados = document.getElementById('stat-contratados');
+        if (elOfertas) elOfertas.textContent = snap.size;
+        if (elContratados) elContratados.textContent = totalContratados;
+    } catch {
+        // Stats no críticas — fallo silencioso
+    }
+}
+
+// ============================================
 // VALIDACION EN VIVO (ONBLUR)
 // ============================================
 function inicializarValidacionEnVivo() {
     const nombre = document.getElementById('nombre');
     const telefono = document.getElementById('telefono');
+    const bio = document.getElementById('bio');
 
     if (nombre) nombre.addEventListener('blur', () => {
         const r = validarNombre(nombre.value);
@@ -392,6 +466,10 @@ function inicializarValidacionEnVivo() {
         const r = validarTelefono(telefono.value);
         if (!r.valid) showFieldError('telefono', r.error);
         else hideFieldError('telefono');
+    });
+    if (bio) bio.addEventListener('input', () => {
+        const count = document.getElementById('bio-count');
+        if (count) count.textContent = bio.value.length;
     });
 }
 
