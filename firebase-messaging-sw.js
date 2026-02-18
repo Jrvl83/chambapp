@@ -25,7 +25,7 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log('[SW ChambApp] Notificacion recibida en background:', payload);
 
-    const notificationTitle = payload.notification?.title || 'ChambApp';
+    const notificationTitle = payload.notification?.title || 'ChambaYa';
     const notificationOptions = {
         body: payload.notification?.body || 'Tienes una nueva notificacion',
         icon: '/assets/icons/icon-192.png',

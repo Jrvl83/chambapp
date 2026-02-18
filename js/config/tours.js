@@ -15,7 +15,7 @@
     // ============================================
 
     GuidedTour.registerTour('dashboard', {
-        onComplete: '\u00a1Bienvenido a ChambApp! \ud83c\udf89',
+        onComplete: '\u00a1Bienvenido a ChambaYa! \ud83c\udf89',
         sequences: function(role, mobile) {
             var isEmpleador = role === 'empleador';
 

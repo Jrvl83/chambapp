@@ -1,6 +1,6 @@
 {
-    "name": "ChambApp - Tu proxima chamba",
-    "short_name": "ChambApp",
+    "name": "ChambaYa - Tu proxima chamba",
+    "short_name": "ChambaYa",
     "description": "Conectamos trabajadores con empleadores en Peru",
     "start_url": "/dashboard.html",
     "scope": "/",

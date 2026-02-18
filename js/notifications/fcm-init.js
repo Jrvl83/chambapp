@@ -86,7 +86,7 @@ export async function requestNotificationPermission(db, userId) {
                 success: false,
                 token: null,
                 reason: 'ios_not_pwa',
-                message: 'En iPhone, primero agrega ChambApp a tu pantalla de inicio (compartir → Agregar a inicio)'
+                message: 'En iPhone, primero agrega ChambaYa a tu pantalla de inicio (compartir → Agregar a inicio)'
             };
         }
 
@@ -301,7 +301,7 @@ async function guardarTokenEnFirestore(db, userId, token) {
  * Muestra notificacion cuando la app esta en foreground
  */
 function mostrarNotificacionForeground(payload) {
-    const titulo = payload.notification?.title || 'ChambApp';
+    const titulo = payload.notification?.title || 'ChambaYa';
     const cuerpo = payload.notification?.body || '';
     const url = payload.data?.url || '/dashboard.html';
 

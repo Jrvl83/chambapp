@@ -130,7 +130,7 @@ function renderWhatsAppLink(aplicacion, telefono) {
     const telefonoWA = limpio.startsWith('51') ? limpio : `51${limpio}`;
     const msg = encodeURIComponent(
         `Hola ${nombre}, soy ${state.usuario.nombre || 'el trabajador'} ` +
-        `de ChambApp. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada.`
+        `de ChambaYa. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada.`
     );
     return `<a href="https://wa.me/${telefonoWA}?text=${msg}" target="_blank" class="btn btn-whatsapp btn-small">📱 WhatsApp</a>`;
 }

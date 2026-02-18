@@ -218,15 +218,15 @@ function mostrarModalInstruccionesiOS() {
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
             <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
-            <h2 style="color: var(--primary); margin-bottom: 1rem;">Instala ChambApp</h2>
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">Instala ChambaYa</h2>
             <p style="color: var(--gray); margin-bottom: 1.5rem;">
-                Para recibir notificaciones en iPhone, necesitas agregar ChambApp a tu pantalla de inicio:
+                Para recibir notificaciones en iPhone, necesitas agregar ChambaYa a tu pantalla de inicio:
             </p>
             <ol style="text-align: left; color: var(--dark); line-height: 2;">
                 <li>Toca el botón <strong>Compartir</strong> (📤) en Safari</li>
                 <li>Desplázate y selecciona <strong>"Agregar a inicio"</strong></li>
                 <li>Toca <strong>"Agregar"</strong></li>
-                <li>Abre ChambApp desde tu pantalla de inicio</li>
+                <li>Abre ChambaYa desde tu pantalla de inicio</li>
             </ol>
             <button class="btn btn-primary" onclick="cerrarModal()" style="margin-top: 1.5rem; width: 100%;">
                 Entendido

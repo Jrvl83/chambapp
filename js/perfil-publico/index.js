@@ -89,7 +89,7 @@ async function cargarResenas() {
 // ============================================
 function renderPerfil() {
     const data = state.perfilData;
-    document.title = `${data.nombre || 'Trabajador'} - ChambApp`;
+    document.title = `${data.nombre || 'Trabajador'} - ChambaYa`;
 
     renderHeroSection(data);
     renderBioSection(data);

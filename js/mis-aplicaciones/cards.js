@@ -78,7 +78,7 @@ function crearBotonesPendiente(aplicacionId, nombreEscapado, vacantesLlenas) {
 
 function crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, tituloEscapado) {
     const mensajeWhatsApp = encodeURIComponent(
-        `Hola ${nombre}, te contacto por la oferta "${aplicacion.ofertaTitulo}" en ChambApp. Tu postulación fue aceptada.`
+        `Hola ${nombre}, te contacto por la oferta "${aplicacion.ofertaTitulo}" en ChambaYa. Tu postulación fue aceptada.`
     );
     const telefonoLimpio = telefono ? telefono.replace(/\D/g, '') : '';
     const telefonoWhatsApp = telefonoLimpio.startsWith('51') ? telefonoLimpio : `51${telefonoLimpio}`;

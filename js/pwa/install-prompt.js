@@ -57,7 +57,7 @@ function crearBannerHTML() {
             <div class="pwa-install-content">
                 <img src="/assets/icons/icon-72.png" alt="" class="pwa-install-icon">
                 <div class="pwa-install-text">
-                    <strong>Instalar ChambApp</strong>
+                    <strong>Instalar ChambaYa</strong>
                     <span>Acceso rapido desde tu inicio</span>
                 </div>
             </div>

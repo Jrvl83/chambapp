@@ -188,7 +188,7 @@ function crearAplicacionCard(aplicacion) {
         const empleadorNombre = aplicacion.empleadorNombre || 'Empleador';
 
         const mensajeWhatsApp = encodeURIComponent(
-            `Hola ${empleadorNombre}, soy ${usuario.nombre || 'el trabajador'} de ChambApp. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada. ¿Cuándo podemos coordinar?`
+            `Hola ${empleadorNombre}, soy ${usuario.nombre || 'el trabajador'} de ChambaYa. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada. ¿Cuándo podemos coordinar?`
         );
 
         let telefonoWhatsApp = '';

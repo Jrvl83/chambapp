@@ -256,7 +256,7 @@ async function handleGoogleRegister() {
     }
 
     if (esIOSStandalone()) {
-        toastWarning('Para usar Google, abre ChambApp en Safari.');
+        toastWarning('Para usar Google, abre ChambaYa en Safari.');
         return;
     }
 
