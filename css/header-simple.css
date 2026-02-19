@@ -14,7 +14,7 @@
 .header-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: calc(1rem + env(safe-area-inset-top, 0)) 2rem 1rem;
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) 2rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
