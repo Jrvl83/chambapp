@@ -2209,6 +2209,24 @@ a.stat-card-link:focus-visible {
 }
 
 /* ============================================
+   OFERTAS SECTION HEADER
+   ============================================ */
+.ofertas-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.ofertas-section-titulo {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+}
+
+/* ============================================
    ACTIVIDAD RECIENTE BANNER
    ============================================ */
 .actividad-reciente-banner {
