@@ -80,7 +80,7 @@ self.addEventListener('notificationclick', (event) => {
 // PWA CACHING - ChambApp
 // ============================================
 
-const CACHE_VERSION = 'chambapp-v2';
+const CACHE_VERSION = 'chambapp-v3';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const PAGES_CACHE = CACHE_VERSION + '-pages';
 const IMAGES_CACHE = CACHE_VERSION + '-images';
@@ -223,9 +223,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then((cache) => cache.addAll(PRECACHE_ASSETS))
-        // NO llamar skipWaiting() aquí — el SW espera hasta que el usuario
-        // confirme la actualización desde el toast. El mensaje SKIP_WAITING
-        // lo activa cuando el usuario toca "Actualizar".
+            .then(() => self.skipWaiting())
     );
 });
 

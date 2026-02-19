@@ -1,7 +1,7 @@
 // ============================================
 // SW UPDATE DETECTOR - ChambApp
-// Modulo: js/pwa/sw-update.js
-// Detecta nuevo SW y muestra toast de actualizacion
+// El SW llama skipWaiting() en install -> activa solo.
+// controllerchange recarga la pagina para servir assets frescos.
 // ============================================
 
 const UPDATE_CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutos
@@ -12,8 +12,6 @@ export function initSWUpdate() {
     navigator.serviceWorker.ready.then((registration) => {
         // Chequear updates periodicamente
         setInterval(() => registration.update(), UPDATE_CHECK_INTERVAL);
-
-        listenForUpdates(registration);
     });
 
     // Recargar cuando un nuevo SW reemplaza al anterior.
@@ -25,38 +23,3 @@ export function initSWUpdate() {
         }
     });
 }
-
-function listenForUpdates(registration) {
-    registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        if (!newWorker) return;
-
-        newWorker.addEventListener('statechange', () => {
-            if (newWorker.state !== 'installed') return;
-            if (!navigator.serviceWorker.controller) return;
-
-            // Nuevo SW esperando -> mostrar toast
-            mostrarToastActualizacion();
-        });
-    });
-}
-
-function mostrarToastActualizacion() {
-    if (typeof showToast !== 'function') return;
-
-    showToast(
-        'Nueva versión disponible <button onclick="activarNuevoSW()" class="toast-retry-btn">Actualizar</button>',
-        'info',
-        0,
-        { dismissible: false, showCloseButton: false }
-    );
-}
-
-// Funcion global para el onclick del boton
-window.activarNuevoSW = function () {
-    if (navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-            type: 'SKIP_WAITING'
-        });
-    }
-};
