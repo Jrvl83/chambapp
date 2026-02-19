@@ -442,7 +442,7 @@ body {
     }
 
     .header-content {
-        padding: calc(1rem + env(safe-area-inset-top, 0px)) 1rem 1rem;
+        padding: max(1rem, env(safe-area-inset-top, 0px)) 1rem 1rem;
     }
 
     .progress-container {
