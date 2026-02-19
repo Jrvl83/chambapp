@@ -58,7 +58,7 @@
     box-shadow: var(--shadow-modal);
     max-width: 600px;
     width: 100%;
-    max-height: calc(100vh - env(safe-area-inset-top, 20px) - env(safe-area-inset-bottom, 0px) - 4rem);
+    max-height: calc(100vh - env(safe-area-inset-top, 20px) - env(safe-area-inset-bottom, 0px) - 5rem);
     overflow-y: auto;
     position: relative;
     animation: modalSlideUp var(--transition-base);

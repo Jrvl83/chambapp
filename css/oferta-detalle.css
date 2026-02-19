@@ -186,11 +186,16 @@
    ============================================ */
 
 /* Hero — primera imagen a ancho completo */
+/* Cuando el hero es el primer hijo del modal-body, quitar el padding superior */
+.modal-body:has(> .detalle-hero) {
+    padding-top: 0;
+}
+
 .detalle-hero {
-    margin: -1.5rem -1.5rem 1.25rem;
+    margin: 0 -1.5rem 1.25rem;
     overflow: hidden;
     max-height: 220px;
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    /* border-radius lo maneja el overflow-y:auto del modal-content */
 }
 
 .detalle-hero img {
