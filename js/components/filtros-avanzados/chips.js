@@ -23,12 +23,10 @@ export function renderFiltrosHTML(state, userLocation) {
     const hayFiltros = hayFiltrosActivos(state);
 
     return `
-        <div class="filtros-trigger-area">
-            <button class="btn-filtros-trigger" id="btn-abrir-filtros" type="button" aria-label="Abrir filtros">
-                ⚙️
-                <span class="filtros-badge-activo" id="filtros-badge-activo" ${hayFiltros ? '' : 'hidden'}>+</span>
-            </button>
-        </div>
+        <button class="btn-filtros-trigger" id="btn-abrir-filtros" type="button" aria-label="Abrir filtros">
+            ⚙️
+            <span class="filtros-badge-activo" id="filtros-badge-activo" ${hayFiltros ? '' : 'hidden'}>+</span>
+        </button>
 
         <div class="filtros-overlay" id="filtros-overlay"></div>
 

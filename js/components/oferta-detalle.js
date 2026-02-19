@@ -195,7 +195,7 @@ function renderAccionesHTML(ofertaId, opciones) {
         if (opciones.yaAplico) {
             botonPostular = `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">✅ Ya postulaste</button>`;
         } else {
-            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">📝 Postular a esta oferta</button>`;
+            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">📝 Postular</button>`;
             trustMsg = `<p class="detalle-trust-msg">Sin costos ocultos · Puedes cancelar tu postulación</p>`;
         }
     }
