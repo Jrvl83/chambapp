@@ -39,8 +39,8 @@
     justify-content: center;
     z-index: var(--z-modal-overlay);
     padding: var(--padding-md);
-    padding-top: max(var(--padding-md), env(safe-area-inset-top, 0px));
-    padding-bottom: max(var(--padding-md), env(safe-area-inset-bottom, 0px));
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--padding-md));
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--padding-md));
     animation: modalFadeIn var(--transition-fast);
 }
 
