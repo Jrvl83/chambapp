@@ -80,7 +80,7 @@ self.addEventListener('notificationclick', (event) => {
 // PWA CACHING - ChambApp
 // ============================================
 
-const CACHE_VERSION = 'chambapp-v3';
+const CACHE_VERSION = 'chambapp-v4';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const PAGES_CACHE = CACHE_VERSION + '-pages';
 const IMAGES_CACHE = CACHE_VERSION + '-images';
@@ -207,9 +207,13 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Static assets (CSS, JS, images, fonts) -> Stale While Revalidate
-    // Sirve desde cache inmediatamente y actualiza en background.
-    // La siguiente carga ya tiene la versión más reciente (sin reinstalar PWA).
+    // CSS y JS -> Network First (siempre fresco de la red, cache solo si offline)
+    if (/\.(css|js)$/i.test(url.pathname)) {
+        event.respondWith(networkFirst(event.request));
+        return;
+    }
+
+    // Imágenes y fuentes locales -> Stale While Revalidate
     if (isStaticAsset(url.pathname)) {
         event.respondWith(staleWhileRevalidate(event.request, STATIC_CACHE));
         return;
