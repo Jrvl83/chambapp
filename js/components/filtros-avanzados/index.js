@@ -1,7 +1,6 @@
 /**
  * Filtros Avanzados - Clase principal orquestadora
- * Sistema de filtros profesional con dropdowns custom,
- * multiselect, range slider y persistencia
+ * Sistema de filtros con bottom sheet, badge "+" y apply-on-button
  *
  * @module components/filtros-avanzados/index
  */
@@ -11,8 +10,10 @@ import { CustomDropdown } from './custom-dropdown.js';
 import { MultiSelectDropdown } from './multi-select.js';
 import { DualRangeSlider } from './dual-range.js';
 import {
-    renderFiltrosHTML, getActiveChips, renderChipsHTML,
-    countActiveFilters, countAdvancedFilters
+    renderFiltrosHTML,
+    getActiveChips, renderChipsHTML,
+    countActiveFilters, countAdvancedFilters,
+    hayFiltrosActivos
 } from './chips.js';
 
 class FiltrosAvanzados {
@@ -27,7 +28,6 @@ class FiltrosAvanzados {
         this.callbacks = { onChange: null, onClear: null };
         this.components = {};
         this.userLocation = null;
-        this.isCollapsed = window.innerWidth <= 768;
         this.isMobile = window.innerWidth <= 768;
         this.init();
     }
@@ -35,18 +35,11 @@ class FiltrosAvanzados {
     init() {
         this.loadPersistedState();
         this.render();
-        this.initDesktopComponents();
-        this.initMobileComponents();
-        this.bindDesktopEvents();
-        this.bindMobileEvents();
+        this.initComponents();
+        this.bindTriggerEvents();
+        this.bindSheetEvents();
         this.bindSharedEvents();
-        this.updateChips();
-        this.updateFilterCount();
-
-        if (this.isCollapsed) {
-            this.elements.body.classList.add('collapsed');
-            this.elements.toggle.setAttribute('aria-expanded', 'false');
-        }
+        this._actualizarBadge();
     }
 
     // --- Render ---
@@ -59,296 +52,166 @@ class FiltrosAvanzados {
     cacheElements() {
         const q = (sel) => this.container.querySelector(sel);
         this.elements = {
-            toggle: q('.filtros-toggle'),
-            body: q('.filtros-body'),
-            limpiar: q('#btn-limpiar-filtros'),
-            busqueda: q('#filtro-texto'),
-            clearBusqueda: q('#clear-busqueda'),
-            ubicacion: q('#filtro-ubicacion'),
-            ubicacionDropdown: q('#ubicacion-dropdown'),
-            chips: q('#filtros-chips'),
-            resultados: q('#filtros-resultados'),
-            badge: q('#filtros-count'),
-            distanciaGrupo: q('#filtro-distancia-grupo'),
-            btnAplicar: q('#btn-aplicar-filtros'),
-            busquedaMobile: q('#filtro-texto-mobile'),
-            clearBusquedaMobile: q('#clear-busqueda-mobile'),
-            ubicacionMobile: q('#filtro-ubicacion-mobile'),
-            btnToggleAvanzados: q('#btn-toggle-avanzados'),
-            limpiarMobile: q('#btn-limpiar-mobile'),
-            badgeMobile: q('#filtros-count-mobile'),
+            overlay: q('#filtros-overlay'),
+            sheet: q('#filtros-sheet'),
+            badge: q('#filtros-badge-activo'),
+            busqueda: q('#filtro-texto-mobile'),
+            clearBusqueda: q('#clear-busqueda-mobile'),
+            ubicacion: q('#filtro-ubicacion-mobile'),
+            distanciaGrupo: q('#filtro-distancia-grupo-mobile'),
             salarioMin: q('#salario-min'),
             salarioMax: q('#salario-max'),
-            distanciaGrupoMobile: q('#filtro-distancia-grupo-mobile'),
-            overlay: q('#filtros-overlay')
+            btnAplicar: q('#btn-aplicar-filtros'),
+            limpiar: q('#btn-limpiar-filtros'),
         };
-    }
-
-    // --- Helpers ---
-
-    _onFieldChange(field) {
-        return (value) => {
-            this.state[field] = value;
-            this.syncControls();
-            this.onFilterChange();
-        };
-    }
-
-    _onCategoriasChange(values) {
-        this.state.categorias = values;
-        this.syncControls();
-        this.onFilterChange();
     }
 
     // --- Componentes ---
 
-    initDesktopComponents() {
-        this.components.categorias = new MultiSelectDropdown('#dropdown-categorias', {
-            placeholder: 'Todas las categorias',
-            placeholderMultiple: '{count} categorias',
+    initComponents() {
+        this.components.categorias = new MultiSelectDropdown('#dropdown-categorias-mobile', {
+            placeholder: 'Todas las categorías',
+            placeholderMultiple: '{count} categorías',
             items: CATEGORIAS.map(c => ({ ...c, color: true })),
             values: this.state.categorias,
             showColors: true,
-            onChange: (v) => this._onCategoriasChange(v)
+            onChange: (v) => { this.state.categorias = v; this.onFilterChange(); }
         });
 
-        this.components.distancia = new CustomDropdown('#dropdown-distancia', {
+        this.components.ordenar = new CustomDropdown('#dropdown-ordenar-mobile', {
+            placeholder: 'Más recientes', items: ORDENAR,
+            value: this.state.ordenar,
+            onChange: (v) => { this.state.ordenar = v; this.onFilterChange(); }
+        });
+
+        this.components.distancia = new CustomDropdown('#dropdown-distancia-mobile', {
             placeholder: 'Cualquier distancia', items: DISTANCIAS,
-            value: this.state.distanciaMax, onChange: this._onFieldChange('distanciaMax')
-        });
-
-        this.components.fecha = new CustomDropdown('#dropdown-fecha', {
-            placeholder: 'Cualquier fecha', items: FECHAS,
-            value: this.state.fechaPublicacion, onChange: this._onFieldChange('fechaPublicacion')
-        });
-
-        this.components.ordenar = new CustomDropdown('#dropdown-ordenar', {
-            placeholder: 'Mas recientes', items: ORDENAR,
-            value: this.state.ordenar, onChange: this._onFieldChange('ordenar')
-        });
-
-        this.components.salario = new DualRangeSlider('#salario-slider', {
-            min: 0, max: 5000, step: 50,
-            valueMin: this.state.salarioMin, valueMax: this.state.salarioMax,
-            onChange: ({ min, max }) => {
-                this.state.salarioMin = min;
-                this.state.salarioMax = max;
-                this.syncControls();
-                this.onFilterChange();
-            }
-        });
-    }
-
-    initMobileComponents() {
-        this.components.categoriasMobile = new MultiSelectDropdown('#dropdown-categorias-mobile', {
-            placeholder: 'Categorias', placeholderMultiple: '{count} cats.',
-            items: CATEGORIAS.map(c => ({ ...c, color: true })),
-            values: this.state.categorias, showColors: true,
-            onChange: (v) => this._onCategoriasChange(v)
-        });
-
-        this.components.ordenarMobile = new CustomDropdown('#dropdown-ordenar-mobile', {
-            placeholder: 'Recientes', items: ORDENAR,
-            value: this.state.ordenar, onChange: this._onFieldChange('ordenar')
-        });
-
-        this.components.distanciaMobile = new CustomDropdown('#dropdown-distancia-mobile', {
-            placeholder: 'Cualquier', items: DISTANCIAS,
-            value: this.state.distanciaMax, onChange: this._onFieldChange('distanciaMax')
+            value: this.state.distanciaMax,
+            onChange: (v) => { this.state.distanciaMax = v; this.onFilterChange(); }
         });
     }
 
     // --- Eventos ---
 
-    bindDesktopEvents() {
-        this.elements.toggle.addEventListener('click', () => this.toggleCollapse());
-        this.elements.limpiar.addEventListener('click', () => this.clearAll());
+    bindTriggerEvents() {
+        const btnAbrir = this.container.querySelector('#btn-abrir-filtros');
+        if (btnAbrir) btnAbrir.addEventListener('click', () => this._abrirSheet());
 
+        const btnCerrar = this.container.querySelector('#btn-cerrar-filtros');
+        if (btnCerrar) btnCerrar.addEventListener('click', () => this._cerrarSheet());
+    }
+
+    bindSheetEvents() {
         const debouncedSearch = debounce(() => {
-            this.state.busqueda = this.elements.busqueda.value.trim();
-            this.elements.clearBusqueda.hidden = !this.state.busqueda;
-            this.syncControls();
+            this.state.busqueda = this.elements.busqueda?.value.trim() || '';
+            if (this.elements.clearBusqueda) {
+                this.elements.clearBusqueda.hidden = !this.state.busqueda;
+            }
             this.onFilterChange();
         }, this.options.debounceMs);
-        this.elements.busqueda.addEventListener('input', debouncedSearch);
+        this.elements.busqueda?.addEventListener('input', debouncedSearch);
 
-        this.elements.clearBusqueda.addEventListener('click', () => {
+        this.elements.clearBusqueda?.addEventListener('click', () => {
             this.state.busqueda = '';
-            this.syncControls();
+            if (this.elements.busqueda) this.elements.busqueda.value = '';
+            if (this.elements.clearBusqueda) this.elements.clearBusqueda.hidden = true;
             this.onFilterChange();
-            this.elements.busqueda.focus();
         });
 
         const debouncedUbicacion = debounce(() => {
-            this.state.ubicacion = this.elements.ubicacion.value.trim();
-            this.syncControls();
+            this.state.ubicacion = this.elements.ubicacion?.value.trim() || '';
             this.onFilterChange();
         }, this.options.debounceMs);
-        this.elements.ubicacion.addEventListener('input', debouncedUbicacion);
-    }
+        this.elements.ubicacion?.addEventListener('input', debouncedUbicacion);
 
-    bindMobileEvents() {
-        this.elements.btnToggleAvanzados.addEventListener('click', () => this.toggleCollapse());
-        this.elements.limpiarMobile.addEventListener('click', () => this.clearAll());
+        this.bindSalarioEvents();
+        this.bindFechaChips();
 
-        if (this.elements.btnAplicar) {
-            this.elements.btnAplicar.addEventListener('click', () => this.closeSheet());
-        }
-
-        const debouncedSearchMobile = debounce(() => {
-            this.state.busqueda = this.elements.busquedaMobile.value.trim();
-            this.syncControls();
-            this.onFilterChange();
-        }, this.options.debounceMs);
-        this.elements.busquedaMobile.addEventListener('input', debouncedSearchMobile);
-
-        this.elements.clearBusquedaMobile.addEventListener('click', () => {
-            this.state.busqueda = '';
-            this.syncControls();
-            this.onFilterChange();
-            this.elements.busquedaMobile.focus();
+        this.elements.btnAplicar?.addEventListener('click', () => {
+            this._cerrarSheet();
+            this._actualizarBadge();
+            this.notifyChange();
         });
 
-        const debouncedUbicacionMobile = debounce(() => {
-            this.state.ubicacion = this.elements.ubicacionMobile.value.trim();
-            this.syncControls();
-            this.onFilterChange();
-        }, this.options.debounceMs);
-        this.elements.ubicacionMobile.addEventListener('input', debouncedUbicacionMobile);
-
-        this.bindMobileSalarioEvents();
-        this.bindMobileFechaChips();
+        this.elements.limpiar?.addEventListener('click', () => this.clearAll());
     }
 
-    bindMobileSalarioEvents() {
+    bindSalarioEvents() {
         const debouncedSalario = debounce(() => {
-            this.state.salarioMin = parseInt(this.elements.salarioMin.value) || 0;
-            this.state.salarioMax = parseInt(this.elements.salarioMax.value) || 5000;
-            this.syncControls();
+            this.state.salarioMin = parseInt(this.elements.salarioMin?.value) || 0;
+            this.state.salarioMax = parseInt(this.elements.salarioMax?.value) || 5000;
             this.onFilterChange();
         }, this.options.debounceMs);
-        this.elements.salarioMin.addEventListener('input', debouncedSalario);
-        this.elements.salarioMax.addEventListener('input', debouncedSalario);
+        this.elements.salarioMin?.addEventListener('input', debouncedSalario);
+        this.elements.salarioMax?.addEventListener('input', debouncedSalario);
     }
 
-    bindMobileFechaChips() {
+    bindFechaChips() {
         this.container.querySelectorAll('.fecha-chip').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.state.fechaPublicacion = btn.dataset.value;
-                this.syncControls();
+                this.container.querySelectorAll('.fecha-chip').forEach(b => {
+                    b.classList.toggle('active', b.dataset.value === this.state.fechaPublicacion);
+                });
                 this.onFilterChange();
             });
         });
     }
 
     bindSharedEvents() {
-        this.elements.overlay.addEventListener('click', () => this.closeSheet());
-        window.addEventListener('resize', debounce(() => this.handleResize(), 150));
+        this.elements.overlay?.addEventListener('click', () => this._cerrarSheet());
+        window.addEventListener('resize', debounce(() => {
+            this.isMobile = window.innerWidth <= 768;
+        }, 150));
     }
 
-    handleResize() {
-        const wasMobile = this.isMobile;
-        this.isMobile = window.innerWidth <= 768;
-        if (wasMobile === this.isMobile) return;
+    // --- Sheet ---
 
-        if (!this.isMobile) {
-            this.isCollapsed = false;
-            this.elements.body.classList.remove('collapsed');
-            this.container.classList.remove('sheet-open');
-            this.elements.overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        } else {
-            this.isCollapsed = true;
-            this.elements.body.classList.add('collapsed');
+    _abrirSheet() {
+        if (this.elements.sheet) this.elements.sheet.setAttribute('aria-hidden', 'false');
+        this.elements.overlay?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    _cerrarSheet() {
+        if (this.elements.sheet) this.elements.sheet.setAttribute('aria-hidden', 'true');
+        this.elements.overlay?.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // --- Filtros ---
+
+    onFilterChange() {
+        this._actualizarBadge();
+        this.persistState();
+        // notifyChange() NO se llama aquí — solo al pulsar "Filtrar"
+    }
+
+    _actualizarBadge() {
+        if (this.elements.badge) {
+            this.elements.badge.hidden = !hayFiltrosActivos(this.state);
         }
-        this.elements.toggle.setAttribute('aria-expanded', !this.isCollapsed);
-        this.syncControls();
     }
 
-    // --- Sincronizacion ---
+    // --- Sincronización ---
 
     syncControls() {
-        this.elements.busqueda.value = this.state.busqueda;
-        this.elements.clearBusqueda.hidden = !this.state.busqueda;
-        this.elements.busquedaMobile.value = this.state.busqueda;
-        this.elements.clearBusquedaMobile.hidden = !this.state.busqueda;
-        this.elements.ubicacion.value = this.state.ubicacion;
-        this.elements.ubicacionMobile.value = this.state.ubicacion;
+        if (this.elements.busqueda) this.elements.busqueda.value = this.state.busqueda;
+        if (this.elements.clearBusqueda) this.elements.clearBusqueda.hidden = !this.state.busqueda;
+        if (this.elements.ubicacion) this.elements.ubicacion.value = this.state.ubicacion;
 
-        this.components.categorias.setValues?.(this.state.categorias, true);
-        this.components.categoriasMobile.setValues?.(this.state.categorias, true);
-        this.components.ordenar.setValue?.(this.state.ordenar, true);
-        this.components.ordenarMobile.setValue?.(this.state.ordenar, true);
-        this.components.distancia.setValue?.(this.state.distanciaMax, true);
-        this.components.distanciaMobile.setValue?.(this.state.distanciaMax, true);
-        this.components.salario.setValues?.(this.state.salarioMin, this.state.salarioMax, true);
-        this.elements.salarioMin.value = this.state.salarioMin || '';
-        this.elements.salarioMax.value = this.state.salarioMax >= 5000 ? '' : this.state.salarioMax;
+        this.components.categorias?.setValues?.(this.state.categorias, true);
+        this.components.ordenar?.setValue?.(this.state.ordenar, true);
+        this.components.distancia?.setValue?.(this.state.distanciaMax, true);
 
-        this.components.fecha.setValue?.(this.state.fechaPublicacion, true);
+        if (this.elements.salarioMin) this.elements.salarioMin.value = this.state.salarioMin || '';
+        if (this.elements.salarioMax) {
+            this.elements.salarioMax.value = this.state.salarioMax >= 5000 ? '' : this.state.salarioMax;
+        }
+
         this.container.querySelectorAll('.fecha-chip').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.value === this.state.fechaPublicacion);
         });
-    }
-
-    // --- Toggle / Sheet ---
-
-    toggleCollapse() {
-        this.isCollapsed = !this.isCollapsed;
-        this.elements.body.classList.toggle('collapsed', this.isCollapsed);
-        this.elements.toggle.setAttribute('aria-expanded', !this.isCollapsed);
-
-        if (this.isMobile) {
-            this.container.classList.toggle('sheet-open', !this.isCollapsed);
-            this.elements.overlay.classList.toggle('active', !this.isCollapsed);
-            document.body.style.overflow = this.isCollapsed ? '' : 'hidden';
-        }
-    }
-
-    closeSheet() {
-        if (!this.isCollapsed) this.toggleCollapse();
-    }
-
-    // --- Chips y filtros ---
-
-    onFilterChange() {
-        this.updateChips();
-        this.updateFilterCount();
-        this.persistState();
-        this.notifyChange();
-    }
-
-    updateChips() {
-        const chips = getActiveChips(this.state);
-        this.elements.chips.innerHTML = renderChipsHTML(chips);
-        this.elements.chips.querySelectorAll('.chip-remove').forEach((btn, i) => {
-            btn.addEventListener('click', () => this.removeChip(chips[i]));
-        });
-    }
-
-    removeChip(chip) {
-        switch (chip.type) {
-            case 'busqueda': this.state.busqueda = ''; break;
-            case 'categoria':
-                this.state.categorias = this.state.categorias.filter(v => v !== chip.value);
-                break;
-            case 'ubicacion': this.state.ubicacion = ''; break;
-            case 'distancia': this.state.distanciaMax = ''; break;
-            case 'salario': this.state.salarioMin = 0; this.state.salarioMax = 5000; break;
-            case 'fecha': this.state.fechaPublicacion = ''; break;
-        }
-        this.syncControls();
-        this.onFilterChange();
-    }
-
-    updateFilterCount() {
-        const count = countActiveFilters(this.state);
-        this.elements.badge.textContent = count;
-        this.elements.badge.hidden = count === 0;
-
-        const countAvanzados = countAdvancedFilters(this.state);
-        this.elements.badgeMobile.textContent = countAvanzados;
-        this.elements.badgeMobile.hidden = countAvanzados === 0;
     }
 
     // --- Persistencia ---
@@ -376,15 +239,14 @@ class FiltrosAvanzados {
         if (this.callbacks.onChange) this.callbacks.onChange(this.getState());
     }
 
-    // --- API Publica ---
+    // --- API Pública ---
 
     getState() { return { ...this.state }; }
 
     setState(newState, silent = false) {
         this.state = { ...this.state, ...newState };
         this.syncControls();
-        this.updateChips();
-        this.updateFilterCount();
+        this._actualizarBadge();
         this.persistState();
         if (!silent) this.notifyChange();
     }
@@ -394,35 +256,23 @@ class FiltrosAvanzados {
 
     clearAll() {
         this.state = { ...DEFAULT_STATE };
-        this.resetDesktopComponents();
-        this.resetMobileComponents();
-        this.updateChips();
-        this.updateFilterCount();
+        this.resetComponents();
+        this._actualizarBadge();
         this.persistState();
+        this._cerrarSheet();
         if (this.callbacks.onClear) this.callbacks.onClear();
         this.notifyChange();
     }
 
-    resetDesktopComponents() {
-        this.elements.busqueda.value = '';
-        this.elements.clearBusqueda.hidden = true;
-        this.elements.ubicacion.value = '';
-        this.components.categorias.clearAll(true);
-        this.components.distancia.setValue('', true);
-        this.components.salario.reset(true);
-        this.components.fecha.setValue('', true);
-        this.components.ordenar.setValue('recientes', true);
-    }
-
-    resetMobileComponents() {
-        this.elements.busquedaMobile.value = '';
-        this.elements.clearBusquedaMobile.hidden = true;
-        this.elements.ubicacionMobile.value = '';
-        this.components.categoriasMobile.clearAll(true);
-        this.components.ordenarMobile.setValue('recientes', true);
-        this.components.distanciaMobile.setValue('', true);
-        this.elements.salarioMin.value = '';
-        this.elements.salarioMax.value = '';
+    resetComponents() {
+        if (this.elements.busqueda) this.elements.busqueda.value = '';
+        if (this.elements.clearBusqueda) this.elements.clearBusqueda.hidden = true;
+        if (this.elements.ubicacion) this.elements.ubicacion.value = '';
+        this.components.categorias?.clearAll?.(true);
+        this.components.ordenar?.setValue?.('recientes', true);
+        this.components.distancia?.setValue?.('', true);
+        if (this.elements.salarioMin) this.elements.salarioMin.value = '';
+        if (this.elements.salarioMax) this.elements.salarioMax.value = '';
         this.container.querySelectorAll('.fecha-chip').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.value === '');
         });
@@ -430,19 +280,13 @@ class FiltrosAvanzados {
 
     setUserLocation(ubicacion) {
         this.userLocation = ubicacion;
-        this.elements.distanciaGrupo.hidden = !ubicacion;
-        this.elements.distanciaGrupoMobile.hidden = !ubicacion;
+        if (this.elements.distanciaGrupo) {
+            this.elements.distanciaGrupo.hidden = !ubicacion;
+        }
     }
 
     updateResultsCount(mostradas, total) {
-        if (mostradas === total) {
-            this.elements.resultados.textContent = `Mostrando todas las ofertas (${total})`;
-        } else {
-            this.elements.resultados.textContent = `Mostrando ${mostradas} de ${total} ofertas`;
-        }
-        if (this.elements.btnAplicar) {
-            this.elements.btnAplicar.textContent = `Ver ${mostradas} resultado${mostradas !== 1 ? 's' : ''}`;
-        }
+        // No-op en el nuevo diseño (sin contador visible)
     }
 
     destroy() {

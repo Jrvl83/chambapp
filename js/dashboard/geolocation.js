@@ -14,6 +14,7 @@ import { GOOGLE_MAPS_API_KEY } from '../config/api-keys.js';
 let db = null;
 let ubicacionUsuario = null;
 let filtrosAvanzadosComponent = null;
+let onUbicacionActualizadaCallback = null;
 
 /**
  * Inicializa el módulo con dependencias
@@ -34,6 +35,13 @@ export function getUbicacionUsuario() {
  */
 export function setFiltrosComponent(component) {
     filtrosAvanzadosComponent = component;
+}
+
+/**
+ * Registra callback a llamar cuando la ubicación se actualiza
+ */
+export function setOnUbicacionActualizada(callback) {
+    onUbicacionActualizadaCallback = callback;
 }
 
 // ============================================
@@ -241,6 +249,10 @@ export function mostrarBadgeUbicacion(ubicacion) {
 
         if (filtrosAvanzadosComponent) {
             filtrosAvanzadosComponent.setUserLocation(ubicacionUsuario);
+        }
+
+        if (onUbicacionActualizadaCallback) {
+            onUbicacionActualizadaCallback(ubicacionUsuario);
         }
     }
 

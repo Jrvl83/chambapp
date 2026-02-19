@@ -7,11 +7,12 @@
    CONTENEDOR PRINCIPAL
    ============================================ */
 .filtros-avanzados {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    margin-bottom: var(--space-xl);
-    overflow: visible; /* Permitir que dropdowns se muestren fuera del contenedor */
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+    overflow: visible;
+    position: relative;
 }
 
 /* ============================================
@@ -747,27 +748,242 @@
 }
 
 /* ============================================
-   DESKTOP DEFAULTS: Ocultar elementos mobile-only
+   TRIGGER AREA (Botón ⚙️ + badge "+")
    ============================================ */
-.filtros-quick-bar {
-    display: none;
+.filtros-trigger-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.75rem;
 }
 
-.filtros-mobile-only {
-    display: none;
+.btn-filtros-trigger {
+    position: relative;
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 0.75rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: border-color var(--transition-base), box-shadow var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    box-shadow: var(--shadow-sm);
 }
 
-.filtros-aplicar-row {
-    display: none;
+.btn-filtros-trigger:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
 }
 
+.btn-filtros-trigger:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.filtros-badge-activo {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--primary);
+    color: var(--white);
+    font-size: 0.625rem;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--white);
+}
+
+/* ============================================
+   OVERLAY
+   ============================================ */
 .filtros-overlay {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 999;
+    pointer-events: none;
+}
+
+.filtros-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ============================================
+   BOTTOM SHEET
+   ============================================ */
+.filtros-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.filtros-sheet[aria-hidden="false"] {
+    transform: translateY(0);
+}
+
+.filtros-sheet-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--gray-300);
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+}
+
+.filtros-sheet-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.filtros-sheet-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.filtros-sheet-close {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--gray-500);
+    padding: 0.375rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+
+.filtros-sheet-close:hover {
+    background: var(--gray-100);
+}
+
+.filtros-sheet-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+.filtros-sheet-body .input-wrapper input {
+    min-height: 44px;
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    background: var(--white);
+    color: var(--dark);
+    transition: border-color var(--transition-fast);
+    box-sizing: border-box;
+}
+
+.filtros-sheet-body .input-wrapper input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    outline: none;
+}
+
+.filtro-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    background: var(--white);
+    color: var(--dark);
+    transition: border-color var(--transition-fast);
+    box-sizing: border-box;
+}
+
+.filtro-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    outline: none;
+}
+
+.filtro-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.375rem;
+}
+
+.filtros-sheet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.filtros-sheet-footer {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--white);
+}
+
+.filtros-btn-limpiar,
+.filtros-btn-filtrar {
+    flex: 1;
+    min-height: 44px;
+}
+
+/* Fallback: ocultar elementos del diseño anterior */
+.filtros-quick-bar,
+.filtros-mobile-only,
+.filtros-aplicar-row,
+.filtros-body,
+.filtros-header,
+.filtros-chips,
+.filtros-resultados {
+    display: none !important;
 }
 
 /* ============================================
    BOTTOM SHEET - FILTROS MÓVIL PROFESIONAL
-   Patrón usado por Airbnb, LinkedIn, Uber
+   Estilos migrados al bloque global (ver arriba)
    ============================================ */
 @media (max-width: 768px) {
     /* Contenedor principal */

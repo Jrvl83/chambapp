@@ -7,170 +7,12 @@ import { CATEGORIAS, DISTANCIAS, FECHAS, ORDENAR, formatearSalario } from './con
 import { escapeHtml } from '../../utils/dom-helpers.js';
 
 // ============================================
-// TEMPLATE HTML - SECCIONES
+// TEMPLATE HTML
 // ============================================
-
-function renderQuickBar(busquedaVal, busqueda) {
-    return `
-        <div class="filtros-quick-bar">
-            <div class="filtros-quick-row-1">
-                <div class="input-wrapper filtros-quick-search">
-                    <input
-                        type="text"
-                        id="filtro-texto-mobile"
-                        placeholder="Buscar por titulo..."
-                        autocomplete="off"
-                        value="${busquedaVal}"
-                    >
-                    <button class="input-icon-clear" id="clear-busqueda-mobile" ${busqueda ? '' : 'hidden'} aria-label="Limpiar busqueda" type="button">✕</button>
-                </div>
-                <button class="btn-filtros-avanzados" id="btn-toggle-avanzados" type="button" aria-label="Filtros avanzados">
-                    <span class="btn-filtros-icon">⚙️</span>
-                    <span class="filtros-badge-count" id="filtros-count-mobile" hidden>0</span>
-                </button>
-            </div>
-            <div class="filtros-quick-row-2">
-                <div class="dropdown-custom" id="dropdown-categorias-mobile"></div>
-                <div class="dropdown-custom" id="dropdown-ordenar-mobile"></div>
-                <button class="btn-limpiar-todo" id="btn-limpiar-mobile" title="Limpiar filtros" type="button">
-                    <span>🔄</span>
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-function renderDesktopHeader() {
-    return `
-        <div class="filtros-header">
-            <button class="filtros-toggle" aria-expanded="true" aria-controls="filtros-body">
-                <span class="filtros-icon">🔎</span>
-                <span class="filtros-title">Buscar y Filtrar</span>
-                <span class="filtros-badge-count" id="filtros-count" hidden>0</span>
-                <span class="filtros-chevron" aria-hidden="true"></span>
-            </button>
-            <button class="btn-limpiar-todo" id="btn-limpiar-filtros" title="Limpiar todos los filtros">
-                <span>🔄</span>
-                <span class="btn-text">Limpiar</span>
-            </button>
-        </div>
-    `;
-}
-
-function renderDesktopFiltersRow1(busquedaVal, ubicacionVal, busqueda) {
-    return `
-        <div class="filtros-row filtros-desktop-only">
-            <div class="filtro-grupo filtro-busqueda">
-                <label for="filtro-texto">🔎 Buscar</label>
-                <div class="input-wrapper">
-                    <input
-                        type="text"
-                        id="filtro-texto"
-                        placeholder="Buscar por titulo, descripcion..."
-                        autocomplete="off"
-                        value="${busquedaVal}"
-                    >
-                    <button class="input-icon-clear" id="clear-busqueda" ${busqueda ? '' : 'hidden'} aria-label="Limpiar busqueda" type="button">✕</button>
-                </div>
-            </div>
-            <div class="filtro-grupo filtro-ubicacion">
-                <label for="filtro-ubicacion">📍 Ubicacion</label>
-                <div class="autocomplete-wrapper">
-                    <input
-                        type="text"
-                        id="filtro-ubicacion"
-                        placeholder="Distrito, zona..."
-                        autocomplete="off"
-                        value="${ubicacionVal}"
-                    >
-                    <div class="autocomplete-dropdown" id="ubicacion-dropdown"></div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function renderDesktopFiltersRow2(userLocation) {
-    return `
-        <div class="filtros-row filtros-desktop-only">
-            <div class="filtro-grupo filtro-categorias">
-                <label>🏷️ Categorias</label>
-                <div class="dropdown-custom" id="dropdown-categorias"></div>
-            </div>
-            <div class="filtro-grupo filtro-distancia" id="filtro-distancia-grupo" ${userLocation ? '' : 'hidden'}>
-                <label>📏 Distancia</label>
-                <div class="dropdown-custom" id="dropdown-distancia"></div>
-            </div>
-            <div class="filtro-grupo filtro-salario">
-                <label>💰 Rango Salarial</label>
-                <div class="range-slider-container" id="salario-slider"></div>
-            </div>
-        </div>
-    `;
-}
-
-function renderDesktopFiltersRow3() {
-    return `
-        <div class="filtros-row filtros-desktop-only">
-            <div class="filtro-grupo filtro-fecha">
-                <label>📅 Publicacion</label>
-                <div class="dropdown-custom" id="dropdown-fecha"></div>
-            </div>
-            <div class="filtro-grupo filtro-ordenar">
-                <label>🔄 Ordenar por</label>
-                <div class="dropdown-custom" id="dropdown-ordenar"></div>
-            </div>
-        </div>
-    `;
-}
-
-function renderMobileFilters(state, ubicacionVal, userLocation) {
-    return `
-        <div class="filtros-sheet-title filtros-mobile-only">Filtros avanzados</div>
-        <div class="filtros-mobile-only">
-            <div class="filtros-sheet-grid">
-                <div class="filtro-grupo filtro-ubicacion">
-                    <label for="filtro-ubicacion-mobile">📍 Ubicacion</label>
-                    <div class="input-wrapper">
-                        <input
-                            type="text"
-                            id="filtro-ubicacion-mobile"
-                            placeholder="Distrito, zona..."
-                            autocomplete="off"
-                            value="${ubicacionVal}"
-                        >
-                    </div>
-                </div>
-                <div class="filtro-grupo filtro-distancia" id="filtro-distancia-grupo-mobile" ${userLocation ? '' : 'hidden'}>
-                    <label>📏 Distancia</label>
-                    <div class="dropdown-custom" id="dropdown-distancia-mobile"></div>
-                </div>
-            </div>
-
-            <div class="filtro-grupo filtro-salario">
-                <label>💰 Rango Salarial</label>
-                <div class="salario-inputs">
-                    <input type="number" id="salario-min" placeholder="Min S/" min="0" max="5000" step="50" value="${state.salarioMin || ''}">
-                    <span class="salario-separator">—</span>
-                    <input type="number" id="salario-max" placeholder="Max S/" min="0" max="5000" step="50" value="${state.salarioMax >= 5000 ? '' : state.salarioMax}">
-                </div>
-            </div>
-
-            <div class="filtro-grupo filtro-fecha">
-                <label>📅 Publicacion</label>
-                <div class="fecha-chips">
-                    <button type="button" class="fecha-chip ${state.fechaPublicacion === 'hoy' ? 'active' : ''}" data-value="hoy">Hoy</button>
-                    <button type="button" class="fecha-chip ${state.fechaPublicacion === 'ultimos3' ? 'active' : ''}" data-value="ultimos3">3 dias</button>
-                    <button type="button" class="fecha-chip ${state.fechaPublicacion === 'ultimos7' ? 'active' : ''}" data-value="ultimos7">7 dias</button>
-                    <button type="button" class="fecha-chip ${!state.fechaPublicacion ? 'active' : ''}" data-value="">Todas</button>
-                </div>
-            </div>
-        </div>
-    `;
-}
 
 /**
  * Genera el HTML completo del componente de filtros
+ * Estructura: botón tuerca + overlay + bottom sheet
  * @param {Object} state - Estado actual de filtros
  * @param {Object|null} userLocation - Ubicacion del usuario
  * @returns {string} HTML del componente
@@ -178,27 +20,100 @@ function renderMobileFilters(state, ubicacionVal, userLocation) {
 export function renderFiltrosHTML(state, userLocation) {
     const busquedaVal = escapeHtml(state.busqueda);
     const ubicacionVal = escapeHtml(state.ubicacion);
+    const hayFiltros = hayFiltrosActivos(state);
 
     return `
+        <div class="filtros-trigger-area">
+            <button class="btn-filtros-trigger" id="btn-abrir-filtros" type="button" aria-label="Abrir filtros">
+                ⚙️
+                <span class="filtros-badge-activo" id="filtros-badge-activo" ${hayFiltros ? '' : 'hidden'}>+</span>
+            </button>
+        </div>
+
         <div class="filtros-overlay" id="filtros-overlay"></div>
-        ${renderQuickBar(busquedaVal, state.busqueda)}
-        ${renderDesktopHeader()}
-        <div class="filtros-chips" id="filtros-chips"></div>
-        <div class="filtros-body" id="filtros-body">
-            ${renderDesktopFiltersRow1(busquedaVal, ubicacionVal, state.busqueda)}
-            ${renderDesktopFiltersRow2(userLocation)}
-            ${renderDesktopFiltersRow3()}
-            ${renderMobileFilters(state, ubicacionVal, userLocation)}
-            <div class="filtros-row filtros-aplicar-row">
-                <button class="btn btn-primary btn-aplicar-filtros" id="btn-aplicar-filtros" type="button">
-                    Ver resultados
-                </button>
+
+        <div class="filtros-sheet" id="filtros-sheet" aria-hidden="true">
+            <div class="filtros-sheet-handle"></div>
+            <div class="filtros-sheet-header">
+                <h3 class="filtros-sheet-titulo">Filtros</h3>
+                <button class="filtros-sheet-close" id="btn-cerrar-filtros" type="button" aria-label="Cerrar filtros">✕</button>
+            </div>
+            <div class="filtros-sheet-body">
+                <div class="filtro-grupo">
+                    <div class="input-wrapper">
+                        <input type="text" id="filtro-texto-mobile" class="filtro-input"
+                               placeholder="Buscar por título..." autocomplete="off" value="${busquedaVal}">
+                        <button class="input-icon-clear" id="clear-busqueda-mobile"
+                                ${busquedaVal ? '' : 'hidden'} aria-label="Limpiar búsqueda" type="button">✕</button>
+                    </div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label">🏷️ Categorías</label>
+                    <div class="dropdown-custom" id="dropdown-categorias-mobile"></div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label">🔄 Ordenar por</label>
+                    <div class="dropdown-custom" id="dropdown-ordenar-mobile"></div>
+                </div>
+
+                <div class="filtros-sheet-grid">
+                    <div class="filtro-grupo">
+                        <label class="filtro-label">📍 Ubicación</label>
+                        <input type="text" id="filtro-ubicacion-mobile" class="filtro-input"
+                               placeholder="Distrito, zona..." autocomplete="off" value="${ubicacionVal}">
+                    </div>
+                    <div class="filtro-grupo" id="filtro-distancia-grupo-mobile" ${userLocation ? '' : 'hidden'}>
+                        <label class="filtro-label">📏 Distancia</label>
+                        <div class="dropdown-custom" id="dropdown-distancia-mobile"></div>
+                    </div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label">💰 Rango Salarial</label>
+                    <div class="salario-inputs">
+                        <input type="number" id="salario-min" placeholder="Min S/" min="0" max="5000" step="50"
+                               value="${state.salarioMin || ''}">
+                        <span class="salario-separator">—</span>
+                        <input type="number" id="salario-max" placeholder="Max S/" min="0" max="5000" step="50"
+                               value="${state.salarioMax >= 5000 ? '' : state.salarioMax}">
+                    </div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <label class="filtro-label">📅 Publicación</label>
+                    <div class="fecha-chips">
+                        <button type="button" class="fecha-chip ${state.fechaPublicacion === 'hoy' ? 'active' : ''}" data-value="hoy">Hoy</button>
+                        <button type="button" class="fecha-chip ${state.fechaPublicacion === 'ultimos3' ? 'active' : ''}" data-value="ultimos3">3 días</button>
+                        <button type="button" class="fecha-chip ${state.fechaPublicacion === 'ultimos7' ? 'active' : ''}" data-value="ultimos7">7 días</button>
+                        <button type="button" class="fecha-chip ${!state.fechaPublicacion ? 'active' : ''}" data-value="">Todas</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filtros-sheet-footer">
+                <button class="btn btn-outline filtros-btn-limpiar" id="btn-limpiar-filtros" type="button">Limpiar</button>
+                <button class="btn btn-primary filtros-btn-filtrar" id="btn-aplicar-filtros" type="button">Filtrar</button>
             </div>
         </div>
-        <div class="filtros-resultados" id="filtros-resultados" role="status" aria-live="polite">
-            Mostrando todas las ofertas
-        </div>
     `;
+}
+
+/**
+ * Verifica si hay algún filtro activo
+ */
+export function hayFiltrosActivos(state) {
+    return !!(
+        state.busqueda ||
+        state.categorias.length > 0 ||
+        state.ordenar !== 'recientes' ||
+        state.ubicacion ||
+        state.distanciaMax ||
+        state.salarioMin > 0 ||
+        state.salarioMax < 5000 ||
+        state.fechaPublicacion
+    );
 }
 
 // ============================================

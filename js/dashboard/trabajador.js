@@ -17,6 +17,7 @@ let db = null;
 let todasLasOfertas = [];
 let aplicacionesUsuario = [];
 let filtrosAvanzadosComponent = null;
+let categoriasTrabajador = [];
 
 /**
  * Inicializa el módulo con dependencias
@@ -44,6 +45,13 @@ export function getTodasLasOfertas() {
  */
 export function getFiltrosComponent() {
     return filtrosAvanzadosComponent;
+}
+
+/**
+ * Establece las categorías del trabajador para el smart sort
+ */
+export function setCategoriasTrabajador(cats) {
+    categoriasTrabajador = cats || [];
 }
 
 // ============================================
@@ -101,7 +109,6 @@ export async function cargarOfertasTrabajador() {
             todasLasOfertas.push({ id: docSnap.id, data: oferta });
         });
 
-        ordenarOfertasPorFecha();
         renderizarOfertasTrabajador(ofertasGrid);
 
     } catch (error) {
@@ -109,23 +116,58 @@ export async function cargarOfertasTrabajador() {
     }
 }
 
-function ordenarOfertasPorFecha() {
-    todasLasOfertas.sort((a, b) => {
-        const fechaA = (a.data.fechaActualizacion || a.data.fechaCreacion);
-        const fechaB = (b.data.fechaActualizacion || b.data.fechaCreacion);
-        const tA = fechaA?.toDate?.() || new Date(fechaA);
-        const tB = fechaB?.toDate?.() || new Date(fechaB);
-        return tB - tA;
+function ordenarOfertasInteligente(ofertas, ubicacionUsuario) {
+    const conMatch = [];
+    const sinMatch = [];
+
+    ofertas.forEach(item => {
+        const esMatch = categoriasTrabajador.includes(item.data.categoria);
+        if (esMatch) conMatch.push(item); else sinMatch.push(item);
     });
+
+    const sortPorDistanciaOFecha = (a, b) => {
+        if (ubicacionUsuario) {
+            const da = a.distanciaKm ?? Infinity;
+            const db_ = b.distanciaKm ?? Infinity;
+            return da - db_;
+        }
+        const fa = a.data.fechaCreacion?.toDate?.() || new Date(0);
+        const fb = b.data.fechaCreacion?.toDate?.() || new Date(0);
+        return fb - fa;
+    };
+
+    return [
+        ...conMatch.sort(sortPorDistanciaOFecha),
+        ...sinMatch.sort(sortPorDistanciaOFecha)
+    ];
 }
 
 function renderizarOfertasTrabajador(ofertasGrid) {
     const ubicacionUsuario = getUbicacionUsuario();
 
     todasLasOfertas.forEach(item => {
-        const distanciaKm = calcularDistanciaOferta(item.data, ubicacionUsuario);
-        ofertasGrid.innerHTML += crearOfertaCardTrabajadorLocal(item.data, item.id, distanciaKm);
+        item.distanciaKm = calcularDistanciaOferta(item.data, ubicacionUsuario);
     });
+
+    const ordenadas = ordenarOfertasInteligente(todasLasOfertas, ubicacionUsuario);
+    ofertasGrid.innerHTML = ordenadas.map(item =>
+        crearOfertaCardTrabajadorLocal(item.data, item.id, item.distanciaKm)
+    ).join('');
+}
+
+export function reordenarConNuevaUbicacion(nuevaUbicacion) {
+    if (!todasLasOfertas.length) return;
+    const ofertasGrid = document.getElementById('ofertas-grid-trabajador');
+    if (!ofertasGrid) return;
+
+    todasLasOfertas.forEach(item => {
+        item.distanciaKm = calcularDistanciaOferta(item.data, nuevaUbicacion);
+    });
+
+    const ordenadas = ordenarOfertasInteligente(todasLasOfertas, nuevaUbicacion);
+    ofertasGrid.innerHTML = ordenadas.map(item =>
+        crearOfertaCardTrabajadorLocal(item.data, item.id, item.distanciaKm)
+    ).join('');
 }
 
 function calcularDistanciaOferta(oferta, ubicacionUsuario) {
@@ -184,8 +226,37 @@ export async function cargarEstadisticasTrabajador(userUid) {
         const completados = await contarTrabajosCompletados(userUid);
         document.getElementById('stat-number-t3').textContent = completados;
 
+        const aceptadas = await contarAplicacionesAceptadas(userUid);
+        mostrarActividadReciente(aceptadas);
+
     } catch (error) {
         console.error('Error cargando estadísticas trabajador:', error);
+    }
+}
+
+async function contarAplicacionesAceptadas(userUid) {
+    const q = query(
+        collection(db, 'aplicaciones'),
+        where('aplicanteId', '==', userUid),
+        where('estado', '==', 'aceptado')
+    );
+    const snap = await getDocs(q);
+    return snap.size;
+}
+
+function mostrarActividadReciente(aceptadas) {
+    const banner = document.getElementById('actividad-reciente-trabajador');
+    if (!banner) return;
+    if (aceptadas > 0) {
+        const texto = document.getElementById('actividad-reciente-texto');
+        if (texto) {
+            texto.textContent = aceptadas === 1
+                ? 'Tienes 1 postulación aceptada'
+                : `Tienes ${aceptadas} postulaciones aceptadas`;
+        }
+        banner.style.display = 'flex';
+    } else {
+        banner.style.display = 'none';
     }
 }
 
@@ -435,13 +506,16 @@ function renderizarOfertasFiltradas(ofertas) {
 
 function mostrarTodasLasOfertas() {
     const ubicacionUsuario = getUbicacionUsuario();
-    const ofertasConDistancia = agregarDistanciaAOfertas(todasLasOfertas, ubicacionUsuario);
+    const ofertasGrid = document.querySelector('.ofertas-grid');
+    if (!ofertasGrid) return;
 
-    renderizarOfertasFiltradas(ofertasConDistancia);
-
-    if (filtrosAvanzadosComponent) {
-        filtrosAvanzadosComponent.updateResultsCount(todasLasOfertas.length, todasLasOfertas.length);
-    }
+    todasLasOfertas.forEach(item => {
+        item.distanciaKm = calcularDistanciaOferta(item.data, ubicacionUsuario);
+    });
+    const ordenadas = ordenarOfertasInteligente(todasLasOfertas, ubicacionUsuario);
+    ofertasGrid.innerHTML = ordenadas.map(item =>
+        crearOfertaCardTrabajadorLocal(item.data, item.id, item.distanciaKm)
+    ).join('');
 }
 
 // ============================================

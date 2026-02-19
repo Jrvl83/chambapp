@@ -16,7 +16,8 @@ import {
     initGeolocation,
     verificarUbicacion,
     registrarFuncionesGlobalesUbicacion,
-    setFiltrosComponent
+    setFiltrosComponent,
+    setOnUbicacionActualizada
 } from './geolocation.js';
 
 import {
@@ -26,7 +27,9 @@ import {
     cargarEstadisticasTrabajador,
     inicializarFiltrosAvanzados,
     registrarFuncionesGlobalesFiltros,
-    getFiltrosComponent
+    getFiltrosComponent,
+    setCategoriasTrabajador,
+    reordenarConNuevaUbicacion
 } from './trabajador.js';
 
 import {
@@ -310,6 +313,8 @@ onAuthStateChanged(auth, async (user) => {
             setUsuarioData(usuario);
             setUsuarioRefs(user, usuario);
             setUsuarioActual(user);
+            setCategoriasTrabajador(usuario.categorias || []);
+            setOnUbicacionActualizada(reordenarConNuevaUbicacion);
 
             // Actualizar UI
             actualizarHeaderUsuario(usuario);

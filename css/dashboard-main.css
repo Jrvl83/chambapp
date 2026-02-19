@@ -2207,3 +2207,57 @@ a.stat-card-link:focus-visible {
         padding: 0.2rem 0.4rem;
     }
 }
+
+/* ============================================
+   ACTIVIDAD RECIENTE BANNER
+   ============================================ */
+.actividad-reciente-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+}
+
+.actividad-reciente-contenido {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.actividad-reciente-icono {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.actividad-reciente-texto {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #15803d;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actividad-reciente-cta {
+    flex-shrink: 0;
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.75rem;
+}
+
+@media (max-width: 380px) {
+    .actividad-reciente-texto {
+        font-size: 0.8125rem;
+    }
+    .actividad-reciente-cta {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
