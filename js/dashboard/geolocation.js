@@ -244,35 +244,14 @@ export function mostrarBadgeUbicacion(ubicacion) {
         }
     }
 
-    let badge = document.getElementById('ubicacion-badge');
-
-    if (!badge) {
-        badge = document.createElement('div');
-        badge.id = 'ubicacion-badge';
-        badge.className = 'ubicacion-badge';
-
-        const logo = document.querySelector('.logo');
-        if (logo) {
-            logo.after(badge);
-        }
-    }
-
     const textoUbicacion = ubicacion.distrito || 'Ubicación detectada';
     const tituloCompleto = ubicacion.direccionCompleta || textoUbicacion;
 
-    badge.innerHTML = `
-        <span class='ubicacion-texto' title='${tituloCompleto}'>
-            📍 ${textoUbicacion}
-        </span>
-        <button
-            class='ubicacion-actualizar'
-            onclick='actualizarUbicacionManual()'
-            title='Actualizar ubicación'
-            aria-label='Actualizar ubicación'
-        >
-            🔄
-        </button>
-    `;
+    const elTexto = document.getElementById('dropdown-ubicacion-texto');
+    if (elTexto) {
+        elTexto.textContent = `📍 ${textoUbicacion}`;
+        elTexto.title = tituloCompleto;
+    }
 }
 
 function mostrarModalUbicacion() {
@@ -288,7 +267,7 @@ function mostrarModalUbicacion() {
 
 export function registrarFuncionesGlobalesUbicacion(usuarioActual) {
     window.actualizarUbicacionManual = async function () {
-        const btn = document.querySelector('.ubicacion-actualizar');
+        const btn = document.getElementById('btn-refresh-ubicacion');
         if (!btn) return;
 
         const textoOriginal = btn.innerHTML;

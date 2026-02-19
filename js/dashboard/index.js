@@ -8,6 +8,8 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { escapeHtml } from '../utils/dom-helpers.js';
+import { confirmar } from '../components/confirm-modal.js';
 
 // Módulos del dashboard
 import {
@@ -83,12 +85,81 @@ registrarFuncionesGlobalesNotificaciones();
 // ============================================
 
 function actualizarHeaderUsuario(usuario) {
-    const userName = document.getElementById('user-name');
-    if (userName) {
-        const nombreCompleto = usuario.nombre || 'Usuario';
-        const primerNombre = nombreCompleto.split(' ')[0];
-        userName.textContent = `Hola, ${primerNombre}`;
-        userName.title = nombreCompleto;
+    const nombreCompleto = usuario.nombre || 'Usuario';
+    const partes = nombreCompleto.trim().split(/\s+/);
+    const nombreMostrado = partes.slice(0, 2).join(' ');
+
+    const elNombre = document.getElementById('header-nombre');
+    if (elNombre) elNombre.textContent = nombreMostrado;
+
+    const avatarCircle = document.getElementById('avatar-circle');
+    if (!avatarCircle) return;
+
+    const fotoURL = usuario.fotoPerfilURL || usuario.photoURL || usuario.foto;
+    if (fotoURL) {
+        avatarCircle.innerHTML = `<img src="${fotoURL}" alt="${escapeHtml(nombreMostrado)}" class="avatar-img">`;
+    } else {
+        const iniciales = partes.slice(0, 2).map(p => p[0].toUpperCase()).join('');
+        avatarCircle.innerHTML = `<span class="avatar-iniciales">${iniciales}</span>`;
+    }
+}
+
+function initDropdownMenu(usuario) {
+    const btnAvatar = document.getElementById('btn-avatar');
+    const dropdown = document.getElementById('usuario-dropdown');
+    if (!btnAvatar || !dropdown) return;
+
+    btnAvatar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !dropdown.hidden;
+        dropdown.hidden = isOpen;
+        btnAvatar.setAttribute('aria-expanded', String(!isOpen));
+        btnAvatar.classList.toggle('btn-avatar--open', !isOpen);
+    });
+
+    document.addEventListener('click', () => {
+        if (!dropdown.hidden) {
+            dropdown.hidden = true;
+            btnAvatar.setAttribute('aria-expanded', 'false');
+            btnAvatar.classList.remove('btn-avatar--open');
+        }
+    });
+
+    const linkPerfil = document.getElementById('link-mi-perfil');
+    if (linkPerfil) {
+        linkPerfil.href = usuario.tipo === 'empleador'
+            ? 'perfil-empleador.html'
+            : 'perfil-trabajador.html';
+    }
+
+    if (usuario.tipo === 'empleador') {
+        const row = document.getElementById('dropdown-ubicacion-row');
+        const divider = document.getElementById('dropdown-divider-ubicacion');
+        if (row) row.hidden = true;
+        if (divider) divider.hidden = true;
+    }
+
+    const btnRefresh = document.getElementById('btn-refresh-ubicacion');
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.actualizarUbicacionManual();
+        });
+    }
+
+    const btnCerrar = document.getElementById('btn-dropdown-cerrar-sesion');
+    if (btnCerrar) {
+        btnCerrar.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            dropdown.hidden = true;
+            const ok = await confirmar({
+                titulo: '¿Cerrar sesión?',
+                mensaje: 'Tu sesión se cerrará en este dispositivo.',
+                textoConfirmar: 'Cerrar sesión',
+                tipo: 'warning'
+            });
+            if (ok) window.cerrarSesion();
+        });
     }
 }
 
@@ -242,6 +313,7 @@ onAuthStateChanged(auth, async (user) => {
 
             // Actualizar UI
             actualizarHeaderUsuario(usuario);
+            initDropdownMenu(usuario);
             personalizarPorTipo(tipoUsuario);
 
             // Cargar datos según tipo

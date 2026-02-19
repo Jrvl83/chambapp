@@ -87,7 +87,40 @@
                 <img src="/assets/logo/logo-icono.png" alt="ChambaYa" class="logo-img">
                 <span class="logo-text">ChambaYa</span>
             </a>
-            <!-- Badge ubicación se insertará aquí dinámicamente -->
+
+            <!-- Avatar + Dropdown de usuario -->
+            <div class="header-usuario" id="header-usuario">
+                <button class="btn-avatar" id="btn-avatar" aria-label="Menú de usuario" aria-expanded="false">
+                    <div class="avatar-circle" id="avatar-circle">
+                        <!-- Se llena dinámicamente: <img> o <span class="avatar-iniciales"> -->
+                    </div>
+                    <div class="header-usuario-info">
+                        <span class="header-nombre" id="header-nombre">Cargando...</span>
+                        <span class="header-plan">Plan Free</span>
+                    </div>
+                    <span class="avatar-chevron" aria-hidden="true">▾</span>
+                </button>
+
+                <div class="usuario-dropdown" id="usuario-dropdown" hidden>
+                    <!-- Fila ubicación (solo trabajador, se oculta para empleador) -->
+                    <div class="dropdown-ubicacion" id="dropdown-ubicacion-row">
+                        <span class="dropdown-ubicacion-texto" id="dropdown-ubicacion-texto">
+                            📍 Obteniendo ubicación...
+                        </span>
+                        <button class="dropdown-ubicacion-refresh" id="btn-refresh-ubicacion"
+                                aria-label="Actualizar ubicación">🔄</button>
+                    </div>
+                    <div class="dropdown-divider" id="dropdown-divider-ubicacion"></div>
+
+                    <a href="#" class="dropdown-item" id="link-mi-perfil">
+                        <span aria-hidden="true">👤</span> Mi Perfil
+                    </a>
+
+                    <button class="dropdown-item dropdown-item--danger" id="btn-dropdown-cerrar-sesion">
+                        <span aria-hidden="true">🚪</span> Cerrar sesión
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 
