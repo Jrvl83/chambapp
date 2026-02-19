@@ -246,11 +246,6 @@ h1, h2, h3, h4, h5, h6 {
     to   { transform: rotate(360deg); }
 }
 
-/* Responsive: solo avatar en pantallas muy pequeñas */
-@media (max-width: 380px) {
-    .header-usuario-info { display: none; }
-    .avatar-chevron { display: none; }
-}
 
 .badge {
     font-size: 0.7rem;
