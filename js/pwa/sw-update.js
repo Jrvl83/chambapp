@@ -4,7 +4,7 @@
 // Detecta nuevo SW y muestra toast de actualizacion
 // ============================================
 
-const UPDATE_CHECK_INTERVAL = 60 * 60 * 1000; // 60 minutos
+const UPDATE_CHECK_INTERVAL = 30 * 60 * 1000; // 30 minutos
 
 export function initSWUpdate() {
     if (!('serviceWorker' in navigator)) return;
