@@ -45,9 +45,10 @@ function mostrarToastActualizacion() {
     if (typeof showToast !== 'function') return;
 
     showToast(
-        'Actualizacion disponible <button onclick="activarNuevoSW()" class="toast-retry-btn">Actualizar</button>',
+        'Nueva versión disponible <button onclick="activarNuevoSW()" class="toast-retry-btn">Actualizar</button>',
         'info',
-        0
+        0,
+        { dismissible: false, showCloseButton: false }
     );
 }
 

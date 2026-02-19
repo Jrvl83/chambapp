@@ -220,11 +220,12 @@ self.addEventListener('fetch', (event) => {
 // INSTALL - Pre-cache static assets
 // ============================================
 self.addEventListener('install', (event) => {
-    console.log('[SW ChambApp] Service Worker instalado');
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then((cache) => cache.addAll(PRECACHE_ASSETS))
-            .then(() => self.skipWaiting())
+        // NO llamar skipWaiting() aquí — el SW espera hasta que el usuario
+        // confirme la actualización desde el toast. El mensaje SKIP_WAITING
+        // lo activa cuando el usuario toca "Actualizar".
     );
 });
 
