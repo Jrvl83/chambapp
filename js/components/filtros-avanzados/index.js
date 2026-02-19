@@ -174,6 +174,10 @@ class FiltrosAvanzados {
     }
 
     _cerrarSheet() {
+        // Mover foco fuera del sheet antes de ocultarlo (evita warning aria-hidden)
+        if (document.activeElement?.closest('#filtros-sheet')) {
+            this.container.querySelector('#btn-abrir-filtros')?.focus();
+        }
         if (this.elements.sheet) this.elements.sheet.setAttribute('aria-hidden', 'true');
         this.elements.overlay?.classList.remove('active');
         document.body.style.overflow = '';
