@@ -218,13 +218,16 @@ function mostrarEmptyStateTrabajador() {
 export async function cargarEstadisticasTrabajador(userUid) {
     try {
         const ofertasDisponibles = await contarOfertasDisponibles();
-        document.getElementById('stat-number-t1').textContent = ofertasDisponibles;
+        const elT1 = document.getElementById('stat-number-t1');
+        if (elT1) elT1.textContent = ofertasDisponibles;
 
         const misAplicaciones = await contarMisAplicaciones(userUid);
-        document.getElementById('stat-number-t2').textContent = misAplicaciones;
+        const elT2 = document.getElementById('stat-number-t2');
+        if (elT2) elT2.textContent = misAplicaciones;
 
         const completados = await contarTrabajosCompletados(userUid);
-        document.getElementById('stat-number-t3').textContent = completados;
+        const elT3 = document.getElementById('stat-number-t3');
+        if (elT3) elT3.textContent = completados;
 
         const aceptadas = await contarAplicacionesAceptadas(userUid);
         mostrarActividadReciente(aceptadas);
