@@ -39,7 +39,7 @@
     justify-content: center;
     z-index: var(--z-modal-overlay);
     padding: var(--padding-md);
-    padding-top: calc(env(safe-area-inset-top, 20px) + 1.5rem);
+    padding-top: calc(env(safe-area-inset-top, 20px) + 3rem);
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--padding-md));
     animation: modalFadeIn var(--transition-fast);
 }
@@ -58,7 +58,7 @@
     box-shadow: var(--shadow-modal);
     max-width: 600px;
     width: 100%;
-    max-height: 90vh;
+    max-height: calc(100vh - env(safe-area-inset-top, 20px) - env(safe-area-inset-bottom, 0px) - 4rem);
     overflow-y: auto;
     position: relative;
     animation: modalSlideUp var(--transition-base);
