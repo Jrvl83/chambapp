@@ -95,7 +95,7 @@ TOTAL:  23% del proyecto (44/194 tareas)
 | # | Tarea | Prioridad |
 |---|-------|-----------|
 | 40-44 | Testing y QA | Alta |
-| 45-48 | Panel de administración | Media |
+| 45-48 | Panel de administración | Media | Ver `docs/PLAN_ADMIN_PANEL.md` |
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
 | 36 | Dark mode (opcional) | Baja |
 
