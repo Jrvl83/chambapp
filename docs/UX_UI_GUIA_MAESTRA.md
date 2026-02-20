@@ -1,8 +1,8 @@
 # UX/UI GUIA MAESTRA - CHAMBAYA
 
 **Documento de Identidad Visual y Mejoras UX**
-**Versión:** 1.3
-**Fecha:** 11 Febrero 2026
+**Versión:** 1.4
+**Fecha:** 19 Febrero 2026
 **Autor:** Análisis de Experto UX/UI
 
 ---
@@ -691,6 +691,10 @@ Cada empty state debe tener:
 | UX mis-aplicaciones-trabajador | ✅ COMPLETADO (10 Feb) |
 | Perfil público trabajador | ✅ COMPLETADO (11 Feb) - `perfil-publico.html` + 2 módulos JS |
 | UX perfil-trabajador (save floating, compactación) | ✅ COMPLETADO (11 Feb) |
+| UX ver candidatos (banner urgencia, collapsed rechazados, botones aceptado) | ✅ COMPLETADO (19 Feb) |
+| UX perfil empleador (barra completitud, bio, stats, cerrar sesión al fondo) | ✅ COMPLETADO (19 Feb) - `css/perfil-empleador.css` |
+| iOS safe-area en modales y headers (fórmula max(), WebKit hero bug) | ✅ COMPLETADO (19 Feb) |
+| Android text overflow (flex-shrink pills, labels stats abreviados) | ✅ COMPLETADO (19 Feb) |
 
 ---
 
@@ -738,6 +742,6 @@ Cada empty state debe tener:
 
 ---
 
-**Última actualización:** 11 Febrero 2026
+**Última actualización:** 19 Febrero 2026
 **Próxima revisión:** Al iniciar Fase 2 (Diferenciación)
 

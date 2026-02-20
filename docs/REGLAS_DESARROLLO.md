@@ -449,6 +449,10 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 | 04/02/26 | Console.logs restantes | Eliminados (Fase 0) |
 | 10/02/26 | Modal CSS duplicado ~740 líneas | Unificado en css/modal.css |
 | 10/02/26 | UX mis-aplicaciones-trabajador | Hero compacto, stats pills, CSS 855→522 líneas |
+| 19/02/26 | UX Ver Candidatos (empleador) | Banner urgencia, collapsed rechazados, botones WhatsApp/Completado, sort por pendientes |
+| 19/02/26 | UX Perfil Empleador | CSS extraído, barra completitud, bio, stats, logout al fondo, flotante guardar |
+| 19/02/26 | iOS safe-area modales/headers | `max(Xrem, env(...))` correcto; fix WebKit hero bug con `:has()`; revertir cambios en CSS que funcionaban |
+| 19/02/26 | Android text overflow | `flex-shrink:0` en pills scroll; abreviar labels stats (Completadas→Complet.) |
 
 </details>
 
@@ -698,5 +702,5 @@ btn.disabled = false;
 
 ---
 
-**Última actualización:** 11 Febrero 2026
+**Última actualización:** 19 Febrero 2026
 **Próxima revisión:** Al iniciar Fase 2 (Diferenciación)

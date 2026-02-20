@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAYA (ex-ChambApp)
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 17 Febrero 2026 (sesión 18)
+**Última actualización:** 19 Febrero 2026 (sesión 22)
 
 ---
 
@@ -489,7 +489,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 17 Febrero 2026 (sesión 18)
+> **Última sesión:** 19 Febrero 2026 (sesión 22)
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
@@ -501,8 +501,15 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **Auditoría de seguridad (Task 51):** escapeHtml en 6 archivos, Firestore/Storage rules endurecidas, limpieza config, SW reload fix, Firestore persistence API migrada
 - ✅ **Login con Google (Tasks 49-50):** google-auth.js, botón "Continuar con Google" en login/register, detección cuentas Google en forgot password, email templates brandeados ChambaYa
 - ✅ **Rebrand ChambApp → ChambaYa:** 15 HTML, manifest, 13 JS, docs. Nuevo logo CY monogram. Keys internos y Firebase config sin cambio.
+- ✅ **UX Ver Candidatos (sesión 19):** banner urgencia reemplaza header estático, cards rechazadas colapsadas, botones WhatsApp/Llamar/Completado, grupos ordenados por pendientes.
+- ✅ **UX Perfil Empleador (sesión 20):** CSS extraído a perfil-empleador.css, barra completitud dinámica, campo bio, stats (ofertas + contratados), cerrar sesión al fondo, botón flotante guardar.
+- ✅ **iOS/Android Viewport Fixes (sesiones 21-22):** safe-area modal/header con `max()`, bug hero border-radius en WebKit, abreviar labels stats, flex-shrink en pills scroll.
 
 ### Sesiones
+- **Sesión 22 (19/02/26):** Android text overflow — `flex-shrink: 0` en `.filtro-btn` de mis-aplicaciones-trabajador (pills se comprimían ignorando overflow-x:auto). Labels stats historial-ofertas abreviados ("Completadas"→"Complet.", "Caducadas"→"Caducad.") para caber en min-width:60px. Bump CSS `?v=1`.
+- **Sesión 21 (19/02/26):** iOS/Android safe-area fixes. Fórmula correcta: `max(Xrem, env(safe-area-inset-top, 0px))` no `calc(Xrem + env(...))`. Bug hero+border-radius+margin-negativo en WebKit (hero aparecía fuera del modal); fix con CSS `:has()` y margin-top:0. publicar-oferta.css tenía @media override que pisaba header-simple.css. dashboard-main.css revertido (estaba bien antes). Modal: padding-top + max-height con safe-areas para centrado correcto en iOS.
+- **Sesión 20 (19/02/26):** UX Perfil Empleador. CSS extraído de inline a `css/perfil-empleador.css`. Barra de completitud (5 campos, tip dinámico). Campo "Sobre ti" (bio) 300 chars. Stats row (ofertas + contratados, visible si ≥1 oferta). Cerrar Sesión movido al fondo. Botón flotante 💾 Guardar solo en móvil.
+- **Sesión 19 (19/02/26):** UX Ver Candidatos (`mis-aplicaciones.html`). Banner urgencia reemplaza header estático (aparece solo si hay pendientes). Cards rechazadas colapsadas por defecto (expandibles con tap). Badge PENDIENTE eliminado (redundante). Grupos ordenados por cantidad de pendientes. Botones aceptado: WhatsApp full-width > Llamar link > Marcar completado outline.
 - **Sesión 18 (17/02/26):** Tasks 49-50 + Rebrand. Login con Google: google-auth.js con GoogleAuthProvider, botón "Continuar con Google" en login.html y register.html, detección automática de cuentas Google en forgot password (muestra toast "usa Google para iniciar sesión"). Email templates brandeados con diseño ChambaYa (verificación + reset password) documentados en SEGURIDAD.md. Fix toast móvil angosto (css/toast.css width:95%). Rebrand ChambApp → ChambaYa: 15 HTML, manifest.json, 13 JS (solo textos visibles, keys internos sin cambio). Nuevo logo CY monogram generado con sharp en todos los tamaños PWA. 43 archivos modificados.
 - **Sesión 17 (17/02/26):** Task 51 - Auditoría de seguridad proactiva. XSS prevention: escapeHtml() aplicado en 6 archivos (historial-calificaciones, oferta-card, dashboard, index, mis-aplicaciones-trabajador, mis-aplicaciones). Firestore rules: ofertas create restringido a empleadores, aplicaciones update con ownership check (uid+email). Storage rules: ofertas solo imágenes <5MB. Limpieza: eliminados console.log de config, document.write→createElement en 3 HTML, eliminados 6 Lighthouse JSONs con API keys, eliminada GOOGLE_GEOCODING_API_KEY deprecated, geolocation.js migrado a GOOGLE_MAPS_API_KEY. Creado docs/SEGURIDAD.md con checklist acciones manuales GCP. Fix SW: controllerchange solo recarga si había controller previo (evita recarga doble en primera visita). Migrado enableIndexedDbPersistence() a initializeFirestore() con persistentLocalCache. 20 archivos modificados.
 - **Sesión 16 (17/02/26):** Tasks 37-39 - Performance + PWA completa. Sub-tasks: 37A resource hints + defer en 14 HTML, 37B lazy loading imágenes dinámicas, 38A Firestore offline persistence, 38B CSS no-crítico diferido (media="print"), 39A Service Worker con cacheo (Cache First/Network First/SWR), 39B offline.html, 39C install prompt + manifest update, 39D SW update notification. Fixes iOS: scope:"/" en manifest, apple-mobile-web-app-capable + link manifest en todos los HTML, safe-area-inset-top en header-simple.css para notch. 22 archivos modificados, 3 nuevos (offline.html, install-prompt.js, sw-update.js).
