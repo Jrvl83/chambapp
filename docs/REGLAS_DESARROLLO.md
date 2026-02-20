@@ -453,6 +453,7 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 | 19/02/26 | UX Perfil Empleador | CSS extraído, barra completitud, bio, stats, logout al fondo, flotante guardar |
 | 19/02/26 | iOS safe-area modales/headers | `max(Xrem, env(...))` correcto; fix WebKit hero bug con `:has()`; revertir cambios en CSS que funcionaban |
 | 19/02/26 | Android text overflow | `flex-shrink:0` en pills scroll; abreviar labels stats (Completadas→Complet.) |
+| 19/02/26 | UX Dashboard Trabajador | Actividad reciente, smart sort por categoría+distancia, filtros overhaul (solo tuerca + modal + Limpiar/Filtrar) |
 
 </details>
 

@@ -695,6 +695,7 @@ Cada empty state debe tener:
 | UX perfil empleador (barra completitud, bio, stats, cerrar sesión al fondo) | ✅ COMPLETADO (19 Feb) - `css/perfil-empleador.css` |
 | iOS safe-area en modales y headers (fórmula max(), WebKit hero bug) | ✅ COMPLETADO (19 Feb) |
 | Android text overflow (flex-shrink pills, labels stats abreviados) | ✅ COMPLETADO (19 Feb) |
+| UX dashboard trabajador (actividad reciente, smart sort, filtros overhaul) | ✅ COMPLETADO (19 Feb) |
 
 ---
 
