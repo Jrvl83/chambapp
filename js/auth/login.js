@@ -171,13 +171,22 @@ async function handleLogin(e) {
 
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const userDoc = await getDoc(doc(db, 'usuarios', userCredential.user.uid));
+        const uid = userCredential.user.uid;
+
+        // Cuenta admin — redirigir directo sin buscar doc en Firestore
+        const ADMIN_UIDS = ['XkBmgSWZKZeUyLKAyOn8GHmzOAb2'];
+        if (ADMIN_UIDS.includes(uid)) {
+            window.location.href = 'admin.html';
+            return;
+        }
+
+        const userDoc = await getDoc(doc(db, 'usuarios', uid));
 
         if (!userDoc.exists()) {
             throw new Error('No se encontraron datos del usuario');
         }
 
-        loginExitoso({ ...userDoc.data(), uid: userCredential.user.uid });
+        loginExitoso({ ...userDoc.data(), uid });
     } catch (error) {
         actualizarBotonLogin(false);
         toastError(obtenerMensajeError(error));
@@ -283,4 +292,10 @@ window.togglePassword = togglePassword;
 
 window.addEventListener('load', () => {
     emailInput.focus();
+
+    // Mostrar aviso si el usuario fue bloqueado por el admin
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('bloqueado') === '1') {
+        showToast('Tu cuenta ha sido suspendida. Contacta al soporte si crees que es un error.', 'error', 6000);
+    }
 });

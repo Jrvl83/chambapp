@@ -2,12 +2,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Usuarios - lectura publica (necesario para perfil-publico.html),
-    // escritura solo el propio usuario.
+    // ─── Admin helper ─────────────────────────────────────────────────────────
+    // UID hardcodeado del fundador — sin query extra, sin sistema de roles
+    // Reemplazar 'REEMPLAZAR_CON_UID_DEL_FUNDADOR' con el UID real
+    function isAdmin() {
+      return request.auth != null &&
+             request.auth.uid == 'XkBmgSWZKZeUyLKAyOn8GHmzOAb2';
+    }
+
+    // ─── Usuarios ─────────────────────────────────────────────────────────────
+    // Lectura publica (necesario para perfil-publico.html)
+    // Escritura: el propio usuario O el admin (para campo bloqueado)
     // TODO: Separar datos sensibles (fcmToken, email) a subcoleccion privada
     match /usuarios/{userId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow write: if (request.auth != null && request.auth.uid == userId)
+                   || isAdmin();
 
       // Subcoleccion de notificaciones - solo el propio usuario
       match /notificaciones/{notifId} {
@@ -15,7 +25,9 @@ service cloud.firestore {
       }
     }
 
-    // Ofertas - lectura publica, solo empleadores pueden crear
+    // ─── Ofertas ──────────────────────────────────────────────────────────────
+    // Lectura publica, solo empleadores pueden crear
+    // Admin puede eliminar cualquier oferta (moderación)
     match /ofertas/{ofertaId} {
       allow read: if true;
       allow create: if request.auth != null
@@ -23,10 +35,12 @@ service cloud.firestore {
       allow update, delete: if request.auth != null &&
         (resource.data.usuarioId == request.auth.uid ||
          resource.data.empleadorId == request.auth.uid ||
-         resource.data.empleadorEmail == request.auth.token.email);
+         resource.data.empleadorEmail == request.auth.token.email)
+        || isAdmin();
     }
 
-    // Aplicaciones - lectura autenticada, escritura con ownership check.
+    // ─── Aplicaciones ─────────────────────────────────────────────────────────
+    // Lectura autenticada, escritura con ownership check.
     // Nota: read no puede tener resource.data checks porque las queries usan
     // campos variados (aplicanteEmail, empleadorEmail, ofertaId) que no coinciden
     // con los campos de la regla, y Firestore rechaza list queries si no puede
@@ -41,7 +55,7 @@ service cloud.firestore {
             || resource.data.empleadorEmail == request.auth.token.email);
     }
 
-    // Calificaciones - lectura publica, escritura usuarios autenticados
+    // ─── Calificaciones ───────────────────────────────────────────────────────
     match /calificaciones/{calificacionId} {
       allow read: if true;
       allow create: if request.auth != null;
@@ -49,5 +63,20 @@ service cloud.firestore {
         (resource.data.trabajadorId == request.auth.uid ||
          resource.data.empleadorId == request.auth.uid);
     }
+
+    // ─── Reportes ─────────────────────────────────────────────────────────────
+    // Cualquier usuario autenticado puede crear un reporte
+    // Solo el admin puede leer y actualizar (revisar/ignorar)
+    match /reportes/{reporteId} {
+      allow create: if request.auth != null;
+      allow read, update: if isAdmin();
+    }
+
+    // ─── Auditoría ────────────────────────────────────────────────────────────
+    // Solo el admin puede leer y escribir el log de acciones
+    match /auditoria/{docId} {
+      allow read, write: if isAdmin();
+    }
+
   }
 }

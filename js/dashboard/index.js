@@ -305,6 +305,14 @@ onAuthStateChanged(auth, async (user) => {
 
         if (userDoc.exists()) {
             const usuario = userDoc.data();
+
+            // Verificar si el usuario está bloqueado por el admin
+            if (usuario.bloqueado) {
+                await signOut(auth);
+                window.location.href = 'login.html?bloqueado=1';
+                return;
+            }
+
             usuarioData = usuario;
             const tipoUsuario = usuario.tipo || 'trabajador';
 
