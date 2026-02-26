@@ -312,24 +312,97 @@ async function _verUsuario(uid) {
     }
 
     const u = snap.data();
-    const nombre = u.nombre || '(sin nombre)';
+
+    // Foto de perfil
+    const fotoUrl = u.fotoPerfilURL ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(u.nombre || 'U')}&size=80&background=0066FF&color=fff`;
+    const fotoHtml = `
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem">
+            <img src="${escapeHtml(fotoUrl)}" alt=""
+                 style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">
+            <div>
+                <p class="admin-modal-title" style="margin:0">${escapeHtml(u.nombre || '(sin nombre)')}</p>
+                ${u.bloqueado
+                    ? `<span style="font-size:var(--text-xs);font-weight:600;color:var(--danger)">⛔ BLOQUEADO</span>`
+                    : ''}
+            </div>
+        </div>`;
+
+    // Ubicación
     const ubicacion = typeof u.ubicacion === 'object'
         ? (u.ubicacion?.texto_completo || u.ubicacion?.distrito || '')
         : (u.ubicacion || '');
 
+    // Rating
+    const promedio = u.calificacionPromedio || 0;
+    const totalCal = u.totalCalificaciones || 0;
+    const ratingHtml = totalCal > 0
+        ? `⭐ ${promedio.toFixed(1)} (${totalCal} reseña${totalCal !== 1 ? 's' : ''})`
+        : 'Sin calificaciones';
+
+    // Categorías como chips
+    const cats = u.categorias || [];
+    const catsHtml = cats.length > 0 ? `
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.75rem">
+            ${cats.map(c => `<span style="background:var(--gray-100);border-radius:20px;
+                padding:0.2rem 0.6rem;font-size:var(--text-xs);color:var(--gray-700)">
+                ${escapeHtml(c)}</span>`).join('')}
+        </div>` : '';
+
+    // Portfolio de fotos
+    const fotos = (u.portfolioURLs || []).filter(Boolean);
+    const fotosHtml = fotos.length > 0 ? `
+        <p style="font-size:var(--text-xs);font-weight:600;color:var(--gray-500);
+                  text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.4rem">
+            Portfolio (${fotos.length})
+        </p>
+        <div style="display:flex;gap:0.5rem;overflow-x:auto;margin-bottom:0.75rem;padding-bottom:0.25rem">
+            ${fotos.map(url => `<img src="${escapeHtml(url)}" alt=""
+                style="height:90px;min-width:90px;object-fit:cover;border-radius:8px;flex-shrink:0"
+                loading="lazy">`).join('')}
+        </div>` : '';
+
+    // Habilidades
+    const habs = u.habilidades || [];
+    const habsHtml = habs.length > 0 ? `
+        <p class="admin-card-sub" style="margin-bottom:0.25rem">
+            <strong>Habilidades:</strong> ${escapeHtml(habs.join(', '))}
+        </p>` : '';
+
+    // Experiencia
+    const exps = u.experiencia || [];
+    const expsHtml = exps.length > 0 ? `
+        <p style="font-size:var(--text-xs);font-weight:600;color:var(--gray-500);
+                  text-transform:uppercase;letter-spacing:.05em;margin:0.75rem 0 0.4rem">
+            Experiencia
+        </p>
+        ${exps.map(e => `
+            <div style="padding:0.4rem 0;border-bottom:1px solid var(--gray-100)">
+                <p style="font-size:var(--text-sm);font-weight:500;margin:0">
+                    ${escapeHtml(e.puesto || '')}
+                    ${e.empresa ? ` · <span style="font-weight:400">${escapeHtml(e.empresa)}</span>` : ''}
+                </p>
+                ${e.periodo ? `<p style="font-size:var(--text-xs);color:var(--gray-500);margin:0">
+                    ${escapeHtml(e.periodo)}</p>` : ''}
+            </div>`).join('')}` : '';
+
     const html = `
-        <p class="admin-modal-title">${escapeHtml(nombre)}</p>
+        ${fotoHtml}
         <p class="admin-card-sub" style="margin-bottom:0.25rem">
             📧 ${escapeHtml(u.email || '—')}
             ${ubicacion ? ` · 📍 ${escapeHtml(ubicacion)}` : ''}
         </p>
-        <p class="admin-card-sub" style="margin-bottom:0.75rem">
-            Tipo: ${escapeHtml(u.tipo || '—')}
-            ${u.bloqueado ? ' · <strong style="color:var(--danger)">BLOQUEADO</strong>' : ''}
+        <p class="admin-card-sub" style="margin-bottom:0.5rem">
+            ${ratingHtml}
+            ${u.añosExperiencia ? ` · 💼 ${escapeHtml(u.añosExperiencia)}` : ''}
         </p>
+        ${catsHtml}
         ${u.bio ? `<p style="font-size:var(--text-sm);color:var(--gray-700);
-            background:var(--gray-50);border-radius:8px;padding:0.75rem;margin-bottom:0.75rem">
-            ${escapeHtml(u.bio)}</p>` : ''}
+            background:var(--gray-50);border-radius:8px;padding:0.75rem;margin-bottom:0.75rem;
+            white-space:pre-line">${escapeHtml(u.bio)}</p>` : ''}
+        ${fotosHtml}
+        ${habsHtml}
+        ${expsHtml}
         <div class="admin-modal-actions" style="margin-top:1rem">
             <button class="btn btn-outline" onclick="adminModal.cerrarModal()">Cerrar</button>
         </div>`;
