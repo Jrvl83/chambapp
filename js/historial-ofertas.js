@@ -42,16 +42,19 @@ onAuthStateChanged(auth, async (user) => {
 
     // Verificar usuario
     const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
-    if (userDoc.exists()) {
-        const userData = userDoc.data();
-        if (userData.bloqueado) {
-            await manejarBloqueado(auth);
-            return;
-        }
-        if (userData.tipo !== 'empleador') {
-            window.location.href = 'dashboard.html';
-            return;
-        }
+    if (!userDoc.exists()) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const userData = userDoc.data();
+    if (userData.bloqueado) {
+        await manejarBloqueado(auth);
+        return;
+    }
+    if (userData.tipo !== 'empleador') {
+        window.location.href = 'dashboard.html';
+        return;
     }
 
     await cargarOfertas();
