@@ -24,6 +24,7 @@ import { initMapa, inicializarMapa, registrarFuncionesGlobalesMapa } from './map
 import { initMarkers, aplicarFiltrosMapa, registrarFuncionesGlobalesMarkers } from './markers.js';
 import { initDetalle, registrarFuncionesGlobalesDetalle } from './detalle.js';
 import { initPostulacion, registrarFuncionesGlobalesPostulacion } from './postulacion.js';
+import { initReportarModal } from '../components/reportar-modal.js';
 
 // ============================================
 // INICIALIZACIÓN FIREBASE
@@ -59,6 +60,7 @@ initMapa(state, callbacks);
 initMarkers(state, callbacks);
 initDetalle(db, state, callbacks);
 initPostulacion(db, state);
+initReportarModal();
 
 // ============================================
 // REGISTRAR FUNCIONES GLOBALES

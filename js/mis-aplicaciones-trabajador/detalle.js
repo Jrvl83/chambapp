@@ -40,7 +40,8 @@ export async function verOfertaCompleta(ofertaId) {
 
         const modalBody = document.getElementById('modal-body');
         modalBody.innerHTML = generarDetalleOfertaHTML(oferta, ofertaId, ratingData, {
-            mostrarEmail: true,
+            mostrarEmail:    true,
+            mostrarReportar: true,
             onCerrarFn: 'cerrarModal'
         });
 

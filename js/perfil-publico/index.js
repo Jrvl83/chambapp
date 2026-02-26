@@ -5,10 +5,12 @@
 // el perfil completo del trabajador
 // ============================================
 
-import { db } from '../config/firebase-init.js';
+import { db, auth } from '../config/firebase-init.js';
 import {
     doc, getDoc, collection, query, where, getDocs, orderBy
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { initReportarModal } from '../components/reportar-modal.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
 import { generarEstrellasHTML, capitalizarPalabras } from '../utils/formatting.js';
 import {
@@ -38,7 +40,26 @@ function init() {
         mostrarError('ID no proporcionado', 'La URL no contiene un ID de trabajador valido.');
         return;
     }
+    initReportarModal();
     cargarPerfil();
+    _initBotonReportar();
+}
+
+function _initBotonReportar() {
+    const btn = document.getElementById('btn-reportar-perfil');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        window.abrirReportarModal(
+            'usuario',
+            state.trabajadorId,
+            state.perfilData?.nombre || 'Trabajador'
+        );
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        btn.style.display = (user && user.uid !== state.trabajadorId) ? 'inline-flex' : 'none';
+    });
 }
 
 // ============================================
@@ -90,7 +111,6 @@ async function cargarResenas() {
 function renderPerfil() {
     const data = state.perfilData;
     document.title = `${data.nombre || 'Trabajador'} - ChambaYa`;
-
     renderHeroSection(data);
     renderBioSection(data);
     renderPortfolioSection(data);

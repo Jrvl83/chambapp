@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChambaYa Admin - Users List</title>
+<!-- BEGIN: Tailwind CSS Integration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          borderRadius: {
+            'custom': '12px',
+          },
+          colors: {
+            'chamba-primary': '#2563eb',
+            'chamba-bg': '#f3f4f6',
+          }
+        }
+      }
+    }
+  </script>
+<!-- END: Tailwind CSS Integration -->
+<!-- BEGIN: Custom Typography Styles -->
+<style data-purpose="typography">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<!-- END: Custom Typography Styles -->
+<!-- BEGIN: Layout and Overlay Styles -->
+<style data-purpose="layout-ui">
+    .bottom-sheet {
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.1), 0 -8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<!-- END: Layout and Overlay Styles -->
+</head>
+<body class="bg-chamba-bg text-slate-900 min-h-screen">
+<!-- BEGIN: Header Section -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30" data-purpose="main-header">
+<div class="px-4 py-3 flex justify-between items-center">
+<h1 class="text-xl font-bold text-slate-800">ChambaYa Admin</h1>
+<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden">
+<span class="text-xs font-bold text-slate-500">AD</span>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex px-4 border-t border-slate-100" data-purpose="navigation-tabs">
+<button class="flex-1 py-3 text-sm font-medium text-slate-500 border-b-2 border-transparent">Stats</button>
+<button class="flex-1 py-3 text-sm font-bold text-chamba-primary border-b-2 border-chamba-primary">Users</button>
+<button class="flex-1 py-3 text-sm font-medium text-slate-500 border-b-2 border-transparent">Jobs</button>
+<button class="flex-1 py-3 text-sm font-medium text-slate-500 border-b-2 border-transparent">Settings</button>
+</nav>
+</header>
+<!-- END: Header Section -->
+<main class="p-4 space-y-4 pb-32">
+<!-- BEGIN: Search and Filters -->
+<section class="space-y-3" data-purpose="search-and-filters">
+<div class="relative">
+<input class="w-full bg-white border-slate-200 rounded-custom px-4 py-2.5 pl-10 focus:ring-chamba-primary focus:border-chamba-primary text-sm" placeholder="Search by name or email..." type="text"/>
+<div class="absolute left-3 top-3 text-slate-400">
+<svg fill="none" height="18" stroke="currentColor" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Filter Pill Container (Horizontal Scroll) -->
+<div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1" data-purpose="filter-pills">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-chamba-primary text-white text-xs font-semibold">All</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-semibold flex items-center gap-1.5">
+          Workers <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-semibold">Employers</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-600 text-xs font-semibold flex items-center gap-1.5">
+          ⚠️ Verifications <span class="bg-amber-100 text-amber-700 px-1.5 rounded text-[10px]">2</span>
+</button>
+</div>
+</section>
+<!-- END: Search and Filters -->
+<!-- BEGIN: Users List Container -->
+<section class="space-y-3" data-purpose="users-list">
+<!-- User Card 1: Premium Worker -->
+<div class="bg-white p-4 rounded-custom shadow-sm border border-slate-100" data-purpose="user-card">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+<span class="text-blue-700 font-bold">JP</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 text-sm">Juan Pérez</h3>
+<span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">⭐ PREMIUM</span>
+</div>
+<p class="text-xs text-slate-500 mb-1">juan@email.com</p>
+<p class="text-[11px] text-slate-400">Lima · Registered Feb 10 · 12 apps · ⭐ 4.5</p>
+<p class="text-[11px] font-medium text-green-600 mt-1">Valid until: Mar 15</p>
+</div>
+</div>
+<div class="flex gap-2 mt-4 pt-3 border-t border-slate-50">
+<button class="flex-1 bg-slate-50 text-slate-700 text-xs font-bold py-2 rounded-lg">View profile</button>
+<button class="flex-1 bg-slate-50 text-slate-700 text-xs font-bold py-2 rounded-lg">Plan</button>
+<button class="flex-1 bg-white border border-red-100 text-red-500 text-xs font-bold py-2 rounded-lg">Block</button>
+</div>
+</div>
+<!-- User Card 2: Free Worker -->
+<div class="bg-white p-4 rounded-custom shadow-sm border border-slate-100" data-purpose="user-card">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+<span class="text-purple-700 font-bold">MG</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 text-sm">María García</h3>
+<span class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Free</span>
+</div>
+<p class="text-xs text-slate-500 mb-1">maria@email.com</p>
+<p class="text-[11px] text-slate-400">Lima · Registered Jan 5 · 3 apps · ⭐ 4.8</p>
+</div>
+</div>
+<div class="flex gap-2 mt-4 pt-3 border-t border-slate-50">
+<button class="flex-1 bg-slate-50 text-slate-700 text-xs font-bold py-2 rounded-lg">View profile</button>
+<button class="flex-1 bg-chamba-primary text-white text-xs font-bold py-2 rounded-lg">Plan</button>
+<button class="flex-1 bg-white border border-red-100 text-red-500 text-xs font-bold py-2 rounded-lg">Block</button>
+</div>
+</div>
+<!-- User Card 3: Blocked User -->
+<div class="bg-white p-4 rounded-custom shadow-sm border-l-4 border-l-red-500 opacity-60" data-purpose="user-card">
+<div class="flex items-start gap-3">
+<div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+<span class="text-slate-400 font-bold">CL</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-800 text-sm">Carlos López</h3>
+<span class="bg-red-50 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full">🚫 BLOCKED</span>
+</div>
+<p class="text-xs text-slate-500">carlos@email.com</p>
+</div>
+</div>
+<div class="flex gap-2 mt-4 pt-3 border-t border-slate-50">
+<button class="flex-1 bg-slate-50 text-slate-700 text-xs font-bold py-2 rounded-lg">View profile</button>
+<button class="flex-1 bg-slate-800 text-white text-xs font-bold py-2 rounded-lg">Unblock</button>
+</div>
+</div>
+<!-- Load More Action -->
+<button class="w-full py-4 text-slate-500 text-sm font-medium flex items-center justify-center gap-2">
+        Load more 
+        <svg fill="none" height="16" stroke="currentColor" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</section>
+<!-- END: Users List Container -->
+</main>
+<!-- BEGIN: Bottom Sheet Modal Overlay (Partially Visible) -->
+<div class="fixed inset-0 z-40 bg-black/40 flex items-end" data-purpose="modal-overlay">
+<div class="bottom-sheet bg-white w-full max-h-[85vh] p-6 animate-in slide-in-from-bottom duration-300" data-purpose="manage-plan-modal">
+<div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+<div class="mb-6">
+<h2 class="text-xl font-bold text-slate-800">Manage Plan — María García</h2>
+<p class="text-sm text-slate-500">Current Plan: <span class="font-bold text-slate-700 uppercase">Free</span></p>
+</div>
+<div class="space-y-6">
+<!-- Duration Selection -->
+<div>
+<label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block">Duration</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-3 px-4 rounded-xl border-2 border-chamba-primary bg-blue-50 text-chamba-primary font-bold text-sm flex items-center justify-between">
+              1 month <span class="w-4 h-4 rounded-full border-4 border-chamba-primary bg-white"></span>
+</button>
+<button class="py-3 px-4 rounded-xl border-2 border-slate-100 bg-white text-slate-600 font-semibold text-sm flex items-center justify-between">
+              2 months <span class="w-4 h-4 rounded-full border-2 border-slate-200 bg-white"></span>
+</button>
+<button class="py-3 px-4 rounded-xl border-2 border-slate-100 bg-white text-slate-600 font-semibold text-sm flex items-center justify-between">
+              3 months <span class="w-4 h-4 rounded-full border-2 border-slate-200 bg-white"></span>
+</button>
+<button class="py-3 px-4 rounded-xl border-2 border-slate-100 bg-white text-slate-600 font-semibold text-sm flex items-center justify-between">
+              6 months <span class="w-4 h-4 rounded-full border-2 border-slate-200 bg-white"></span>
+</button>
+</div>
+</div>
+<!-- Note Input -->
+<div>
+<label class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">Admin Note</label>
+<textarea class="w-full bg-slate-50 border-slate-200 rounded-custom p-3 text-sm focus:ring-chamba-primary focus:border-chamba-primary" placeholder="Reason for upgrade..." rows="2"></textarea>
+</div>
+<!-- Summary -->
+<div class="bg-amber-50 p-4 rounded-custom border border-amber-100">
+<p class="text-sm text-amber-800">
+<span class="font-bold">Preview:</span> Valid until: <span class="font-bold underline">Mar 25, 2026</span>
+</p>
+</div>
+<!-- Actions -->
+<div class="flex gap-3 pt-2">
+<button class="flex-1 py-4 text-slate-600 font-bold text-sm">Cancel</button>
+<button class="flex-[2] py-4 bg-chamba-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-200">✓ Grant Premium</button>
+</div>
+</div>
+</div>
+</div>
+<!-- END: Bottom Sheet Modal Overlay -->
+</body></html>

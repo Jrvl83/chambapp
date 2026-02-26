@@ -71,6 +71,7 @@ function mostrarModalDetalle(oferta, id, ratingData) {
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = generarDetalleOfertaHTML(oferta, id, ratingData, {
         mostrarPostulacion: esTrabajador,
+        mostrarReportar:    esTrabajador,
         yaAplico: aplicaciones.includes(id),
         onPostularFn: 'mostrarFormularioPostulacion',
         onCerrarFn: 'cerrarModal'

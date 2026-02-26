@@ -112,6 +112,7 @@ async function verDetalleOferta(ofertaId) {
         const modalBody = document.getElementById('modal-detalle-body');
         modalBody.innerHTML = generarDetalleOfertaHTML(ofertaData, ofertaId, ratingData, {
             mostrarPostulacion: true,
+            mostrarReportar:    true,
             yaAplico,
             onPostularFn: 'mostrarFormularioPostulacionMapa',
             onCerrarFn: 'cerrarModalDetalle'

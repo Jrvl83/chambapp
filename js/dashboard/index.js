@@ -45,6 +45,8 @@ import {
     setUsuarioRefs
 } from './modal-detalle.js';
 
+import { initReportarModal } from '../components/reportar-modal.js';
+
 import {
     initNotificacionesPush,
     inicializarNotificacionesPush,
@@ -73,6 +75,7 @@ initGeolocation(db);
 initTrabajador(db);
 initEmpleador(db, null, null);
 initModalDetalle(db, null, null);
+initReportarModal();
 initNotificacionesPush(app, db);
 
 // ============================================

@@ -31,7 +31,7 @@ export function generarDetalleOfertaHTML(oferta, ofertaId, ratingData, opciones 
         ${renderGridInfoHTML(oferta, ubicacionTexto)}
         ${renderRequisitosHTML(oferta)}
         ${renderEmpleadorHTML(oferta, ratingData, opciones.mostrarEmail)}
-        ${renderAccionesHTML(ofertaId, opciones)}
+        ${renderAccionesHTML(ofertaId, oferta.titulo || '', opciones)}
     `;
 }
 
@@ -185,7 +185,7 @@ function renderEmpleadorHTML(oferta, ratingData, mostrarEmail) {
     `;
 }
 
-function renderAccionesHTML(ofertaId, opciones) {
+function renderAccionesHTML(ofertaId, ofertaTitulo, opciones) {
     const cerrarFn = opciones.onCerrarFn || 'cerrarModal';
     let botonPostular = '';
     let trustMsg = '';
@@ -200,11 +200,21 @@ function renderAccionesHTML(ofertaId, opciones) {
         }
     }
 
+    const botonReportar = opciones.mostrarReportar
+        ? `<button class="btn-reportar-link"
+                   data-oferta-id="${escapeHtml(ofertaId)}"
+                   data-titulo="${escapeHtml(ofertaTitulo)}"
+                   onclick="window.abrirReportarModal('oferta',this.dataset.ofertaId,this.dataset.titulo)">
+               🚩 Reportar oferta
+           </button>`
+        : '';
+
     return `
         <div class="detalle-acciones">
             <button class="btn btn-secondary" onclick="${cerrarFn}()">Cerrar</button>
             ${botonPostular}
         </div>
         ${trustMsg}
+        ${botonReportar}
     `;
 }

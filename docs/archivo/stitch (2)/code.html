@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChambaYa - Offers Management</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- BEGIN: Custom Typography and Base Styles -->
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+<style data-purpose="layout-adjustments">
+    .ios-scroll-fix {
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+<!-- END: Custom Typography and Base Styles -->
+</head>
+<body class="bg-gray-50 min-h-screen text-slate-900">
+<!-- BEGIN: MainHeader -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+<div class="px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<!-- Brand Logo Placeholder -->
+<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+<span class="text-white font-bold text-lg">C</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-blue-600">ChambaYa</h1>
+</div>
+<!-- Admin Profile Avatar -->
+<div class="w-9 h-9 rounded-full bg-gray-200 border border-gray-300 overflow-hidden">
+<img alt="Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfvuJ4E3DtQdT8X3wWEOlJaEt0WekFQG9c9ZEPLGWKp1nX4IB5JPIR-V9mfFXdQSieJ16Z3yUcGX14377Tf0wJKOLbD9mwyyH7jgyVvqnZevLPBUD98tyT51EzTt097IG1rd9yiyh6NySTYGUUgCBNArdxUU6mPDwYnRdEPQudXGb0XOsNLctlt7uKinD19W6IRNHK6K_nYqFtDHSYKJ86974XOuwNSeF4_CYfurIw7jqeGJHXAaa7lIs_Ma-A9jappDbdStiI-Bs"/>
+</div>
+</div>
+<!-- BEGIN: Navigation Tabs -->
+<nav class="flex border-b border-gray-100">
+<button class="flex-1 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent" data-purpose="nav-tab">
+        Stats
+      </button>
+<button class="flex-1 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600" data-purpose="nav-tab">
+        Offers
+      </button>
+<button class="flex-1 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent" data-purpose="nav-tab">
+        Users
+      </button>
+</nav>
+<!-- END: Navigation Tabs -->
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: Filter Section -->
+<section class="p-4 flex gap-3 overflow-x-auto ios-scroll-fix" data-purpose="filters">
+<div class="relative flex-1 min-w-[140px]">
+<select class="w-full pl-3 pr-10 py-2 text-sm bg-white border border-gray-200 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+<option>All states ▾</option>
+<option>Active</option>
+<option>In Progress</option>
+<option>Expired</option>
+</select>
+</div>
+<div class="relative flex-1 min-w-[140px]">
+<select class="w-full pl-3 pr-10 py-2 text-sm bg-white border border-gray-200 rounded-lg appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+<option>Most recent ▾</option>
+<option>Oldest</option>
+<option>Price: High to Low</option>
+</select>
+</div>
+</section>
+<!-- END: Filter Section -->
+<!-- BEGIN: Offers List -->
+<main class="px-4 pb-24 space-y-4" data-purpose="offers-container">
+<!-- Card 1: Urgent Carpenter -->
+<article class="bg-white p-4 rounded-xl shadow-sm border border-gray-100" data-purpose="offer-card">
+<div class="flex justify-between items-start mb-3">
+<h2 class="font-bold text-gray-900 text-lg">Urgent Carpenter</h2>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">ACTIVE</span>
+</div>
+<div class="text-sm text-gray-500 space-y-1 mb-4">
+<p class="font-medium text-gray-700">Luis Mendoza · Lima · Feb 19</p>
+<div class="flex items-center gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+<p>3 applicants · <span class="font-semibold text-gray-900">S/. 80/day</span></p>
+</div>
+</div>
+<div class="flex gap-2" data-purpose="card-actions">
+<button class="flex-1 bg-blue-50 py-2.5 rounded-lg text-blue-700 font-semibold text-sm transition-colors active:bg-blue-100">View</button>
+<button class="px-4 py-2.5 rounded-lg border border-red-200 text-red-600 transition-colors active:bg-red-50 flex items-center justify-center">
+<span class="text-sm font-semibold mr-1">Delete</span>
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</article>
+<!-- Card 2: Office Cleaning -->
+<article class="bg-white p-4 rounded-xl shadow-sm border border-gray-100" data-purpose="offer-card">
+<div class="flex justify-between items-start mb-3">
+<h2 class="font-bold text-gray-900 text-lg">Office Cleaning</h2>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">IN PROGRESS</span>
+</div>
+<div class="text-sm text-gray-500 space-y-1 mb-4">
+<p class="font-medium text-gray-700">Ana Torres · Miraflores · Feb 17</p>
+<div class="flex items-center gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+<p>1 applicant · <span class="font-semibold text-gray-900">S/. 120</span></p>
+</div>
+</div>
+<div class="flex gap-2" data-purpose="card-actions">
+<button class="flex-1 bg-blue-50 py-2.5 rounded-lg text-blue-700 font-semibold text-sm transition-colors active:bg-blue-100">View</button>
+<button class="px-4 py-2.5 rounded-lg border border-red-200 text-red-600 transition-colors active:bg-red-50 flex items-center justify-center">
+<span class="text-sm font-semibold mr-1">Delete</span>
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</article>
+<!-- Card 3: Home Plumber -->
+<article class="bg-white p-4 rounded-xl shadow-sm border border-gray-100" data-purpose="offer-card">
+<div class="flex justify-between items-start mb-3">
+<h2 class="font-bold text-gray-900 text-lg">Home Plumber</h2>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600">EXPIRED</span>
+</div>
+<div class="text-sm text-gray-500 space-y-1 mb-4">
+<p class="font-medium text-gray-700">Pedro Ruiz · Surco · Feb 10</p>
+<div class="flex items-center gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+<p>0 applicants · <span class="font-semibold text-gray-900">S/. 200</span></p>
+</div>
+</div>
+<div class="flex gap-2" data-purpose="card-actions">
+<button class="flex-1 bg-blue-50 py-2.5 rounded-lg text-blue-700 font-semibold text-sm transition-colors active:bg-blue-100">View</button>
+<button class="px-4 py-2.5 rounded-lg border border-red-200 text-red-600 transition-colors active:bg-red-50 flex items-center justify-center">
+<span class="text-sm font-semibold mr-1">Delete</span>
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</article>
+</main>
+<!-- END: Offers List -->
+<!-- BEGIN: Bottom Navigation (Mobile Admin) -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-2 flex justify-around items-center" data-purpose="bottom-nav">
+<div class="flex flex-col items-center gap-1 text-blue-600">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px] font-bold">Admin</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Community</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Settings</span>
+</div>
+</footer>
+<!-- END: Bottom Navigation -->
+</body></html>

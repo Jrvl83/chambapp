@@ -17,6 +17,7 @@ import {
     seleccionarEstrella, enviarCalificacion
 } from './calificaciones.js';
 import { fetchEmpleadoresRatings } from '../utils/employer-rating.js';
+import { initReportarModal } from '../components/reportar-modal.js';
 
 // --- Firebase ---
 const app = initializeApp(window.firebaseConfig);
@@ -59,6 +60,7 @@ const state = {
 initCards(state);
 initDetalle(db);
 initCalificaciones(db, auth, state, { recargarUI });
+initReportarModal();
 
 function recargarUI() {
     mostrarAplicaciones(state.aplicacionesFiltradas);

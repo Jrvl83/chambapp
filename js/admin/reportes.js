@@ -6,7 +6,7 @@
  */
 
 import {
-    collection, query, where, getDocs,
+    collection, query, where, getDocs, getDoc,
     doc, updateDoc, deleteDoc, addDoc, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
@@ -159,18 +159,181 @@ function registrarAcciones() {
         const btnAccion  = e.target.closest('.btn-accion-principal');
         const btnIgnorar = e.target.closest('.btn-ignorar');
 
-        if (btnVer)     verContenido(btnVer.dataset.tipo, btnVer.dataset.objetoId);
+        if (btnVer)     await verContenido(btnVer.dataset.tipo, btnVer.dataset.objetoId);
         if (btnAccion)  await ejecutarAccionPrincipal(btnAccion);
         if (btnIgnorar) await ignorarReporte(btnIgnorar.dataset.reporteId);
     });
 }
 
-function verContenido(tipo, objetoId) {
-    if (tipo === 'oferta') {
-        window.open(`mis-aplicaciones.html?ofertaId=${objetoId}`, '_blank');
-    } else {
-        window.open(`perfil-publico.html?id=${objetoId}`, '_blank');
+async function verContenido(tipo, objetoId) {
+    window.adminModal.abrirModal(`<p class="admin-card-sub">Cargando...</p>`);
+    try {
+        if (tipo === 'oferta') {
+            await _verOferta(objetoId);
+        } else {
+            await _verUsuario(objetoId);
+        }
+    } catch (err) {
+        console.error('Error cargando contenido:', err);
+        window.adminModal.abrirModal(`
+            <p class="admin-modal-title">Error</p>
+            <p class="admin-card-sub">No se pudo cargar el contenido.</p>
+            <div class="admin-modal-actions">
+                <button class="btn btn-outline" onclick="adminModal.cerrarModal()">Cerrar</button>
+            </div>`);
     }
+}
+
+async function _verOferta(ofertaId) {
+    const [appsSnap, ofertaSnap] = await Promise.all([
+        getDocs(query(collection(_db, 'aplicaciones'), where('ofertaId', '==', ofertaId))),
+        getDoc(doc(_db, 'ofertas', ofertaId))
+    ]);
+
+    if (!ofertaSnap.exists()) {
+        window.adminModal.abrirModal(`
+            <p class="admin-modal-title">Oferta no encontrada</p>
+            <p class="admin-card-sub">Esta oferta ya no existe (puede haber sido eliminada).</p>
+            <div class="admin-modal-actions">
+                <button class="btn btn-outline" onclick="adminModal.cerrarModal()">Cerrar</button>
+            </div>`);
+        return;
+    }
+
+    const o    = ofertaSnap.data();
+    const apps = appsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Fotos
+    const fotos = (o.imagenesURLs || []).filter(Boolean);
+    const fotosHtml = fotos.length > 0 ? `
+        <div style="display:flex;gap:0.5rem;overflow-x:auto;margin-bottom:0.75rem;padding-bottom:0.25rem">
+            ${fotos.map(url => `<img src="${escapeHtml(url)}" alt=""
+                style="height:100px;min-width:100px;object-fit:cover;border-radius:8px;flex-shrink:0"
+                loading="lazy">`).join('')}
+        </div>` : '';
+
+    // Chips de requisitos
+    const chips = [
+        o.categoria,
+        o.duracion    && o.duracion    !== 'No especificada' ? o.duracion    : null,
+        o.horario     && o.horario     !== 'No especificado'  ? o.horario     : null,
+        o.experiencia && o.experiencia !== 'No especificada' ? o.experiencia : null,
+        o.vacantes > 1 ? `${o.vacantes} vacantes` : null,
+        o.requiereHerramientas ? '🔧 Herramientas' : null,
+        o.requiereTransporte   ? '🚗 Transporte'   : null,
+        o.requiereEquipos      ? '🦺 Equipos'      : null,
+    ].filter(Boolean);
+
+    const chipsHtml = chips.length > 0 ? `
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.75rem">
+            ${chips.map(c => `<span style="background:var(--gray-100);border-radius:20px;
+                padding:0.2rem 0.6rem;font-size:var(--text-xs);color:var(--gray-700)">
+                ${escapeHtml(String(c))}</span>`).join('')}
+        </div>` : '';
+
+    // Postulantes
+    const estadoBadge = { pendiente: '🟡', aceptado: '🟢', rechazado: '🔴', completado: '✅' };
+    const filas = apps.length === 0
+        ? `<p class="admin-empty-text">Sin postulantes aún</p>`
+        : apps.map(a => `
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:0.5rem 0;border-bottom:1px solid var(--gray-100)">
+                <div>
+                    <p style="font-size:var(--text-sm);font-weight:500">
+                        ${escapeHtml(a.aplicanteNombre || a.aplicanteEmail || '—')}
+                    </p>
+                    <p style="font-size:var(--text-xs);color:var(--gray-500)">
+                        ${escapeHtml(a.aplicanteEmail || '')}
+                    </p>
+                </div>
+                <span style="font-size:var(--text-xs)">
+                    ${estadoBadge[a.estado] || '⚪'} ${escapeHtml(a.estado || '—')}
+                </span>
+            </div>`).join('');
+
+    const empleador   = escapeHtml(o.empleadorNombre || o.empleadorEmail || '—');
+    const distrito    = escapeHtml(o.ubicacion?.distrito || o.distrito || '');
+    const referencia  = escapeHtml(o.ubicacion?.referencia || o.ubicacion?.direccion || '');
+    const salario     = o.salario ? `S/. ${escapeHtml(String(o.salario))}` : '—';
+    const fechaPublic = o.fechaCreacion   ? formatearFecha(o.fechaCreacion,   'corto') : '—';
+    const fechaExp    = o.fechaExpiracion ? formatearFecha(o.fechaExpiracion, 'corto') : null;
+
+    const html = `
+        ${fotosHtml}
+        <p class="admin-modal-title">${escapeHtml(o.titulo || '(sin título)')}</p>
+        <p class="admin-card-sub" style="margin-bottom:0.5rem">
+            👤 ${empleador}
+            ${distrito   ? ` · 📍 ${distrito}`   : ''}
+            ${referencia ? ` · ${referencia}`     : ''}
+            · 💰 ${salario}
+        </p>
+        <p class="admin-card-sub" style="margin-bottom:0.75rem">
+            Publicado: ${fechaPublic}
+            ${fechaExp ? ` · Expira: ${fechaExp}` : ''}
+            · ${apps.length} postulante${apps.length !== 1 ? 's' : ''}
+        </p>
+        ${chipsHtml}
+        ${o.descripcion ? `
+            <p style="font-size:var(--text-sm);color:var(--gray-700);margin-bottom:0.75rem;
+                       white-space:pre-line;background:var(--gray-50);border-radius:8px;padding:0.75rem">
+                ${escapeHtml(o.descripcion)}
+            </p>` : ''}
+        ${o.habilidades && o.habilidades !== 'No especificadas' ? `
+            <p class="admin-card-sub" style="margin-bottom:0.25rem">
+                <strong>Habilidades:</strong> ${escapeHtml(o.habilidades)}
+            </p>` : ''}
+        ${o.requisitosAdicionales && o.requisitosAdicionales !== 'Ninguno' ? `
+            <p class="admin-card-sub" style="margin-bottom:0.75rem">
+                <strong>Requisitos:</strong> ${escapeHtml(o.requisitosAdicionales)}
+            </p>` : ''}
+        <p style="font-size:var(--text-xs);font-weight:600;color:var(--gray-500);
+                  text-transform:uppercase;letter-spacing:.05em;margin-bottom:0.5rem;
+                  border-top:1px solid var(--gray-100);padding-top:0.75rem">
+            Postulantes (${apps.length})
+        </p>
+        <div>${filas}</div>
+        <div class="admin-modal-actions" style="margin-top:1rem">
+            <button class="btn btn-outline" onclick="adminModal.cerrarModal()">Cerrar</button>
+        </div>`;
+    window.adminModal.abrirModal(html);
+}
+
+async function _verUsuario(uid) {
+    const snap = await getDoc(doc(_db, 'usuarios', uid));
+
+    if (!snap.exists()) {
+        window.adminModal.abrirModal(`
+            <p class="admin-modal-title">Usuario no encontrado</p>
+            <p class="admin-card-sub">Este usuario ya no existe.</p>
+            <div class="admin-modal-actions">
+                <button class="btn btn-outline" onclick="adminModal.cerrarModal()">Cerrar</button>
+            </div>`);
+        return;
+    }
+
+    const u = snap.data();
+    const nombre = u.nombre || '(sin nombre)';
+    const ubicacion = typeof u.ubicacion === 'object'
+        ? (u.ubicacion?.texto_completo || u.ubicacion?.distrito || '')
+        : (u.ubicacion || '');
+
+    const html = `
+        <p class="admin-modal-title">${escapeHtml(nombre)}</p>
+        <p class="admin-card-sub" style="margin-bottom:0.25rem">
+            📧 ${escapeHtml(u.email || '—')}
+            ${ubicacion ? ` · 📍 ${escapeHtml(ubicacion)}` : ''}
+        </p>
+        <p class="admin-card-sub" style="margin-bottom:0.75rem">
+            Tipo: ${escapeHtml(u.tipo || '—')}
+            ${u.bloqueado ? ' · <strong style="color:var(--danger)">BLOQUEADO</strong>' : ''}
+        </p>
+        ${u.bio ? `<p style="font-size:var(--text-sm);color:var(--gray-700);
+            background:var(--gray-50);border-radius:8px;padding:0.75rem;margin-bottom:0.75rem">
+            ${escapeHtml(u.bio)}</p>` : ''}
+        <div class="admin-modal-actions" style="margin-top:1rem">
+            <button class="btn btn-outline" onclick="adminModal.cerrarModal()">Cerrar</button>
+        </div>`;
+    window.adminModal.abrirModal(html);
 }
 
 async function ejecutarAccionPrincipal(btn) {

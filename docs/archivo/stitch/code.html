@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChambaYa - Moderación</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for ChambaYa Brand -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#FF8C00', // Example brand orange
+              secondary: '#1A202C',
+            }
+          },
+          borderRadius: {
+            'card': '12px',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    body {
+      background-color: #F7FAFC; /* Light gray background */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .report-card-pending {
+      border-left: 4px solid #F6AD55; /* Orange left border */
+    }
+    .scroll-hide::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="antialiased text-slate-800">
+<!-- BEGIN: MainHeader -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50" data-purpose="navigation-header">
+<div class="px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white font-bold">CY</div>
+<h1 class="text-lg font-bold">ChambaYa Admin</h1>
+</div>
+<button class="p-2 rounded-full hover:bg-gray-100">
+<svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<!-- BEGIN: Tabs -->
+<nav class="flex px-4 gap-6 overflow-x-auto scroll-hide">
+<a class="py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent" href="#">Stats</a>
+<a aria-current="page" class="py-3 text-sm font-bold text-brand-primary border-b-2 border-brand-primary active" href="#">Reports</a>
+<a class="py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent" href="#">Users</a>
+<a class="py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent" href="#">Settings</a>
+</nav>
+<!-- END: Tabs -->
+</header>
+<!-- END: MainHeader -->
+<main class="p-4 space-y-6">
+<!-- BEGIN: PendingReportsSection -->
+<section id="pending-reports">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider">⏳ PENDING (3)</h2>
+<button class="text-xs text-brand-primary font-semibold">Refresh</button>
+</div>
+<div class="space-y-4">
+<!-- Report Card 1: Offer -->
+<article class="report-card-pending bg-white rounded-card shadow-sm p-4" data-purpose="report-card">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-2">
+<svg class="h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">OFFER</span>
+</div>
+<span class="text-xs text-gray-400">2 hours ago</span>
+</div>
+<div class="mb-3">
+<h3 class="font-bold text-slate-900">Cleaning houses</h3>
+<p class="text-xs text-gray-500">Reported by: <span class="font-medium">juan@gmail.com</span></p>
+</div>
+<div class="mb-4">
+<span class="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block mb-1 uppercase">Possible fraud</span>
+<p class="text-sm text-gray-700 italic border-l-2 border-gray-100 pl-3">"They ask to deposit before starting"</p>
+</div>
+<div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-50">
+<button class="text-xs font-semibold py-2 bg-gray-50 text-slate-700 rounded-lg hover:bg-gray-100 transition-colors">View offer</button>
+<button class="text-xs font-semibold py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">Delete offer</button>
+<button class="text-xs font-semibold py-2 bg-gray-50 text-gray-500 rounded-lg hover:bg-gray-100 transition-colors">Ignore</button>
+</div>
+</article>
+<!-- Report Card 2: User -->
+<article class="report-card-pending bg-white rounded-card shadow-sm p-4" data-purpose="report-card">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-2">
+<svg class="h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">USER</span>
+</div>
+<span class="text-xs text-gray-400">1 day ago</span>
+</div>
+<div class="mb-3">
+<h3 class="font-bold text-slate-900">Carlos Ruiz</h3>
+<p class="text-xs text-gray-500">Reported by: <span class="font-medium">maria@gmail.com</span></p>
+</div>
+<div class="mb-4">
+<span class="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full inline-block uppercase">Spam</span>
+</div>
+<div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-50">
+<button class="text-xs font-semibold py-2 bg-gray-50 text-slate-700 rounded-lg">View profile</button>
+<button class="text-xs font-semibold py-2 bg-red-50 text-red-600 rounded-lg">Block user</button>
+<button class="text-xs font-semibold py-2 bg-gray-50 text-gray-500 rounded-lg">Ignore</button>
+</div>
+</article>
+</div>
+</section>
+<!-- END: PendingReportsSection -->
+<!-- BEGIN: ReviewedReportsSection -->
+<section class="pb-10" id="reviewed-reports">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider">✅ REVIEWED (47)</h2>
+<svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Collapsed/Summary View of Reviewed Items (placeholder for UI context) -->
+<div class="bg-white rounded-card shadow-sm p-4 border border-gray-100">
+<div class="flex items-center justify-between opacity-60">
+<div>
+<p class="text-xs font-medium text-gray-600">Last action: User 'Alex92' was blocked</p>
+<p class="text-[10px] text-gray-400">Today, 10:15 AM by admin_lucy</p>
+</div>
+<button class="text-xs text-blue-600 font-medium">History</button>
+</div>
+</div>
+</section>
+<!-- END: ReviewedReportsSection -->
+</main>
+<!-- BEGIN: BottomNavigation -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-2 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-brand-primary">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px] font-bold">Safety</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="text-[10px]">Staff</span>
+</button>
+</footer>
+<!-- END: BottomNavigation -->
+</body></html>
