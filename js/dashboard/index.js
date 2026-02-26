@@ -311,8 +311,9 @@ onAuthStateChanged(auth, async (user) => {
 
             // Verificar si el usuario está bloqueado por el admin
             if (usuario.bloqueado) {
+                localStorage.removeItem('usuarioChambApp');
                 await signOut(auth);
-                window.location.href = 'login.html?bloqueado=1';
+                window.location.href = 'cuenta-suspendida.html';
                 return;
             }
 

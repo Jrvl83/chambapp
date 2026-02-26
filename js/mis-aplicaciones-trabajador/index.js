@@ -4,7 +4,7 @@
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import {
     getFirestore, collection, query, where, getDocs, orderBy
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
@@ -18,6 +18,7 @@ import {
 } from './calificaciones.js';
 import { fetchEmpleadoresRatings } from '../utils/employer-rating.js';
 import { initReportarModal } from '../components/reportar-modal.js';
+import { verificarBloqueo } from '../utils/auth-guard.js';
 
 // --- Firebase ---
 const app = initializeApp(window.firebaseConfig);
@@ -207,4 +208,13 @@ window.enviarCalificacionEmpleador = enviarCalificacion;
 
 // --- Inicialización ---
 document.addEventListener('DOMContentLoaded', inicializarEventosCalificacion);
-cargarAplicaciones();
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    const bloqueado = await verificarBloqueo(db, auth, user.uid);
+    if (bloqueado) return;
+    await cargarAplicaciones();
+});

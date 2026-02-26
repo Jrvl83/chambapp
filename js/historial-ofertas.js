@@ -20,6 +20,7 @@ import {
     Timestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha } from './utils/formatting.js';
+import { manejarBloqueado } from './utils/auth-guard.js';
 
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
@@ -39,10 +40,14 @@ onAuthStateChanged(auth, async (user) => {
 
     usuarioActual = user;
 
-    // Verificar que sea empleador
+    // Verificar usuario
     const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
     if (userDoc.exists()) {
         const userData = userDoc.data();
+        if (userData.bloqueado) {
+            await manejarBloqueado(auth);
+            return;
+        }
         if (userData.tipo !== 'empleador') {
             window.location.href = 'dashboard.html';
             return;

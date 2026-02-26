@@ -7,6 +7,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
+import { verificarBloqueo } from './utils/auth-guard.js';
 import { escapeHtml } from './utils/dom-helpers.js';
 
 // Inicializar Firebase
@@ -44,6 +45,8 @@ if (usuario.tipo !== 'trabajador') {
 // Esperar autenticación
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        const bloqueado = await verificarBloqueo(db, auth, user.uid);
+        if (bloqueado) return;
         await cargarHistorial();
     }
 });

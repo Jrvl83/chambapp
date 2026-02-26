@@ -9,6 +9,8 @@
 // IMPORTS
 // ============================================
 import { auth, db, storage } from '../config/firebase-init.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { verificarBloqueo } from '../utils/auth-guard.js';
 
 // Módulos del formulario
 import { initFormNavigation, showStep, validateStep } from './form-navigation.js';
@@ -129,8 +131,15 @@ initUbicacionGlobals();
 // Mostrar primer paso
 showStep(state.currentStep);
 
-// Inicializar ubicación y cargar datos
-(async () => {
+// Inicializar ubicación y cargar datos (con check bloqueado)
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    const bloqueado = await verificarBloqueo(db, auth, user.uid);
+    if (bloqueado) return;
+
     await inicializarUbicacion();
 
     // Cargar datos si es modo edición/reutilizar
@@ -139,7 +148,7 @@ showStep(state.currentStep);
     } else if (modoReutilizar) {
         await cargarOfertaParaEditar(reutilizarId);
     }
-})();
+});
 
 // Inicializar Google Maps con delay
 setTimeout(async () => {

@@ -20,6 +20,7 @@ import {
     where
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { escapeHtml } from './utils/dom-helpers.js';
+import { verificarBloqueo } from './utils/auth-guard.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
@@ -39,6 +40,8 @@ let notifIdAEliminar = null;
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        const bloqueado = await verificarBloqueo(db, auth, user.uid);
+        if (bloqueado) return;
         usuarioActual = user;
         await inicializarPagina();
     } else {

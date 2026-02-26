@@ -25,6 +25,7 @@ import { initMarkers, aplicarFiltrosMapa, registrarFuncionesGlobalesMarkers } fr
 import { initDetalle, registrarFuncionesGlobalesDetalle } from './detalle.js';
 import { initPostulacion, registrarFuncionesGlobalesPostulacion } from './postulacion.js';
 import { initReportarModal } from '../components/reportar-modal.js';
+import { manejarBloqueado } from '../utils/auth-guard.js';
 
 // ============================================
 // INICIALIZACIÓN FIREBASE
@@ -200,6 +201,11 @@ onAuthStateChanged(auth, async (user) => {
         const userDoc = await getDoc(doc(db, 'usuarios', user.uid));
         if (userDoc.exists()) {
             state.usuarioData = userDoc.data();
+
+            if (state.usuarioData.bloqueado) {
+                await manejarBloqueado(auth);
+                return;
+            }
 
             if (state.usuarioData.tipo === 'empleador') {
                 window.location.href = 'dashboard.html';

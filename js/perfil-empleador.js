@@ -14,6 +14,7 @@ import { validarNombre, validarTelefono } from './utils/validators.js';
 import { showFieldError, hideFieldError } from './utils/form-errors.js';
 import { sanitizeText } from './utils/sanitize.js';
 import { mensajeErrorAmigable, toastErrorConRetry } from './utils/error-handler.js';
+import { manejarBloqueado } from './utils/auth-guard.js';
 
 // Variables globales
 let perfilData = {};
@@ -60,6 +61,10 @@ async function cargarPerfil() {
         
         if (docSnap.exists()) {
             perfilData = docSnap.data();
+            if (perfilData.bloqueado) {
+                await manejarBloqueado(auth);
+                return;
+            }
         } else {
             perfilData = {
                 email: usuario.email,

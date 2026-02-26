@@ -11,6 +11,7 @@ import { generarEstrellasHTML } from '../utils/formatting.js';
 import { validarNombre, validarTelefono, validarEdadMinima, validarHorarios } from '../utils/validators.js';
 import { validateField, hideFieldError, showFieldError } from '../utils/form-errors.js';
 import { mensajeErrorAmigable, toastErrorConRetry } from '../utils/error-handler.js';
+import { manejarBloqueado } from '../utils/auth-guard.js';
 
 // Modulos
 import { initPortfolio, cargarPortfolio, previsualizarPortfolio, subirFotosPortfolio,
@@ -84,6 +85,10 @@ async function obtenerOCrearPerfil() {
 
     if (docSnap.exists()) {
         state.perfilData = docSnap.data();
+        if (state.perfilData.bloqueado) {
+            await manejarBloqueado(auth);
+            return;
+        }
     } else {
         state.perfilData = {
             email: state.usuario.email,

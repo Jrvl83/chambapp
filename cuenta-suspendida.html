@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="robots" content="noindex">
+    <title>Cuenta Suspendida - ChambaYa</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon.png">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 0.75rem;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+        }
+
+        .info-box {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.75rem;
+            text-align: left;
+        }
+
+        .info-box p {
+            font-size: 0.875rem;
+            color: #5d4037;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #e65100;
+        }
+
+        .btn-login {
+            display: inline-block;
+            background: #0066FF;
+            color: white;
+            text-decoration: none;
+            padding: 0.875rem 2rem;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #0052cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">🚫</div>
+        <h1>Cuenta suspendida</h1>
+        <p class="subtitle">
+            Tu cuenta ha sido suspendida por el equipo de ChambaYa
+            debido a una infracción de nuestras políticas de uso.
+        </p>
+        <div class="info-box">
+            <strong>¿Crees que es un error?</strong>
+            <p>
+                Si consideras que esta suspensión fue aplicada por error,
+                puedes contactarnos a
+                <strong>soporte@chambaya.pe</strong>
+                con tu nombre y correo registrado para que revisemos tu caso.
+            </p>
+        </div>
+        <a href="login.html" class="btn-login">Volver al inicio</a>
+    </div>
+</body>
+</html>
