@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAYA (ex-ChambApp)
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 19 Febrero 2026 (sesión 22)
+**Última actualización:** 26 Febrero 2026 (sesión 25)
 
 ---
 
@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ████████████████████████░░░░ 71% (44/62 tareas)
+FASE 1: ████████████████████████████░░ 84% (52/62 tareas)
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  23% del proyecto (44/194 tareas)
+TOTAL:  27% del proyecto (52/194 tareas)
 ```
 
 > **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + tareas nuevas (49-51) = 62 tareas totales.
@@ -63,12 +63,15 @@ TOTAL:  23% del proyecto (44/194 tareas)
 - Login con Google (Gmail) + detección automática de cuentas Google
 - Emails brandeados ChambaYa (verificación + reset password)
 - Performance: resource hints, defer scripts, lazy CSS/imágenes, Firestore offline
+- Panel de administración (stats, métricas, reportes, ofertas, usuarios, bloqueo)
+- Sistema de reportes bidireccional (ofertas y perfiles de trabajador)
+- Bloqueo de cuentas con página dedicada `cuenta-suspendida.html`
 
 ---
 
 ## FASE 1: EXPERIENCIA WOW (60 tareas)
 
-### Tareas Completadas (38)
+### Tareas Completadas (41)
 
 | # | Tarea | Fecha |
 |---|-------|-------|
@@ -85,6 +88,9 @@ TOTAL:  23% del proyecto (44/194 tareas)
 | 37-39 | Performance + PWA (SW caching, offline, install prompt, lazy CSS/imgs, Firestore persistence) | 17 Feb |
 | 49-50 | Login con Google (Gmail) + Email templates brandeados ChambaYa | 17 Feb |
 | 51 | Auditoría de seguridad: XSS prevention (escapeHtml en 6 archivos), Firestore/Storage rules endurecidas, limpieza config/keys, SW reload fix, Firestore persistence API migrada | 17 Feb |
+| 45-48 | Panel de administración: stats globales, métricas, gestión de reportes, ofertas y usuarios, bloqueo/desbloqueo de cuentas | 26 Feb |
+| - | Sistema de reportes: reportar-modal.js reutilizable, botones en ofertas y perfil público, admin ver detalle completo (fotos, postulantes, perfil trabajador) | 26 Feb |
+| - | Bloqueo consistente: auth-guard.js (verificarBloqueo + manejarBloqueado), cuenta-suspendida.html, check en 10 páginas protegidas | 26 Feb |
 | - | UX: Bottom nav, dashboard por rol, logo, colores unificados | 22-28 Ene |
 | OB1 | Onboarding: externalizar CSS login/register, centrado, consistencia, UX mejoras | 03 Feb |
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
@@ -95,9 +101,16 @@ TOTAL:  23% del proyecto (44/194 tareas)
 | # | Tarea | Prioridad |
 |---|-------|-----------|
 | 40-44 | Testing y QA | Alta |
-| 45-48 | Panel de administración | Media | Ver `docs/PLAN_ADMIN_PANEL.md` |
+| 45-48 | Panel de administración | ✅ HECHO | Ver `docs/PLAN_ADMIN_PANEL.md` |
 | 35 | Accesibilidad WCAG 2.1 AA | Media |
 | 36 | Dark mode (opcional) | Baja |
+
+### Backlog Técnico (a futuro)
+
+| # | Tarea | Descripción | Prioridad |
+|---|-------|-------------|-----------|
+| BT1 | Expiración de sesión (30 días) | Guardar `loginTimestamp` en localStorage al login. En `auth-guard.js`, verificar en cada página protegida: si pasaron >30 días → signOut + redirect login. Sin backend, sin Firestore extra. | Media |
+| BT2 | Optimización de costos Firebase a escala | (1) Reemplazar `onSnapshot` por `getDoc` donde no se necesite tiempo real. (2) Revisar índices compuestos y agregar paginación (`limit` + cursor). (3) Verificar que `optimizarImagen()` se aplica en todos los flujos de subida. (4) Cachear resultado de `verificarBloqueo` en `sessionStorage` con TTL 5-10 min. (5) Desnormalizar datos críticos en documentos de aplicación para eliminar queries en cascada. | Baja (pre-escala) |
 
 ### Tareas Diferidas (7)
 - Tasks 18, 19, 20: Chat in-app (WhatsApp cubre la necesidad)
@@ -326,6 +339,7 @@ chambapp/
 │   │   ├── distance.js                # Cálculo de distancias
 │   │   ├── ubigeo-api.js              # API ubigeo Perú
 │   │   ├── sanitize.js                # Sanitización de datos
+│   │   ├── auth-guard.js              # verificarBloqueo + manejarBloqueado (sesión 25)
 │   │   ├── logger.js                  # Logger
 │   │   └── migrar-ofertas.js          # Migración de datos
 │   │
@@ -334,6 +348,7 @@ chambapp/
 │   │   ├── oferta-detalle.js          # Detalle de oferta compartido (3 páginas)
 │   │   ├── rating-input.js            # Input de calificación con estrellas
 │   │   ├── confirm-modal.js           # Modal confirmación (reemplaza confirm())
+│   │   ├── reportar-modal.js          # Modal reportar oferta/usuario (sesión 25)
 │   │   ├── bottom-nav.js              # Navegación inferior móvil
 │   │   ├── guided-tour.js             # Motor de guided tours
 │   │   ├── filtros-avanzados.js       # Entry point (legacy)
@@ -489,7 +504,12 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 19 Febrero 2026 (sesión 22)
+> **Última sesión:** 26 Febrero 2026 (sesión 25)
+
+### Implementaciones completadas (sesiones 24-25)
+- ✅ **Panel Admin (tasks 45-48):** stats globales, métricas, gestión de reportes/ofertas/usuarios, bloqueo de cuentas
+- ✅ **Sistema de Reportes:** `reportar-modal.js` reutilizable, botones en ofertas y perfil público, admin con detalle completo
+- ✅ **Bloqueo Consistente:** `auth-guard.js` + `cuenta-suspendida.html` + check en 10 páginas protegidas
 
 ### Refactorizaciones completadas
 - ✅ **JS modularizado:** 7 archivos >500 líneas → 41 módulos (0 archivos >500 líneas) + 2 módulos perfil-publico
@@ -507,6 +527,8 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **UX Dashboard Trabajador:** Actividad reciente (banner postulaciones aceptadas), smart sort (match categoría + distancia), filtros overhaul (solo tuerca visible, modal completo con Limpiar/Filtrar, badge "+").
 
 ### Sesiones
+- **Sesión 25 (26/02/26):** Sistema de reportes + bloqueo consistente. `js/components/reportar-modal.js`: modal reutilizable con motivos (fraude/spam/inapropiado/otro), guarda en colección Firestore `reportes`. Botón "🚩 Reportar oferta" en modal detalle (dashboard, mapa, mis-aplicaciones-trabajador). Botón "🚩 Reportar perfil" en perfil público (solo para usuarios auth ≠ dueño del perfil). Admin reportes: Ver Oferta y Ver Perfil muestran detalle completo con fotos vía `adminModal`. XSS prevention con `data-*` attributes en onclick. `js/utils/auth-guard.js`: `manejarBloqueado()` y `verificarBloqueo()`. `cuenta-suspendida.html`: página dedicada para usuarios bloqueados. Check bloqueado en 10 páginas protegidas (inline para pages con Firestore read propio, `verificarBloqueo` para el resto; páginas solo-localStorage migradas a `onAuthStateChanged`). Fix bug `historial-ofertas.js`: `cargarOfertas()` se llamaba cuando `!userDoc.exists()`. Backlog BT1 (sesión expiración 30 días) y BT2 (optimización costos Firebase) documentados en PROYECTO.md.
+- **Sesión 24 (26/02/26):** Panel de administración (tasks 45-48). `admin.html` + `js/admin/` (index, stats, metricas, reportes, ofertas, usuarios) + `css/admin.css`. Auth guard por UID hardcodeado. Gestión completa: estadísticas globales, métricas de crecimiento, reportes con acciones (resolver/ignorar), listado y bloqueo de ofertas y usuarios.
 - **Sesión 23 (19/02/26):** UX Dashboard Trabajador — Actividad reciente: banner verde con count de postulaciones aceptadas + CTA "Ver aplicaciones". Smart sort: ofertas con match de categoría del trabajador aparecen primero, luego el resto; ambos grupos ordenados por distancia (o fecha si sin ubicación). Filtros overhaul: barra básica eliminada, solo tuerca ⚙️ visible con badge "+" si hay filtros activos; modal/sheet completo con búsqueda + categorías + ordenar + ubicación + distancia + salario + fecha; filtros aplican solo al pulsar "Filtrar", "Limpiar" resetea y aplica inmediatamente.
 - **Sesión 22 (19/02/26):** Android text overflow — `flex-shrink: 0` en `.filtro-btn` de mis-aplicaciones-trabajador (pills se comprimían ignorando overflow-x:auto). Labels stats historial-ofertas abreviados ("Completadas"→"Complet.", "Caducadas"→"Caducad.") para caber en min-width:60px. Bump CSS `?v=1`.
 - **Sesión 21 (19/02/26):** iOS/Android safe-area fixes. Fórmula correcta: `max(Xrem, env(safe-area-inset-top, 0px))` no `calc(Xrem + env(...))`. Bug hero+border-radius+margin-negativo en WebKit (hero aparecía fuera del modal); fix con CSS `:has()` y margin-top:0. publicar-oferta.css tenía @media override que pisaba header-simple.css. dashboard-main.css revertido (estaba bien antes). Modal: padding-top + max-height con safe-areas para centrado correcto en iOS.
@@ -566,6 +588,8 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 2. **Tasks 45-48** - Panel de administración
 3. **Task 35** - Accesibilidad WCAG 2.1 AA
 4. **Task 36** - Dark mode (opcional)
+5. **BT1** - Expiración de sesión 30 días (auth-guard.js + loginTimestamp)
+6. **BT2** - Optimización costos Firebase (onSnapshot → getDoc, paginación, caché bloqueo, desnormalización)
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
@@ -590,6 +614,9 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - **Storage rules:** ofertas/ solo imágenes <5MB
 - **SW reload:** `controllerchange` solo recarga si `hadController` (evita recarga en primera instalación)
 - **Seguridad:** checklist de acciones manuales en `docs/SEGURIDAD.md`
+- **auth-guard.js:** `manejarBloqueado(auth)` limpia localStorage + signOut + redirect `cuenta-suspendida.html`. `verificarBloqueo(db, auth, uid)` fetch Firestore + llama manejarBloqueado si bloqueado. Usado en 10 páginas protegidas.
+- **Reportar modal:** `initReportarModal()` inyecta el modal al body una vez por página. `window.abrirReportarModal(tipo, objetoId, objetoTitulo)` lo abre. Guarda en colección Firestore `reportes` con campos: tipo, objetoId, objetoTitulo, reportadoPor, reportadoPorUid, motivo, descripcion, estado='pendiente', timestamp.
+- **Admin panel:** UID hardcodeado `XkBmgSWZKZeUyLKAyOn8GHmzOAb2` en index.js y login.js. Modales via `window.adminModal.abrirModal(titulo, html)`. Queries sin orderBy para evitar índices compuestos.
 
 ---
 
