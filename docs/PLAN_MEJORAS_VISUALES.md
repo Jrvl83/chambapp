@@ -10,6 +10,7 @@
 | Dashboard trabajador | `docs/archivo/chambaya-dashboard (1).html` |
 | Mis Postulaciones (trabajador) | `docs/archivo/chambaya-postulaciones.html` |
 | Explorar / Mapa de ofertas | `docs/archivo/chambaya-explorar.html` |
+| Perfil del trabajador (editable) | `docs/archivo/chambaya-perfil-trabajador.html` |
 
 Abrir en el navegador para comparar con la implementación real.
 

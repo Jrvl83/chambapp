@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Mi Perfil</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 200;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    position: relative;
+    z-index: 100;
+    flex-shrink: 0;
+  }
+  .status-time {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 14px;
+    color: #0F1419; padding-left: 6px;
+  }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* Header */
+  .header {
+    background: #fff;
+    padding: 10px 20px 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px; }
+  .logo-chamba { color: #0F1419; }
+  .logo-ya { color: #0066FF; }
+  .back-link { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px; color: #0066FF; }
+
+  /* Scroll */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    padding-bottom: 80px; /* space for floating btn */
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── HERO CARD ── */
+  .hero-card {
+    margin: 14px 14px 12px;
+    background: linear-gradient(135deg, #0066FF, #0047CC);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .hero-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .avatar-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, #93C5FD, #3B82F6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .avatar-initials {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .change-photo-btn {
+    background: #fff;
+    border-radius: 20px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .change-photo-btn span {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    color: #0066FF;
+  }
+
+  /* hero info */
+  .hero-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hero-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 7px;
+  }
+
+  .rating-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    padding: 4px 10px;
+    margin-bottom: 6px;
+  }
+
+  .rating-num {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+  }
+
+  .rating-reviews {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .hero-email {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .hero-badge {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 10.5px;
+    border-radius: 20px;
+    padding: 3px 10px;
+    color: #fff;
+  }
+
+  .badge-worker { background: rgba(255,255,255,0.2); }
+  .badge-complete { background: #00C48C; }
+
+  /* ── COMPLETITUD ── */
+  .completitud-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 0 14px 12px;
+    padding: 14px 16px;
+  }
+
+  .comp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .comp-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #0F1419;
+  }
+
+  .comp-pct {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #0066FF;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 12px;
+    background: #F1F5F9;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 80%;
+    background: linear-gradient(90deg, #0066FF, #00C48C);
+    border-radius: 20px;
+  }
+
+  .comp-hint {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #94A3B8;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 14px 12px;
+  }
+
+  .stat-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #0F1419;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: #718096;
+    text-align: center;
+  }
+
+  /* ── TABS ── */
+  .tabs-bar {
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .tabs-scroll {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 14px;
+  }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 14px 0;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .tab-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: #94A3B8;
+    padding-bottom: 8px;
+  }
+
+  .tab-item.active .tab-label { color: #0066FF; }
+
+  .tab-underline {
+    height: 2px;
+    width: 100%;
+    border-radius: 1px;
+    background: transparent;
+  }
+
+  .tab-item.active .tab-underline { background: #0066FF; }
+
+  /* ── FORM CARD ── */
+  .form-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 0 14px 12px;
+    padding: 16px;
+  }
+
+  .form-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #0F1419;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-field {
+    margin-bottom: 13px;
+  }
+
+  .field-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    color: #374151;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .required { color: #EF4444; }
+
+  .field-input {
+    width: 100%;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 13.5px;
+    color: #0F1419;
+    background: #FAFAFA;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .field-input:focus {
+    border-color: #0066FF;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,102,255,0.08);
+  }
+
+  .field-input.active-field {
+    border-color: #0066FF;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,102,255,0.08);
+  }
+
+  .textarea-wrap {
+    position: relative;
+  }
+
+  .field-textarea {
+    width: 100%;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    color: #0F1419;
+    background: #FAFAFA;
+    resize: none;
+    line-height: 1.5;
+    height: 74px;
+    outline: none;
+  }
+
+  .char-count {
+    text-align: right;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    color: #A0AEC0;
+    margin-top: 4px;
+  }
+
+  /* ── FLOATING SAVE BTN ── */
+  .float-save {
+    position: absolute;
+    bottom: 66px; /* above bottom nav */
+    left: 16px; right: 16px;
+    z-index: 90;
+  }
+
+  .save-btn {
+    width: 100%;
+    height: 48px;
+    background: #0066FF;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.35);
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    background: #fff;
+    border-top: 1px solid #E2E8F0;
+    padding: 6px 0 16px;
+    display: flex;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
+  }
+
+  .nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+  }
+
+  .nav-dot {
+    width: 4px; height: 4px;
+    background: #0066FF;
+    border-radius: 50%;
+    margin-top: 1px;
+  }
+
+  .nav-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 10px;
+    color: #A0AEC0;
+  }
+  .nav-tab.active .nav-label { color: #0066FF; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo"><span class="logo-chamba">Chamba</span><span class="logo-ya">Ya</span></div>
+      <span class="back-link">← Volver</span>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="scroll-content">
+
+      <!-- ── HERO CARD ── -->
+      <div class="hero-card">
+        <div class="hero-inner">
+          <!-- Avatar column -->
+          <div class="avatar-col">
+            <div class="avatar-circle">
+              <span class="avatar-initials">JP</span>
+            </div>
+            <button class="change-photo-btn">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Cambiar foto</span>
+            </button>
+          </div>
+
+          <!-- Info column -->
+          <div class="hero-info">
+            <div class="hero-name">Juan Pérez García</div>
+
+            <div class="rating-pill">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="rating-num">4.8</span>
+              <span style="color:rgba(255,255,255,0.5); font-size:12px;">·</span>
+              <span class="rating-reviews">24 reseñas</span>
+            </div>
+
+            <div class="hero-email">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              juan.perez@gmail.com
+            </div>
+
+            <div class="hero-badges">
+              <span class="hero-badge badge-worker">Trabajador</span>
+              <span class="hero-badge badge-complete">
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="display:inline;margin-right:2px;"><polyline points="2 6 5 9 10 3"/></svg>
+                Perfil Completo
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COMPLETITUD ── -->
+      <div class="completitud-card">
+        <div class="comp-header">
+          <span class="comp-title">Completitud del Perfil</span>
+          <span class="comp-pct">80%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="comp-hint">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" style="display:inline;margin-right:4px;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Agrega tu foto para completar tu perfil
+        </div>
+      </div>
+
+      <!-- ── STATS ROW ── -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div style="width:36px;height:36px;background:#EEF2FF;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="stat-num">12</span>
+          <span class="stat-label">Trabajos completados</span>
+        </div>
+        <div class="stat-card">
+          <div style="width:36px;height:36px;background:#EDFAF3;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <span class="stat-num" style="font-size:18px;">S/. 3,400</span>
+          <span class="stat-label">Ingresos aprox.</span>
+        </div>
+      </div>
+
+      <!-- ── TABS ── -->
+      <div class="tabs-bar">
+        <div class="tabs-scroll">
+          <div class="tab-item active">
+            <span class="tab-label">Datos</span>
+            <div class="tab-underline"></div>
+          </div>
+          <div class="tab-item">
+            <span class="tab-label">Fotos</span>
+            <div class="tab-underline"></div>
+          </div>
+          <div class="tab-item">
+            <span class="tab-label">Experiencia</span>
+            <div class="tab-underline"></div>
+          </div>
+          <div class="tab-item">
+            <span class="tab-label">Skills</span>
+            <div class="tab-underline"></div>
+          </div>
+          <div class="tab-item">
+            <span class="tab-label">Horario</span>
+            <div class="tab-underline"></div>
+          </div>
+          <div class="tab-item">
+            <span class="tab-label">Reseñas</span>
+            <div class="tab-underline"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FORM CARD ── -->
+      <div class="form-card">
+        <div class="form-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Información Personal
+        </div>
+
+        <!-- Nombre -->
+        <div class="form-field">
+          <label class="field-label">Nombre Completo <span class="required">*</span></label>
+          <div class="field-input active-field" style="display:flex;align-items:center;gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span style="font-family:'Inter',sans-serif;font-size:13.5px;color:#0F1419;">Juan Pérez García</span>
+          </div>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-field">
+          <label class="field-label">Teléfono <span class="required">*</span></label>
+          <div class="field-input" style="display:flex;align-items:center;gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.22 1.18 2 2 0 012.22 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+            <span style="font-family:'Inter',sans-serif;font-size:13.5px;color:#0F1419;">999 123 456</span>
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="form-field">
+          <label class="field-label">Ubicación</label>
+          <div class="field-input" style="display:flex;align-items:center;gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-family:'Inter',sans-serif;font-size:13.5px;color:#0F1419;">San Isidro, Lima</span>
+          </div>
+        </div>
+
+        <!-- Acerca de mí -->
+        <div class="form-field" style="margin-bottom:4px;">
+          <label class="field-label">Acerca de mí</label>
+          <div class="textarea-wrap">
+            <div class="field-textarea" style="display:block;padding:10px 12px;font-family:'Inter',sans-serif;font-size:12.5px;color:#374151;line-height:1.55;height:74px;overflow:hidden;background:#FAFAFA;border:1px solid #E2E8F0;border-radius:8px;">
+              Gasfitero con 8 años de experiencia en instalaciones residenciales y comerciales. Trabajo con garantía y materiales de calidad.
+            </div>
+          </div>
+          <div class="char-count">142/500</div>
+        </div>
+
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- ── FLOATING SAVE BUTTON ── -->
+    <div class="float-save">
+      <button class="save-btn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Guardar cambios
+      </button>
+    </div>
+
+    <!-- ── BOTTOM NAV ── -->
+    <div class="bottom-nav">
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="nav-label">Explorar</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        <span class="nav-label">Mis Apps</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-tab active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#0066FF" stroke="#0066FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="nav-dot"></div>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
