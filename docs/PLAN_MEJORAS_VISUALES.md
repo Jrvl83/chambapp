@@ -14,6 +14,7 @@
 | Perfil trabajador — tab Fotos | `docs/archivo/chambaya-fotos.html` |
 | Perfil trabajador — tab Reseñas | `docs/archivo/chambaya-resenas.html` |
 | Perfil trabajador — tab Skills | `docs/archivo/chambaya-skills-v2.html` |
+| Detalle de oferta (bottom sheet) | `docs/archivo/chambaya-detalle-oferta.html` |
 
 Abrir en el navegador para comparar con la implementación real.
 

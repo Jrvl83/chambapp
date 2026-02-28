@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Detalle de Oferta</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    background: #F8FAFC;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 300;
+  }
+
+  /* ── DASHBOARD LAYER (background, dimmed) ── */
+  .dashboard-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+  }
+
+  /* status bar bg */
+  .dash-statusbar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0;
+  }
+  .dash-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .dash-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  .dash-header {
+    background: #fff;
+    padding: 10px 20px 14px;
+    border-bottom: 1px solid #F0F4F8;
+    flex-shrink: 0;
+  }
+  .dash-header-row1 {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .dash-logo { font-family: 'Poppins'; font-weight: 700; font-size: 20px; }
+  .dash-logo-c { color: #0F1419; }
+  .dash-logo-y { color: #0066FF; }
+  .dash-bell {
+    width: 38px; height: 38px; background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: 1px solid #F0F4F8;
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .dash-greeting { font-family: 'Poppins'; font-weight: 700; font-size: 20px; color: #0F1419; margin-bottom: 2px; }
+  .dash-subtitle { font-family: 'Inter'; font-weight: 500; font-size: 12px; color: #FF6B00; display: flex; align-items: center; gap: 4px; }
+
+  .dash-content { flex: 1; padding: 14px 14px 0; overflow: hidden; }
+
+  /* Fake stats row */
+  .dash-stats { display: flex; gap: 8px; margin-bottom: 14px; }
+  .dash-stat {
+    flex: 1; background: #fff; border-radius: 12px; padding: 10px 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .dash-stat-num { font-family: 'Poppins'; font-weight: 800; font-size: 22px; color: #0F1419; line-height: 1; }
+  .dash-stat-label { font-family: 'Inter'; font-weight: 600; font-size: 9px; color: #718096; text-align: center; }
+
+  /* Fake section header */
+  .dash-section-hdr {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .dash-section-title { font-family: 'Poppins'; font-weight: 700; font-size: 14px; color: #0F1419; }
+  .dash-ver-todo { font-family: 'Inter'; font-weight: 500; font-size: 11px; color: #0066FF; }
+
+  /* Fake job cards */
+  .dash-job-card {
+    background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-left: 3px solid;
+  }
+  .djc-title { font-family: 'Poppins'; font-weight: 700; font-size: 13px; color: #0F1419; margin-bottom: 3px; }
+  .djc-meta { font-family: 'Inter'; font-weight: 400; font-size: 11px; color: #718096; }
+  .djc-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+  .djc-salary { font-family: 'Poppins'; font-weight: 700; font-size: 13px; color: #0F1419; }
+
+  /* ── OVERLAY ── */
+  .overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── BOTTOM SHEET ── */
+  .bottom-sheet {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    height: 88%;
+    z-index: 150;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+    padding-bottom: 32px;
+  }
+  .bottom-sheet::-webkit-scrollbar { display: none; }
+
+  /* ① Drag handle */
+  .drag-handle {
+    width: 40px; height: 4px;
+    background: #E2E8F0;
+    border-radius: 2px;
+    margin: 12px auto 16px;
+    display: block;
+  }
+
+  /* ② Offer header */
+  .offer-header {
+    padding: 0 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .offer-title-block { flex: 1; min-width: 0; }
+  .offer-title {
+    font-family: 'Poppins';
+    font-weight: 700;
+    font-size: 18px;
+    color: #0F1419;
+    line-height: 1.25;
+  }
+  .offer-pills {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+  }
+  .pill-cat {
+    background: #EEF4FF; color: #0066FF;
+    font-family: 'Inter'; font-weight: 600; font-size: 11px;
+    border-radius: 20px; padding: 3px 10px;
+  }
+  .pill-urgent {
+    background: #FFF3ED; color: #FF6B00;
+    font-family: 'Inter'; font-weight: 700; font-size: 11px;
+    border-radius: 20px; padding: 3px 10px;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .bookmark-btn {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border: 1.5px solid #E2E8F0; border-radius: 10px;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+
+  /* ③ Quick data */
+  .quick-data {
+    padding: 0 16px;
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .qd-item {
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'Inter'; font-weight: 500; font-size: 13px; color: #64748B;
+  }
+  .qd-sep { color: #CBD5E0; font-size: 14px; font-weight: 400; }
+
+  /* ④ Photo carousel */
+  .carousel-wrap {
+    margin-top: 16px;
+    position: relative;
+  }
+  .carousel-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+  .carousel-scroll::-webkit-scrollbar { display: none; }
+  .carousel-inner {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+  }
+  .photo-item {
+    width: 200px; height: 140px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    overflow: hidden;
+    position: relative;
+  }
+  .photo-item svg { width: 100%; height: 100%; display: block; }
+
+  .photo-counter {
+    position: absolute;
+    top: 8px; right: 24px;
+    background: rgba(0,0,0,0.45);
+    border-radius: 20px;
+    padding: 3px 8px;
+    font-family: 'Inter'; font-weight: 600; font-size: 11px; color: #fff;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .carousel-dots {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; margin-top: 8px;
+  }
+  .dot-active { width: 20px; height: 6px; background: #0066FF; border-radius: 3px; }
+  .dot-inactive { width: 6px; height: 6px; background: #E2E8F0; border-radius: 50%; }
+
+  /* ⑤ Divider */
+  .divider { height: 1px; background: #F1F5F9; margin: 16px 0; }
+
+  /* ⑥ Employer */
+  .section-label {
+    font-family: 'Inter'; font-weight: 600; font-size: 11px;
+    color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .employer-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 16px;
+  }
+  .employer-avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    background: #FFF3ED;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter'; font-weight: 700; font-size: 17px; color: #FF6B00;
+  }
+  .employer-info { flex: 1; min-width: 0; }
+  .employer-name { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; margin-bottom: 3px; }
+  .employer-meta { display: flex; align-items: center; gap: 4px; font-family: 'Inter'; font-weight: 500; font-size: 12px; color: #64748B; }
+  .employer-meta-dim { font-weight: 400; color: #94A3B8; }
+  .ver-perfil-btn {
+    border: 1.5px solid #0066FF; border-radius: 8px;
+    padding: 6px 12px; font-family: 'Inter'; font-weight: 600; font-size: 12px; color: #0066FF;
+    background: transparent; cursor: pointer; align-self: flex-start; flex-shrink: 0;
+  }
+
+  /* ⑧ Description */
+  .description-text {
+    font-family: 'Inter'; font-weight: 400; font-size: 14px;
+    color: #374151; line-height: 1.6;
+    padding: 0 16px;
+  }
+
+  /* ⑨ Details */
+  .details-block { padding: 0 16px; margin-top: 14px; }
+  .detail-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid #F8FAFC;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label { font-family: 'Inter'; font-weight: 500; font-size: 13px; color: #64748B; }
+  .detail-value { font-family: 'Inter'; font-weight: 600; font-size: 13px; color: #0F1419; }
+
+  /* ⑩ CTA block */
+  .cta-block { padding: 0 16px; margin-top: 8px; }
+  .cta-meta {
+    text-align: center;
+    font-family: 'Inter'; font-weight: 400; font-size: 12px; color: #94A3B8;
+    margin-bottom: 10px;
+  }
+  .cta-btn {
+    width: 100%; height: 52px;
+    background: #0066FF; border: none; border-radius: 12px;
+    color: #fff; font-family: 'Poppins'; font-weight: 600; font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.35);
+  }
+
+  /* padded sections */
+  .padded { padding: 0 16px; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- ── DASHBOARD LAYER ── -->
+    <div class="dashboard-bg">
+      <!-- status bar -->
+      <div class="dash-statusbar">
+        <span class="dash-time">9:41</span>
+        <div class="dash-icons">
+          <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+        </div>
+      </div>
+
+      <!-- dash header -->
+      <div class="dash-header">
+        <div class="dash-header-row1">
+          <div class="dash-logo"><span class="dash-logo-c">Chamba</span><span class="dash-logo-y">Ya</span></div>
+          <div class="dash-bell">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F1419" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+        </div>
+        <div class="dash-greeting">Buenos días, Juan</div>
+        <div class="dash-subtitle">
+          <div style="width:5px;height:5px;background:#FF6B00;border-radius:50%;flex-shrink:0;"></div>
+          Tienes 2 respuestas nuevas
+        </div>
+      </div>
+
+      <!-- dash content -->
+      <div class="dash-content">
+        <!-- stats row -->
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <div class="dash-stat-num" style="color:#6366F1;">8</div>
+            <div class="dash-stat-label">Postulaciones</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-num" style="color:#FF6B00;">3</div>
+            <div class="dash-stat-label">Pendientes</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-num" style="color:#00C48C;">4</div>
+            <div class="dash-stat-label">Aceptadas</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-num" style="color:#9B59B6;">1</div>
+            <div class="dash-stat-label">Completadas</div>
+          </div>
+        </div>
+
+        <!-- section header -->
+        <div class="dash-section-hdr">
+          <span class="dash-section-title">Recomendadas para ti</span>
+          <span class="dash-ver-todo">Ver todo</span>
+        </div>
+
+        <!-- fake job cards -->
+        <div class="dash-job-card" style="border-left-color:#0EA5E9;">
+          <div class="djc-title">Gasfitero para Instalación</div>
+          <div class="djc-meta">Constructora Andina SAC · Miraflores</div>
+          <div class="djc-bottom">
+            <span class="djc-salary">S/. 120/día</span>
+          </div>
+        </div>
+        <div class="dash-job-card" style="border-left-color:#F97316;">
+          <div class="djc-title">Operario de Carga y Descarga</div>
+          <div class="djc-meta">Depósito Central Surquillo · Surquillo</div>
+          <div class="djc-bottom">
+            <span class="djc-salary">S/. 90/día</span>
+          </div>
+        </div>
+        <div class="dash-job-card" style="border-left-color:#A855F7;">
+          <div class="djc-title">Personal de Limpieza — Turno Noche</div>
+          <div class="djc-meta">Centro Empresarial Torre Lima · San Isidro</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OVERLAY ── -->
+    <div class="overlay"></div>
+
+    <!-- ── BOTTOM SHEET ── -->
+    <div class="bottom-sheet">
+
+      <!-- ① Drag handle -->
+      <div class="drag-handle"></div>
+
+      <!-- ② Offer header -->
+      <div class="offer-header">
+        <div class="offer-title-block">
+          <div class="offer-title">Instalación de tuberías de agua</div>
+          <div class="offer-pills">
+            <span class="pill-cat">Gasfitería</span>
+            <span class="pill-urgent">
+              <svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="#FF6B00"/></svg>
+              URGENTE
+            </span>
+          </div>
+        </div>
+        <button class="bookmark-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        </button>
+      </div>
+
+      <!-- ③ Quick data -->
+      <div class="quick-data">
+        <div class="qd-item">
+          <!-- map-pin SVG -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          1.2 km
+        </div>
+        <span class="qd-sep">·</span>
+        <div class="qd-item">
+          <!-- money/tag icon -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          S/. 80 / hora
+        </div>
+        <span class="qd-sep">·</span>
+        <div class="qd-item">
+          <!-- clock icon -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Hace 2 horas
+        </div>
+      </div>
+
+      <!-- ④ Photo carousel -->
+      <div class="carousel-wrap">
+        <!-- counter over first photo -->
+        <div class="photo-counter">1 / 3</div>
+
+        <div class="carousel-scroll">
+          <div class="carousel-inner">
+
+            <!-- Foto 1: baño con tuberías expuestas -->
+            <div class="photo-item">
+              <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- background: tiled wall -->
+                <rect width="200" height="140" fill="#E8F4FD"/>
+                <!-- wall tiles grid -->
+                <line x1="0" y1="28" x2="200" y2="28" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="0" y1="56" x2="200" y2="56" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="0" y1="84" x2="200" y2="84" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="0" y1="112" x2="200" y2="112" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="40" y1="0" x2="40" y2="140" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="80" y1="0" x2="80" y2="140" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="120" y1="0" x2="120" y2="140" stroke="#CCDDE8" stroke-width="0.8"/>
+                <line x1="160" y1="0" x2="160" y2="140" stroke="#CCDDE8" stroke-width="0.8"/>
+
+                <!-- main horizontal pipe (hot, red tint) -->
+                <rect x="20" y="42" width="160" height="10" rx="5" fill="#B0C8D8" stroke="#8AAFC4" stroke-width="1"/>
+                <!-- main horizontal pipe (cold, blue tint) -->
+                <rect x="20" y="62" width="160" height="10" rx="5" fill="#A8C0D0" stroke="#80A8C0" stroke-width="1"/>
+
+                <!-- pipe vertical left -->
+                <rect x="30" y="36" width="10" height="44" rx="5" fill="#9CB8CC" stroke="#7AA0B8" stroke-width="1"/>
+                <!-- pipe vertical right -->
+                <rect x="160" y="36" width="10" height="44" rx="5" fill="#9CB8CC" stroke="#7AA0B8" stroke-width="1"/>
+
+                <!-- valve left (circular) -->
+                <circle cx="35" cy="43" r="7" fill="#7A9CB4" stroke="#5A84A0" stroke-width="1.2"/>
+                <line x1="30" y1="43" x2="40" y2="43" stroke="#D0E4F0" stroke-width="1.5"/>
+                <!-- valve right -->
+                <circle cx="165" cy="63" r="7" fill="#7A9CB4" stroke="#5A84A0" stroke-width="1.2"/>
+                <line x1="160" y1="63" x2="170" y2="63" stroke="#D0E4F0" stroke-width="1.5"/>
+
+                <!-- label tape on pipe -->
+                <rect x="85" y="60" width="30" height="8" rx="2" fill="#FFEFC0" opacity="0.8"/>
+
+                <!-- floor -->
+                <rect x="0" y="105" width="200" height="35" fill="#D8E8F4"/>
+                <!-- lavabo (sink silhouette) -->
+                <rect x="50" y="108" width="100" height="22" rx="6" fill="#EAF3FB" stroke="#B0C8D8" stroke-width="1.5"/>
+                <rect x="90" y="110" width="20" height="18" rx="3" fill="#C8DDE8" stroke="#A0C0D0" stroke-width="1"/>
+                <!-- drain -->
+                <circle cx="100" cy="126" r="4" fill="#A8C0D0" stroke="#88A8BC" stroke-width="1"/>
+                <!-- faucet -->
+                <rect x="96" y="105" width="8" height="12" rx="2" fill="#B0C8D8" stroke="#8AAFC4" stroke-width="1"/>
+                <circle cx="100" cy="104" r="5" fill="#A0B8CC" stroke="#7A9CB4" stroke-width="1.2"/>
+              </svg>
+            </div>
+
+            <!-- Foto 2: herramientas sobre piso (cenital) -->
+            <div class="photo-item">
+              <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- floor tiles beige -->
+                <rect width="200" height="140" fill="#F5F0E8"/>
+                <!-- tile grid -->
+                <line x1="0" y1="35" x2="200" y2="35" stroke="#DDD5C8" stroke-width="0.8"/>
+                <line x1="0" y1="70" x2="200" y2="70" stroke="#DDD5C8" stroke-width="0.8"/>
+                <line x1="0" y1="105" x2="200" y2="105" stroke="#DDD5C8" stroke-width="0.8"/>
+                <line x1="50" y1="0" x2="50" y2="140" stroke="#DDD5C8" stroke-width="0.8"/>
+                <line x1="100" y1="0" x2="100" y2="140" stroke="#DDD5C8" stroke-width="0.8"/>
+                <line x1="150" y1="0" x2="150" y2="140" stroke="#DDD5C8" stroke-width="0.8"/>
+
+                <!-- shadow under tools -->
+                <ellipse cx="100" cy="72" rx="70" ry="40" fill="rgba(0,0,0,0.06)"/>
+
+                <!-- wrench (llave inglesa) — centered -->
+                <g transform="rotate(-35, 78, 65)">
+                  <rect x="62" y="58" width="32" height="8" rx="4" fill="#8A9AB0" stroke="#6A7A90" stroke-width="1"/>
+                  <!-- jaw open part -->
+                  <rect x="58" y="54" width="10" height="16" rx="2" fill="#8A9AB0" stroke="#6A7A90" stroke-width="1"/>
+                  <rect x="58" y="56" width="6" height="4" rx="1" fill="#C8D4E0"/>
+                  <rect x="58" y="64" width="6" height="4" rx="1" fill="#C8D4E0"/>
+                </g>
+
+                <!-- copper fitting (T-piece) -->
+                <g transform="translate(125, 52)">
+                  <rect x="-16" y="-5" width="32" height="10" rx="5" fill="#C87941" stroke="#A05A20" stroke-width="1.2"/>
+                  <rect x="-5" y="-14" width="10" height="20" rx="5" fill="#C87941" stroke="#A05A20" stroke-width="1.2"/>
+                  <!-- shine -->
+                  <rect x="-12" y="-2" width="8" height="4" rx="2" fill="#E09858" opacity="0.6"/>
+                </g>
+
+                <!-- teflon tape roll -->
+                <g transform="translate(80, 95)">
+                  <circle cx="0" cy="0" r="18" fill="#E8EEF5" stroke="#B0BCC8" stroke-width="1.5"/>
+                  <circle cx="0" cy="0" r="10" fill="#F0F4F8" stroke="#C8D0D8" stroke-width="1"/>
+                  <circle cx="0" cy="0" r="4" fill="#B8C4D0"/>
+                  <!-- tape spiral suggestion -->
+                  <path d="M-14,0 A14,14 0 0,1 0,-14" stroke="#D0DCE8" stroke-width="2" fill="none"/>
+                  <path d="M14,0 A14,14 0 0,1 0,14" stroke="#D0DCE8" stroke-width="2" fill="none"/>
+                </g>
+
+                <!-- small pipe section -->
+                <rect x="130" y="88" width="40" height="14" rx="7" fill="#9CB8CC" stroke="#7A9CB4" stroke-width="1.2"/>
+                <circle cx="130" cy="95" r="7" fill="#8AAFC4" stroke="#6A98B0" stroke-width="1"/>
+                <circle cx="170" cy="95" r="7" fill="#8AAFC4" stroke="#6A98B0" stroke-width="1"/>
+              </svg>
+            </div>
+
+            <!-- Foto 3: fachada exterior con medidor de agua -->
+            <div class="photo-item">
+              <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- sky -->
+                <rect width="200" height="60" fill="#D8EAF8"/>
+                <!-- clouds -->
+                <ellipse cx="50" cy="22" rx="28" ry="10" fill="white" opacity="0.7"/>
+                <ellipse cx="68" cy="18" rx="18" ry="8" fill="white" opacity="0.6"/>
+                <ellipse cx="150" cy="30" rx="22" ry="9" fill="white" opacity="0.65"/>
+
+                <!-- ground -->
+                <rect x="0" y="120" width="200" height="20" fill="#B8C8A8"/>
+
+                <!-- brick wall background -->
+                <rect x="0" y="55" width="200" height="70" fill="#D4C4B0"/>
+                <!-- brick rows -->
+                <!-- row 1 -->
+                <rect x="2" y="57" width="44" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <rect x="50" y="57" width="44" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <rect x="98" y="57" width="44" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <rect x="146" y="57" width="52" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <!-- row 2 (offset) -->
+                <rect x="0" y="72" width="24" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="28" y="72" width="44" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="76" y="72" width="44" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="124" y="72" width="44" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="172" y="72" width="28" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <!-- row 3 -->
+                <rect x="2" y="87" width="44" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <rect x="50" y="87" width="44" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <rect x="98" y="87" width="44" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <rect x="146" y="87" width="52" height="12" rx="1" fill="#C8B49A" stroke="#B8A488" stroke-width="0.6"/>
+                <!-- row 4 partial -->
+                <rect x="0" y="102" width="24" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="28" y="102" width="44" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="76" y="102" width="44" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+                <rect x="124" y="102" width="76" height="12" rx="1" fill="#BEA888" stroke="#AE9878" stroke-width="0.6"/>
+
+                <!-- water meter box -->
+                <rect x="50" y="62" width="52" height="44" rx="3" fill="#909898" stroke="#787F7F" stroke-width="1.5"/>
+                <rect x="53" y="65" width="46" height="38" rx="2" fill="#7A8484"/>
+                <!-- meter display window -->
+                <rect x="58" y="70" width="36" height="14" rx="2" fill="#D0E8D8" stroke="#A0B8A8" stroke-width="1"/>
+                <!-- meter digits (abstract) -->
+                <rect x="61" y="73" width="6" height="8" rx="1" fill="#384848"/>
+                <rect x="69" y="73" width="6" height="8" rx="1" fill="#384848"/>
+                <rect x="77" y="73" width="6" height="8" rx="1" fill="#384848"/>
+                <rect x="85" y="73" width="6" height="8" rx="1" fill="#384848"/>
+                <!-- meter dial hint -->
+                <circle cx="76" cy="91" r="7" fill="#5A6868" stroke="#484F4F" stroke-width="1"/>
+                <line x1="76" y1="88" x2="79" y2="93" stroke="#A0B8A8" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- box bolts -->
+                <circle cx="54" cy="66" r="2" fill="#606868"/>
+                <circle cx="100" cy="66" r="2" fill="#606868"/>
+                <circle cx="54" cy="104" r="2" fill="#606868"/>
+                <circle cx="100" cy="104" r="2" fill="#606868"/>
+
+                <!-- vertical pipe on right -->
+                <rect x="130" y="48" width="12" height="76" rx="6" fill="#8A9898" stroke="#6A7878" stroke-width="1.2"/>
+                <!-- pipe collar/bracket -->
+                <rect x="126" y="72" width="20" height="8" rx="2" fill="#707878" stroke="#586060" stroke-width="1"/>
+                <!-- pipe cap top -->
+                <rect x="128" y="44" width="16" height="10" rx="3" fill="#808888" stroke="#6A7070" stroke-width="1"/>
+              </svg>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- dots -->
+        <div class="carousel-dots">
+          <div class="dot-active"></div>
+          <div class="dot-inactive"></div>
+          <div class="dot-inactive"></div>
+        </div>
+      </div>
+
+      <!-- ⑤ Divider -->
+      <div class="divider"></div>
+
+      <!-- ⑥ Employer -->
+      <div class="padded">
+        <div class="section-label">Empleador</div>
+        <div class="employer-card" style="padding:0;">
+          <div class="employer-avatar">MR</div>
+          <div class="employer-info">
+            <div class="employer-name">Miguel Ramos Torres</div>
+            <div class="employer-meta">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>4.6</span>
+              <span style="color:#CBD5E0;margin:0 2px;">·</span>
+              <span class="employer-meta-dim">12 contrataciones</span>
+            </div>
+          </div>
+          <button class="ver-perfil-btn">Ver perfil</button>
+        </div>
+      </div>
+
+      <!-- ⑦ Divider -->
+      <div class="divider"></div>
+
+      <!-- ⑧ Description -->
+      <div class="padded">
+        <div class="section-label">Descripción</div>
+        <p class="description-text">
+          Se requiere gasfitero con experiencia para instalación completa de tuberías de agua fría y caliente en departamento de 3 habitaciones. Trabajo en Miraflores, zona San Antonio. Incluye prueba hidráulica al finalizar.
+        </p>
+      </div>
+
+      <!-- ⑨ Details -->
+      <div class="details-block">
+        <div class="section-label" style="margin-top:14px;">Detalles</div>
+
+        <div class="detail-row">
+          <span class="detail-label">Duración estimada</span>
+          <span class="detail-value">1 día</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Vacantes</span>
+          <span class="detail-value">1 persona</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Modalidad</span>
+          <span class="detail-value">Presencial</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Zona</span>
+          <span class="detail-value">Miraflores, Lima</span>
+        </div>
+      </div>
+
+      <!-- ⑩ CTA -->
+      <div class="cta-block" style="margin-top:16px;">
+        <p class="cta-meta">Expira en 3 días · 4 postulantes</p>
+        <button class="cta-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Postular ahora
+        </button>
+      </div>
+
+    </div><!-- end bottom-sheet -->
+
+  </div>
+</div>
+
+</body>
+</html>
