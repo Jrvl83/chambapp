@@ -2,11 +2,15 @@
 
 **Creado:** 27 Febrero 2026
 **Última actualización:** 27 Febrero 2026
-**Referencia de diseño:** `docs/archivo/chambaya-dashboard (1).html` (mockup v2 — identidad azul)
 
-> **Dirección visual confirmada:** App de trabajo seria.
-> Color primario #0066FF (azul) como base de confianza y profesionalismo.
-> Naranja #FF6B00 reservado exclusivamente para urgencia y estados pendientes.
+## REFERENCIA DE DISEÑO
+
+> **Archivo:** `docs/archivo/chambaya-dashboard (1).html`
+> Abrir en el navegador para comparar con cualquier implementación.
+
+**Dirección visual confirmada:** App de trabajo seria.
+Color primario #0066FF (azul) como base de confianza y profesionalismo.
+Naranja #FF6B00 reservado exclusivamente para urgencia y estados pendientes.
 
 ---
 
