@@ -829,7 +829,7 @@ onAuthStateChanged(auth, async (user) => {
 
 ---
 
-## Qué NO entra en este plan
+## Qué NO entra en este plan (implementado en Fase 2)
 
 - Panel multi-admin / sistema de roles → Fase 2
 - Emails automáticos al moderar → Fase 2
@@ -837,6 +837,17 @@ onAuthStateChanged(auth, async (user) => {
 - Exportar datos a CSV → Fase 2
 - Historial de acciones del admin en UI → solo en Firestore (`auditoria`), sin vista por ahora
 - Integración con pasarela de pago → plan separado; el sistema de planes admin es el precursor que define el modelo de datos
+
+## Nuevas features admin — Fase 2 (27/02/26)
+
+| Task | Descripción | Detalle |
+|------|-------------|---------|
+| **F2-C1** | Gestión de planes Premium + sorteos | `js/admin/planes.js` — modal otorgar/extender premium, historial con origen (pago/admin/sorteo), sorteo Fisher-Yates con confirmación y batch Promise.all() |
+| **F2-C2** | Verificación de antecedentes | Solo Premium. Upload certificado PNP/Poder Judicial → Storage. Admin aprueba/rechaza. Badge "Verificado ✓" en perfil público, cards candidatos. Vigencia 12 meses. |
+| **F2-C3** | Categorías dinámicas | Nueva tab "Categorías". Colección `categorias/{slug}` (nombre, icono, color, orden, activa). CRUD completo. App carga desde Firestore con caché sessionStorage TTL 1h. Reemplaza hardcode en constants.js. |
+| **F2-C4** | Configuración global | Nueva tab "Configuración". Single doc `admin/config`. Campos: duracionOfertaDias(14), maxFotosOferta(5), maxFotosPortfolio(10), maxVacantesOferta(20), salarioMaxFiltro(5000), textoNotifNuevaApp, textoNotifAceptado. |
+
+> **F2-C3 y F2-C4 implementar juntos** — mismo patrón: Firestore → caché sessionStorage → fallback a defaults.
 
 ---
 

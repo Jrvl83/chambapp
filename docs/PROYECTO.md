@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAYA (ex-ChambApp)
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 26 Febrero 2026 (sesión 25)
+**Última actualización:** 27 Febrero 2026 (sesión 26)
 
 ---
 
@@ -31,12 +31,12 @@ Pagos:     Culqi (pendiente integración)
 ## PROGRESO ACTUAL
 
 ```
-FASE 1: ████████████████████████████░░ 84% (52/62 tareas)
+FASE 1: ██████████████████████████████ 100% ✅ COMPLETADA
 FASE 2: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 3: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 FASE 4: ░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0% (0/44 tareas)
 
-TOTAL:  27% del proyecto (52/194 tareas)
+TOTAL:  32% del proyecto (62/194 tareas)
 ```
 
 > **Nota:** Fase 1 incluye 48 tareas numeradas (1-48) + 3 extras (OB1, GT1, V1) + Sprint G1-G6 (6) + tareas nuevas (49-51) = 62 tareas totales.
@@ -96,19 +96,20 @@ TOTAL:  27% del proyecto (52/194 tareas)
 | GT1 | Centralizar guided tours: 4 archivos → 2, fix selectores rotos, UX mejorada | 04 Feb |
 | V1 | Vacantes múltiples: 1-20 por oferta, multi-aceptación con transaction, completar individual | 04 Feb |
 
-### Tareas Pendientes (11)
+### Tareas Pendientes (0) — FASE COMPLETADA ✅
 
-| # | Tarea | Prioridad |
-|---|-------|-----------|
-| 40-44 | Testing y QA | Alta |
-| 45-48 | Panel de administración | ✅ HECHO | Ver `docs/PLAN_ADMIN_PANEL.md` |
-| 35 | Accesibilidad WCAG 2.1 AA | Media |
-| 36 | Dark mode (opcional) | Baja |
+| # | Tarea | Estado |
+|---|-------|--------|
+| 40-44 | Testing y QA | ✅ HECHO |
+| 45-48 | Panel de administración | ✅ HECHO |
+| 35 | Accesibilidad WCAG 2.1 AA | ⏩ Diferida (post-lanzamiento) |
+| 36 | Dark mode | ⏩ Diferida (opcional) |
 
 ### Backlog Técnico (a futuro)
 
 | # | Tarea | Descripción | Prioridad |
 |---|-------|-------------|-----------|
+| BT3 | **Distribución nativa Android + iOS (Capacitor + Codemagic)** | **Cambio de foco estratégico: salir en Google Play Store y App Store en lugar de solo PWA.** Usar Capacitor (Ionic) para envolver la app web existente en una shell nativa sin reescribir JS/HTML/CSS. **Stack de build:** Codemagic como CI/CD en Mac virtual (no se necesita Mac físico). **Cuentas requeridas (ninguna creada aún):** Apple Developer Program $99/año (apple.com) + Google Play Developer $25 única vez. **Plugins a migrar:** FCM web → `@capacitor-firebase/messaging`, Geolocation API → `@capacitor/geolocation`, `<input type="file">` → `@capacitor/camera`. **Pasos técnicos:** (1) `npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios`. (2) `npx cap init` + `npx cap add android` + `npx cap add ios`. (3) Migrar plugins nativos. (4) Ajustar splash screen, iconos y deep links. (5) Conectar repo a Codemagic + configurar `codemagic.yaml`. (6) Subir certificados Apple a Codemagic (lo más complejo — portal de Apple es confuso). (7) Build Android → AAB → Google Play internal track. (8) Build iOS → IPA → App Store review (1-3 días). **Costos estimados:** Codemagic free tier 500 min/mes (suficiente en esta etapa), pago ~$45/mes solo si se supera. **Dificultad real:** la parte técnica es moderada; lo más confuso es el portal de certificados de Apple (primera vez). | 🔴 CRÍTICA |
 | BT1 | Expiración de sesión (30 días) | Guardar `loginTimestamp` en localStorage al login. En `auth-guard.js`, verificar en cada página protegida: si pasaron >30 días → signOut + redirect login. Sin backend, sin Firestore extra. | Media |
 | BT2 | Optimización de costos Firebase a escala | (1) Reemplazar `onSnapshot` por `getDoc` donde no se necesite tiempo real. (2) Revisar índices compuestos y agregar paginación (`limit` + cursor). (3) Verificar que `optimizarImagen()` se aplica en todos los flujos de subida. (4) Cachear resultado de `verificarBloqueo` en `sessionStorage` con TTL 5-10 min. (5) Desnormalizar datos críticos en documentos de aplicación para eliminar queries en cascada. | Baja (pre-escala) |
 
@@ -214,12 +215,63 @@ css/introjs-custom.css          → Estilos personalizados (existente, mejorado)
 
 ## FASES 2-4 (Resumen)
 
-### Fase 2: Diferenciación y Premium (44 tareas | 1 mes)
-- Sistema Freemium (5 apps/mes gratis, ilimitado S/.20/mes)
-- Verificación DNI
-- Dashboard estadísticas
-- Matching inteligente
-- Sistema favoritos
+### Fase 2: Diferenciación y Premium (0% — 24 tareas definidas, reordenada 27/02/26)
+
+> Reordenada 27/02/26: construir todo primero, publicar en stores al final.
+> Motivo: (1) lanzar con freemium desde el día 1 evita que usuarios se acostumbren a todo gratis,
+> (2) cada update en App Store requiere review Apple de 1-3 días — mejor llegar completo.
+
+---
+
+#### BLOQUE A — Preparación (hacer primero, en paralelo con features)
+
+| # | Tarea | Descripción | Estado |
+|---|-------|-------------|--------|
+| F2-A1 | **Registrar dominio chambaya.com** | Registrar en Namecheap o GoDaddy (~$12/año). Evaluar también chambaya.pe (dominio peruano, más local). Apuntar DNS a Firebase Hosting (`firebase hosting:sites`). **Hacerlo YA** — es prerequisito para el flujo de pago Premium y para las fichas de stores. | Pendiente |
+| F2-A2 | Crear cuentas en stores | Apple Developer Program ($99/año) + Google Play Developer ($25). Hacerlo YA porque Apple puede tardar días en aprobar la cuenta. | Pendiente |
+| F2-A3 | Integrar Capacitor | `npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios` + `npx cap init` + `npx cap add android/ios` | Pendiente |
+| F2-A4 | Migrar plugins nativos | FCM web → `@capacitor-firebase/messaging`. Geolocation API → `@capacitor/geolocation`. `<input type="file">` → `@capacitor/camera` | Pendiente |
+| F2-A5 | Assets nativos | Splash screen + iconos en todos los tamaños requeridos por Android (mipmap) e iOS (Assets.xcassets). Adaptar logo CY. | Pendiente |
+| F2-A6 | Deep links | Configurar URL scheme (`chambaya://`) y App Links (Android) / Universal Links (iOS) | Pendiente |
+| F2-A7 | Configurar Codemagic | Conectar repo GitHub + `codemagic.yaml` + subir certificados Apple + keystore Android | Pendiente |
+
+---
+
+#### BLOQUE B — Features y monetización (construir antes de publicar)
+
+| # | Tarea | Descripción | Estado |
+|---|-------|-------------|--------|
+| F2-B1 | Expiración de sesión | `loginTimestamp` en localStorage al login. Check en `auth-guard.js`: si >30 días → signOut + redirect login. (era BT1) | Pendiente |
+| F2-B2 | Sistema favoritos — trabajador | Ícono bookmark en cards de oferta. Colección `favoritos` en Firestore por usuario. Nueva sección "Guardadas" en mis-aplicaciones-trabajador. | Pendiente |
+| F2-B3 | Sistema favoritos — empleador | Ícono bookmark en perfil público de trabajador. Sección "Talentos guardados" en dashboard empleador. | Pendiente |
+| F2-B4 | Dashboard estadísticas trabajador | Página o sección con: total postulaciones, tasa de aceptación, calificación promedio, categorías más aplicadas, historial visual. | Pendiente |
+| F2-B5 | Matching inteligente | Ordenar ofertas por score: categoría del trabajador (peso alto) + distancia (peso medio) + salario (peso bajo). Badge "Recomendada para ti". | Pendiente |
+| F2-B6 | Verificación DNI | Integrar API RENIEC o similar. Badge "Verificado ✓" en perfil público. Aumenta confianza del empleador. | Pendiente |
+| F2-B7 | Sistema Freemium | Límite de 5 chambas **concluidas** (no postulaciones, no mensual — límite único vitalicio). Campo `chambasCompletadas` en Firestore en el perfil del trabajador. Al marcar una chamba como completada, incrementar contador. Al llegar a 5, bloquear nuevas postulaciones y mostrar modal de upgrade con instrucciones para ir a la web (ver F2-B8). | Pendiente |
+| F2-B8 | Página web `/premium` (chambaya.com/premium) | **Nueva página en el proyecto web existente** (ya hospedado en Firebase). Detecta si el usuario tiene sesión activa via Firebase Auth. Si no está logueado → redirect a login.html con `?redirect=premium`. Si está logueado → muestra beneficios Premium + formulario de pago Culqi (S/.20/mes). Al confirmar pago, Cloud Function webhook de Culqi actualiza `plan: 'premium'` + `premiumDesde` en Firestore. La app nativa detecta el cambio via `onSnapshot` y desbloquea al instante. | Pendiente |
+| F2-B9 | Modal de upgrade en app (estilo Spotify) | Modal que aparece al intentar postular con 5 chambas ya concluidas. Muestra beneficios Premium + instrucciones para ir a chambaya.com/premium. **iOS:** URL como texto plano (Apple prohíbe links directos a páginas de pago externas). **Android:** botón "Activar Premium" que abre el navegador directamente a chambaya.com/premium. | Pendiente |
+| F2-B10 | UI Premium | Badge "PRO" en perfil trabajador. Destacar perfil en búsquedas de empleadores (aparece primero). Ocultar modal de límite. | Pendiente |
+
+---
+
+#### BLOQUE C — Admin: features post-pagos (después de implementar freemium)
+
+| # | Tarea | Descripción | Estado |
+|---|-------|-------------|--------|
+| F2-C1 | Admin — Gestión de planes Premium (Task 46b) | `js/admin/planes.js`. Modal en tab Usuarios para otorgar/extender premium manualmente con duración elegida (1/2/3/6 meses) y nota interna. Historial de cambios (`premiumHistorial` array con origen: `pago | admin | sorteo`). Feature sorteo: elegir N ganadores al azar de la lista filtrada visible, modal confirmación, asignación en batch con `Promise.all()`. Modelo de datos: `plan`, `premiumHasta`, `premiumHistorial` en doc usuario. | Pendiente |
+| F2-C2 | Admin — Verificación de antecedentes (Task 46c) | Solo para trabajadores Premium. Botón "Solicitar verificación" en perfil trabajador. Sube certificado PNP/Poder Judicial a Storage. Estado "En revisión ⏳". Admin aprueba/rechaza desde sub-vista "Verificaciones" en tab Usuarios. Al aprobar: badge "Verificado ✓" en perfil público, perfil propio y cards de candidatos. Vigencia 12 meses. Campos: `verificado`, `verificacionEstado`, `verificacionHasta`, `verificacionDoc`. | Pendiente |
+| F2-C3 | Admin — Gestión dinámica de categorías | Nueva tab "Categorías" en panel admin. Colección Firestore `categorias/{slug}` con campos: `nombre`, `icono` (emoji), `color` (hex), `orden` (int), `activa` (bool). Admin puede crear, editar, activar/desactivar categorías. Desactivar oculta la categoría en la app sin borrar ofertas existentes. **Cambio en la app:** `js/components/filtros-avanzados/constants.js` deja de hardcodear — todas las páginas que usan categorías (filtros, publicar-oferta, dashboard matching) las cargan desde Firestore al iniciar. Caché en `sessionStorage` con TTL 1 hora para no hacer reads en cada página. Firestore rules: solo admin puede escribir en `categorias`, todos pueden leer. | Pendiente |
+| F2-C4 | Admin — Configuración global de la app | Nueva tab "Configuración" en panel admin. Colección Firestore `admin/config` (single doc). Admin edita y guarda — la app lee al iniciar con caché `sessionStorage` TTL 1h y fallback a valores por defecto si Firestore falla. **Campos configurables:** (1) `duracionOfertaDias` (default: 14) — vigencia de ofertas activas; al cambiar afecta nuevas ofertas y Cloud Function de caducidad. (2) `maxFotosOferta` (default: 5) — máximo de fotos al publicar oferta; en Premium podría ser mayor. (3) `maxFotosPortfolio` (default: 10) — máximo de fotos en portfolio del trabajador. (4) `maxVacantesOferta` (default: 20) — máximo de vacantes por oferta. (5) `salarioMaxFiltro` (default: 5000) — techo del slider salarial en filtros. (6) `textoNotifNuevaApp` y `textoNotifAceptado` — copy de las notificaciones push (evita redesplegar Cloud Functions para cambiar texto). **Seguridad:** Firestore rules: solo admin puede leer/escribir `admin/config`. La app lee via Cloud Function o con regla especial de solo lectura pública. | Pendiente |
+
+---
+
+#### BLOQUE D — Publicación en stores (cuando todo lo anterior esté listo)
+
+| # | Tarea | Descripción | Estado |
+|---|-------|-------------|--------|
+| F2-D1 | Build interno + QA nativo | Build Android (AAB) → Google Play internal testing. Build iOS (IPA) → TestFlight. Verificar funcionalidad completa en dispositivo real. | Pendiente |
+| F2-D2 | Publicar Android | Google Play: internal → closed testing → production. Redactar ficha (descripción, capturas, categoría). | Pendiente |
+| F2-D3 | Publicar iOS | App Store Connect: subir build → review Apple (1-3 días). Redactar ficha App Store. | Pendiente |
 
 ### Fase 3: Pre-Lanzamiento (44 tareas | 1 mes)
 - 100+ ofertas reales pre-cargadas
@@ -247,8 +299,10 @@ css/introjs-custom.css          → Estilos personalizados (existente, mejorado)
 
 | Plan | Trabajadores | Empleadores |
 |------|--------------|-------------|
-| Free | 5 apps/mes, 10 mensajes, con ads | Todo gratis |
-| Premium S/.20/mes | Ilimitado, destacado 10x, sin ads | N/A |
+| Free | Hasta 5 chambas concluidas (límite único, no mensual). Sin ads por ahora. | Todo gratis siempre |
+| Premium S/.20/mes | Chambas ilimitadas, destacado en búsquedas. Sin ads. | N/A |
+
+> **Nota:** El límite free es sobre **chambas concluidas** (no postulaciones enviadas). Una vez alcanzadas las 5, se muestra modal de upgrade. El contador vive en Firestore en el perfil del trabajador (`chambasCompletadas`). No hay reset mensual.
 
 **Diferenciador:** 0% comisiones vs competencia (15-25%)
 
@@ -504,7 +558,16 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 
 ## CONTEXTO PARA PRÓXIMA SESIÓN
 
-> **Última sesión:** 26 Febrero 2026 (sesión 25)
+> **Última sesión:** 27 Febrero 2026 (sesión 26)
+
+### Decisiones estratégicas tomadas (sesión 26)
+- ✅ **Fase 1 declarada COMPLETA (100%)** — Tasks 40-44 (Testing/QA) confirmados. Tasks 35 (accesibilidad) y 36 (dark mode) diferidos a post-lanzamiento.
+- ✅ **Cambio de foco: distribución nativa** — Salir en Google Play Store + App Store (no solo PWA). Via Capacitor + Codemagic (Mac virtual, sin Mac físico). Documentado como BT3.
+- ✅ **Monetización definida** — Freemium: 5 chambas **concluidas** (límite vitalicio, no mensual). Premium S/.20/mes vía Culqi en **web** (chambaya.com/premium), no dentro de la app — evita 30% de Apple/Google (estrategia Spotify). Sin ads por ahora.
+- ✅ **Dominio chambaya.com** — No registrado aún. Prioridad alta (F2-A1). Evaluar también chambaya.pe.
+- ✅ **Fase 2 estructurada** — 24 tareas en 4 bloques: Preparación nativa (A), Features + monetización (B), Admin post-pagos (C), Publicación en stores (D).
+- ✅ **Admin: categorías dinámicas (F2-C3)** — Colección Firestore `categorias/{slug}`. App carga desde Firestore en lugar de hardcodear en constants.js. Caché sessionStorage TTL 1h.
+- ✅ **Admin: config global (F2-C4)** — Single doc `admin/config` con: duracionOfertaDias, maxFotosOferta, maxFotosPortfolio, maxVacantesOferta, salarioMaxFiltro, textos notificaciones push.
 
 ### Implementaciones completadas (sesiones 24-25)
 - ✅ **Panel Admin (tasks 45-48):** stats globales, métricas, gestión de reportes/ofertas/usuarios, bloqueo de cuentas
@@ -527,6 +590,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **UX Dashboard Trabajador:** Actividad reciente (banner postulaciones aceptadas), smart sort (match categoría + distancia), filtros overhaul (solo tuerca visible, modal completo con Limpiar/Filtrar, badge "+").
 
 ### Sesiones
+- **Sesión 26 (27/02/26):** Planificación estratégica Fase 2. Fase 1 declarada completa (100%). Cambio de foco a distribución nativa (Capacitor + Codemagic, BT3). Monetización definida: 5 chambas concluidas vitalicio (no mensual), pago via web con Culqi (estilo Spotify, evita 30% stores), sin ads. Dominio chambaya.com pendiente registrar (F2-A1). Fase 2 estructurada en 24 tareas (4 bloques). Admin: categorías dinámicas F2-C3 (Firestore `categorias/{slug}`, caché sessionStorage TTL 1h) + config global F2-C4 (single doc `admin/config` con 6 parámetros de negocio). Cuentas Apple Developer + Google Play NO creadas aún.
 - **Sesión 25 (26/02/26):** Sistema de reportes + bloqueo consistente. `js/components/reportar-modal.js`: modal reutilizable con motivos (fraude/spam/inapropiado/otro), guarda en colección Firestore `reportes`. Botón "🚩 Reportar oferta" en modal detalle (dashboard, mapa, mis-aplicaciones-trabajador). Botón "🚩 Reportar perfil" en perfil público (solo para usuarios auth ≠ dueño del perfil). Admin reportes: Ver Oferta y Ver Perfil muestran detalle completo con fotos vía `adminModal`. XSS prevention con `data-*` attributes en onclick. `js/utils/auth-guard.js`: `manejarBloqueado()` y `verificarBloqueo()`. `cuenta-suspendida.html`: página dedicada para usuarios bloqueados. Check bloqueado en 10 páginas protegidas (inline para pages con Firestore read propio, `verificarBloqueo` para el resto; páginas solo-localStorage migradas a `onAuthStateChanged`). Fix bug `historial-ofertas.js`: `cargarOfertas()` se llamaba cuando `!userDoc.exists()`. Backlog BT1 (sesión expiración 30 días) y BT2 (optimización costos Firebase) documentados en PROYECTO.md.
 - **Sesión 24 (26/02/26):** Panel de administración (tasks 45-48). `admin.html` + `js/admin/` (index, stats, metricas, reportes, ofertas, usuarios) + `css/admin.css`. Auth guard por UID hardcodeado. Gestión completa: estadísticas globales, métricas de crecimiento, reportes con acciones (resolver/ignorar), listado y bloqueo de ofertas y usuarios.
 - **Sesión 23 (19/02/26):** UX Dashboard Trabajador — Actividad reciente: banner verde con count de postulaciones aceptadas + CTA "Ver aplicaciones". Smart sort: ofertas con match de categoría del trabajador aparecen primero, luego el resto; ambos grupos ordenados por distancia (o fecha si sin ubicación). Filtros overhaul: barra básica eliminada, solo tuerca ⚙️ visible con badge "+" si hay filtros activos; modal/sheet completo con búsqueda + categorías + ordenar + ubicación + distancia + salario + fecha; filtros aplican solo al pulsar "Filtrar", "Limpiar" resetea y aplica inmediatamente.
@@ -583,13 +647,12 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - `.filtros-header`, `.filtros-desktop-only` (ocultos en mobile)
 - Overlay: div `#filtros-overlay` con clase `.active`
 
-### Próximas tareas sugeridas
-1. **Tasks 40-44** - Testing y QA
-2. **Tasks 45-48** - Panel de administración
-3. **Task 35** - Accesibilidad WCAG 2.1 AA
-4. **Task 36** - Dark mode (opcional)
-5. **BT1** - Expiración de sesión 30 días (auth-guard.js + loginTimestamp)
-6. **BT2** - Optimización costos Firebase (onSnapshot → getDoc, paginación, caché bloqueo, desnormalización)
+### Próximas tareas (en orden)
+1. **F2-A1** — Registrar dominio chambaya.com (o .pe) — sin código, solo trámite
+2. **F2-A2** — Crear cuenta Apple Developer + Google Play — sin código, urgente por tiempos de aprobación
+3. **F2-A3 a F2-A7** — Integración Capacitor + Codemagic (en paralelo con Bloque B)
+4. **F2-B7 + F2-B8** — Sistema Freemium + página /premium con Culqi (prioritario para lanzar con modelo completo)
+5. **F2-C3 + F2-C4** — Admin: categorías dinámicas + config global (hacerlos juntos, mismo patrón Firestore)
 
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
