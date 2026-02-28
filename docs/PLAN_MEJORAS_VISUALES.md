@@ -13,7 +13,7 @@
 | Perfil del trabajador (editable) | `docs/archivo/chambaya-perfil-trabajador.html` |
 | Perfil trabajador — tab Fotos | `docs/archivo/chambaya-fotos.html` |
 | Perfil trabajador — tab Reseñas | `docs/archivo/chambaya-resenas.html` |
-| Perfil trabajador — tab Skills | `docs/archivo/chambaya-skills.html` |
+| Perfil trabajador — tab Skills | `docs/archivo/chambaya-skills-v2.html` |
 
 Abrir en el navegador para comparar con la implementación real.
 
