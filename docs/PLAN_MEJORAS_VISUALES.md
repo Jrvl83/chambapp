@@ -11,6 +11,7 @@
 | Mis Postulaciones (trabajador) | `docs/archivo/chambaya-postulaciones.html` |
 | Explorar / Mapa de ofertas | `docs/archivo/chambaya-explorar.html` |
 | Perfil del trabajador (editable) | `docs/archivo/chambaya-perfil-trabajador.html` |
+| Perfil trabajador — tab Fotos | `docs/archivo/chambaya-fotos.html` |
 | Perfil trabajador — tab Reseñas | `docs/archivo/chambaya-resenas.html` |
 
 Abrir en el navegador para comparar con la implementación real.

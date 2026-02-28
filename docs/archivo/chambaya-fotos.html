@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Fotos</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 200;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    position: relative;
+    z-index: 100;
+    flex-shrink: 0;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* Header */
+  .header {
+    background: #fff;
+    padding: 10px 20px 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo { font-family: 'Poppins'; font-weight: 700; font-size: 20px; }
+  .logo-chamba { color: #0F1419; }
+  .logo-ya { color: #0066FF; }
+  .back-link { font-family: 'Inter'; font-weight: 500; font-size: 13px; color: #0066FF; }
+
+  /* Hero */
+  .hero-card {
+    margin: 14px 14px 12px;
+    background: linear-gradient(135deg, #0066FF, #0047CC);
+    border-radius: 16px;
+    padding: 18px 20px;
+  }
+  .hero-inner { display: flex; align-items: flex-start; gap: 14px; }
+  .avatar-col { display: flex; flex-direction: column; align-items: center; gap: 7px; flex-shrink: 0; }
+  .avatar-circle {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    background: linear-gradient(135deg, #93C5FD, #3B82F6);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar-initials { font-family: 'Poppins'; font-weight: 700; font-size: 24px; color: #fff; }
+  .change-photo-btn {
+    background: #fff; border-radius: 20px; padding: 3px 9px;
+    display: flex; align-items: center; gap: 4px; border: none; cursor: pointer;
+  }
+  .change-photo-btn span { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #0066FF; }
+  .hero-info { flex: 1; min-width: 0; }
+  .hero-name { font-family: 'Poppins'; font-weight: 700; font-size: 17px; color: #fff; margin-bottom: 6px; line-height: 1.2; }
+  .rating-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 20px; padding: 4px 10px; margin-bottom: 6px;
+  }
+  .rating-num { font-family: 'Inter'; font-weight: 700; font-size: 13px; color: #fff; }
+  .rating-reviews { font-family: 'Inter'; font-weight: 400; font-size: 12px; color: rgba(255,255,255,0.85); }
+  .hero-email { font-family: 'Inter'; font-weight: 400; font-size: 12px; color: rgba(255,255,255,0.85); margin-bottom: 7px; display: flex; align-items: center; gap: 4px; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hero-badge { font-family: 'Inter'; font-weight: 600; font-size: 10.5px; border-radius: 20px; padding: 3px 10px; color: #fff; }
+  .badge-worker { background: rgba(255,255,255,0.2); }
+  .badge-complete { background: #00C48C; }
+
+  /* Tabs */
+  .tabs-bar {
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    flex-shrink: 0;
+    z-index: 30;
+  }
+  .tabs-scroll { display: flex; overflow-x: auto; scrollbar-width: none; padding: 0 14px; }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+  .tab-item { display: flex; flex-direction: column; align-items: center; padding: 10px 14px 0; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+  .tab-label { font-family: 'Inter'; font-weight: 600; font-size: 12px; color: #94A3B8; padding-bottom: 8px; }
+  .tab-item.active .tab-label { color: #0066FF; }
+  .tab-underline { height: 2px; width: 100%; border-radius: 1px; background: transparent; }
+  .tab-item.active .tab-underline { background: #0066FF; }
+
+  /* Scroll */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    padding: 14px 14px 80px;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── MAIN CARD ── */
+  .portfolio-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 16px;
+  }
+
+  .card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-size: 15px;
+    color: #0F1419;
+  }
+
+  .counter-pill {
+    background: #F1F5F9;
+    color: #718096;
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 11px;
+    border-radius: 20px;
+    padding: 3px 9px;
+  }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed #CBD5E0;
+    border-radius: 12px;
+    background: #FAFAFA;
+    padding: 26px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+
+  .upload-icon {
+    width: 44px;
+    height: 44px;
+    color: #CBD5E0;
+  }
+
+  .upload-text {
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .upload-subtext {
+    font-family: 'Inter';
+    font-weight: 400;
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  /* Photo grid */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .photo-item {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: visible;
+    position: relative;
+  }
+
+  .photo-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .photo-inner svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Delete button */
+  .delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 32px;
+    height: 32px;
+    background: #EF4444;
+    border-radius: 50%;
+    border: 2.5px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.28);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  /* Float save */
+  .float-save {
+    position: absolute;
+    bottom: 66px;
+    left: 16px; right: 16px;
+    z-index: 90;
+  }
+  .save-btn {
+    width: 100%; height: 48px;
+    background: #0066FF; border: none; border-radius: 12px;
+    color: #fff; font-family: 'Poppins'; font-weight: 600; font-size: 15px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.35);
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    background: #fff; border-top: 1px solid #E2E8F0;
+    padding: 6px 0 16px; display: flex; flex-shrink: 0;
+    position: relative; z-index: 100;
+  }
+  .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+  .nav-dot { width: 4px; height: 4px; background: #0066FF; border-radius: 50%; margin-top: 1px; }
+  .nav-label { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #A0AEC0; }
+  .nav-tab.active .nav-label { color: #0066FF; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo"><span class="logo-chamba">Chamba</span><span class="logo-ya">Ya</span></div>
+      <span class="back-link">← Volver</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <div class="hero-inner">
+        <div class="avatar-col">
+          <div class="avatar-circle">
+            <span class="avatar-initials">JP</span>
+          </div>
+          <button class="change-photo-btn">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.2" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Cambiar foto</span>
+          </button>
+        </div>
+        <div class="hero-info">
+          <div class="hero-name">Juan Pérez García</div>
+          <div class="rating-pill">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span class="rating-num">4.8</span>
+            <span style="color:rgba(255,255,255,0.4);font-size:12px;">·</span>
+            <span class="rating-reviews">24 reseñas</span>
+          </div>
+          <div class="hero-email">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            juan.perez@gmail.com
+          </div>
+          <div class="hero-badges">
+            <span class="hero-badge badge-worker">Trabajador</span>
+            <span class="hero-badge badge-complete">
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" style="display:inline;margin-right:2px;"><polyline points="2 6 5 9 10 3"/></svg>
+              Perfil Completo
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+      <div class="tabs-scroll">
+        <div class="tab-item"><span class="tab-label">Datos</span><div class="tab-underline"></div></div>
+        <div class="tab-item active"><span class="tab-label">Fotos</span><div class="tab-underline"></div></div>
+        <div class="tab-item"><span class="tab-label">Experiencia</span><div class="tab-underline"></div></div>
+        <div class="tab-item"><span class="tab-label">Skills</span><div class="tab-underline"></div></div>
+        <div class="tab-item"><span class="tab-label">Horario</span><div class="tab-underline"></div></div>
+        <div class="tab-item"><span class="tab-label">Reseñas</span><div class="tab-underline"></div></div>
+      </div>
+    </div>
+
+    <!-- Scroll content -->
+    <div class="scroll-content">
+      <div class="portfolio-card">
+
+        <!-- Title row -->
+        <div class="card-title-row">
+          <span class="card-title">Portfolio de Trabajos</span>
+          <span class="counter-pill">4 / 10</span>
+        </div>
+
+        <!-- Upload zone -->
+        <div class="upload-zone">
+          <!-- Image / mountain + sun icon -->
+          <svg class="upload-icon" viewBox="0 0 48 48" fill="none" stroke="#CBD5E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="10" width="40" height="30" rx="4"/>
+            <!-- sun -->
+            <circle cx="16" cy="20" r="4"/>
+            <!-- mountain -->
+            <polyline points="4,40 18,24 28,34 34,26 44,40"/>
+          </svg>
+          <p class="upload-text">Toca para agregar fotos</p>
+          <p class="upload-subtext">JPG o PNG · máx. 5MB · hasta 10 fotos</p>
+        </div>
+
+        <!-- Photo grid -->
+        <div class="photo-grid">
+
+          <!-- Photo 1 — tubería / instalación -->
+          <div class="photo-item">
+            <div class="photo-inner">
+              <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                <rect width="160" height="160" fill="#B8C9D9"/>
+                <!-- wall background -->
+                <rect x="0" y="90" width="160" height="70" fill="#A8BAC9" opacity="0.5"/>
+                <!-- pipes horizontal -->
+                <rect x="20" y="60" width="120" height="10" rx="5" fill="#8FA8BE"/>
+                <rect x="20" y="85" width="120" height="10" rx="5" fill="#8FA8BE"/>
+                <!-- pipe vertical left -->
+                <rect x="30" y="55" width="10" height="50" rx="5" fill="#7A97B0"/>
+                <!-- pipe vertical right -->
+                <rect x="120" y="55" width="10" height="50" rx="5" fill="#7A97B0"/>
+                <!-- elbow joints -->
+                <circle cx="35" cy="60" r="8" fill="#6E8DA5"/>
+                <circle cx="125" cy="60" r="8" fill="#6E8DA5"/>
+                <circle cx="35" cy="90" r="8" fill="#6E8DA5"/>
+                <circle cx="125" cy="90" r="8" fill="#6E8DA5"/>
+                <!-- screw details -->
+                <circle cx="35" cy="60" r="3" fill="#8FA8BE"/>
+                <circle cx="125" cy="60" r="3" fill="#8FA8BE"/>
+                <!-- wrench hint -->
+                <rect x="65" y="68" width="30" height="8" rx="4" fill="#5A7D96" opacity="0.7"/>
+                <!-- light glare -->
+                <rect x="0" y="0" width="60" height="40" rx="0" fill="white" opacity="0.06"/>
+              </svg>
+            </div>
+            <div class="delete-btn">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>
+            </div>
+          </div>
+
+          <!-- Photo 2 — albañilería exterior -->
+          <div class="photo-item">
+            <div class="photo-inner">
+              <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                <rect width="160" height="160" fill="#C5D4B8"/>
+                <!-- sky zone -->
+                <rect x="0" y="0" width="160" height="55" fill="#B5C8A8" opacity="0.6"/>
+                <!-- wall bricks stacked -->
+                <!-- row 1 -->
+                <rect x="10" y="60" width="42" height="16" rx="2" fill="#A8BC98" stroke="#96AC88" stroke-width="0.8"/>
+                <rect x="56" y="60" width="42" height="16" rx="2" fill="#A8BC98" stroke="#96AC88" stroke-width="0.8"/>
+                <rect x="102" y="60" width="48" height="16" rx="2" fill="#A8BC98" stroke="#96AC88" stroke-width="0.8"/>
+                <!-- row 2 -->
+                <rect x="0" y="80" width="30" height="16" rx="2" fill="#9AAE8A" stroke="#88A078" stroke-width="0.8"/>
+                <rect x="34" y="80" width="42" height="16" rx="2" fill="#9AAE8A" stroke="#88A078" stroke-width="0.8"/>
+                <rect x="80" y="80" width="42" height="16" rx="2" fill="#9AAE8A" stroke="#88A078" stroke-width="0.8"/>
+                <rect x="126" y="80" width="34" height="16" rx="2" fill="#9AAE8A" stroke="#88A078" stroke-width="0.8"/>
+                <!-- row 3 -->
+                <rect x="10" y="100" width="42" height="16" rx="2" fill="#8EA07C" stroke="#7A8E6A" stroke-width="0.8"/>
+                <rect x="56" y="100" width="42" height="16" rx="2" fill="#8EA07C" stroke="#7A8E6A" stroke-width="0.8"/>
+                <rect x="102" y="100" width="48" height="16" rx="2" fill="#8EA07C" stroke="#7A8E6A" stroke-width="0.8"/>
+                <!-- row 4 partial -->
+                <rect x="0" y="120" width="30" height="16" rx="2" fill="#849672" stroke="#72845E" stroke-width="0.8"/>
+                <rect x="34" y="120" width="42" height="16" rx="2" fill="#849672" stroke="#72845E" stroke-width="0.8"/>
+                <rect x="80" y="120" width="80" height="16" rx="2" fill="#849672" stroke="#72845E" stroke-width="0.8"/>
+                <!-- mortar tool hint -->
+                <rect x="50" y="140" width="60" height="8" rx="4" fill="#7A8E6A" opacity="0.6"/>
+                <!-- light -->
+                <rect x="0" y="0" width="70" height="35" fill="white" opacity="0.07"/>
+              </svg>
+            </div>
+            <div class="delete-btn">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>
+            </div>
+          </div>
+
+          <!-- Photo 3 — pintura / acabado -->
+          <div class="photo-item">
+            <div class="photo-inner">
+              <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                <rect width="160" height="160" fill="#D4C5A9"/>
+                <!-- freshly painted wall -->
+                <rect x="0" y="0" width="160" height="160" fill="#CEB994" opacity="0.4"/>
+                <!-- paint roller path — abstract strokes -->
+                <rect x="20" y="25" width="120" height="18" rx="3" fill="#BFA882" opacity="0.7"/>
+                <rect x="20" y="50" width="120" height="18" rx="3" fill="#C4AF8A" opacity="0.6"/>
+                <rect x="20" y="75" width="120" height="18" rx="3" fill="#BBA07C" opacity="0.55"/>
+                <rect x="20" y="100" width="120" height="18" rx="3" fill="#B89870" opacity="0.5"/>
+                <!-- paint roller tool -->
+                <rect x="58" y="120" width="44" height="10" rx="5" fill="#A08060"/>
+                <rect x="75" y="110" width="10" height="14" rx="3" fill="#8A6A4A"/>
+                <!-- paint drip -->
+                <ellipse cx="85" cy="140" rx="4" ry="6" fill="#BFA882" opacity="0.6"/>
+                <ellipse cx="55" cy="148" rx="3" ry="4" fill="#BFA882" opacity="0.45"/>
+                <!-- highlight corner -->
+                <rect x="0" y="0" width="55" height="40" fill="white" opacity="0.1"/>
+              </svg>
+            </div>
+            <div class="delete-btn">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>
+            </div>
+          </div>
+
+          <!-- Photo 4 — instalación eléctrica / panel -->
+          <div class="photo-item">
+            <div class="photo-inner">
+              <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                <rect width="160" height="160" fill="#B8C5D4"/>
+                <!-- wall -->
+                <rect x="0" y="100" width="160" height="60" fill="#A8B8CA" opacity="0.5"/>
+                <!-- electrical panel box -->
+                <rect x="42" y="30" width="76" height="90" rx="4" fill="#8EA4BC" stroke="#7A94AE" stroke-width="1.5"/>
+                <rect x="46" y="34" width="68" height="82" rx="3" fill="#7A98B4"/>
+                <!-- breaker rows -->
+                <rect x="50" y="40" width="28" height="9" rx="2" fill="#5A7A96"/>
+                <rect x="82" y="40" width="28" height="9" rx="2" fill="#5A7A96"/>
+                <rect x="50" y="53" width="28" height="9" rx="2" fill="#6688A2"/>
+                <rect x="82" y="53" width="28" height="9" rx="2" fill="#6688A2"/>
+                <rect x="50" y="66" width="28" height="9" rx="2" fill="#5A7A96"/>
+                <rect x="82" y="66" width="28" height="9" rx="2" fill="#5A7A96"/>
+                <rect x="50" y="79" width="28" height="9" rx="2" fill="#6688A2"/>
+                <rect x="82" y="79" width="28" height="9" rx="2" fill="#6688A2"/>
+                <!-- main switch -->
+                <rect x="58" y="96" width="44" height="14" rx="3" fill="#4A6E8A"/>
+                <circle cx="80" cy="103" r="4" fill="#3A5A76"/>
+                <!-- indicator dots -->
+                <circle cx="56" cy="44" r="2" fill="#00C48C" opacity="0.9"/>
+                <circle cx="56" cy="57" r="2" fill="#00C48C" opacity="0.9"/>
+                <circle cx="56" cy="70" r="2" fill="#EF4444" opacity="0.8"/>
+                <circle cx="56" cy="83" r="2" fill="#00C48C" opacity="0.9"/>
+                <!-- cables below -->
+                <path d="M60 120 Q50 130 40 140" stroke="#4A6070" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M80 120 Q80 132 80 145" stroke="#4A6070" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <path d="M100 120 Q110 130 118 142" stroke="#4A6070" stroke-width="3" fill="none" stroke-linecap="round"/>
+                <!-- glare -->
+                <rect x="0" y="0" width="65" height="38" fill="white" opacity="0.07"/>
+              </svg>
+            </div>
+            <div class="delete-btn">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>
+            </div>
+          </div>
+
+        </div><!-- end photo-grid -->
+      </div><!-- end portfolio-card -->
+    </div><!-- end scroll-content -->
+
+    <!-- Float save -->
+    <div class="float-save">
+      <button class="save-btn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Guardar cambios
+      </button>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="nav-label">Explorar</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        <span class="nav-label">Mis Apps</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-tab active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#0066FF" stroke="#0066FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="nav-dot"></div>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
