@@ -3,10 +3,14 @@
 **Creado:** 27 Febrero 2026
 **Última actualización:** 27 Febrero 2026
 
-## REFERENCIA DE DISEÑO
+## REFERENCIAS DE DISEÑO
 
-> **Archivo:** `docs/archivo/chambaya-dashboard (1).html`
-> Abrir en el navegador para comparar con cualquier implementación.
+| Pantalla | Archivo |
+|----------|---------|
+| Dashboard trabajador | `docs/archivo/chambaya-dashboard (1).html` |
+| Mis Postulaciones (trabajador) | `docs/archivo/chambaya-postulaciones.html` |
+
+Abrir en el navegador para comparar con la implementación real.
 
 **Dirección visual confirmada:** App de trabajo seria.
 Color primario #0066FF (azul) como base de confianza y profesionalismo.
