@@ -553,6 +553,7 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 | [PLAN_REFACTORIZACION.md](PLAN_REFACTORIZACION.md) | Plan actual de limpieza de código |
 | [PLAN_GUIDED_TOURS.md](PLAN_GUIDED_TOURS.md) | Plan GT1: Centralizar guided tours (completado 04/02/26) |
 | [PLAN_REFACTORIZACION_JS.md](PLAN_REFACTORIZACION_JS.md) | Plan de modularización JS: 7 archivos >500 líneas → ~35 módulos |
+| [PLAN_MEJORAS_VISUALES.md](PLAN_MEJORAS_VISUALES.md) | 14 tareas de pulido visual: ajustes mockup, consistencia global, identidad de marca, assets para stores |
 
 ---
 
