@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Historial de Calificaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0;
+    position: relative; z-index: 50;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ── APP HEADER ── */
+  .app-header {
+    background: #fff;
+    padding: 12px 20px 10px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    flex-shrink: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: 'Poppins'; font-weight: 700; font-size: 22px; }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+  .back-btn {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Inter'; font-weight: 500; font-size: 12px;
+    color: #0066FF; cursor: pointer;
+  }
+
+  /* ── SCROLL ── */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none;
+    padding-bottom: 10px;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 18px 20px 14px;
+    background: #fff;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .page-title {
+    font-family: 'Poppins'; font-weight: 600; font-size: 18px;
+    color: #0F1419; margin-bottom: 4px;
+  }
+  .page-sub {
+    font-family: 'Inter'; font-size: 12.5px; color: #718096; line-height: 1.4;
+  }
+
+  /* ── SUMMARY CARD ── */
+  .summary-card {
+    margin: 14px 16px 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .summary-avg-wrap {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; flex-shrink: 0;
+    min-width: 72px;
+  }
+  .summary-avg-num {
+    font-family: 'Poppins'; font-weight: 800; font-size: 34px;
+    color: #0F1419; line-height: 1;
+  }
+  .summary-avg-stars { display: flex; gap: 2px; }
+  .summary-avg-count { font-family: 'Inter'; font-size: 11px; color: #718096; text-align: center; line-height: 1.3; }
+
+  .summary-divider {
+    width: 1px; background: #F1F5F9; align-self: stretch; flex-shrink: 0;
+  }
+
+  .summary-bars { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .bar-row { display: flex; align-items: center; gap: 7px; }
+  .bar-label { font-family: 'Inter'; font-size: 11px; font-weight: 600; color: #475569; width: 14px; flex-shrink: 0; text-align: right; }
+  .bar-track {
+    flex: 1; height: 7px; background: #F1F5F9; border-radius: 99px; overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 99px; }
+  .bar-pct { font-family: 'Inter'; font-size: 10px; color: #A0AEC0; width: 28px; flex-shrink: 0; text-align: right; }
+
+  /* ── TABS ── */
+  .tabs-row {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid #F1F5F9;
+    margin-top: 14px;
+    flex-shrink: 0;
+  }
+  .tab-item {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 12px 0 10px;
+    cursor: pointer; position: relative;
+    font-family: 'Inter'; font-weight: 600; font-size: 14px;
+    color: #A0AEC0;
+  }
+  .tab-item.active {
+    color: #0066FF;
+  }
+  .tab-item.active::after {
+    content: '';
+    position: absolute; bottom: 0; left: 16px; right: 16px;
+    height: 2.5px; background: #0066FF; border-radius: 2px 2px 0 0;
+  }
+  .tab-badge {
+    font-family: 'Inter'; font-weight: 700; font-size: 11px;
+    padding: 2px 7px; border-radius: 20px;
+  }
+  .tab-badge.active { background: #EEF2FF; color: #0066FF; }
+  .tab-badge.inactive { background: #F1F5F9; color: #A0AEC0; }
+
+  /* ── FILTERS ── */
+  .filters-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: #F8FAFC;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .filter-select {
+    flex: 1; display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1.5px solid #E2E8F0; border-radius: 10px;
+    padding: 8px 10px; cursor: pointer;
+  }
+  .filter-select-text { font-family: 'Inter'; font-size: 11.5px; color: #475569; font-weight: 500; flex: 1; }
+  .filter-clear {
+    display: flex; align-items: center; gap: 5px;
+    background: transparent; border: 1.5px solid #E2E8F0; border-radius: 10px;
+    padding: 8px 10px; cursor: pointer; flex-shrink: 0;
+    font-family: 'Inter'; font-size: 11.5px; color: #718096; font-weight: 500;
+  }
+
+  /* ── SECTION ── */
+  .section { padding: 12px 16px 0; }
+  .section-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .section-title { font-family: 'Poppins'; font-weight: 700; font-size: 15px; color: #0F1419; }
+  .section-count { font-family: 'Inter'; font-size: 12px; color: #A0AEC0; font-weight: 500; }
+
+  /* ── REVIEW CARD ── */
+  .review-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-left: 4px solid transparent;
+  }
+  .review-card.gold  { border-left-color: #F59E0B; }
+  .review-card.gray  { border-left-color: #CBD5E1; }
+
+  .review-card-body { padding: 13px 14px; }
+
+  .rev-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .rev-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins'; font-weight: 700; font-size: 13px;
+    color: #fff; flex-shrink: 0;
+  }
+  .rev-meta-wrap { flex: 1; }
+  .rev-name { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; }
+  .rev-job  { font-family: 'Inter'; font-size: 12px; color: #718096; margin-top: 1px; }
+  .rev-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .rev-stars { display: flex; gap: 2px; }
+  .rev-date  { font-family: 'Inter'; font-size: 11px; color: #A0AEC0; }
+
+  .rev-text {
+    font-family: 'Inter'; font-size: 13px; color: #475569; line-height: 1.55;
+    background: #F8FAFC; border-radius: 8px; padding: 10px 12px;
+    border-left: 2px solid #E2E8F0;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    background: #fff;
+    border-top: 1px solid #E2E8F0;
+    padding: 6px 0 16px;
+    display: flex; align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .nav-tab {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 2px; cursor: pointer; position: relative;
+  }
+  .nav-label { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #A0AEC0; }
+  .nav-tab.active .nav-label { color: #0066FF; }
+  .nav-dot { width: 4px; height: 4px; background: #0066FF; border-radius: 50%; margin-top: 1px; }
+  .nav-fab-wrap { flex: 1; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; }
+  .nav-fab {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #0066FF, #003D99);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,102,255,0.35);
+    margin-top: -14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- APP HEADER -->
+    <div class="app-header">
+      <div class="logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+      <div class="back-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver al Perfil
+      </div>
+    </div>
+
+    <!-- SCROLL CONTENT -->
+    <div class="scroll-content">
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <div class="page-title">Historial de Calificaciones</div>
+        <div class="page-sub">Revisa todas las calificaciones que diste y recibiste</div>
+      </div>
+
+      <!-- SUMMARY CARD -->
+      <div class="summary-card">
+        <div class="summary-avg-wrap">
+          <div class="summary-avg-num">4.7</div>
+          <div class="summary-avg-stars">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none" opacity="0.35"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="summary-avg-count">Basado en<br>12 calificaciones</div>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="summary-bars">
+          <!-- 5 estrellas → 85% -->
+          <div class="bar-row">
+            <span class="bar-label">5</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="bar-track"><div class="bar-fill" style="width:85%;background:linear-gradient(90deg,#F59E0B,#FBBF24);"></div></div>
+            <span class="bar-pct">85%</span>
+          </div>
+          <!-- 4 estrellas → 8% -->
+          <div class="bar-row">
+            <span class="bar-label">4</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="bar-track"><div class="bar-fill" style="width:8%;background:linear-gradient(90deg,#F59E0B,#FBBF24);"></div></div>
+            <span class="bar-pct">8%</span>
+          </div>
+          <!-- 3 estrellas → 7% -->
+          <div class="bar-row">
+            <span class="bar-label">3</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="bar-track"><div class="bar-fill" style="width:7%;background:#F59E0B;"></div></div>
+            <span class="bar-pct">7%</span>
+          </div>
+          <!-- 2 estrellas → 0% -->
+          <div class="bar-row">
+            <span class="bar-label">2</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#CBD5E1" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="bar-track"><div class="bar-fill" style="width:0%;background:#F59E0B;"></div></div>
+            <span class="bar-pct">0%</span>
+          </div>
+          <!-- 1 estrella → 0% -->
+          <div class="bar-row">
+            <span class="bar-label">1</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#CBD5E1" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <div class="bar-track"><div class="bar-fill" style="width:0%;background:#F59E0B;"></div></div>
+            <span class="bar-pct">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs-row">
+        <div class="tab-item active">
+          Recibidas
+          <span class="tab-badge active">12</span>
+        </div>
+        <div class="tab-item">
+          Dadas
+          <span class="tab-badge inactive">8</span>
+        </div>
+      </div>
+
+      <!-- FILTERS -->
+      <div class="filters-row">
+        <!-- Puntuación -->
+        <div class="filter-select">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span class="filter-select-text">Todas las estrellas</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <!-- Fecha -->
+        <div class="filter-select">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="filter-select-text">Últimos 30 días</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <!-- Limpiar -->
+        <button class="filter-clear">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          Limpiar
+        </button>
+      </div>
+
+      <!-- REVIEWS LIST -->
+      <div class="section">
+        <div class="section-hdr">
+          <span class="section-title">Calificaciones recibidas</span>
+          <span class="section-count">12 en total</span>
+        </div>
+
+        <!-- Card 1 – 5 estrellas, Carlos Ríos -->
+        <div class="review-card gold">
+          <div class="review-card-body">
+            <div class="rev-top">
+              <div class="rev-avatar" style="background:#3B82F6;">CR</div>
+              <div class="rev-meta-wrap">
+                <div class="rev-name">Carlos Ríos</div>
+                <div class="rev-job">Gasfitero para baño completo</div>
+              </div>
+              <div class="rev-right">
+                <div class="rev-stars">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <span class="rev-date">15 feb</span>
+              </div>
+            </div>
+            <div class="rev-text">Excelente trabajo, llegó puntual y dejó todo limpio. Definitivamente lo volvería a contratar.</div>
+          </div>
+        </div>
+
+        <!-- Card 2 – 5 estrellas, Ana Flores -->
+        <div class="review-card gold">
+          <div class="review-card-body">
+            <div class="rev-top">
+              <div class="rev-avatar" style="background:#00C48C;">AF</div>
+              <div class="rev-meta-wrap">
+                <div class="rev-name">Ana Flores</div>
+                <div class="rev-job">Instalación de tomacorrientes</div>
+              </div>
+              <div class="rev-right">
+                <div class="rev-stars">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <span class="rev-date">8 feb</span>
+              </div>
+            </div>
+            <div class="rev-text">Muy profesional, conoce bien su oficio.</div>
+          </div>
+        </div>
+
+        <!-- Card 3 – 3 estrellas, Miguel Torres -->
+        <div class="review-card gray">
+          <div class="review-card-body">
+            <div class="rev-top">
+              <div class="rev-avatar" style="background:#94A3B8;">MT</div>
+              <div class="rev-meta-wrap">
+                <div class="rev-name">Miguel Torres</div>
+                <div class="rev-job">Pintura de sala</div>
+              </div>
+              <div class="rev-right">
+                <div class="rev-stars">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.5" opacity="0.4"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.5" opacity="0.4"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <span class="rev-date">2 feb</span>
+              </div>
+            </div>
+            <div class="rev-text">El trabajo quedó bien pero tardó más de lo acordado.</div>
+          </div>
+        </div>
+
+        <!-- Spacer -->
+        <div style="height:6px;"></div>
+      </div>
+
+    </div><!-- /scroll -->
+
+    <!-- BOTTOM NAV (trabajador) -->
+    <div class="bottom-nav">
+
+      <!-- Inicio -->
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+
+      <!-- Explorar -->
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span class="nav-label">Explorar</span>
+      </div>
+
+      <!-- FAB Mis Apps -->
+      <div class="nav-fab-wrap">
+        <div class="nav-fab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <line x1="9" y1="12" x2="15" y2="12"/>
+            <line x1="9" y1="16" x2="13" y2="16"/>
+          </svg>
+        </div>
+        <span class="nav-label" style="margin-top:2px">Mis Apps</span>
+      </div>
+
+      <!-- Alertas -->
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 01-3.46 0"/>
+        </svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+
+      <!-- Perfil ACTIVO -->
+      <div class="nav-tab active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <div class="nav-dot"></div>
+        <span class="nav-label">Perfil</span>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

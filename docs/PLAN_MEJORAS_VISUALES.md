@@ -1,7 +1,7 @@
 # PLAN: Mejoras Visuales — ChambaYa
 
 **Creado:** 27 Febrero 2026
-**Última actualización:** 27 Febrero 2026
+**Última actualización:** 02 Marzo 2026
 
 ## REFERENCIAS DE DISEÑO
 
@@ -15,6 +15,22 @@
 | Perfil trabajador — tab Reseñas | `docs/archivo/chambaya-resenas.html` |
 | Perfil trabajador — tab Skills | `docs/archivo/chambaya-skills-v2.html` |
 | Detalle de oferta (bottom sheet) | `docs/archivo/chambaya-detalle-oferta.html` |
+| Alertas (trabajador y empleador) | `docs/archivo/chambaya-alertas.html` — misma estructura para ambos roles, solo cambia el contenido de las notificaciones |
+| Dashboard empleador | `docs/archivo/empleador/chambaya-dashboard-empleador.html` |
+| Publicar oferta — Step 1 (Básico) | `docs/archivo/empleador/chambaya-publicar-oferta.html` |
+| Publicar oferta — Step 2 (Detalles) | `docs/archivo/empleador/chambaya-publicar-step2.html` |
+| Publicar oferta — Step 3 (Requisitos) | `docs/archivo/empleador/chambaya-publicar-step3.html` |
+| Publicar oferta — Step 4 (Revisar) | `docs/archivo/empleador/chambaya-publicar-step4.html` |
+| Ver Candidatos (empleador) | `docs/archivo/empleador/chambaya-ver-candidatos.html` |
+| Perfil empleador (editable) | `docs/archivo/empleador/chambaya-perfil-empleador.html` |
+| Modal calificación (empleador→trabajador y trabajador→empleador) | `docs/archivo/empleador/chambaya-calificacion-modal.html` — un archivo con dos phone frames, un flujo por rol |
+| Historial de calificaciones (trabajador) | `docs/archivo/empleador/chambaya-historial-calificaciones.html` — tabs Recibidas/Dadas, summary card, filtros |
+| Perfil público del trabajador (vista empleador) | `docs/archivo/chambaya-perfil-publico-trabajador.html` — read-only, hero, bio, portfolio, skills, reseñas, disponibilidad |
+| Historial de ofertas (empleador) | `docs/archivo/empleador/chambaya-historial-ofertas.html` — stats 5 estados, filtro, cards con acciones por estado |
+| Login | `docs/archivo/chambaya-login.html` — 2 frames: formulario + modal selección de rol post-Google |
+| Registro | `docs/archivo/chambaya-registro.html` — 3 frames: paso 1 tipo, paso 2 datos, paso 3 contraseña |
+| Perfil trabajador — tab Experiencia | `docs/archivo/chambaya-perfil-experiencia.html` — 2 frames: lista experiencias + modal agregar |
+| Perfil trabajador — tab Horario | `docs/archivo/chambaya-perfil-horario.html` — toggle disponibilidad, pills días, horario, zona |
 
 Abrir en el navegador para comparar con la implementación real.
 
@@ -54,6 +70,7 @@ MEJORAS VISUALES: ░░░░░░░░░░░░░░░░░░░░  
 | MV-5 | **Unificar border-radius de cards** | Algunas cards usan 12px, otras 14px, otras 16px dependiendo de cuándo se crearon. Estandarizar a 14px para cards compactas y 16px para cards principales. Revisar: dashboard, mis-aplicaciones, mis-aplicaciones-trabajador, mapa-ofertas. | 🟡 Media |
 | MV-6 | **Unificar sombras de cards** | Hay al menos 3 variantes de box-shadow en uso. Estandarizar a `0 2px 8px rgba(0,0,0,0.08)` (sutil) como valor único de card shadow. Definir en `design-system.css` como `--shadow-card`. | 🟡 Media |
 | MV-7 | **Colores de estado consistentes** | Los estados (pendiente/aceptado/rechazado/completado) usan colores distintos en diferentes páginas. Estandarizar: pendiente=#FF6B00, aceptado=#00C48C, rechazado=#CBD5E0/#718096, completado=#9B59B6. Definir en `design-system.css` como variables `--state-*`. | 🔴 Alta |
+| MV-16 | **Botón y modal Reportar al design system** | El botón "Reportar" (`reportar-modal.js`) y su modal usan estilos propios que no siguen el design system de los mockups. Alinear: botón outline rojo discreto (estilo `cta-cancel`), modal con `border-radius: 14px` + `--shadow-modal`, textarea con border `#E2E8F0`, botón enviar en `#EF4444` con `--radius-btn`, iconos SVG en lugar de emojis. Afecta: detalle de oferta, perfil público, perfil trabajador. | 🟡 Media |
 
 ---
 

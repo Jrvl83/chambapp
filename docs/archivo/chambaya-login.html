@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Iniciar Sesión</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: 'Inter', sans-serif;
+    padding: 48px 20px 60px;
+    gap: 48px;
+  }
+
+  .frame-label {
+    font-family: 'Poppins'; font-weight: 600; font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: -36px;
+    align-self: flex-start;
+    margin-left: calc(50% - 187px);
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0;
+    position: relative; z-index: 50;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ── SCROLL ── */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── LOGIN FORM ── */
+  .login-wrap {
+    width: 100%;
+    padding: 32px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Logo */
+  .auth-logo {
+    font-family: 'Poppins'; font-weight: 700; font-size: 30px;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+
+  .auth-subtitle {
+    font-family: 'Inter'; font-size: 14px; color: #718096;
+    text-align: center; margin-bottom: 20px;
+  }
+
+  /* Security badge */
+  .security-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    border-radius: 20px;
+    padding: 5px 14px;
+    margin-bottom: 28px;
+  }
+  .security-text { font-family: 'Inter'; font-size: 11.5px; color: #166534; font-weight: 500; }
+
+  /* Form */
+  .form { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-label {
+    font-family: 'Inter'; font-weight: 600; font-size: 12px;
+    color: #374151; letter-spacing: 0.2px;
+  }
+  .field-label .req { color: #EF4444; margin-left: 2px; }
+
+  .input-wrap {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 11px 13px;
+    transition: border-color .15s;
+  }
+  .input-wrap.focus {
+    border-color: #0066FF;
+    box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
+  }
+  .input-icon { flex-shrink: 0; }
+  .input-value {
+    flex: 1;
+    font-family: 'Inter'; font-size: 13.5px; color: #0F1419;
+    background: transparent; border: none; outline: none;
+  }
+  .input-value.placeholder { color: #A0AEC0; }
+  .input-action { flex-shrink: 0; cursor: pointer; }
+
+  .forgot-link {
+    display: block; text-align: right;
+    font-family: 'Inter'; font-size: 12px; color: #0066FF;
+    font-weight: 500; cursor: pointer; margin-top: -6px;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: #0066FF; color: #fff;
+    font-family: 'Poppins'; font-weight: 600; font-size: 15px;
+    padding: 14px;
+    border-radius: 12px;
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.35);
+    margin-top: 4px;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; margin: 18px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: #E2E8F0; }
+  .divider-text {
+    font-family: 'Inter'; font-size: 12px; color: #A0AEC0; font-weight: 500;
+    padding: 0 4px;
+  }
+
+  /* Google button */
+  .btn-google {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #fff;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 13px;
+    cursor: pointer;
+    font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #374151;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* Register link */
+  .register-link {
+    margin-top: 22px;
+    font-family: 'Inter'; font-size: 13px; color: #718096;
+    text-align: center;
+  }
+  .register-link a {
+    color: #0066FF; font-weight: 600;
+    text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+  }
+
+  /* ══════════════════════════════════════════
+     PHONE 2 — Modal de rol
+     ══════════════════════════════════════════ */
+
+  /* Blurred bg */
+  .modal-bg {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    filter: blur(2px);
+    opacity: 0.45;
+    background: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 24px 0;
+  }
+  .bg-logo {
+    font-family: 'Poppins'; font-weight: 700; font-size: 30px;
+    margin-bottom: 6px;
+  }
+  .bg-sub { font-family: 'Inter'; font-size: 14px; color: #718096; margin-bottom: 20px; }
+  .bg-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: #F0FDF4; border: 1px solid #BBF7D0;
+    border-radius: 20px; padding: 5px 14px; margin-bottom: 24px;
+    font-family: 'Inter'; font-size: 11.5px; color: #166534;
+  }
+  .bg-input {
+    width: 100%; background: #fff; border: 1.5px solid #0066FF;
+    border-radius: 12px; padding: 11px 13px; margin-bottom: 14px;
+    display: flex; gap: 10px; align-items: center;
+    box-shadow: 0 0 0 3px rgba(0,102,255,0.1);
+    font-family: 'Inter'; font-size: 13px; color: #0F1419;
+  }
+  .bg-input2 {
+    width: 100%; background: #fff; border: 1.5px solid #E2E8F0;
+    border-radius: 12px; padding: 11px 13px; margin-bottom: 4px;
+    display: flex; gap: 10px; align-items: center;
+    font-family: 'Inter'; font-size: 13px; color: #718096;
+  }
+  .bg-btn {
+    width: 100%; background: #0066FF; color: #fff;
+    border-radius: 12px; padding: 14px;
+    font-family: 'Poppins'; font-weight: 600; font-size: 15px;
+    margin-top: 14px;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15,23,42,0.52);
+    z-index: 60;
+    display: flex; align-items: flex-end;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  /* Bottom sheet */
+  .modal-sheet {
+    width: 100%;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.2);
+    overflow: hidden;
+    padding-bottom: 28px;
+  }
+
+  .sheet-handle-wrap { display: flex; justify-content: center; padding: 12px 0 6px; }
+  .sheet-handle { width: 36px; height: 4px; border-radius: 99px; background: #E2E8F0; }
+
+  .modal-titles { text-align: center; padding: 4px 24px 18px; }
+  .modal-title {
+    font-family: 'Poppins'; font-weight: 700; font-size: 18px;
+    color: #0F1419; margin-bottom: 6px;
+  }
+  .modal-sub {
+    font-family: 'Inter'; font-size: 13px; color: #718096; line-height: 1.45;
+  }
+
+  /* Role cards */
+  .role-cards { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+
+  .role-card {
+    display: flex; align-items: center; gap: 14px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 14px; padding: 15px 14px;
+    cursor: pointer;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .role-icon-wrap {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .role-text { flex: 1; }
+  .role-title { font-family: 'Poppins'; font-weight: 600; font-size: 14px; color: #0F1419; margin-bottom: 2px; }
+  .role-desc  { font-family: 'Inter'; font-size: 12px; color: #718096; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     PHONE 1 — Formulario de login
+     ═══════════════════════════════════════ -->
+<div class="frame-label">Phone 1 — Formulario de inicio de sesión</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- SCROLL CONTENT -->
+    <div class="scroll-content">
+      <div class="login-wrap">
+
+        <!-- Logo -->
+        <div class="auth-logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+        <div class="auth-subtitle">Inicia sesión en tu cuenta</div>
+
+        <!-- Security badge -->
+        <div class="security-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span class="security-text">Tus datos están seguros y encriptados</span>
+        </div>
+
+        <!-- FORM -->
+        <div class="form">
+
+          <!-- Email -->
+          <div class="field-group">
+            <div class="field-label">Correo Electrónico <span class="req">*</span></div>
+            <div class="input-wrap focus">
+              <div class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <span class="input-value">juan.perez@gmail.com</span>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="field-group">
+            <div class="field-label">Contraseña <span class="req">*</span></div>
+            <div class="input-wrap">
+              <div class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <span class="input-value">••••••••</span>
+              <div class="input-action">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+            </div>
+            <span class="forgot-link">¿Olvidaste tu contraseña?</span>
+          </div>
+
+          <!-- Submit button -->
+          <button class="btn-primary">
+            Iniciar Sesión
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+
+          <!-- Divider -->
+          <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">o</span>
+            <div class="divider-line"></div>
+          </div>
+
+          <!-- Google button -->
+          <button class="btn-google">
+            <!-- Google SVG multicolor -->
+            <svg width="18" height="18" viewBox="0 0 48 48">
+              <path d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z" fill="#FFC107"/>
+              <path d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 7.4 6.3 14.7z" fill="#FF3D00"/>
+              <path d="M24 46c5.5 0 10.5-1.9 14.4-5.1l-6.7-5.5C29.6 37 26.9 38 24 38c-6.1 0-10.7-3.1-11.8-8.5l-7 5.4C8.5 42 15.7 46 24 46z" fill="#4CAF50"/>
+              <path d="M44.5 20H24v8.5h11.8c-.6 2.4-2 4.5-3.9 5.9l6.7 5.5C42.6 36.2 46 30.6 46 24c0-1.3-.2-2.7-.5-4z" fill="#1976D2"/>
+            </svg>
+            Continuar con Google
+          </button>
+
+        </div>
+
+        <!-- Register link -->
+        <div class="register-link">
+          ¿No tienes cuenta? <a>Regístrate aquí</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PHONE 2 — Modal selección de rol
+     ═══════════════════════════════════════ -->
+<div class="frame-label">Phone 2 — Modal de selección de rol (post Google)</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- BLURRED BG (login form detrás) -->
+    <div class="modal-bg">
+      <div class="bg-logo"><span style="color:#0F1419">Chamba</span><span style="color:#0066FF">Ya</span></div>
+      <div class="bg-sub">Inicia sesión en tu cuenta</div>
+      <div class="bg-badge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Tus datos están seguros y encriptados
+      </div>
+      <div class="bg-input">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        juan.perez@gmail.com
+      </div>
+      <div class="bg-input2">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        ••••••••
+      </div>
+      <div class="bg-btn" style="text-align:center; color:#fff; font-family:'Poppins'; font-weight:600; font-size:15px;">Iniciar Sesión</div>
+    </div>
+
+    <!-- MODAL OVERLAY -->
+    <div class="modal-overlay">
+      <div class="modal-sheet">
+
+        <!-- Handle -->
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+
+        <!-- Titles -->
+        <div class="modal-titles">
+          <div class="modal-title">Bienvenido a ChambaYa</div>
+          <div class="modal-sub">Para completar tu registro, dinos qué buscas:</div>
+        </div>
+
+        <!-- Role cards -->
+        <div class="role-cards">
+
+          <!-- Card 1 — Busco Trabajo -->
+          <div class="role-card">
+            <div class="role-icon-wrap" style="background:#EEF2FF;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 20h20"/>
+                <path d="M6 20V8l6-4 6 4v12"/>
+                <rect x="9" y="12" width="6" height="8"/>
+                <path d="M12 4v4"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-title">Busco Trabajo</div>
+              <div class="role-desc">Encuentra chambas cerca de ti</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <!-- Card 2 — Busco Trabajadores -->
+          <div class="role-card">
+            <div class="role-icon-wrap" style="background:#FFF3ED;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                <line x1="12" y1="12" x2="12" y2="16"/>
+                <line x1="10" y1="14" x2="14" y2="14"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-title">Busco Trabajadores</div>
+              <div class="role-desc">Encuentra profesionales de confianza</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

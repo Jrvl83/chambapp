@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Perfil Público Trabajador</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0;
+    position: relative; z-index: 50;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ── APP HEADER ── */
+  .app-header {
+    background: #fff;
+    padding: 12px 20px 10px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    flex-shrink: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: 'Poppins'; font-weight: 700; font-size: 22px; }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+  .back-btn {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Inter'; font-weight: 500; font-size: 13px;
+    color: #0066FF; cursor: pointer;
+  }
+
+  /* ── SCROLL ── */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none;
+    padding-bottom: 24px;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── HERO ── */
+  .hero {
+    background: #fff;
+    padding: 22px 20px 20px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .hero-top {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 14px;
+  }
+  .hero-avatar-wrap { position: relative; flex-shrink: 0; }
+  .hero-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, #0066FF, #0052CC);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins'; font-weight: 700; font-size: 24px; color: #fff;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.3);
+  }
+  .availability-badge {
+    position: absolute; bottom: 2px; right: 2px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 2px 7px 2px 5px;
+    display: flex; align-items: center; gap: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+  .avail-dot { width: 7px; height: 7px; border-radius: 50%; background: #10B981; }
+  .avail-text { font-family: 'Inter'; font-weight: 600; font-size: 9px; color: #10B981; white-space: nowrap; }
+
+  .hero-info { flex: 1; padding-top: 2px; }
+  .hero-name { font-family: 'Poppins'; font-weight: 700; font-size: 20px; color: #0F1419; line-height: 1.2; margin-bottom: 6px; }
+
+  .hero-rating {
+    display: flex; align-items: center; gap: 5px; margin-bottom: 6px;
+  }
+  .rating-num { font-family: 'Inter'; font-weight: 700; font-size: 14px; color: #0F1419; }
+  .rating-count { font-family: 'Inter'; font-size: 13px; color: #A0AEC0; }
+  .rating-sep { color: #D1D5DB; font-size: 12px; }
+
+  .hero-location {
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'Inter'; font-size: 13px; color: #718096;
+  }
+
+  .hero-cats {
+    display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .cat-pill {
+    background: #EEF2FF; color: #0066FF;
+    font-family: 'Inter'; font-weight: 600; font-size: 12px;
+    padding: 4px 12px; border-radius: 20px;
+  }
+
+  .report-btn {
+    display: flex; align-items: center; gap: 4px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'Inter'; font-size: 11px; color: #A0AEC0; font-weight: 500;
+    padding: 0;
+  }
+
+  /* ── SECTION CARDS ── */
+  .section-card {
+    margin: 12px 16px 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+  }
+  .section-card-hdr {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .section-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title { font-family: 'Poppins'; font-weight: 700; font-size: 15px; color: #0F1419; }
+  .section-body { padding: 14px 16px; }
+
+  /* ── ABOUT ── */
+  .about-text {
+    font-family: 'Inter'; font-size: 13.5px; color: #475569; line-height: 1.65;
+  }
+
+  /* ── PORTFOLIO GRID ── */
+  .portfolio-grid {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .portfolio-item {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 4px;
+  }
+  .portfolio-label {
+    font-family: 'Inter'; font-weight: 500; font-size: 10px; color: #fff;
+    text-align: center; line-height: 1.2; z-index: 2;
+  }
+  .portfolio-overlay {
+    position: absolute; inset: 0;
+    background: rgba(15,20,40,0.55);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 4px;
+    z-index: 2;
+  }
+  .overlay-text {
+    font-family: 'Poppins'; font-weight: 700; font-size: 16px; color: #fff;
+  }
+  .overlay-sub {
+    font-family: 'Inter'; font-size: 10px; color: rgba(255,255,255,0.75);
+  }
+
+  /* ── SKILLS ── */
+  .exp-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 16px 12px;
+  }
+  .exp-value { font-family: 'Inter'; font-weight: 700; font-size: 14px; color: #0066FF; }
+  .exp-label { font-family: 'Inter'; font-size: 13px; color: #718096; }
+
+  .skills-wrap {
+    padding: 0 16px 14px;
+    display: flex; flex-wrap: wrap; gap: 7px;
+  }
+  .skill-pill {
+    background: #F1F5F9; color: #374151;
+    font-family: 'Inter'; font-weight: 500; font-size: 12px;
+    padding: 5px 12px; border-radius: 20px;
+  }
+
+  .exp-timeline { padding: 4px 16px 14px; display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: flex; gap: 12px; padding-bottom: 14px; position: relative;
+  }
+  .exp-item:last-child { padding-bottom: 0; }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 22px; bottom: -2px;
+    width: 2px; background: #E2E8F0;
+  }
+  .exp-item:last-child::before { display: none; }
+  .exp-dot-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 4px; }
+  .exp-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #0066FF; border: 2px solid #EEF2FF;
+    flex-shrink: 0;
+  }
+  .exp-content { flex: 1; }
+  .exp-title-text { font-family: 'Inter'; font-weight: 600; font-size: 13.5px; color: #0F1419; margin-bottom: 1px; }
+  .exp-company { font-family: 'Inter'; font-size: 12px; color: #0066FF; font-weight: 500; margin-bottom: 2px; }
+  .exp-period { font-family: 'Inter'; font-size: 11px; color: #A0AEC0; margin-bottom: 4px; }
+  .exp-desc { font-family: 'Inter'; font-size: 12px; color: #718096; line-height: 1.5; }
+
+  /* ── REVIEWS ── */
+  .reviews-summary {
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+  .rev-avg-num { font-family: 'Poppins'; font-weight: 800; font-size: 34px; color: #0F1419; line-height: 1; }
+  .rev-avg-right { display: flex; flex-direction: column; gap: 4px; }
+  .rev-stars-row { display: flex; gap: 2px; }
+  .rev-count { font-family: 'Inter'; font-size: 12px; color: #718096; }
+
+  .rev-summary-divider { width: 1px; background: #F1F5F9; align-self: stretch; flex-shrink: 0; }
+
+  .rev-bars { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .bar-row { display: flex; align-items: center; gap: 6px; }
+  .bar-label { font-family: 'Inter'; font-size: 11px; font-weight: 600; color: #475569; width: 14px; text-align: right; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 7px; background: #F1F5F9; border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+  .bar-pct { font-family: 'Inter'; font-size: 10px; color: #A0AEC0; width: 28px; text-align: right; flex-shrink: 0; }
+
+  .review-card {
+    margin: 0 16px 12px;
+    background: #F8FAFC;
+    border-radius: 12px;
+    border-left: 4px solid #F59E0B;
+    padding: 12px 13px;
+  }
+  .review-card:first-of-type { margin-top: 14px; }
+
+  .rev-card-top { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 8px; }
+  .rev-card-av {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins'; font-weight: 700; font-size: 12px; flex-shrink: 0;
+  }
+  .rev-card-info { flex: 1; }
+  .rev-card-name { font-family: 'Inter'; font-weight: 600; font-size: 13px; color: #0F1419; }
+  .rev-card-job  { font-family: 'Inter'; font-size: 11px; color: #718096; margin-top: 1px; }
+  .rev-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+  .rev-card-stars { display: flex; gap: 1px; }
+  .rev-card-date  { font-family: 'Inter'; font-size: 11px; color: #A0AEC0; }
+  .rev-card-text  { font-family: 'Inter'; font-size: 12.5px; color: #475569; line-height: 1.55; }
+
+  /* ── AVAILABILITY ── */
+  .avail-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 11px; }
+  .avail-row { display: flex; align-items: flex-start; gap: 8px; }
+  .avail-key { font-family: 'Inter'; font-weight: 600; font-size: 13px; color: #475569; min-width: 58px; flex-shrink: 0; padding-top: 1px; }
+  .avail-val { font-family: 'Inter'; font-size: 13px; color: #0F1419; flex: 1; line-height: 1.5; }
+  .avail-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .avail-pill-green {
+    background: #EDFAF3; color: #065F46;
+    font-family: 'Inter'; font-weight: 600; font-size: 12px;
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .avail-pill-day {
+    background: #F1F5F9; color: #374151;
+    font-family: 'Inter'; font-weight: 600; font-size: 11px;
+    padding: 3px 9px; border-radius: 20px;
+    border: 1.5px solid #E2E8F0;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- APP HEADER -->
+    <div class="app-header">
+      <div class="logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+      <div class="back-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </div>
+    </div>
+
+    <!-- SCROLL CONTENT -->
+    <div class="scroll-content">
+
+      <!-- ── HERO ── -->
+      <div class="hero">
+        <div class="hero-top">
+          <div class="hero-avatar-wrap">
+            <div class="hero-avatar">JP</div>
+            <div class="availability-badge">
+              <div class="avail-dot"></div>
+              <span class="avail-text">Disponible</span>
+            </div>
+          </div>
+
+          <div class="hero-info">
+            <div class="hero-name">Juan Pérez García</div>
+            <div class="hero-rating">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="rating-num">4.8</span>
+              <span class="rating-sep">·</span>
+              <span class="rating-count">24 reseñas</span>
+            </div>
+            <div class="hero-location">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              San Isidro, Lima
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-cats">
+          <span class="cat-pill">Gasfitería</span>
+          <span class="cat-pill">Plomería</span>
+        </div>
+
+        <button class="report-btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+          Reportar perfil
+        </button>
+      </div>
+
+      <!-- ── ACERCA DE ── -->
+      <div class="section-card">
+        <div class="section-card-hdr">
+          <div class="section-icon" style="background:#EEF2FF;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="section-title">Acerca de</span>
+        </div>
+        <div class="section-body">
+          <div class="about-text">Gasfitero con 8 años de experiencia en instalaciones residenciales y comerciales. Trabajo con garantía y materiales de calidad. Disponible para Lima Moderna y Callao.</div>
+        </div>
+      </div>
+
+      <!-- ── PORTFOLIO ── -->
+      <div class="section-card">
+        <div class="section-card-hdr">
+          <div class="section-icon" style="background:#F0FDF4;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <span class="section-title">Portfolio de Trabajos</span>
+        </div>
+        <div class="portfolio-grid">
+          <!-- Foto 1 -->
+          <div class="portfolio-item" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="z-index:2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span class="portfolio-label">Trabajo 1</span>
+          </div>
+          <!-- Foto 2 -->
+          <div class="portfolio-item" style="background:linear-gradient(135deg,#10B981,#047857);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="z-index:2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span class="portfolio-label">Trabajo 2</span>
+          </div>
+          <!-- Foto 3 -->
+          <div class="portfolio-item" style="background:linear-gradient(135deg,#F59E0B,#D97706);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="z-index:2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span class="portfolio-label">Trabajo 3</span>
+          </div>
+          <!-- Foto 4 con overlay +2 más -->
+          <div class="portfolio-item" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="z-index:1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div class="portfolio-overlay">
+              <span class="overlay-text">+2</span>
+              <span class="overlay-sub">más fotos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HABILIDADES ── -->
+      <div class="section-card">
+        <div class="section-card-hdr">
+          <div class="section-icon" style="background:#F5F3FF;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+          </div>
+          <span class="section-title">Habilidades y Experiencia</span>
+        </div>
+
+        <!-- Años de experiencia -->
+        <div class="exp-row" style="padding-top:14px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="exp-value">8 años</span>
+          <span class="exp-label">de experiencia</span>
+        </div>
+
+        <!-- Skills pills -->
+        <div class="skills-wrap">
+          <span class="skill-pill">Instalaciones sanitarias</span>
+          <span class="skill-pill">Tuberías PVC</span>
+          <span class="skill-pill">Remodelaciones</span>
+          <span class="skill-pill">Soldadura</span>
+          <span class="skill-pill">Detección de fugas</span>
+        </div>
+
+        <!-- Separador label -->
+        <div style="padding:4px 16px 10px; display:flex; align-items:center; gap:8px;">
+          <div style="flex:1; height:1px; background:#F1F5F9;"></div>
+          <span style="font-family:'Inter'; font-size:11px; color:#A0AEC0; font-weight:600; text-transform:uppercase; letter-spacing:0.4px;">Trayectoria</span>
+          <div style="flex:1; height:1px; background:#F1F5F9;"></div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="exp-timeline">
+          <div class="exp-item">
+            <div class="exp-dot-col"><div class="exp-dot"></div></div>
+            <div class="exp-content">
+              <div class="exp-title-text">Gasfitero Independiente</div>
+              <div class="exp-company">Cuenta propia</div>
+              <div class="exp-period">2018 – Actualidad</div>
+              <div class="exp-desc">Trabajos residenciales en Lima Moderna y San Isidro.</div>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-dot-col"><div class="exp-dot" style="background:#A0AEC0;border-color:#F1F5F9;"></div></div>
+            <div class="exp-content">
+              <div class="exp-title-text">Técnico de Mantenimiento</div>
+              <div class="exp-company">Empresa Aqua Perú SAC</div>
+              <div class="exp-period">2015 – 2018</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CALIFICACIONES ── -->
+      <div class="section-card">
+        <div class="section-card-hdr">
+          <div class="section-icon" style="background:#FFFBEB;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <span class="section-title">Calificaciones y Reseñas</span>
+        </div>
+
+        <!-- Summary -->
+        <div class="reviews-summary">
+          <div>
+            <div class="rev-avg-num">4.8</div>
+          </div>
+          <div class="rev-avg-right">
+            <div class="rev-stars-row">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none" opacity="0.4"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="rev-count">24 reseñas</div>
+          </div>
+          <div class="rev-summary-divider"></div>
+          <div class="rev-bars">
+            <div class="bar-row">
+              <span class="bar-label">5</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div class="bar-track"><div class="bar-fill" style="width:85%;"></div></div>
+              <span class="bar-pct">85%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">4</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div class="bar-track"><div class="bar-fill" style="width:10%;"></div></div>
+              <span class="bar-pct">10%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">3</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#F59E0B" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div class="bar-track"><div class="bar-fill" style="width:5%;"></div></div>
+              <span class="bar-pct">5%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">2</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#CBD5E1" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div class="bar-track"><div class="bar-fill" style="width:0%;"></div></div>
+              <span class="bar-pct">0%</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">1</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#CBD5E1" style="flex-shrink:0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div class="bar-track"><div class="bar-fill" style="width:0%;"></div></div>
+              <span class="bar-pct">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review 1 -->
+        <div class="review-card" style="margin-top:14px;">
+          <div class="rev-card-top">
+            <div class="rev-card-av" style="background:#FFF3ED; color:#FF6B00;">MG</div>
+            <div class="rev-card-info">
+              <div class="rev-card-name">María García</div>
+              <div class="rev-card-job">Plomero para baño</div>
+            </div>
+            <div class="rev-card-right">
+              <div class="rev-card-stars">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="rev-card-date">Hace 3 días</span>
+            </div>
+          </div>
+          <div class="rev-card-text">Excelente trabajo, puntual y muy prolijo. Lo recomiendo.</div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="review-card">
+          <div class="rev-card-top">
+            <div class="rev-card-av" style="background:#EEF2FF; color:#0066FF;">CR</div>
+            <div class="rev-card-info">
+              <div class="rev-card-name">Carlos Ríos</div>
+              <div class="rev-card-job">Reparación de tubería</div>
+            </div>
+            <div class="rev-card-right">
+              <div class="rev-card-stars">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="rev-card-date">15 feb</span>
+            </div>
+          </div>
+          <div class="rev-card-text">Muy profesional, resolvió el problema rápido.</div>
+        </div>
+
+        <div style="height:4px;"></div>
+      </div>
+
+      <!-- ── DISPONIBILIDAD ── -->
+      <div class="section-card" style="margin-bottom:0;">
+        <div class="section-card-hdr">
+          <div class="section-icon" style="background:#EDFAF3;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <span class="section-title">Disponibilidad</span>
+        </div>
+        <div class="avail-body">
+          <div class="avail-row">
+            <span class="avail-key">Estado:</span>
+            <div class="avail-pills">
+              <span class="avail-pill-green">Disponibilidad inmediata</span>
+            </div>
+          </div>
+          <div class="avail-row">
+            <span class="avail-key">Días:</span>
+            <div class="avail-pills">
+              <span class="avail-pill-day">Lun</span>
+              <span class="avail-pill-day">Mar</span>
+              <span class="avail-pill-day">Mié</span>
+              <span class="avail-pill-day">Jue</span>
+              <span class="avail-pill-day">Vie</span>
+              <span class="avail-pill-day">Sáb</span>
+            </div>
+          </div>
+          <div class="avail-row">
+            <span class="avail-key">Horario:</span>
+            <span class="avail-val">08:00 – 18:00</span>
+          </div>
+          <div class="avail-row">
+            <span class="avail-key">Zonas:</span>
+            <span class="avail-val">Miraflores, San Isidro, Barranco, Surco</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+
+    </div><!-- /scroll -->
+
+  </div>
+</div>
+
+</body>
+</html>

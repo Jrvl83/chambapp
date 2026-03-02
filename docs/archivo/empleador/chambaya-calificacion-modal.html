@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Modal Calificación</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: 'Inter', sans-serif;
+    padding: 48px 20px 60px;
+    gap: 48px;
+  }
+
+  /* ─── Labels entre frames ─── */
+  .frame-label {
+    font-family: 'Poppins'; font-weight: 600; font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: -36px;
+    align-self: flex-start;
+    margin-left: calc(50% - 187px);
+  }
+
+  /* ─── PHONE FRAME (idéntico al dashboard) ─── */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ─── STATUS BAR ─── */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0;
+    position: relative; z-index: 50;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ─── HEADER ─── */
+  .app-header {
+    background: #fff;
+    padding: 12px 20px 10px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    flex-shrink: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { font-family: 'Poppins'; font-weight: 700; font-size: 22px; }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+  .back-btn {
+    display: flex; align-items: center; gap: 4px;
+    font-family: 'Inter'; font-weight: 500; font-size: 13px;
+    color: #0066FF; cursor: pointer;
+  }
+
+  /* ─── BACKGROUND CONTENT (detrás del modal, difuminado) ─── */
+  .bg-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: #F8FAFC;
+    filter: blur(1.5px);
+    opacity: 0.55;
+  }
+
+  /* Simulated candidate cards behind modal */
+  .bg-section-title {
+    font-family: 'Poppins'; font-weight: 700; font-size: 16px; color: #0F1419;
+    padding: 14px 16px 10px;
+  }
+  .bg-group {
+    margin: 0 16px 10px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    border-top: 4px solid #FF6B00;
+  }
+  .bg-group-hdr {
+    padding: 11px 14px;
+    border-bottom: 1px solid #F1F5F9;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .bg-dot { width: 7px; height: 7px; border-radius: 50%; background: #FF6B00; }
+  .bg-gtitle { font-family: 'Poppins'; font-weight: 600; font-size: 13px; color: #0F1419; }
+  .bg-pill { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+  .bg-card { padding: 11px 14px; border-left: 4px solid #10B981; display: flex; gap: 8px; align-items: flex-start; }
+  .bg-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins'; font-weight: 700; font-size: 12px; color: #fff; flex-shrink: 0;
+  }
+  .bg-name { font-family: 'Inter'; font-weight: 600; font-size: 13px; color: #0F1419; }
+  .bg-meta { font-size: 11px; color: #718096; }
+
+  /* ─── OVERLAY ─── */
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    z-index: 60;
+    display: flex;
+    align-items: flex-end;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+
+  /* ─── BOTTOM SHEET MODAL ─── */
+  .modal-sheet {
+    width: 100%;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Handle */
+  .sheet-handle-wrap {
+    display: flex; justify-content: center;
+    padding: 12px 0 6px;
+    flex-shrink: 0;
+  }
+  .sheet-handle {
+    width: 36px; height: 4px; border-radius: 99px;
+    background: #E2E8F0;
+  }
+
+  /* Modal header */
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 20px 14px;
+    border-bottom: 1px solid #F1F5F9;
+    flex-shrink: 0;
+  }
+  .modal-title { font-family: 'Poppins'; font-weight: 700; font-size: 17px; color: #0F1419; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #F1F5F9;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none; flex-shrink: 0;
+  }
+
+  /* Modal body */
+  .modal-body {
+    padding: 18px 20px 20px;
+    display: flex; flex-direction: column; gap: 18px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .modal-body::-webkit-scrollbar { display: none; }
+
+  /* Subject info */
+  .subject-row {
+    display: flex; align-items: center; gap: 12px;
+    background: #F8FAFC; border-radius: 12px; padding: 12px 14px;
+  }
+  .subject-avatar {
+    width: 46px; height: 46px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins'; font-weight: 700; font-size: 15px;
+    flex-shrink: 0;
+  }
+  .subject-name { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; }
+  .subject-sub { font-family: 'Inter'; font-size: 12px; color: #718096; margin-top: 2px; }
+
+  /* Stars question */
+  .stars-section { display: flex; flex-direction: column; gap: 10px; }
+  .stars-question { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; }
+  .stars-row { display: flex; gap: 6px; align-items: center; }
+  .star-wrap { cursor: pointer; display: flex; align-items: center; }
+  .star-label {
+    font-family: 'Poppins'; font-weight: 600; font-size: 13px;
+    color: #F59E0B; margin-left: 10px;
+  }
+
+  /* Textarea */
+  .textarea-section { display: flex; flex-direction: column; gap: 6px; }
+  .textarea-label { font-family: 'Inter'; font-weight: 600; font-size: 12px; color: #475569; letter-spacing: 0.3px; }
+  .modal-textarea {
+    background: #F8FAFC;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 11px 13px;
+    font-family: 'Inter'; font-size: 13px; color: #0F1419;
+    line-height: 1.5; resize: none; outline: none; width: 100%;
+  }
+  .modal-textarea::placeholder { color: #A0AEC0; }
+  .textarea-counter { text-align: right; font-family: 'Inter'; font-size: 11px; color: #A0AEC0; }
+
+  /* Footer buttons */
+  .modal-footer {
+    display: flex; gap: 10px;
+    padding: 14px 20px 20px;
+    border-top: 1px solid #F1F5F9;
+    flex-shrink: 0;
+  }
+  .btn-cancel {
+    flex: 1; padding: 13px;
+    border-radius: 12px;
+    border: 1.5px solid #E2E8F0;
+    background: transparent;
+    font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #64748B;
+    cursor: pointer;
+  }
+  .btn-submit {
+    flex: 1; padding: 13px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #fff;
+    cursor: pointer;
+  }
+  .btn-submit.active { background: #0066FF; }
+  .btn-submit.inactive { background: #CBD5E1; cursor: not-allowed; }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    background: #fff;
+    border-top: 1px solid #E2E8F0;
+    padding: 6px 0 16px;
+    display: flex; align-items: flex-end;
+    flex-shrink: 0;
+    position: relative; z-index: 10;
+  }
+  .nav-tab {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 2px; cursor: pointer; position: relative;
+  }
+  .nav-label { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #A0AEC0; }
+  .nav-tab.active .nav-label { color: #0066FF; }
+  .nav-dot { width: 4px; height: 4px; background: #0066FF; border-radius: 50%; margin-top: 1px; }
+  .nav-fab-wrap { flex: 1; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; }
+  .nav-fab {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #0066FF, #003D99);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,102,255,0.35);
+    margin-top: -14px;
+  }
+  .nav-badge {
+    position: absolute; top: -4px; right: 14px;
+    width: 16px; height: 16px;
+    background: #FF6B00; border-radius: 50%;
+    border: 2px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter'; font-weight: 700; font-size: 9px; color: #fff; z-index: 5;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     PHONE 1 — Empleador califica al trabajador
+     ════════════════════════════════════════ -->
+<div class="frame-label">Phone 1 — Empleador califica al trabajador</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="app-header">
+      <div class="logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+      <div class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </div>
+    </div>
+
+    <!-- FONDO DIFUMINADO (pantalla Ver Candidatos detrás) -->
+    <div class="bg-content">
+      <div class="bg-section-title">Postulantes</div>
+      <div class="bg-group">
+        <div class="bg-group-hdr">
+          <div class="bg-dot"></div>
+          <span class="bg-gtitle">Plomero para baño</span>
+          <span class="bg-pill" style="background:#EEF2FF;color:#3B82F6;">Gasfitería</span>
+          <span class="bg-pill" style="background:#FEF3C7;color:#92400E;">2 pendientes</span>
+        </div>
+        <div class="bg-card">
+          <div class="bg-avatar" style="background:#10B981;">LP</div>
+          <div>
+            <div class="bg-name">Luis Pérez</div>
+            <div class="bg-meta">Aceptado · 27 feb</div>
+          </div>
+        </div>
+        <div style="padding:11px 14px; border-left:4px solid #7C3AED; display:flex; gap:8px; align-items:flex-start;">
+          <div class="bg-avatar" style="background:#7C3AED;">CM</div>
+          <div>
+            <div class="bg-name">Carlos Mamani</div>
+            <div class="bg-meta">Completado · 20 feb</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin:0 16px; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <div class="bg-group-hdr">
+          <span class="bg-gtitle">Pintura de sala</span>
+          <span class="bg-pill" style="background:#FFFBEB;color:#D97706;">Pintura</span>
+        </div>
+        <div style="padding:11px 14px; border-left:4px solid #7C3AED; display:flex; gap:8px; align-items:flex-start;">
+          <div class="bg-avatar" style="background:#7C3AED;">RP</div>
+          <div>
+            <div class="bg-name">Rosa Paredes</div>
+            <div class="bg-meta">Completado · 15 feb</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL OVERLAY -->
+    <div class="modal-overlay">
+      <div class="modal-sheet">
+
+        <!-- Handle -->
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <span class="modal-title">Calificar Trabajador</span>
+          <button class="modal-close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+
+          <!-- Subject -->
+          <div class="subject-row">
+            <div class="subject-avatar" style="background:#EEF2FF; color:#0066FF;">CM</div>
+            <div>
+              <div class="subject-name">Carlos Mamani</div>
+              <div class="subject-sub">Plomero para baño</div>
+            </div>
+          </div>
+
+          <!-- Stars (4/5 seleccionadas) -->
+          <div class="stars-section">
+            <div class="stars-question">¿Cómo fue tu experiencia?</div>
+            <div class="stars-row">
+              <!-- 4 llenas -->
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <!-- 1 vacía (outline, 40% opacity) -->
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.5" opacity="0.4"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="star-label">Muy bueno</span>
+            </div>
+          </div>
+
+          <!-- Textarea -->
+          <div class="textarea-section">
+            <div class="textarea-label">COMENTARIO (OPCIONAL)</div>
+            <textarea class="modal-textarea" rows="3" placeholder="Describe tu experiencia con este profesional..."></textarea>
+            <div class="textarea-counter">0/300</div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button class="btn-cancel">Cancelar</button>
+          <button class="btn-submit active">Enviar calificación</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV (detrás del overlay, visible pero cubierto) -->
+    <div class="bottom-nav">
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-fab-wrap">
+        <div class="nav-fab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <div class="nav-tab active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <div class="nav-dot"></div>
+        <span class="nav-label">Candidatos</span>
+      </div>
+      <div class="nav-tab">
+        <div class="nav-badge">1</div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PHONE 2 — Trabajador califica al empleador
+     ════════════════════════════════════════ -->
+<div class="frame-label">Phone 2 — Trabajador califica al empleador</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="app-header">
+      <div class="logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+      <div class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </div>
+    </div>
+
+    <!-- FONDO DIFUMINADO (pantalla Perfil Trabajador detrás) -->
+    <div class="bg-content">
+      <!-- Hero gradient simulado -->
+      <div style="background:linear-gradient(135deg,#0066FF,#0052CC); padding:22px 20px 18px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+        <div style="width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid rgba(255,255,255,0.45);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:700;font-size:22px;color:#fff;">CM</div>
+        <div style="font-family:'Poppins';font-weight:700;font-size:16px;color:#fff;">Carlos Mamani</div>
+        <div style="font-family:'Inter';font-size:12px;color:rgba(255,255,255,0.75);">Gasfitero · Plomero</div>
+      </div>
+      <div style="padding:12px 16px;">
+        <div style="background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <div style="font-family:'Poppins';font-weight:600;font-size:13px;color:#0F1419;margin-bottom:8px;">Información Personal</div>
+          <div style="font-size:12px;color:#718096;line-height:1.8;">c.mamani@gmail.com<br>987 654 321<br>San Isidro, Lima</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL OVERLAY -->
+    <div class="modal-overlay">
+      <div class="modal-sheet">
+
+        <!-- Handle -->
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <span class="modal-title">Calificar Empleador</span>
+          <button class="modal-close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+
+          <!-- Subject -->
+          <div class="subject-row">
+            <div class="subject-avatar" style="background:#FFF3ED; color:#FF6B00;">MG</div>
+            <div>
+              <div class="subject-name">María García López</div>
+              <div class="subject-sub">Instalación de tomacorrientes</div>
+            </div>
+          </div>
+
+          <!-- Stars (5/5 seleccionadas) -->
+          <div class="stars-section">
+            <div class="stars-question">¿Cómo fue tu experiencia?</div>
+            <div class="stars-row">
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="star-wrap">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="star-label">¡Excelente!</span>
+            </div>
+          </div>
+
+          <!-- Textarea (con texto) -->
+          <div class="textarea-section">
+            <div class="textarea-label">COMENTARIO (OPCIONAL)</div>
+            <textarea class="modal-textarea" rows="3">Muy buen trato, explicó bien el trabajo y pagó puntual.</textarea>
+            <div class="textarea-counter">52/300</div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button class="btn-cancel">Cancelar</button>
+          <button class="btn-submit active">Enviar calificación</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-fab-wrap">
+        <div class="nav-fab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="nav-label">Candidatos</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-tab active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="nav-dot"></div>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

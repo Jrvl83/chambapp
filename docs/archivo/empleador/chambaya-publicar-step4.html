@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Publicar Oferta Step 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px; height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* ── SCREEN ── */
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    height: 44px; background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0; position: relative; z-index: 50;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ── HEADER ── */
+  .header {
+    background: #fff;
+    padding: 10px 20px 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; z-index: 40;
+  }
+  .logo { font-family: 'Poppins'; font-weight: 700; font-size: 20px; }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+  .back-link { font-family: 'Inter'; font-weight: 500; font-size: 13px; color: #0066FF; }
+
+  /* ── PROGRESS SECTION ── */
+  .progress-section {
+    background: #fff;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #F1F5F9;
+    flex-shrink: 0;
+  }
+  .steps-row { display: flex; align-items: center; margin-bottom: 12px; }
+
+  .step-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+  .step-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter'; font-weight: 700; font-size: 13px;
+  }
+  .step-circle.done   { background: #00C48C; border: 2px solid #00C48C; }
+  .step-circle.active { background: #0066FF; border: 2px solid #0066FF; color: #fff; }
+
+  .step-label { font-family: 'Inter'; font-weight: 500; font-size: 10px; }
+  .step-label.done   { color: #00C48C; }
+  .step-label.active { color: #0066FF; }
+
+  .step-line { height: 2px; flex: 1; background: #00C48C; margin-bottom: 16px; }
+
+  .progress-bar-track { height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill  { width: 100%; height: 100%; background: linear-gradient(90deg, #00C48C, #0066FF); border-radius: 3px; }
+
+  /* ── SCROLL ── */
+  .scroll-content {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none;
+    padding: 20px 16px;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── TITLES ── */
+  .form-section-title { font-family: 'Poppins'; font-weight: 600; font-size: 17px; color: #0F1419; margin-bottom: 4px; }
+  .form-subtitle { font-family: 'Inter'; font-weight: 400; font-size: 12.5px; color: #94A3B8; margin-bottom: 16px; }
+
+  /* ── REVIEW CARD ── */
+  .review-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  /* ── REVIEW SECTION ── */
+  .review-section { padding: 14px 16px; border-bottom: 1px solid #F1F5F9; }
+  .review-section:last-child { border-bottom: none; }
+
+  /* Section label */
+  .section-label {
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'Inter'; font-weight: 700; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: #94A3B8; margin-bottom: 10px;
+  }
+
+  /* Data rows */
+  .data-row {
+    display: flex; align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .data-row:last-child { margin-bottom: 0; }
+  .data-label {
+    font-family: 'Inter'; font-weight: 500; font-size: 12px;
+    color: #718096; min-width: 90px; flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .data-value {
+    font-family: 'Inter'; font-weight: 500; font-size: 12.5px;
+    color: #0F1419; flex: 1;
+  }
+  .data-value.muted { color: #A0AEC0; font-style: italic; font-weight: 400; font-size: 12px; }
+
+  /* Salary pill */
+  .salary-pill {
+    font-family: 'Inter'; font-weight: 700; font-size: 12px;
+    background: #F0FDF4; color: #15803D;
+    padding: 2px 8px; border-radius: 20px;
+    display: inline-block;
+  }
+
+  /* Description block */
+  .desc-block {
+    display: flex; flex-direction: column;
+    margin-bottom: 0;
+  }
+  .desc-text {
+    font-family: 'Inter'; font-weight: 400; font-size: 12px;
+    color: #475569; line-height: 1.5;
+    background: #F8FAFC; padding: 8px 10px;
+    border-radius: 8px; margin-top: 4px;
+  }
+
+  /* Checkbox list */
+  .cb-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .cb-item { display: flex; align-items: center; gap: 6px; }
+  .cb-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .cb-dot.on  { background: #0066FF; }
+  .cb-dot.off { background: #E2E8F0; }
+  .cb-text { font-family: 'Inter'; font-weight: 400; font-size: 12px; }
+  .cb-text.on  { color: #0F1419; }
+  .cb-text.off { color: #A0AEC0; text-decoration: line-through; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: #EDFAF3;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex; align-items: flex-start; gap: 8px;
+    margin-top: 14px;
+  }
+  .info-box-body { display: flex; flex-direction: column; }
+  .info-box-line1 { font-family: 'Inter'; font-weight: 500; font-size: 12px; color: #0F1419; }
+  .info-box-line2 { font-family: 'Inter'; font-weight: 400; font-size: 11.5px; color: #475569; margin-top: 3px; }
+
+  /* ── NAV BUTTONS ── */
+  .nav-buttons { display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px; }
+  .btn-back {
+    flex: 1; height: 48px;
+    background: #fff; border: 2px solid #E2E8F0;
+    color: #718096; font-family: 'Poppins'; font-weight: 600; font-size: 14px;
+    border-radius: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-publish {
+    flex: 2; height: 52px;
+    background: linear-gradient(135deg, #00C48C, #00A67E);
+    border: none; color: #fff;
+    font-family: 'Poppins'; font-weight: 700; font-size: 15px;
+    border-radius: 12px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,196,140,0.35);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    background: #fff; border-top: 1px solid #E2E8F0;
+    padding: 6px 0 16px;
+    display: flex; align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; }
+  .nav-label { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #A0AEC0; }
+  .nav-fab-wrap { flex: 1; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; }
+  .nav-fab {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0066FF, #003D99);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,102,255,0.35), 0 0 0 3px #E6F2FF;
+    margin-top: -14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+      <span class="back-link">← Volver</span>
+    </div>
+
+    <!-- PROGRESS SECTION -->
+    <div class="progress-section">
+      <div class="steps-row">
+        <!-- Step 1: Done -->
+        <div class="step-item">
+          <div class="step-circle done">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg>
+          </div>
+          <span class="step-label done">Básico</span>
+        </div>
+        <div class="step-line"></div>
+        <!-- Step 2: Done -->
+        <div class="step-item">
+          <div class="step-circle done">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg>
+          </div>
+          <span class="step-label done">Detalles</span>
+        </div>
+        <div class="step-line"></div>
+        <!-- Step 3: Done -->
+        <div class="step-item">
+          <div class="step-circle done">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg>
+          </div>
+          <span class="step-label done">Requisitos</span>
+        </div>
+        <div class="step-line"></div>
+        <!-- Step 4: Active -->
+        <div class="step-item">
+          <div class="step-circle active">4</div>
+          <span class="step-label active">Revisar</span>
+        </div>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- SCROLL CONTENT -->
+    <div class="scroll-content">
+
+      <div class="form-section-title">Revisar y Publicar</div>
+      <div class="form-subtitle">Revisa que todo esté correcto antes de publicar</div>
+
+      <!-- REVIEW CARD -->
+      <div class="review-card">
+
+        <!-- Sección 1: Información Básica -->
+        <div class="review-section">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+            Información Básica
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Título</span>
+            <span class="data-value">Gasfitero para baño completo</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Categoría</span>
+            <span class="data-value">🔧 Gasfitería</span>
+          </div>
+
+          <!-- Description block -->
+          <div class="data-row desc-block">
+            <span class="data-label">Descripción</span>
+            <div class="desc-text">Se necesita un gasfitero con experiencia para remodelar baño completo de 6m². Incluye cambio de tuberías, instalación de sanitarios nuevos y conexión de agua caliente.</div>
+          </div>
+        </div>
+
+        <!-- Sección 2: Detalles -->
+        <div class="review-section">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Detalles
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Ubicación</span>
+            <span class="data-value">San Isidro, Lima, Lima</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Dirección</span>
+            <span class="data-value">Av. Javier Prado Este 1234</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Salario</span>
+            <span class="data-value"><span class="salary-pill">S/. 280</span></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Vacantes</span>
+            <span class="data-value">1</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Horario</span>
+            <span class="data-value">Lunes a Viernes, 8am - 5pm</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Duración</span>
+            <span class="data-value muted">No especificada</span>
+          </div>
+        </div>
+
+        <!-- Sección 3: Requisitos -->
+        <div class="review-section">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Requisitos
+          </div>
+
+          <div class="data-row">
+            <span class="data-label">Experiencia</span>
+            <span class="data-value">1–2 años</span>
+          </div>
+
+          <div class="data-row" style="margin-bottom:0;">
+            <span class="data-label">Habilidades</span>
+            <span class="data-value" style="font-size:12px; line-height:1.4;">Instalación de tuberías PVC/cobre, soldadura, termas</span>
+          </div>
+
+          <!-- Debe traer sub-section -->
+          <div class="cb-list">
+            <div class="cb-item">
+              <div class="cb-dot on"></div>
+              <span class="cb-text on">Herramientas propias</span>
+            </div>
+            <div class="cb-item">
+              <div class="cb-dot off"></div>
+              <span class="cb-text off">Transporte propio</span>
+            </div>
+            <div class="cb-item">
+              <div class="cb-dot on"></div>
+              <span class="cb-text on">Equipos de protección</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 4: Fotos — sin border-bottom -->
+        <div class="review-section" style="border-bottom:none;">
+          <div class="section-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Fotos
+          </div>
+          <span style="font-family:'Inter'; font-weight:400; font-size:12px; color:#A0AEC0; font-style:italic;">Sin fotos agregadas</span>
+        </div>
+
+      </div><!-- end review-card -->
+
+      <!-- INFO BOX -->
+      <div class="info-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C48C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;">
+          <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <div class="info-box-body">
+          <span class="info-box-line1">Tu oferta será visible para todos los trabajadores</span>
+          <span class="info-box-line2">Recibirás notificaciones cuando alguien postule</span>
+        </div>
+      </div>
+
+      <!-- NAV BUTTONS -->
+      <div class="nav-buttons">
+        <button class="btn-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Atrás
+        </button>
+        <button class="btn-publish">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Publicar Oferta
+        </button>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-fab-wrap">
+        <div class="nav-fab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="nav-label">Candidatos</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Registro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0F172A;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 64px;
+    gap: 48px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .frame-label {
+    font-family: 'Poppins'; font-weight: 600; font-size: 12px;
+    color: rgba(255,255,255,0.28);
+    letter-spacing: 0.6px; text-transform: uppercase;
+    margin-bottom: -36px;
+    align-self: flex-start;
+    margin-left: calc(50% - 187px);
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px; height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #fff;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000; border-radius: 0 0 20px 20px;
+    z-index: 100; pointer-events: none;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    height: 44px; background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0; z-index: 50; position: relative;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ── SCROLL ── */
+  .scroll-content {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── INNER WRAP ── */
+  .inner { padding: 24px 22px 32px; display: flex; flex-direction: column; gap: 0; }
+
+  /* ── AUTH HEADER ── */
+  .auth-logo {
+    font-family: 'Poppins'; font-weight: 700; font-size: 24px;
+    letter-spacing: -0.3px; margin-bottom: 3px;
+  }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+  .auth-tagline-row { margin-bottom: 22px; }
+  .auth-tagline-title { font-family: 'Poppins'; font-weight: 600; font-size: 14px; color: #0F1419; }
+  .auth-tagline-sub   { font-family: 'Inter'; font-size: 12.5px; color: #718096; margin-top: 1px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    display: flex; align-items: flex-start; justify-content: center;
+    gap: 0; margin-bottom: 26px;
+    position: relative;
+  }
+  .progress-step {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+  }
+  .progress-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: calc(50% + 14px);
+    right: calc(-50% + 14px);
+    height: 2px;
+    background: #E2E8F0;
+    z-index: 1;
+  }
+  .progress-step.done:not(:last-child)::after,
+  .progress-step.active:not(:last-child)::after {
+    background: #0066FF;
+  }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins'; font-weight: 700; font-size: 12px;
+    position: relative; z-index: 3;
+  }
+  .step-dot.pending  { background: #F1F5F9; color: #A0AEC0; }
+  .step-dot.active   { background: #0066FF; color: #fff; }
+  .step-dot.done     { background: #0066FF; color: #fff; }
+  .step-label { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #A0AEC0; }
+  .step-label.active { color: #0066FF; }
+  .step-label.done   { color: #0066FF; }
+
+  /* ── STEP HEADING ── */
+  .step-title {
+    font-family: 'Poppins'; font-weight: 600; font-size: 18px;
+    color: #0F1419; margin-bottom: 3px;
+  }
+  .step-sub {
+    font-family: 'Inter'; font-size: 13px; color: #718096;
+    margin-bottom: 18px;
+  }
+
+  /* ── ROLE CARDS ── */
+  .role-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .role-card {
+    display: flex; align-items: center; gap: 12px;
+    border: 2px solid #E2E8F0; border-radius: 14px;
+    padding: 14px 14px; cursor: pointer; background: #fff;
+    position: relative; transition: border-color .15s;
+  }
+  .role-card.selected { border-color: #0066FF; background: #F0F7FF; }
+  .role-icon-wrap {
+    width: 42px; height: 42px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .role-text { flex: 1; }
+  .role-title-text {
+    font-family: 'Poppins'; font-weight: 600; font-size: 13.5px;
+    color: #0F1419; margin-bottom: 2px;
+  }
+  .role-card.selected .role-title-text { color: #0066FF; }
+  .role-desc-text { font-family: 'Inter'; font-size: 12px; color: #718096; }
+  .role-check {
+    position: absolute; top: 10px; right: 10px;
+    opacity: 0;
+  }
+  .role-card.selected .role-check { opacity: 1; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .divider-line { flex: 1; height: 1px; background: #E2E8F0; }
+  .divider-text { font-family: 'Inter'; font-size: 12px; color: #A0AEC0; font-weight: 500; }
+
+  /* ── GOOGLE BUTTON ── */
+  .btn-google {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #fff; border: 1.5px solid #E2E8F0; border-radius: 12px;
+    padding: 12px; cursor: pointer;
+    font-family: 'Inter'; font-weight: 600; font-size: 13.5px; color: #374151;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin-bottom: 14px;
+  }
+
+  /* ── PRIMARY BUTTON ── */
+  .btn-primary {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: #0066FF; color: #fff;
+    font-family: 'Poppins'; font-weight: 600; font-size: 14px;
+    padding: 13px; border-radius: 12px; border: none; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.3);
+    margin-bottom: 20px;
+  }
+
+  /* ── FORM FIELDS ── */
+  .form { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-label {
+    font-family: 'Inter'; font-weight: 600; font-size: 11.5px;
+    color: #374151; letter-spacing: 0.2px;
+  }
+  .req { color: #EF4444; margin-left: 2px; }
+  .input-wrap {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border: 1.5px solid #E2E8F0; border-radius: 12px;
+    padding: 11px 12px;
+  }
+  .input-wrap.focus { border-color: #0066FF; box-shadow: 0 0 0 3px rgba(0,102,255,0.09); }
+  .input-icon { flex-shrink: 0; }
+  .input-value { flex: 1; font-family: 'Inter'; font-size: 13px; color: #0F1419; }
+  .input-value.muted { color: #A0AEC0; }
+  .input-action { flex-shrink: 0; cursor: pointer; }
+  .field-helper { font-family: 'Inter'; font-size: 11px; color: #A0AEC0; padding-left: 2px; margin-top: 1px; }
+
+  /* ── TWO BUTTON ROW ── */
+  .btn-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .btn-back {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1.5px solid #E2E8F0; background: transparent; border-radius: 12px;
+    padding: 12px; font-family: 'Inter'; font-weight: 600; font-size: 13px;
+    color: #475569; cursor: pointer;
+  }
+  .btn-next {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    background: #0066FF; color: #fff; border: none; border-radius: 12px;
+    padding: 12px; font-family: 'Poppins'; font-weight: 600; font-size: 13.5px;
+    cursor: pointer; box-shadow: 0 4px 14px rgba(0,102,255,0.28);
+  }
+
+  /* ── PASSWORD STRENGTH ── */
+  .strength-wrap { margin-top: 7px; }
+  .strength-bars { display: flex; gap: 5px; margin-bottom: 5px; }
+  .strength-bar { flex: 1; height: 5px; border-radius: 99px; background: #F1F5F9; }
+  .strength-bar.filled { background: #00C48C; }
+  .strength-label { font-family: 'Inter'; font-size: 11.5px; color: #00C48C; font-weight: 600; }
+
+  /* ── CHECKBOX ── */
+  .checkbox-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .checkbox-box {
+    width: 18px; height: 18px; border-radius: 5px;
+    background: #0066FF; border: 2px solid #0066FF;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .checkbox-label {
+    font-family: 'Inter'; font-size: 12.5px; color: #475569; line-height: 1.4;
+  }
+  .checkbox-link { color: #0066FF; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ── FOOTER LINK ── */
+  .auth-footer {
+    text-align: center;
+    font-family: 'Inter'; font-size: 13px; color: #718096;
+  }
+  .auth-footer a { color: #0066FF; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════
+     PHONE 1 — Paso 1: Tipo
+     ═══════════════════════════ -->
+<div class="frame-label">Phone 1 — Paso 1: Tipo de usuario</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="inner">
+
+        <!-- AUTH HEADER -->
+        <div class="auth-logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+        <div class="auth-tagline-row">
+          <div class="auth-tagline-title">Únete a ChambaYa</div>
+          <div class="auth-tagline-sub">Comienza a encontrar chambas hoy</div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-bar">
+          <div class="progress-step active">
+            <div class="step-dot active">1</div>
+            <span class="step-label active">Tipo</span>
+          </div>
+          <div class="progress-step pending">
+            <div class="step-dot pending">2</div>
+            <span class="step-label">Datos</span>
+          </div>
+          <div class="progress-step pending">
+            <div class="step-dot pending">3</div>
+            <span class="step-label">Clave</span>
+          </div>
+        </div>
+
+        <!-- STEP HEADING -->
+        <div class="step-title">¿Qué estás buscando?</div>
+        <div class="step-sub">Selecciona una opción</div>
+
+        <!-- ROLE CARDS -->
+        <div class="role-cards">
+          <!-- Busco Trabajo — SELECCIONADA -->
+          <div class="role-card selected">
+            <div class="role-icon-wrap" style="background:#EEF2FF;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 20h20"/><path d="M6 20V8l6-4 6 4v12"/><rect x="9" y="12" width="6" height="8"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-title-text">Busco Trabajo</div>
+              <div class="role-desc-text">Encuentra chambas cerca de ti</div>
+            </div>
+            <div class="role-check">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" fill="#0066FF"/>
+                <polyline points="8 12 11 15 16 9" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Busco Trabajadores — NO seleccionada -->
+          <div class="role-card">
+            <div class="role-icon-wrap" style="background:#FFF3ED;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                <line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+              </svg>
+            </div>
+            <div class="role-text">
+              <div class="role-title-text">Busco Trabajadores</div>
+              <div class="role-desc-text">Encuentra profesionales</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIVIDER + GOOGLE -->
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span class="divider-text">o regístrate con</span>
+          <div class="divider-line"></div>
+        </div>
+        <button class="btn-google">
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z" fill="#FFC107"/>
+            <path d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 7.4 6.3 14.7z" fill="#FF3D00"/>
+            <path d="M24 46c5.5 0 10.5-1.9 14.4-5.1l-6.7-5.5C29.6 37 26.9 38 24 38c-6.1 0-10.7-3.1-11.8-8.5l-7 5.4C8.5 42 15.7 46 24 46z" fill="#4CAF50"/>
+            <path d="M44.5 20H24v8.5h11.8c-.6 2.4-2 4.5-3.9 5.9l6.7 5.5C42.6 36.2 46 30.6 46 24c0-1.3-.2-2.7-.5-4z" fill="#1976D2"/>
+          </svg>
+          Registrarse con Google
+        </button>
+
+        <!-- NEXT BUTTON -->
+        <button class="btn-primary">
+          Siguiente
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <!-- FOOTER -->
+        <div class="auth-footer">¿Ya tienes cuenta? <a>Inicia sesión</a></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════
+     PHONE 2 — Paso 2: Datos
+     ═══════════════════════════ -->
+<div class="frame-label">Phone 2 — Paso 2: Datos personales</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="inner">
+
+        <!-- AUTH HEADER -->
+        <div class="auth-logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+        <div class="auth-tagline-row">
+          <div class="auth-tagline-title">Únete a ChambaYa</div>
+          <div class="auth-tagline-sub">Comienza a encontrar chambas hoy</div>
+        </div>
+
+        <!-- PROGRESS — paso 1 done, paso 2 active -->
+        <div class="progress-bar">
+          <div class="progress-step done">
+            <div class="step-dot done">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="step-label done">Tipo</span>
+          </div>
+          <div class="progress-step active">
+            <div class="step-dot active">2</div>
+            <span class="step-label active">Datos</span>
+          </div>
+          <div class="progress-step pending">
+            <div class="step-dot pending">3</div>
+            <span class="step-label">Clave</span>
+          </div>
+        </div>
+
+        <!-- STEP HEADING -->
+        <div class="step-title">Tus datos</div>
+        <div class="step-sub">Información básica</div>
+
+        <!-- FORM -->
+        <div class="form">
+
+          <!-- Nombre — focus -->
+          <div class="field-group">
+            <div class="field-label">Nombre Completo <span class="req">*</span></div>
+            <div class="input-wrap focus">
+              <div class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <span class="input-value">Juan Pérez García</span>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="field-group">
+            <div class="field-label">Email <span class="req">*</span></div>
+            <div class="input-wrap">
+              <div class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <span class="input-value">juan.perez@gmail.com</span>
+            </div>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="field-group">
+            <div class="field-label">Teléfono / WhatsApp <span class="req">*</span></div>
+            <div class="input-wrap">
+              <div class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.94 6.94l1.51-1.52a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              </div>
+              <span class="input-value">999 888 777</span>
+            </div>
+            <span class="field-helper">Para que los empleadores te contacten</span>
+          </div>
+
+        </div>
+
+        <!-- TWO BUTTONS -->
+        <div class="btn-row">
+          <button class="btn-back" style="flex:0 0 38%;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Atrás
+          </button>
+          <button class="btn-next">
+            Siguiente
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="auth-footer">¿Ya tienes cuenta? <a>Inicia sesión</a></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════
+     PHONE 3 — Paso 3: Contraseña
+     ═══════════════════════════ -->
+<div class="frame-label">Phone 3 — Paso 3: Contraseña</div>
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="inner">
+
+        <!-- AUTH HEADER -->
+        <div class="auth-logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+        <div class="auth-tagline-row">
+          <div class="auth-tagline-title">Únete a ChambaYa</div>
+          <div class="auth-tagline-sub">Comienza a encontrar chambas hoy</div>
+        </div>
+
+        <!-- PROGRESS — pasos 1 y 2 done, paso 3 active -->
+        <div class="progress-bar">
+          <div class="progress-step done">
+            <div class="step-dot done">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="step-label done">Tipo</span>
+          </div>
+          <div class="progress-step done">
+            <div class="step-dot done">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="step-label done">Datos</span>
+          </div>
+          <div class="progress-step active">
+            <div class="step-dot active">3</div>
+            <span class="step-label active">Clave</span>
+          </div>
+        </div>
+
+        <!-- STEP HEADING -->
+        <div class="step-title">Crea tu contraseña</div>
+        <div class="step-sub">Mínimo 6 caracteres</div>
+
+        <!-- FORM -->
+        <div class="form">
+
+          <!-- Contraseña -->
+          <div class="field-group">
+            <div class="field-label">Contraseña <span class="req">*</span></div>
+            <div class="input-wrap">
+              <div class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <span class="input-value">••••••••</span>
+              <div class="input-action">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+            </div>
+            <!-- Strength bar -->
+            <div class="strength-wrap">
+              <div class="strength-bars">
+                <div class="strength-bar filled"></div>
+                <div class="strength-bar filled"></div>
+                <div class="strength-bar filled"></div>
+              </div>
+              <div class="strength-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00C48C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px"><polyline points="20 6 9 17 4 12"/></svg>
+                Contraseña fuerte
+              </div>
+            </div>
+          </div>
+
+          <!-- Confirmar Contraseña -->
+          <div class="field-group">
+            <div class="field-label">Confirmar Contraseña <span class="req">*</span></div>
+            <div class="input-wrap">
+              <div class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <span class="input-value">••••••••</span>
+              <div class="input-action">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" fill="#EDFAF3"/>
+                  <polyline points="8 12 11 15 16 9" stroke="#00C48C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CHECKBOX -->
+        <div class="checkbox-row">
+          <div class="checkbox-box">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="checkbox-label">Acepto los <span class="checkbox-link">Términos y Condiciones</span> de ChambaYa</span>
+        </div>
+
+        <!-- TWO BUTTONS -->
+        <div class="btn-row">
+          <button class="btn-back" style="flex:0 0 36%;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Atrás
+          </button>
+          <button class="btn-next">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Crear Cuenta
+          </button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="auth-footer">¿Ya tienes cuenta? <a>Inicia sesión</a></div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChambaYa — Publicar Oferta Step 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    padding: 40px 20px;
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 375px; height: 812px;
+    background: #000;
+    border-radius: 50px;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #333,
+      0 0 0 3px #1a1a1a,
+      0 30px 80px rgba(0,0,0,0.6),
+      inset 0 0 0 1px #444;
+    flex-shrink: 0;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    left: -3px; top: 130px;
+    width: 3px; height: 32px;
+    background: #2a2a2a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 44px 0 #2a2a2a, 0 88px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 165px;
+    width: 3px; height: 62px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* ── SCREEN ── */
+  .phone-screen {
+    width: 100%; height: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    height: 44px; background: #fff;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 24px 6px;
+    flex-shrink: 0; position: relative; z-index: 50;
+  }
+  .status-time { font-family: 'Inter'; font-weight: 600; font-size: 14px; color: #0F1419; padding-left: 6px; }
+  .status-icons { display: flex; align-items: center; gap: 5px; padding-right: 6px; }
+
+  /* ── HEADER ── */
+  .header {
+    background: #fff;
+    padding: 10px 20px 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; z-index: 40;
+  }
+  .logo { font-family: 'Poppins'; font-weight: 700; font-size: 20px; }
+  .logo-c { color: #0F1419; }
+  .logo-y { color: #0066FF; }
+  .back-link { font-family: 'Inter'; font-weight: 500; font-size: 13px; color: #0066FF; }
+
+  /* ── PROGRESS SECTION ── */
+  .progress-section {
+    background: #fff;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #F1F5F9;
+    flex-shrink: 0;
+  }
+
+  .steps-row { display: flex; align-items: center; margin-bottom: 12px; }
+
+  .step-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+
+  .step-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter'; font-weight: 700; font-size: 13px;
+  }
+  .step-circle.done { background: #00C48C; border: 2px solid #00C48C; }
+  .step-circle.active { background: #0066FF; border: 2px solid #0066FF; color: #fff; }
+  .step-circle.pending { background: #fff; border: 2px solid #E2E8F0; color: #A0AEC0; }
+
+  .step-label { font-family: 'Inter'; font-weight: 500; font-size: 10px; }
+  .step-label.done { color: #00C48C; }
+  .step-label.active { color: #0066FF; }
+  .step-label.pending { color: #A0AEC0; }
+
+  .step-line { height: 2px; flex: 1; margin-bottom: 16px; }
+  .step-line.done { background: #00C48C; }
+  .step-line.pending { background: #E2E8F0; }
+
+  .progress-bar-track { height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill { width: 50%; height: 100%; background: linear-gradient(90deg, #00C48C, #0066FF); border-radius: 3px; }
+
+  /* ── SCROLL CONTENT ── */
+  .scroll-content {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none;
+    padding: 20px 16px;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* ── SECTION TITLE ── */
+  .form-section-title { font-family: 'Poppins'; font-weight: 600; font-size: 17px; color: #0F1419; margin-bottom: 16px; }
+
+  /* ── GROUP SUB-HEADER ── */
+  .group-header {
+    display: flex; align-items: center; gap: 5px;
+    margin-bottom: 10px; margin-top: 6px;
+  }
+  .group-header-label {
+    font-family: 'Inter'; font-weight: 700; font-size: 12px;
+    color: #475569; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── FIELDS ── */
+  .field { margin-bottom: 16px; }
+  .field-row { display: flex; gap: 10px; margin-bottom: 16px; }
+  .field-row .field { flex: 1; margin-bottom: 0; }
+
+  .field-label { font-family: 'Inter'; font-weight: 600; font-size: 13px; color: #0F1419; display: block; margin-bottom: 6px; }
+
+  .field-input, .field-select {
+    width: 100%; height: 48px;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-family: 'Inter'; font-weight: 400; font-size: 14px; color: #0F1419;
+    background: #fff; outline: none;
+    -webkit-appearance: none; appearance: none;
+    display: block;
+  }
+  .field-input.has-value { border: 2px solid #0066FF; }
+  .field-input.empty { border: 2px solid #E2E8F0; }
+
+  .select-wrap { position: relative; }
+  .field-select { padding-right: 40px; cursor: pointer; }
+  .field-select.has-value { border: 2px solid #0066FF; }
+  .select-chevron {
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .helper-text {
+    display: flex; align-items: flex-start; gap: 4px;
+    margin-top: 5px;
+  }
+  .helper-text span { font-family: 'Inter'; font-weight: 400; font-size: 11px; color: #94A3B8; line-height: 1.4; }
+
+  /* ── MINI MAP ── */
+  .mini-map {
+    height: 120px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid #E2E8F0;
+    position: relative;
+    background: #E8F4E8;
+  }
+  /* simulated streets */
+  .map-street-h1 { position: absolute; top: 38%; left: 0; right: 0; height: 8px; background: #D0E8D0; }
+  .map-street-h2 { position: absolute; top: 68%; left: 0; right: 0; height: 6px; background: #D0E8D0; }
+  .map-street-v1 { position: absolute; left: 30%; top: 0; bottom: 0; width: 8px; background: #D0E8D0; }
+  .map-street-v2 { position: absolute; left: 60%; top: 0; bottom: 0; width: 6px; background: #D0E8D0; }
+  /* blocks */
+  .map-block-1 { position: absolute; top: 10%; left: 5%; width: 22%; height: 26%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-2 { position: absolute; top: 10%; left: 33%; width: 24%; height: 26%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-3 { position: absolute; top: 10%; left: 63%; width: 30%; height: 26%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-4 { position: absolute; top: 48%; left: 5%; width: 22%; height: 18%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-5 { position: absolute; top: 48%; left: 63%; width: 30%; height: 18%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-6 { position: absolute; top: 77%; left: 5%; width: 22%; height: 18%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-7 { position: absolute; top: 77%; left: 33%; width: 24%; height: 18%; background: #CCE4CC; border-radius: 3px; }
+  .map-block-8 { position: absolute; top: 77%; left: 63%; width: 30%; height: 18%; background: #CCE4CC; border-radius: 3px; }
+
+  /* pin marker */
+  .map-pin-wrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -100%);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .map-pin-shadow {
+    width: 16px; height: 4px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 50%;
+    margin-top: 0;
+  }
+  /* label overlay */
+  .map-label {
+    position: absolute;
+    bottom: 8px; left: 8px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-family: 'Inter'; font-weight: 500; font-size: 11px;
+    padding: 3px 8px; border-radius: 6px;
+  }
+
+  /* ── UPLOAD AREA ── */
+  .upload-area {
+    border: 2px dashed #CBD5E0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    background: #FAFBFC;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .upload-title { font-family: 'Inter'; font-weight: 600; font-size: 13px; color: #475569; }
+  .upload-sub { font-family: 'Inter'; font-weight: 400; font-size: 11px; color: #A0AEC0; }
+
+  /* ── NAV BUTTONS ── */
+  .nav-buttons { display: flex; gap: 10px; margin-top: 20px; margin-bottom: 24px; }
+  .btn-back {
+    flex: 1; height: 48px;
+    background: #fff; border: 2px solid #E2E8F0;
+    color: #718096; font-family: 'Poppins'; font-weight: 600; font-size: 14px;
+    border-radius: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-next {
+    flex: 2; height: 48px;
+    background: #0066FF; border: none;
+    color: #fff; font-family: 'Poppins'; font-weight: 600; font-size: 14px;
+    border-radius: 12px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,102,255,0.25);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    background: #fff; border-top: 1px solid #E2E8F0;
+    padding: 6px 0 16px;
+    display: flex; align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .nav-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    gap: 2px; cursor: pointer;
+  }
+  .nav-label { font-family: 'Inter'; font-weight: 600; font-size: 10px; color: #A0AEC0; }
+  .nav-fab-wrap { flex: 1; display: flex; justify-content: center; align-items: flex-end; cursor: pointer; }
+  .nav-fab {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0066FF, #003D99);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,102,255,0.35), 0 0 0 3px #E6F2FF;
+    margin-top: -14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="notch"></div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 17 12" fill="#0F1419"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="15" height="11" viewBox="0 0 16 12" fill="#0F1419"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M4.5 6.5C5.7 5.3 6.8 4.7 8 4.7s2.3.6 3.5 1.8l1.2-1.2C11.3 3.9 9.7 3 8 3s-3.3.9-4.7 2.3l1.2 1.2z"/><path d="M1.5 3.5C3.3 1.7 5.5.7 8 .7s4.7 1 6.5 2.8l1.2-1.2C13.7.4 11-.3 8-.3S2.3.4.3 2.3l1.2 1.2z"/></svg>
+        <svg width="24" height="11" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#0F1419" stroke-width="1"/><rect x="22" y="3.5" width="2.5" height="5" rx="1.25" fill="#0F1419"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#0F1419"/></svg>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="logo"><span class="logo-c">Chamba</span><span class="logo-y">Ya</span></div>
+      <span class="back-link">← Volver</span>
+    </div>
+
+    <!-- PROGRESS SECTION -->
+    <div class="progress-section">
+      <div class="steps-row">
+        <!-- Step 1: Done -->
+        <div class="step-item">
+          <div class="step-circle done">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 7 5.5 10.5 12 3"/></svg>
+          </div>
+          <span class="step-label done">Básico</span>
+        </div>
+        <div class="step-line done"></div>
+        <!-- Step 2: Active -->
+        <div class="step-item">
+          <div class="step-circle active">2</div>
+          <span class="step-label active">Detalles</span>
+        </div>
+        <div class="step-line pending"></div>
+        <!-- Step 3: Pending -->
+        <div class="step-item">
+          <div class="step-circle pending">3</div>
+          <span class="step-label pending">Requisitos</span>
+        </div>
+        <div class="step-line pending"></div>
+        <!-- Step 4: Pending -->
+        <div class="step-item">
+          <div class="step-circle pending">4</div>
+          <span class="step-label pending">Revisar</span>
+        </div>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- SCROLL CONTENT -->
+    <div class="scroll-content">
+      <div class="form-section-title">Detalles del Trabajo</div>
+
+      <!-- ── GRUPO: UBICACIÓN ── -->
+      <div class="group-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="group-header-label">Ubicación</span>
+      </div>
+
+      <!-- Departamento -->
+      <div class="field">
+        <label class="field-label">Departamento</label>
+        <div class="select-wrap">
+          <select class="field-select has-value">
+            <option selected>Lima</option>
+          </select>
+          <div class="select-chevron">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Provincia + Distrito -->
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Provincia</label>
+          <div class="select-wrap">
+            <select class="field-select has-value">
+              <option selected>Lima</option>
+            </select>
+            <div class="select-chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Distrito</label>
+          <div class="select-wrap">
+            <select class="field-select has-value">
+              <option selected>San Isidro</option>
+            </select>
+            <div class="select-chevron">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dirección exacta -->
+      <div class="field">
+        <label class="field-label">Dirección Exacta</label>
+        <input class="field-input has-value" type="text" value="Av. Javier Prado Este 1234" readonly/>
+        <div class="helper-text">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Opcional — ayuda al trabajador a ubicar el lugar</span>
+        </div>
+      </div>
+
+      <!-- Mini map -->
+      <div class="mini-map">
+        <!-- street grid simulation -->
+        <div class="map-street-h1"></div>
+        <div class="map-street-h2"></div>
+        <div class="map-street-v1"></div>
+        <div class="map-street-v2"></div>
+        <!-- city blocks -->
+        <div class="map-block-1"></div>
+        <div class="map-block-2"></div>
+        <div class="map-block-3"></div>
+        <div class="map-block-4"></div>
+        <div class="map-block-5"></div>
+        <div class="map-block-6"></div>
+        <div class="map-block-7"></div>
+        <div class="map-block-8"></div>
+        <!-- pin marker -->
+        <div class="map-pin-wrap">
+          <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z" fill="#EF4444"/>
+            <circle cx="14" cy="14" r="6" fill="white"/>
+            <circle cx="14" cy="14" r="3" fill="#EF4444"/>
+          </svg>
+          <div class="map-pin-shadow"></div>
+        </div>
+        <!-- location label -->
+        <div class="map-label">San Isidro, Lima</div>
+      </div>
+
+      <!-- Referencia adicional (vacío) -->
+      <div class="field">
+        <label class="field-label">Referencia Adicional</label>
+        <input class="field-input empty" type="text" placeholder="Ej: Frente al parque, edificio gris" readonly/>
+      </div>
+
+      <!-- ── GRUPO: COMPENSACIÓN Y HORARIO ── -->
+      <div class="group-header" style="margin-top: 4px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <span class="group-header-label">Compensación y Horario</span>
+      </div>
+
+      <!-- Salario + Vacantes -->
+      <div class="field-row">
+        <div class="field" style="flex:2;">
+          <label class="field-label">Salario Ofrecido</label>
+          <input class="field-input has-value" type="text" value="S/. 280" readonly/>
+        </div>
+        <div class="field" style="flex:1;">
+          <label class="field-label">Vacantes</label>
+          <input class="field-input has-value" type="text" value="1" readonly style="text-align:center;"/>
+        </div>
+      </div>
+
+      <!-- Salary helper -->
+      <div class="helper-text" style="margin-top:-8px; margin-bottom:16px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Ofertas con salario claro reciben 3× más postulantes</span>
+      </div>
+
+      <!-- Duración estimada (vacío) -->
+      <div class="field">
+        <label class="field-label">Duración Estimada</label>
+        <input class="field-input empty" type="text" placeholder="Ej: 2 semanas, 1 mes" readonly/>
+      </div>
+
+      <!-- Horario (con valor) -->
+      <div class="field">
+        <label class="field-label">Horario de Trabajo</label>
+        <input class="field-input has-value" type="text" value="Lunes a Viernes, 8am - 5pm" readonly/>
+      </div>
+
+      <!-- ── GRUPO: FOTOS ── -->
+      <div class="group-header" style="margin-top: 4px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span class="group-header-label">Fotos del Trabajo</span>
+      </div>
+
+      <div class="upload-area">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+        <span class="upload-title">Agregar fotos</span>
+        <span class="upload-sub">JPG, PNG · máx 5 fotos · máx 10MB</span>
+      </div>
+      <div class="helper-text" style="margin-bottom:0;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Las ofertas con fotos reciben 2× más postulaciones</span>
+      </div>
+
+      <!-- NAV BUTTONS -->
+      <div class="nav-buttons">
+        <button class="btn-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Atrás
+        </button>
+        <button class="btn-next">
+          Siguiente
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Inicio</span>
+      </div>
+      <div class="nav-fab-wrap">
+        <div class="nav-fab">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="nav-label">Candidatos</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="nav-label">Alertas</span>
+      </div>
+      <div class="nav-tab">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="nav-label">Perfil</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
