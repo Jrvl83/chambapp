@@ -134,7 +134,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .completeness-header {
@@ -183,7 +183,7 @@
 .tabs-container {
     background: white;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
 }
 
@@ -830,7 +830,7 @@
     background: var(--white);
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
     align-items: center;
