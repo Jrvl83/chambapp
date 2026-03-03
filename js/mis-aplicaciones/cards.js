@@ -46,15 +46,24 @@ function crearBadgeEstado(estado) {
     return `<span class="badge ${config.clase}">${config.texto}</span>`;
 }
 
-// Avatar con iniciales del nombre (color determinista)
+// Avatar con iniciales del nombre (fondo suave + texto de color, determinista)
+const AVATAR_PALETTES = [
+    { bg: '#EBF2FF', text: '#2563EB' },
+    { bg: '#ECFDF5', text: '#059669' },
+    { bg: '#FFFBEB', text: '#D97706' },
+    { bg: '#F3EEFF', text: '#7C3AED' },
+    { bg: '#E0F7FA', text: '#0891B2' },
+    { bg: '#FDE7F3', text: '#DB2777' },
+];
+
 function crearAvatarHTML(nombre) {
     const palabras = (nombre || 'T').trim().split(/\s+/);
     const iniciales = palabras.length >= 2
         ? palabras[0][0] + palabras[1][0]
         : palabras[0].substring(0, 2);
-    const colores = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#0891b2', '#db2777'];
-    const color = colores[(nombre || '').charCodeAt(0) % colores.length];
-    return `<div class="aplicacion-avatar" style="--avatar-color:${color}">${iniciales.toUpperCase()}</div>`;
+    const idx = (nombre || '').charCodeAt(0) % AVATAR_PALETTES.length;
+    const { bg, text } = AVATAR_PALETTES[idx];
+    return `<div class="aplicacion-avatar" style="--avatar-bg:${bg};--avatar-text:${text}">${iniciales.toUpperCase()}</div>`;
 }
 
 // ============================================
