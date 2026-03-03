@@ -76,7 +76,7 @@
    ============================================ */
 .empleador-section {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card-lg);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--shadow-card);

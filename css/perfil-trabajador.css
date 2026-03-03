@@ -18,7 +18,7 @@
 .profile-header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
-    border-radius: 16px;
+    border-radius: var(--radius-card-lg);
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: 0 4px 20px rgba(0, 102, 255, 0.3);
@@ -131,7 +131,7 @@
    ============================================ */
 .completeness-card {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.5rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow-card);
@@ -182,7 +182,7 @@
    ============================================ */
 .tabs-container {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--radius-card-lg);
     box-shadow: var(--shadow-card);
     overflow: hidden;
 }
@@ -420,7 +420,7 @@
 .experiencia-item {
     background: var(--light);
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     border-left: 4px solid var(--primary);
     transition: all 0.3s;
 }
@@ -647,7 +647,7 @@
     text-align: center;
     padding: 3rem 2rem;
     background: var(--light);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
 }
 
 .empty-state-small p {
@@ -828,7 +828,7 @@
 .perfil-stat-card {
     flex: 1;
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1rem;
     box-shadow: var(--shadow-card);
     display: flex;
@@ -922,7 +922,7 @@
     gap: 2rem;
     padding: 1.5rem;
     background: var(--light);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     margin-bottom: 2rem;
 }
 
@@ -1014,7 +1014,7 @@
 .resena-card {
     background: var(--white);
     border: 2px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.25rem;
     transition: all 0.2s;
 }
@@ -1149,7 +1149,7 @@
 /* Modal Responder - Task 17 */
 .resena-preview {
     background: var(--light);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.25rem;
     margin-bottom: 1.5rem;
 }

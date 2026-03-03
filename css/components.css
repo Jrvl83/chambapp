@@ -185,7 +185,7 @@
 /* Base Card */
 .card {
     background: var(--white);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card-lg);
     padding: var(--padding-lg);
     box-shadow: var(--shadow-card);
     transition: all var(--transition-base);
@@ -233,7 +233,7 @@
 
 /* Stat Card (para stats en dashboard) */
 .stat-card {
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card);
     padding: var(--padding-lg);
     box-shadow: var(--shadow-card);
     display: flex;
@@ -267,7 +267,7 @@
 /* Offer Card (para ofertas de trabajo) */
 .offer-card {
     background: var(--white);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card-lg);
     padding: var(--padding-lg);
     box-shadow: var(--shadow-card);
     border-left: 4px solid var(--primary);
@@ -722,7 +722,7 @@ input[type="radio"] {
 /* Skeleton para aplicacion/candidato card */
 .skeleton-aplicacion {
     background: white;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card);
     padding: var(--space-lg);
     margin-bottom: var(--space-md);
     box-shadow: var(--shadow-sm);
@@ -815,7 +815,7 @@ input[type="radio"] {
 /* Skeleton para oferta card */
 .skeleton-oferta {
     background: white;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-md);
     box-shadow: var(--shadow-sm);
@@ -823,7 +823,7 @@ input[type="radio"] {
 
 .skeleton-oferta-bar {
     height: 4px;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-radius: var(--radius-card-lg) var(--radius-card-lg) 0 0;
     margin: calc(var(--space-lg) * -1);
     margin-bottom: var(--space-md);
 }
@@ -887,7 +887,7 @@ input[type="radio"] {
 /* Skeleton para calificacion */
 .skeleton-calificacion {
     background: white;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card);
     padding: var(--space-lg);
     margin-bottom: var(--space-md);
     box-shadow: var(--shadow-sm);

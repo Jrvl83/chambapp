@@ -434,7 +434,7 @@ h1, h2, h3, h4, h5, h6 {
 .stat-card {
     background: var(--white);
     padding: 1.5rem;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     display: flex;
     align-items: center;
@@ -617,7 +617,7 @@ a.stat-card-link:focus-visible {
 .section {
     background: var(--white);
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: var(--radius-card-lg);
     box-shadow: var(--shadow-card);
     margin-bottom: 2rem;
 }
@@ -700,7 +700,7 @@ a.stat-card-link:focus-visible {
    ============================================ */
 .filtros-container {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.5rem;
     margin-bottom: 2rem;
     box-shadow: var(--shadow-card);
@@ -805,7 +805,7 @@ a.stat-card-link:focus-visible {
 
 .oferta-card {
     background: var(--white);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card-lg);
     padding: 0;
     transition: all 0.25s ease;
     position: relative;
@@ -1230,7 +1230,7 @@ a.stat-card-link:focus-visible {
 
 .trabajador-card {
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.5rem;
     text-align: center;
     transition: all 0.3s;
@@ -1466,7 +1466,7 @@ a.stat-card-link:focus-visible {
     text-align: center;
     padding: 3rem 2rem;
     background: linear-gradient(180deg, var(--white) 0%, var(--light) 100%);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-card-lg);
     border: 2px dashed var(--border);
 }
 

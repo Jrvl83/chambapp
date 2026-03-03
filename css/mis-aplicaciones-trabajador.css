@@ -162,7 +162,7 @@
 
 .aplicacion-card {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1rem;
     box-shadow: var(--shadow-card);
     transition: all 0.3s;
@@ -313,7 +313,7 @@
 /* --- Loading y Empty States (overrides de components.css) --- */
 .loading-state {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
 }
 
@@ -321,7 +321,7 @@
     text-align: center;
     padding: 4rem 2rem;
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
 }
 
