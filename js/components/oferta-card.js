@@ -46,7 +46,7 @@ export function generarDistanciaBadge(distanciaKm, formatearDistancia, claseBase
     const colorClase = distanciaKm <= 5 ? 'distancia-cerca' :
                        (distanciaKm <= 15 ? 'distancia-media' : 'distancia-lejos');
 
-    return `<span class="${claseBase} ${colorClase}">📏 A ${distanciaFormateada} de ti</span>`;
+    return `<span class="${claseBase} ${colorClase}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> A ${distanciaFormateada} de ti</span>`;
 }
 
 /**

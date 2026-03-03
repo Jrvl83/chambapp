@@ -66,7 +66,7 @@ export function renderFiltrosHTML(state, userLocation) {
                                placeholder="Distrito, zona..." autocomplete="off" value="${ubicacionVal}">
                     </div>
                     <div class="filtro-grupo" id="filtro-distancia-grupo-mobile" ${userLocation ? '' : 'hidden'}>
-                        <label class="filtro-label">📏 Distancia</label>
+                        <label class="filtro-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Distancia</label>
                         <div class="dropdown-custom" id="dropdown-distancia-mobile"></div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@ export function getActiveChips(state) {
         const item = DISTANCIAS.find(d => d.value === state.distanciaMax);
         chips.push({
             type: 'distancia',
-            icon: '📏',
+            icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
             label: item ? item.label : `${state.distanciaMax} km`
         });
     }

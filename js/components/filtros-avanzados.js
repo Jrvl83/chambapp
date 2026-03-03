@@ -781,7 +781,7 @@ class FiltrosAvanzados {
                         <div class="dropdown-custom" id="dropdown-categorias"></div>
                     </div>
                     <div class="filtro-grupo filtro-distancia" id="filtro-distancia-grupo" ${this.userLocation ? '' : 'hidden'}>
-                        <label>📏 Distancia</label>
+                        <label><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Distancia</label>
                         <div class="dropdown-custom" id="dropdown-distancia"></div>
                     </div>
                     <div class="filtro-grupo filtro-salario">
@@ -818,7 +818,7 @@ class FiltrosAvanzados {
                             </div>
                         </div>
                         <div class="filtro-grupo filtro-distancia" id="filtro-distancia-grupo-mobile" ${this.userLocation ? '' : 'hidden'}>
-                            <label>📏 Distancia</label>
+                            <label><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Distancia</label>
                             <div class="dropdown-custom" id="dropdown-distancia-mobile"></div>
                         </div>
                     </div>
@@ -1237,7 +1237,7 @@ class FiltrosAvanzados {
             const item = DISTANCIAS.find(d => d.value === this.state.distanciaMax);
             chips.push({
                 type: 'distancia',
-                icon: '📏',
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
                 label: item ? item.label : `${this.state.distanciaMax} km`,
                 onRemove: () => {
                     this.state.distanciaMax = '';
