@@ -1,7 +1,7 @@
 # PLAN: Mejoras Visuales — ChambaYa
 
 **Creado:** 27 Febrero 2026
-**Última actualización:** 02 Marzo 2026
+**Última actualización:** 02 Marzo 2026 (sesión 29)
 
 ## REFERENCIAS DE DISEÑO
 
@@ -40,11 +40,113 @@ Naranja #FF6B00 reservado exclusivamente para urgencia y estados pendientes.
 
 ---
 
+## AUDITORÍA Y ESTANDARIZACIÓN DE MOCKUPS ✅ (sesión 29)
+
+Antes de implementar las mejoras en el código real, se auditaron todos los mockups y se corrigieron inconsistencias. Los mockups ahora son la referencia canónica confiable.
+
+### Problemas encontrados y corregidos
+
+**Bottom nav — orden de tabs:**
+- Dashboard trabajador tenía orden distinto: `Mis Apps | Inicio | Explorar | Alertas | Perfil`
+- Explorar tenía tab "Publicar" en lugar de "Mis Apps"
+- Ver Candidatos tenía nav incorrecto (tab Explorar, sin Alertas)
+- Historial Ofertas tenía tab extra "Historial" (6 tabs en lugar de 5)
+- Historial Calificaciones tenía nav de trabajador completo (pantalla de empleador)
+
+**Botón volver:**
+- `chambaya-historial-calificaciones.html` usaba "Volver al Perfil" (no estándar)
+
+**Íconos SVG del nav — trabajador:**
+- Dashboard usaba tamaño 22×22; el resto 20×20 o sin tamaño explícito
+- Mis Apps tenía dos variantes de ícono (maletín vs clipboard)
+- Estados activos mixtos: algunos filled, otros outline del mismo color
+
+**Íconos SVG del nav — empleador:**
+- Todos los tabs activos usaban outline en lugar de filled
+
+### Estándares decididos (aplicar al código real)
+
+**Orden de tabs:**
+- Trabajador: `Inicio | Explorar | Mis Apps | Alertas | Perfil`
+- Empleador: `Inicio | [FAB publicar] | Candidatos | Alertas | Perfil`
+
+**Botón volver:** `← Volver` (flecha Unicode + texto)
+
+**Íconos nav:**
+| Atributo | Inactivo | Activo |
+|----------|----------|--------|
+| fill | `none` | `#0066FF` |
+| stroke | `#A0AEC0` | `#0066FF` |
+| stroke-width | `2` | `1.5` |
+| width/height | `20` | `20` |
+| indicador | — | `<div class="nav-dot">` |
+
+**Ícono Mis Apps:** clipboard (Variante B)
+```html
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+<rect x="9" y="3" width="6" height="4" rx="1"/>
+```
+
+**Ícono Inicio activo:** agregar detalle de puerta en blanco
+```html
+<polyline points="9 22 9 12 15 12 15 22" stroke="#fff" stroke-width="2" fill="none"/>
+```
+
+### Archivos modificados (todos en `docs/archivo/`)
+
+| Archivo | Cambios |
+|---------|---------|
+| `chambaya-dashboard (1).html` | Nav reordenado, tamaño 22→20, Mis Apps briefcase→clipboard |
+| `chambaya-explorar.html` | Tab "Publicar"→"Mis Apps" clipboard, Explorar activo filled |
+| `chambaya-postulaciones.html` | Tamaño explícito 20×20, Mis Apps activo filled |
+| `chambaya-alertas.html` | Alertas activo filled |
+| `chambaya-perfil-experiencia.html` | Perfil activo filled |
+| `chambaya-perfil-horario.html` | Perfil activo filled |
+| `empleador/chambaya-dashboard-empleador.html` | Inicio activo filled + detalle puerta blanco |
+| `empleador/chambaya-ver-candidatos.html` | Nav reemplazado completo + CSS nav-fab-wrap, Candidatos activo filled |
+| `empleador/chambaya-historial-ofertas.html` | Tab Historial eliminado, tab Alertas agregado, Inicio activo filled |
+| `empleador/chambaya-historial-calificaciones.html` | Nav trabajador→empleador, "Volver al Perfil"→"← Volver", Perfil activo filled |
+| `empleador/chambaya-perfil-empleador.html` | Perfil activo filled |
+| `empleador/chambaya-calificacion-modal.html` | Candidatos activo filled (frame 1), Perfil activo filled (frame 2) |
+
+*Ya correctos (sin cambios): `perfil-trabajador`, `fotos`, `resenas`, `skills-v2`*
+
+### Commits (branch `feature/mejoras-visuales`)
+1. `docs(mockups): estandarizar bottom nav y botón volver en todos los mockups`
+2. `docs(mockups): estandarizar íconos del bottom nav trabajador`
+3. `docs(mockups): estandarizar ícono activo filled en bottom nav empleador`
+
+---
+
 ## ESTADO
 
 ```
 MEJORAS VISUALES: ░░░░░░░░░░░░░░░░░░░░  0% (0/14 tareas)
 ```
+
+---
+
+## PRÓXIMA SESIÓN — MV-0: Plan de implementación detallado
+
+> **Hacer antes de tocar cualquier archivo de código.**
+
+Crear un documento `docs/PLAN_IMPLEMENTACION_MV.md` que detalle cómo ejecutar cada tarea MV-1 a MV-14 con criterios de ingeniería claros.
+
+**El plan debe incluir por cada tarea:**
+- Archivos afectados (HTML, CSS, JS) con rutas exactas
+- Fragmento de código "antes / después" para casos representativos
+- Variables CSS nuevas en `design-system.css` (si aplica)
+- Orden de edición recomendado para evitar regresiones
+- Cómo verificar que quedó bien (qué revisar en el navegador / DevTools)
+- Riesgos conocidos (SW cache, iOS safe-area, flex overflow, etc.)
+
+**Buenas prácticas que el plan debe respetar:**
+- No romper el SW de caché: bumpar `?v=N` en cada CSS/JS tocado
+- No duplicar variables CSS — agregar en `design-system.css`, no inline
+- Cambios atómicos: un commit por tarea MV, mensaje descriptivo
+- Revisar en Chrome DevTools mobile + Firefox + Safari iOS antes de cerrar tarea
+- No mezclar tareas: si MV-1 toca `dashboard.css`, ese commit solo toca MV-1
+- Probar en la rama `feature/mejoras-visuales` antes de merge a `main`
 
 ---
 
