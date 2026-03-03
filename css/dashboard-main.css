@@ -508,6 +508,15 @@ a.stat-card-link:focus-visible {
     color: var(--secondary);
 }
 
+.stat-card.stat-card-urgente .stat-icon {
+    background: var(--state-pending-bg);
+    color: var(--state-pending);
+}
+
+.stat-card.stat-card-urgente .stat-info h3 {
+    color: var(--state-pending);
+}
+
 .stat-card:nth-child(3) .stat-icon {
     background: var(--accent-light);
     color: var(--accent);

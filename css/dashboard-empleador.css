@@ -67,8 +67,8 @@
    QUICK STATS - Variante urgencia
    ============================================ */
 .stat-card.stat-card-urgente {
-    border-color: var(--accent);
-    background: var(--accent-light);
+    border-color: var(--state-pending);
+    background: var(--state-pending-bg);
 }
 
 /* ============================================

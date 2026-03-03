@@ -55,11 +55,12 @@
 }
 
 .stat-card.stat-pendiente {
-    border-left-color: var(--warning);
+    border-left-color: var(--state-pending);
 }
 
 .stat-card.stat-pendiente .number {
-    color: var(--warning);
+    color: var(--state-pending);
+    font-weight: 800;
 }
 
 .stat-card.stat-aceptado {
