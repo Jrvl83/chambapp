@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/oferta-detalle.css?v=3" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/filtros-avanzados.css?v=1">
-    <link rel="stylesheet" href="css/bottom-nav.css">
+    <link rel="stylesheet" href="css/bottom-nav.css?v=1">
     <link rel="stylesheet" href="css/dashboard-empleador.css?v=2">
     <link rel="stylesheet" href="css/notifications.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/animations.css" media="print" onload="this.media='all'">
@@ -223,21 +223,21 @@
                 <!-- Quick Stats Empleador (Clickeables) -->
                 <div class="stats-grid stagger-fast">
                     <a href="#seccion-mis-ofertas" class="stat-card stat-card-link touchable hover-lift">
-                        <div class="stat-icon">📋</div>
+                        <div class="stat-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
                         <div class="stat-info">
                             <h3 id="emp-ofertas-activas">0</h3>
                             <p>Ofertas Activas</p>
                         </div>
                     </a>
                     <a href="mis-aplicaciones.html" class="stat-card stat-card-link touchable hover-lift stat-card-urgente" id="stat-pendientes">
-                        <div class="stat-icon">⏳</div>
+                        <div class="stat-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></div>
                         <div class="stat-info">
                             <h3 id="emp-pendientes">0</h3>
                             <p>Pendientes</p>
                         </div>
                     </a>
                     <div class="stat-card hover-lift">
-                        <div class="stat-icon">🤝</div>
+                        <div class="stat-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                         <div class="stat-info">
                             <h3 id="emp-contrataciones">0</h3>
                             <p>Contratados</p>
@@ -294,24 +294,24 @@
     <nav class="bottom-nav" id="bottom-nav" aria-label="Navegación principal móvil">
         <div class="bottom-nav-items">
             <a href="dashboard.html" class="bottom-nav-item active touchable-subtle" data-page="home" aria-current="page">
-                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
                 <span class="bottom-nav-label">Inicio</span>
             </a>
             <a href="mapa-ofertas.html" class="bottom-nav-item touchable-subtle" data-page="explore" id="bottom-nav-explore">
-                <span class="bottom-nav-icon">🔍</span>
+                <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
                 <span class="bottom-nav-label">Explorar</span>
             </a>
             <a href="publicar-oferta.html" class="bottom-nav-item nav-add touchable-subtle" data-page="add" id="bottom-nav-add">
-                <span class="bottom-nav-icon">➕</span>
+                <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
                 <span class="bottom-nav-label">Publicar</span>
             </a>
             <a href="notificaciones.html" class="bottom-nav-item touchable-subtle" data-page="notifications" id="bottom-nav-notif">
-                <span class="bottom-nav-icon">🔔</span>
+                <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
                 <span class="bottom-nav-label">Alertas</span>
                 <span class="bottom-nav-badge" id="bottom-nav-notif-badge" style="display: none;">0</span>
             </a>
             <a href="perfil-trabajador.html" class="bottom-nav-item touchable-subtle" data-page="profile">
-                <span class="bottom-nav-icon">👤</span>
+                <span class="bottom-nav-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                 <span class="bottom-nav-label">Perfil</span>
             </a>
         </div>
@@ -376,7 +376,7 @@
     <script src="js/components/guided-tour.js" defer></script>
     <script src="js/config/tours.js" defer></script>
     <script type="module" src="js/components/filtros-avanzados/index.js"></script>
-    <script src="js/components/bottom-nav.js" defer></script>
+    <script src="js/components/bottom-nav.js?v=1" defer></script>
 
     <!-- Dashboard JS modular (Fase 4 refactorización) -->
     <script type="module" src="js/dashboard/index.js"></script>

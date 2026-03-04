@@ -9,6 +9,17 @@
     'use strict';
 
     // ============================================
+    // SVG ICON CONSTANTS (nav 20×20)
+    // ============================================
+    const NAV_ICON_HOME = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+    const NAV_ICON_EXPLORE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+    const NAV_ICON_APPS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>';
+    const NAV_ICON_BELL = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
+    const NAV_ICON_USER = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    const NAV_ICON_PEOPLE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+    const NAV_ICON_PLUS = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+
+    // ============================================
     // CONFIGURATION
     // ============================================
     const CONFIG = {
@@ -104,12 +115,12 @@
 
             if (userRole === 'trabajador') {
                 bottomNavHome.href = 'mis-aplicaciones-trabajador.html';
-                if (iconHome) iconHome.textContent = '📋';
+                if (iconHome) iconHome.innerHTML = NAV_ICON_APPS;
                 if (labelHome) labelHome.textContent = 'Mis Apps';
             } else {
                 // Empleador: historial de ofertas
                 bottomNavHome.href = 'historial-ofertas.html';
-                if (iconHome) iconHome.textContent = '📋';
+                if (iconHome) iconHome.innerHTML = NAV_ICON_APPS;
                 if (labelHome) labelHome.textContent = 'Historial';
             }
         }
@@ -121,11 +132,11 @@
 
             if (userRole === 'trabajador') {
                 bottomNavAdd.href = 'mapa-ofertas.html';
-                if (iconAdd) iconAdd.textContent = '🔍';
+                if (iconAdd) iconAdd.innerHTML = NAV_ICON_EXPLORE;
                 if (labelAdd) labelAdd.textContent = 'Explorar';
             } else {
                 bottomNavAdd.href = 'publicar-oferta.html';
-                if (iconAdd) iconAdd.textContent = '➕';
+                if (iconAdd) iconAdd.innerHTML = NAV_ICON_PLUS;
                 if (labelAdd) labelAdd.textContent = 'Publicar';
             }
         }
@@ -137,12 +148,12 @@
 
             if (userRole === 'trabajador') {
                 bottomNavExplore.href = 'dashboard.html';
-                if (iconExplore) iconExplore.textContent = '🏠';
+                if (iconExplore) iconExplore.innerHTML = NAV_ICON_HOME;
                 if (labelExplore) labelExplore.textContent = 'Inicio';
             } else {
                 // Empleador: ver candidatos
                 bottomNavExplore.href = 'mis-aplicaciones.html';
-                if (iconExplore) iconExplore.textContent = '👥';
+                if (iconExplore) iconExplore.innerHTML = NAV_ICON_PEOPLE;
                 if (labelExplore) labelExplore.textContent = 'Talento';
             }
         }

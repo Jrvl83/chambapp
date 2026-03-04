@@ -10,15 +10,15 @@ import { escapeHtml } from '../utils/dom-helpers.js';
 // CONSTANTES
 // ============================================
 const CATEGORIAS = [
-    { value: 'construccion', label: 'Construccion', icon: '🏗️' },
-    { value: 'electricidad', label: 'Electricidad', icon: '⚡' },
-    { value: 'gasfiteria', label: 'Gasfiteria', icon: '🔧' },
-    { value: 'pintura', label: 'Pintura', icon: '🎨' },
-    { value: 'carpinteria', label: 'Carpinteria', icon: '🪚' },
-    { value: 'limpieza', label: 'Limpieza', icon: '🧹' },
-    { value: 'jardineria', label: 'Jardineria', icon: '🌱' },
-    { value: 'mecanica', label: 'Mecanica', icon: '🔩' },
-    { value: 'otros', label: 'Otros', icon: '📦' }
+    { value: 'construccion', label: 'Construcción', icon: '' },
+    { value: 'electricidad', label: 'Electricidad', icon: '' },
+    { value: 'gasfiteria', label: 'Gasfitería', icon: '' },
+    { value: 'pintura', label: 'Pintura', icon: '' },
+    { value: 'carpinteria', label: 'Carpintería', icon: '' },
+    { value: 'limpieza', label: 'Limpieza', icon: '' },
+    { value: 'jardineria', label: 'Jardinería', icon: '' },
+    { value: 'mecanica', label: 'Mecánica', icon: '' },
+    { value: 'otros', label: 'Otros', icon: '' }
 ];
 
 const DISTANCIAS = [

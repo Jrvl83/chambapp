@@ -7,6 +7,14 @@
 
 import { formatearFecha, esHoy } from '../utils/formatting.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
+import { ICON_PIN } from '../utils/icons.js';
+
+// Content-size icons (14×14) — local to this module
+const ICON_BELL_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
+const ICON_EDIT_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+const ICON_TRASH_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+const ICON_PEOPLE_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+const ICON_CHECK_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
 
 /**
  * Obtiene el texto de ubicación de una oferta
@@ -111,7 +119,7 @@ export function crearOfertaCardTrabajador(oferta, id, opciones = {}) {
 function templateCardTrabajador(oferta, id, datos) {
     const claseHoy = esHoy(datos.fechaRef) ? 'oferta-fecha--hoy' : '';
     const cat = oferta.categoria || 'otros';
-    const badgeAplico = datos.yaAplico ? '<span class="oferta-badge">✅ Ya aplicaste</span>' : '';
+    const badgeAplico = datos.yaAplico ? `<span class="oferta-badge">${ICON_CHECK_SM} Ya aplicaste</span>` : '';
     const spotsHTML = generarSpotsHTML(oferta.vacantes);
 
     return `
@@ -128,7 +136,7 @@ function templateCardTrabajador(oferta, id, datos) {
                     <span class="oferta-salario-pill">${escapeHtml(oferta.salario)}</span>
                 </div>
                 <div class="oferta-detalles">
-                    <span class="detalle">📍 ${escapeHtml(datos.ubicacionTexto)}</span>
+                    <span class="detalle">${ICON_PIN} ${escapeHtml(datos.ubicacionTexto)}</span>
                     ${datos.distanciaBadge}
                     ${spotsHTML}
                 </div>
@@ -160,7 +168,7 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
 
     const badgeClass = numPendientes > 0 ? 'badge-aplicaciones tiene-pendientes' :
                       (numAplicaciones > 0 ? 'badge-aplicaciones' : 'badge-sin-aplicaciones');
-    const badgeText = numPendientes > 0 ? `🔔 ${numPendientes} ${numPendientes === 1 ? 'nueva' : 'nuevas'}` :
+    const badgeText = numPendientes > 0 ? `${ICON_BELL_SM} ${numPendientes} ${numPendientes === 1 ? 'nueva' : 'nuevas'}` :
                      (numAplicaciones > 0 ? `${numAplicaciones} ${numAplicaciones === 1 ? 'postulación' : 'postulaciones'}` : 'Sin postulaciones');
 
     // Escapar título para onclick
@@ -181,10 +189,10 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
                             </button>
                             <div class="oferta-menu" id="menu-${id}">
                                 <button class="oferta-menu-item" onclick="event.stopPropagation(); editarOferta('${id}')">
-                                    ✏️ Editar
+                                    ${ICON_EDIT_SM} Editar
                                 </button>
                                 <button class="oferta-menu-item oferta-menu-item-danger" onclick="event.stopPropagation(); eliminarOferta('${id}', '${tituloEscapado}')">
-                                    🗑️ Eliminar
+                                    ${ICON_TRASH_SM} Eliminar
                                 </button>
                             </div>
                         </div>
@@ -192,13 +200,13 @@ export function crearOfertaCardEmpleador(oferta, id, opciones = {}) {
                 </div>
                 <h3 class="oferta-titulo">${escapeHtml(oferta.titulo)}</h3>
                 <div class="oferta-detalles">
-                    <span class="detalle">📍 ${escapeHtml(ubicacionTexto)}</span>
+                    <span class="detalle">${ICON_PIN} ${escapeHtml(ubicacionTexto)}</span>
                     <span class="oferta-salario-pill">${escapeHtml(oferta.salario)}</span>
                 </div>
                 <div class="oferta-footer">
                     <span class="oferta-badge-postulaciones ${badgeClass}">${badgeText}</span>
                     ${numAplicaciones > 0 ? `<a href="mis-aplicaciones.html" class="btn btn-primary btn-small" onclick="event.stopPropagation()">
-                        👥 Ver Candidatos
+                        ${ICON_PEOPLE_SM} Ver Candidatos
                     </a>` : ''}
                 </div>
             </div>
@@ -236,7 +244,7 @@ export function crearOfertaPreviewMapa(ofertaData, ofertaId, opciones = {}) {
         <p class="preview-descripcion">${escapeHtml(ofertaData.descripcion?.substring(0, 100) || '')}...</p>
         <div class="preview-detalles">
             <span class="oferta-salario-pill">${escapeHtml(ofertaData.salario || 'A convenir')}</span>
-            <span class="preview-detalle">📍 ${escapeHtml(ubicacionTexto)}</span>
+            <span class="preview-detalle">${ICON_PIN} ${escapeHtml(ubicacionTexto)}</span>
             ${distanciaBadge}
             ${generarSpotsHTML(ofertaData.vacantes)}
         </div>

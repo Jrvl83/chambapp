@@ -7,6 +7,7 @@
 
 import { escapeHtml } from '../utils/dom-helpers.js';
 import { generarEstrellasHTML } from '../utils/formatting.js';
+import { ICON_PIN, ICON_MONEY, ICON_CLOCK, ICON_CLIPBOARD, ICON_USER } from '../utils/icons.js';
 
 /**
  * Genera el HTML completo del detalle de una oferta
@@ -126,11 +127,11 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
     return `
         <div class="detalle-grid">
             <div class="detalle-item">
-                <strong>💰 Salario</strong>
+                <strong>${ICON_MONEY} Salario</strong>
                 <span class="oferta-salario-pill">${escapeHtml(oferta.salario || 'A convenir')}</span>
             </div>
             <div class="detalle-item">
-                <strong>📍 Ubicación</strong>
+                <strong>${ICON_PIN} Ubicación</strong>
                 <span>${escapeHtml(ubicacionTexto)}</span>
             </div>
             <div class="detalle-item">
@@ -138,7 +139,7 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
                 <span>${escapeHtml(oferta.duracion || 'No especificada')}</span>
             </div>
             <div class="detalle-item">
-                <strong>🕐 Horario</strong>
+                <strong>${ICON_CLOCK} Horario</strong>
                 <span>${escapeHtml(oferta.horario || 'No especificado')}</span>
             </div>
             ${pagoTotalHTML}
@@ -150,7 +151,7 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
 function renderRequisitosHTML(oferta) {
     return `
         <div class="detalle-seccion">
-            <h4>📋 Requisitos</h4>
+            <h4>${ICON_CLIPBOARD} Requisitos</h4>
             <p><strong>Experiencia:</strong> ${escapeHtml(oferta.experiencia || 'No especificada')}</p>
             <p><strong>Habilidades:</strong> ${escapeHtml(oferta.habilidades || 'No especificadas')}</p>
         </div>
@@ -175,7 +176,7 @@ function renderEmpleadorHTML(oferta, ratingData, mostrarEmail) {
 
     return `
         <div class="detalle-empleador">
-            <strong>👤 Publicado por:</strong>
+            <strong>${ICON_USER} Publicado por:</strong>
             <div class="detalle-empleador-info">
                 <span>${nombre}</span>
                 ${renderRatingInlineHTML(ratingData)}

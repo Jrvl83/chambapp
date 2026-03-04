@@ -11,6 +11,7 @@ import { formatearFecha } from '../utils/formatting.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 import { crearOfertaCardTrabajador, crearOfertaCardEmpleador } from '../components/oferta-card.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
+import { ICON_PIN, ICON_MONEY, ICON_CLOCK, ICON_CLIPBOARD, ICON_USER_SM, ICON_APPS } from '../utils/icons.js';
 
 // Usar window.firebaseConfig (arquitectura original)
 const app = initializeApp(window.firebaseConfig);
@@ -306,7 +307,7 @@ function mostrarBadgeUbicacion(ubicacion) {
 
     badge.innerHTML = `
         <span class="ubicacion-texto" title="${escapeHtml(ubicacion.direccionCompleta || ubicacion.distrito)}">
-            📍 ${escapeHtml(ubicacion.distrito)}
+            ${ICON_PIN} ${escapeHtml(ubicacion.distrito)}
         </span>
         <button
             class='ubicacion-actualizar'
@@ -435,7 +436,7 @@ function personalizarPorTipo(tipo) {
         if (navMapa) navMapa.style.display = 'flex';
         if (navTrabajadores) {
             navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
-            navTrabajadores.querySelector('.icon').textContent = '📋';
+            navTrabajadores.querySelector('.icon').innerHTML = ICON_APPS;
         }
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Mis Aplicaciones';
         if (navPerfil) navPerfil.href = 'perfil-trabajador.html';
@@ -745,7 +746,7 @@ function renderizarActividadReciente(aplicacionesSnap) {
         const nombreTrabajador = app.trabajadorNombre || 'Un trabajador';
         const tituloOferta = app.ofertaTitulo || 'una oferta';
 
-        let icono = '👤';
+        let icono = ICON_USER_SM;
         let accion = 'aplicó a';
         if (app.estado === 'aceptado') {
             icono = '✅';
@@ -1194,21 +1195,21 @@ window.verDetalle = async function(id) {
 
             <div style="background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div><strong>💰 Salario:</strong><br>${escapeHtml(oferta.salario)}</div>
-                    <div><strong>📍 Ubicación:</strong><br>${escapeHtml(ubicacionTexto)}</div>
+                    <div><strong>${ICON_MONEY} Salario:</strong><br>${escapeHtml(oferta.salario)}</div>
+                    <div><strong>${ICON_PIN} Ubicación:</strong><br>${escapeHtml(ubicacionTexto)}</div>
                     <div><strong>⏱️ Duración:</strong><br>${escapeHtml(oferta.duracion || 'No especificada')}</div>
-                    <div><strong>🕐 Horario:</strong><br>${escapeHtml(oferta.horario || 'No especificado')}</div>
+                    <div><strong>${ICON_CLOCK} Horario:</strong><br>${escapeHtml(oferta.horario || 'No especificado')}</div>
                 </div>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="margin-bottom: 0.5rem;">📋 Requisitos</h3>
+                <h3 style="margin-bottom: 0.5rem;">${ICON_CLIPBOARD} Requisitos</h3>
                 <p><strong>Experiencia:</strong> ${escapeHtml(oferta.experiencia || 'No especificada')}</p>
                 <p><strong>Habilidades:</strong> ${escapeHtml(oferta.habilidades || 'No especificadas')}</p>
             </div>
 
             <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
-                <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
+                <strong style="color: var(--primary);">${ICON_USER_SM} Publicado por:</strong><br>
                 <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre || 'Empleador')}</span>
             </div>
 

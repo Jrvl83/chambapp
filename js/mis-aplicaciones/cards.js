@@ -22,17 +22,17 @@ function escaparParaHTML(str) {
 
 function getCategoriaLabel(categoria) {
     const labels = {
-        'construccion': '🏗️ Construcción',
-        'electricidad': '⚡ Electricidad',
-        'gasfiteria': '🔧 Gasfitería',
-        'pintura': '🎨 Pintura',
-        'carpinteria': '🪵 Carpintería',
-        'limpieza': '🧹 Limpieza',
-        'jardineria': '🌿 Jardinería',
-        'mecanica': '🔩 Mecánica',
-        'otros': '📦 Otros'
+        'construccion': 'Construcción',
+        'electricidad': 'Electricidad',
+        'gasfiteria': 'Gasfitería',
+        'pintura': 'Pintura',
+        'carpinteria': 'Carpintería',
+        'limpieza': 'Limpieza',
+        'jardineria': 'Jardinería',
+        'mecanica': 'Mecánica',
+        'otros': 'Otros'
     };
-    return labels[categoria] || categoria || '📦 Sin categoría';
+    return labels[categoria] || categoria || 'Sin categoría';
 }
 
 function crearBadgeEstado(estado) {
