@@ -65,6 +65,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', var(--font-sans);
 }
 
+.logo-ya {
+    color: var(--primary);
+}
+
 /* Ocultar texto en móvil, mostrar solo icono */
 @media (max-width: 480px) {
     .logo-text {

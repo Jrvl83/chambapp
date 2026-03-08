@@ -9,14 +9,14 @@
 ## ORDEN DE EJECUCIÓN
 
 ```
-1. MV-7  → Variables de estado en design-system.css     (foundation — todo depende de esto)
-2. MV-1  → Fix ícono distancia                          (1 JS + 1 CSS)
-3. MV-2  → Avatares suaves                              (1 JS + 1 CSS)
-4. MV-3  → Stat Pendientes destacada                    (2 CSS + 1 HTML)
-5. MV-6  → Unificar sombras                             (~ 11 CSS)
-6. MV-5  → Unificar border-radius                       (~ 6 CSS)
-7. MV-4  → Emojis → SVG                                 (9 HTML + ~8 JS — la más grande)
-8. MV-8  → Logo two-tone                                (2 CSS + 11 HTML)
+1. MV-7  ✅ Variables de estado en design-system.css     (537b0fc)
+2. MV-1  ✅ Fix ícono distancia                          (a58857d)
+3. MV-2  ✅ Avatares suaves                              (3dc8e5e)
+4. MV-3  ✅ Stat Pendientes destacada                    (b5b2078)
+5. MV-6  ✅ Unificar sombras                             (9d1382e)
+6. MV-5  ✅ Unificar border-radius                       (c2589ae)
+7. MV-4  ✅ Emojis → SVG                                 (7ba6ef5)
+8. MV-8  ✅ Logo two-tone                                (pending-commit)
 9. MV-16 → Reportar modal al design system              (1 JS + 1 CSS)
 10. MV-9 → Empty states SVG                             (baja prioridad)
 ── Pre-stores ──

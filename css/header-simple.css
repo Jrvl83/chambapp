@@ -38,6 +38,10 @@
     color: #1e293b;
 }
 
+.logo-ya {
+    color: var(--primary);
+}
+
 .btn-volver {
     padding: 0.5rem 1rem;
     background: #64748b;
