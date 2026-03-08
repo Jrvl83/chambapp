@@ -16,8 +16,8 @@
 5. MV-6  ✅ Unificar sombras                             (9d1382e)
 6. MV-5  ✅ Unificar border-radius                       (c2589ae)
 7. MV-4  ✅ Emojis → SVG                                 (7ba6ef5)
-8. MV-8  ✅ Logo two-tone                                (pending-commit)
-9. MV-16 → Reportar modal al design system              (1 JS + 1 CSS)
+8. MV-8  ✅ Logo two-tone                                (2e25e40)
+9. MV-16 ✅ Reportar modal al design system              (pending-commit)
 10. MV-9 → Empty states SVG                             (baja prioridad)
 ── Pre-stores ──
 11. MV-10 → Splash screen nativo                        (diseño, no código)

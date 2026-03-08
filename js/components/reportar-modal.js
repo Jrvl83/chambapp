@@ -126,9 +126,9 @@ function _renderModalHTML() {
     ).join('');
 
     return `
-        <div class="modal-content modal-content--sm">
+        <div class="modal-content modal-content--sm modal-reportar">
             <div class="modal-header">
-                <h3>🚩 Reportar contenido</h3>
+                <h3><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg> Reportar contenido</h3>
                 <button class="modal-close" onclick="cerrarReportarModal()">✕</button>
             </div>
             <div class="modal-body">
