@@ -956,6 +956,10 @@ input[type="radio"] {
     opacity: 0.5;
 }
 
+.empty-state-illustration {
+    margin-bottom: 1.5rem;
+}
+
 .empty-state-title {
     font-size: var(--text-xl);
     font-weight: var(--font-semibold);

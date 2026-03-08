@@ -201,11 +201,17 @@ function mostrarEmptyStateTrabajador() {
 
     grid.innerHTML = `
         <div class='empty-state scale-in'>
-            <div class='empty-state-icon'>🔍</div>
+            <div class='empty-state-illustration' aria-hidden='true'>
+                <svg width='80' height='80' viewBox='0 0 80 80' fill='none'>
+                    <circle cx='40' cy='40' r='38' fill='var(--primary-light)'/>
+                    <circle cx='34' cy='34' r='14' stroke='var(--primary)' stroke-width='3' fill='none'/>
+                    <line x1='44' y1='44' x2='58' y2='58' stroke='var(--primary)' stroke-width='3' stroke-linecap='round'/>
+                </svg>
+            </div>
             <h3>Sin ofertas disponibles</h3>
             <p>No hay ofertas de trabajo en este momento. Prueba explorando el mapa o vuelve más tarde.</p>
             <a href='mapa-ofertas.html' class='btn btn-primary touchable' style='margin-top: 1rem;'>
-                🗺️ Explorar Mapa
+                Explorar Mapa
             </a>
         </div>
     `;
@@ -494,7 +500,13 @@ function renderizarOfertasFiltradas(ofertas) {
     if (ofertas.length === 0) {
         ofertasGrid.innerHTML = `
             <div class='empty-state scale-in'>
-                <div class='empty-state-icon'>🔍</div>
+                <div class='empty-state-illustration' aria-hidden='true'>
+                    <svg width='80' height='80' viewBox='0 0 80 80' fill='none'>
+                        <circle cx='40' cy='40' r='38' fill='var(--primary-light)'/>
+                        <circle cx='34' cy='34' r='14' stroke='var(--primary)' stroke-width='3' fill='none'/>
+                        <line x1='44' y1='44' x2='58' y2='58' stroke='var(--primary)' stroke-width='3' stroke-linecap='round'/>
+                    </svg>
+                </div>
                 <h3>Sin resultados</h3>
                 <p>No se encontraron ofertas con los filtros seleccionados. Prueba con otros criterios.</p>
             </div>

@@ -28,7 +28,7 @@
 
     <link rel="stylesheet" href="css/dashboard-main.css?v=8">
     <link rel="stylesheet" href="css/design-system.css?v=1">
-    <link rel="stylesheet" href="css/components.css?v=1">
+    <link rel="stylesheet" href="css/components.css?v=2">
     <link rel="stylesheet" href="css/modal.css?v=7" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
@@ -259,11 +259,20 @@
                     </div>
 
                     <div class="empleador-empty scale-in" id="empleador-ofertas-empty" style="display: none;">
-                        <div class="empty-icon">📝</div>
+                        <div class="empty-state-illustration" aria-hidden="true">
+                            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                                <circle cx="40" cy="40" r="38" fill="var(--accent-light)"/>
+                                <rect x="26" y="24" width="28" height="34" rx="3" stroke="var(--accent)" stroke-width="2.5" fill="none"/>
+                                <path d="M34 24v-3a6 6 0 0 1 12 0v3" stroke="var(--accent)" stroke-width="2.5"/>
+                                <line x1="32" y1="36" x2="48" y2="36" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                                <line x1="32" y1="43" x2="44" y2="43" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                                <line x1="32" y1="50" x2="40" y2="50" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                            </svg>
+                        </div>
                         <h3>Sin ofertas publicadas</h3>
                         <p>Publica tu primera oferta para comenzar a recibir postulantes.</p>
                         <a href="publicar-oferta.html" class="btn btn-primary touchable">
-                            ➕ Publicar Oferta
+                            Publicar Oferta
                         </a>
                     </div>
                 </section>
