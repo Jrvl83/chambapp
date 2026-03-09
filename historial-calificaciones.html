@@ -49,17 +49,17 @@
     <div class="container page-content">
         <!-- Page Header -->
         <div class="page-header">
-            <h1>⭐ Historial de Calificaciones</h1>
+            <h1>Historial de Calificaciones</h1>
             <p>Revisa todas las calificaciones que has dado y recibido</p>
         </div>
 
         <!-- Tabs para tipo -->
         <div class="historial-tabs">
             <button class="tab-btn active" data-tipo="recibidas" onclick="cambiarTab('recibidas')">
-                📥 Recibidas
+                Recibidas
             </button>
             <button class="tab-btn" data-tipo="dadas" onclick="cambiarTab('dadas')">
-                📤 Dadas
+                Dadas
             </button>
         </div>
 
@@ -69,11 +69,11 @@
                 <label for="filtro-puntuacion">Puntuación:</label>
                 <select id="filtro-puntuacion" onchange="aplicarFiltros()">
                     <option value="">Todas las estrellas</option>
-                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                    <option value="4">⭐⭐⭐⭐ (4)</option>
-                    <option value="3">⭐⭐⭐ (3)</option>
-                    <option value="2">⭐⭐ (2)</option>
-                    <option value="1">⭐ (1)</option>
+                    <option value="5">5 estrellas</option>
+                    <option value="4">4 estrellas</option>
+                    <option value="3">3 estrellas</option>
+                    <option value="2">2 estrellas</option>
+                    <option value="1">1 estrella</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -86,7 +86,7 @@
                 </select>
             </div>
             <button class="btn btn-secondary btn-small" onclick="limpiarFiltros()">
-                🔄 Limpiar
+                Limpiar
             </button>
         </div>
 
@@ -101,7 +101,15 @@
 
         <!-- Empty state -->
         <div id="empty-state" class="empty-state scale-in" style="display: none;">
-            <div class="empty-icon">📋</div>
+            <div class="empty-state-illustration" aria-hidden="true">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="38" fill="var(--primary-light)"/>
+                    <rect x="24" y="24" width="32" height="32" rx="3" stroke="var(--primary)" stroke-width="2.5" fill="none"/>
+                    <line x1="32" y1="34" x2="50" y2="34" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                    <line x1="32" y1="40" x2="46" y2="40" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                    <line x1="32" y1="46" x2="42" y2="46" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                </svg>
+            </div>
             <h2 id="empty-titulo">Sin calificaciones</h2>
             <p id="empty-mensaje">Completa trabajos para recibir calificaciones de los empleadores.</p>
         </div>

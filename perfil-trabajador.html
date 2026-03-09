@@ -319,7 +319,7 @@
                     <div class="avatar-wrapper">
                         <img id="avatar-preview" src="https://ui-avatars.com/api/?name=Usuario&size=150&background=2563eb&color=fff" alt="Foto de perfil" class="profile-avatar">
                         <button class="avatar-edit-btn" onclick="document.getElementById('foto-input').click()">
-                            📷 Cambiar Foto
+                            Cambiar Foto
                         </button>
                         <input type="file" id="foto-input" accept="image/*" style="display: none;" onchange="previsualizarFoto(event)">
                     </div>
@@ -335,14 +335,14 @@
                     </div>
                     <p class="profile-email" id="profile-email">email@ejemplo.com</p>
                     <div class="profile-badges">
-                        <span class="badge badge-trabajador">👷 Trabajador</span>
-                        <span class="badge badge-verificado" id="badge-completado" style="display: none;">✅ Perfil Completo</span>
+                        <span class="badge badge-trabajador">Trabajador</span>
+                        <span class="badge badge-verificado" id="badge-completado" style="display: none;">Perfil Completo</span>
                     </div>
                 </div>
             </div>
             <div class="profile-actions">
                 <button class="btn btn-primary" onclick="guardarPerfil()">
-                    💾 Guardar Cambios
+                    Guardar Cambios
                 </button>
             </div>
         </div>
@@ -350,7 +350,7 @@
         <!-- Completeness Progress -->
         <div class="completeness-card">
             <div class="completeness-header">
-                <h3>🎯 Completitud del Perfil</h3>
+                <h3>Completitud del Perfil</h3>
                 <span class="completeness-percentage" id="completeness-percentage">0%</span>
             </div>
             <div class="progress-bar">
@@ -375,29 +375,29 @@
         <div class="tabs-container">
             <div class="tabs-nav">
                 <button class="tab-btn active" data-tab="datos-personales">
-                    👤 Datos
+                    Datos
                 </button>
                 <button class="tab-btn" data-tab="portfolio">
-                    📸 Fotos
+                    Fotos
                 </button>
                 <button class="tab-btn" data-tab="experiencia">
-                    💼 Experiencia
+                    Experiencia
                 </button>
                 <button class="tab-btn" data-tab="habilidades">
-                    🎯 Skills
+                    Skills
                 </button>
                 <button class="tab-btn" data-tab="disponibilidad">
-                    📅 Horario
+                    Horario
                 </button>
                 <button class="tab-btn" data-tab="resenas">
-                    ⭐ Reseñas
+                    Reseñas
                 </button>
             </div>
 
             <!-- Tab Content: Datos Personales -->
             <div class="tab-content active" id="datos-personales">
                 <div class="section-card">
-                    <h2>📝 Información Personal</h2>
+                    <h2>Información Personal</h2>
                     
                     <div class="form-grid">
                         <div class="form-group">
@@ -443,7 +443,7 @@
             <div class="tab-content" id="portfolio">
                 <div class="section-card">
                     <div class="section-header">
-                        <h2>📸 Portfolio de Trabajos</h2>
+                        <h2>Portfolio de Trabajos</h2>
                     </div>
 
                     <p style="color: var(--gray); margin-bottom: 1.5rem;">
@@ -452,7 +452,7 @@
 
                     <!-- Upload Area -->
                     <div class="portfolio-upload-area" onclick="document.getElementById('portfolio-input').click()">
-                        <div class="upload-icon">📸</div>
+                        <div class="upload-icon">+</div>
                         <div class="upload-text">Click para seleccionar fotos</div>
                         <div class="upload-hint">Puedes seleccionar múltiples imágenes (JPG, PNG - máx. 5MB cada una)</div>
                         <input type="file" id="portfolio-input" accept="image/*" multiple onchange="previsualizarPortfolio(event)">
@@ -472,7 +472,7 @@
                     <div id="portfolio-grid"></div>
 
                     <div id="portfolio-empty" class="empty-state-small" style="display: none;">
-                        <p>📋 No has agregado fotos a tu portfolio aún</p>
+                        <p>No has agregado fotos a tu portfolio aún</p>
                     </div>
                 </div>
             </div>
@@ -481,9 +481,9 @@
             <div class="tab-content" id="experiencia">
                 <div class="section-card">
                     <div class="section-header">
-                        <h2>💼 Experiencia Laboral</h2>
+                        <h2>Experiencia Laboral</h2>
                         <button class="btn btn-secondary btn-small" onclick="agregarExperiencia()">
-                            ➕ Agregar Experiencia
+                            Agregar Experiencia
                         </button>
                     </div>
 
@@ -492,7 +492,7 @@
                     </div>
 
                     <div id="experiencias-empty" class="empty-state-small">
-                        <p>📋 No has agregado experiencia laboral aún</p>
+                        <p>No has agregado experiencia laboral aún</p>
                     </div>
                 </div>
             </div>
@@ -500,42 +500,42 @@
             <!-- Tab Content: Habilidades -->
             <div class="tab-content" id="habilidades">
                 <div class="section-card">
-                    <h2>🎯 Habilidades y Especialidades</h2>
+                    <h2>Habilidades y Especialidades</h2>
                     
                     <div class="habilidades-section">
                         <h3>Categorías de Trabajo</h3>
                         <div class="categorias-grid">
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="construccion">
-                                <span class="categoria-label">🏗️ Construcción</span>
+                                <span class="categoria-label">Construcción</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="electricidad">
-                                <span class="categoria-label">⚡ Electricidad</span>
+                                <span class="categoria-label">Electricidad</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="gasfiteria">
-                                <span class="categoria-label">🔧 Gasfitería</span>
+                                <span class="categoria-label">Gasfitería</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="pintura">
-                                <span class="categoria-label">🎨 Pintura</span>
+                                <span class="categoria-label">Pintura</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="carpinteria">
-                                <span class="categoria-label">🪵 Carpintería</span>
+                                <span class="categoria-label">Carpintería</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="limpieza">
-                                <span class="categoria-label">🧹 Limpieza</span>
+                                <span class="categoria-label">Limpieza</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="jardineria">
-                                <span class="categoria-label">🌿 Jardinería</span>
+                                <span class="categoria-label">Jardinería</span>
                             </label>
                             <label class="categoria-checkbox">
                                 <input type="checkbox" value="mecanica">
-                                <span class="categoria-label">🔩 Mecánica</span>
+                                <span class="categoria-label">Mecánica</span>
                             </label>
                         </div>
                     </div>
@@ -545,7 +545,7 @@
                         <div class="habilidades-input-container">
                             <input type="text" id="nueva-habilidad" placeholder="Ej: Instalaciones eléctricas, Soldadura, etc." onkeypress="agregarHabilidadEnter(event)">
                             <button class="btn btn-primary btn-small" onclick="agregarHabilidad()">
-                                ➕ Agregar
+                                Agregar
                             </button>
                         </div>
                         <div id="habilidades-tags" class="habilidades-tags">
@@ -570,13 +570,13 @@
             <!-- Tab Content: Disponibilidad -->
             <div class="tab-content" id="disponibilidad">
                 <div class="section-card">
-                    <h2>📅 Disponibilidad</h2>
+                    <h2>Disponibilidad</h2>
 
                     <div class="disponibilidad-section">
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="disponibilidad-inmediata">
-                                ✅ Disponibilidad Inmediata
+                                Disponibilidad Inmediata
                             </label>
                             <span class="helper-text">Marca si puedes empezar a trabajar de inmediato</span>
                         </div>
@@ -642,9 +642,9 @@
             <div class="tab-content" id="resenas">
                 <div class="section-card">
                     <div class="section-header">
-                        <h2>⭐ Reseñas Recibidas</h2>
+                        <h2>Reseñas Recibidas</h2>
                         <a href="historial-calificaciones.html" class="btn btn-secondary btn-small">
-                            📋 Ver Historial Completo
+                            Ver Historial Completo
                         </a>
                     </div>
 
@@ -665,7 +665,7 @@
 
                     <!-- Empty State -->
                     <div id="resenas-empty" class="empty-state-small" style="display: none;">
-                        <p>📋 Aún no has recibido reseñas</p>
+                        <p>Aún no has recibido reseñas</p>
                         <span class="helper-text">Completa trabajos para recibir calificaciones de los empleadores</span>
                     </div>
 
@@ -687,7 +687,7 @@
 
         <!-- Floating Save Button (Mobile) -->
         <button class="btn-save-floating" onclick="guardarPerfil()">
-            💾 Guardar
+            Guardar
         </button>
     </div>
 
@@ -695,7 +695,7 @@
     <div id="modal-experiencia" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>💼 Agregar Experiencia</h2>
+                <h2>Agregar Experiencia</h2>
                 <button class="modal-close" onclick="cerrarModalExperiencia()">✕</button>
             </div>
             <div class="modal-body">
@@ -773,7 +773,7 @@
     <div id="modal-responder" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>💬 Responder Reseña</h2>
+                <h2>Responder Reseña</h2>
                 <button class="modal-close" onclick="cerrarModalResponder()">✕</button>
             </div>
             <div class="modal-body">
@@ -791,7 +791,7 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="cerrarModalResponder()">Cancelar</button>
                 <button class="btn btn-primary" id="btn-enviar-respuesta" onclick="enviarRespuesta()">
-                    💬 Enviar Respuesta
+                    Enviar Respuesta
                 </button>
             </div>
         </div>

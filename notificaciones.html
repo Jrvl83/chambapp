@@ -55,7 +55,7 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-title">
-                <h1>🔔 Notificaciones</h1>
+                <h1>Notificaciones</h1>
                 <p>Mantente al tanto de tu actividad</p>
             </div>
             <div class="header-actions">
@@ -103,7 +103,13 @@
 
         <!-- Empty State -->
         <div class="empty-state scale-in" id="empty-state" style="display: none;">
-            <div class="empty-icon">🔔</div>
+            <div class="empty-state-illustration" aria-hidden="true">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="38" fill="var(--primary-light)"/>
+                    <path d="M48 34A8 8 0 0 0 32 34c0 9-4 12-4 12h24s-4-3-4-12" stroke="var(--primary)" stroke-width="2.5" fill="none"/>
+                    <path d="M37.05 58a4 4 0 0 0 5.9 0" stroke="var(--primary)" stroke-width="2.5"/>
+                </svg>
+            </div>
             <h3>Sin notificaciones</h3>
             <p>No tienes notificaciones en este momento. Te avisaremos cuando haya novedades.</p>
             <a href="dashboard.html" class="btn btn-primary touchable">Ir al Inicio</a>
@@ -111,7 +117,13 @@
 
         <!-- Empty Filter State -->
         <div class="empty-state scale-in" id="empty-filter-state" style="display: none;">
-            <div class="empty-icon">📭</div>
+            <div class="empty-state-illustration" aria-hidden="true">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="38" fill="var(--primary-light)"/>
+                    <rect x="22" y="26" width="36" height="28" rx="3" stroke="var(--primary)" stroke-width="2.5" fill="none"/>
+                    <path d="M22 32l18 12 18-12" stroke="var(--primary)" stroke-width="2.5" fill="none"/>
+                </svg>
+            </div>
             <h3>Sin resultados</h3>
             <p>No hay notificaciones que coincidan con este filtro.</p>
             <button class="btn btn-secondary touchable" onclick="filtrarNotificaciones('todas')">Ver todas</button>

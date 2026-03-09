@@ -138,7 +138,7 @@ function cargarPortfolio() {
         card.innerHTML = `
             <img src="${url}" alt="Trabajo ${index + 1}" onclick="abrirLightbox(${index})">
             <button class="btn-eliminar-portfolio" onclick="eliminarFotoPortfolio(${index})">
-                🗑️
+                ✕
             </button>
         `;
         container.appendChild(card);
@@ -173,11 +173,11 @@ function mostrarExperiencias() {
                 <div class="experiencia-header">
                     <div>
                         <div class="experiencia-puesto">${exp.puesto}</div>
-                        ${exp.empresa ? `<div class="experiencia-empresa">📍 ${exp.empresa}</div>` : ''}
-                        <div class="experiencia-periodo">📅 ${exp.periodo}</div>
+                        ${exp.empresa ? `<div class="experiencia-empresa">${exp.empresa}</div>` : ''}
+                        <div class="experiencia-periodo">${exp.periodo}</div>
                     </div>
                     <button class="btn-eliminar-exp" onclick="eliminarExperiencia(${index})">
-                        🗑️ Eliminar
+                        ✕ Eliminar
                     </button>
                 </div>
                 ${exp.descripcion ? `<div class="experiencia-descripcion">${exp.descripcion}</div>` : ''}
@@ -833,7 +833,7 @@ function calcularCompletitud() {
     document.getElementById('progress-fill').style.width = `${completitud}%`;
     
     if (completitud === 100) {
-        document.getElementById('completeness-tip').textContent = '¡Felicidades! Tu perfil está completo 🎉';
+        document.getElementById('completeness-tip').textContent = '¡Felicidades! Tu perfil está completo';
         document.getElementById('badge-completado').style.display = 'inline-block';
     } else if (completitud >= 70) {
         document.getElementById('completeness-tip').textContent = '¡Casi listo! Completa algunos campos más';
@@ -929,7 +929,7 @@ async function cargarResenasRecibidas() {
         // Si el error es por índice, mostrar mensaje amigable
         if (error.code === 'failed-precondition') {
             emptyState.innerHTML = `
-                <p>📋 Configurando sistema de reseñas...</p>
+                <p>Configurando sistema de reseñas...</p>
                 <span class="helper-text">Por favor, intenta de nuevo en unos minutos</span>
             `;
             emptyState.style.display = 'block';
@@ -986,7 +986,7 @@ function mostrarListaResenas(resenas) {
         card.innerHTML = `
             <div class="resena-header">
                 <div class="resena-empleador">
-                    <div class="resena-avatar">👤</div>
+                    <div class="resena-avatar">●</div>
                     <div class="resena-info">
                         <span class="resena-nombre">${resena.empleadorNombre || 'Empleador'}</span>
                         <span class="resena-trabajo">${resena.ofertaTitulo || 'Trabajo'}</span>
@@ -1009,7 +1009,7 @@ function mostrarListaResenas(resenas) {
                 </div>
             ` : `
                 <button class="btn btn-secondary btn-small btn-responder" onclick="abrirModalResponder('${resena.id}')">
-                    💬 Responder
+                    Responder
                 </button>
             `}
         `;
@@ -1107,7 +1107,7 @@ async function enviarRespuesta() {
         }
     } finally {
         btnEnviar.disabled = false;
-        btnEnviar.innerHTML = '💬 Enviar Respuesta';
+        btnEnviar.innerHTML = 'Enviar Respuesta';
     }
 }
 

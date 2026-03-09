@@ -49,7 +49,7 @@ export function cargarPortfolio() {
         card.innerHTML = `
             <img src="${url}" alt="Trabajo ${index + 1}" loading="lazy" onclick="abrirLightbox(${index})">
             <button class="btn-eliminar-portfolio" onclick="eliminarFotoPortfolio(${index})">
-                🗑️
+                ✕
             </button>
         `;
         container.appendChild(card);

@@ -108,7 +108,7 @@ async function cargarAplicaciones() {
     } catch (error) {
         console.error('❌ Error al cargar aplicaciones:', error);
         document.getElementById('loading-screen').innerHTML = `
-            <div class="empty-icon">❌</div>
+            <div class="empty-icon">!</div>
             <h2>Error al cargar</h2>
             <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
         `;
@@ -164,25 +164,25 @@ function crearAplicacionCard(aplicacion) {
         'pendiente': {
             texto: 'Pendiente',
             clase: 'pendiente',
-            icono: '🟡',
+            icono: '●',
             descripcion: 'Esperando respuesta del empleador'
         },
         'aceptado': {
             texto: '¡Aceptado!',
             clase: 'aceptado',
-            icono: '✅',
+            icono: '●',
             descripcion: '¡Felicidades! El empleador aceptó tu postulación'
         },
         'rechazado': {
             texto: 'No seleccionado',
             clase: 'rechazado',
-            icono: '❌',
+            icono: '●',
             descripcion: 'El empleador eligió otro candidato'
         },
         'completado': {
             texto: 'Completado',
             clase: 'completado',
-            icono: '🏁',
+            icono: '●',
             descripcion: 'Trabajo completado exitosamente'
         }
     };
@@ -209,7 +209,7 @@ function crearAplicacionCard(aplicacion) {
         seccionContacto = `
             <div class="contacto-empleador ${estado}">
                 <div class="contacto-header">
-                    <span class="contacto-titulo">📞 Contacta al empleador</span>
+                    <span class="contacto-titulo">Contacta al empleador</span>
                 </div>
                 <div class="contacto-datos">
                     <div class="dato-item">
@@ -232,10 +232,10 @@ function crearAplicacionCard(aplicacion) {
                         <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
                            target="_blank"
                            class="btn btn-whatsapp">
-                            📱 WhatsApp
+                            WhatsApp
                         </a>
                         <a href="tel:${empleadorTelefono}" class="btn btn-primary">
-                            📞 Llamar
+                            Llamar
                         </a>
                     ` : ''}
                     <a href="mailto:${empleadorEmail}" class="btn btn-secondary">
@@ -250,7 +250,7 @@ function crearAplicacionCard(aplicacion) {
     const tituloEscapado = escaparParaHTML(aplicacion.ofertaTitulo);
     const botonCancelar = estado === 'pendiente' ? `
         <button class="btn btn-danger btn-small" onclick="cancelarAplicacion('${aplicacion.id}', '${tituloEscapado}')">
-            ❌ Cancelar Aplicación
+            Cancelar Aplicación
         </button>
     ` : '';
 
@@ -298,7 +298,7 @@ function crearAplicacionCard(aplicacion) {
             ${seccionContacto}
 
             <div class="aplicacion-mensaje">
-                <strong>💬 Tu mensaje:</strong>
+                <strong>Tu mensaje:</strong>
                 <p>${escapeHtml(aplicacion.mensaje)}</p>
             </div>
 
@@ -378,7 +378,7 @@ async function verOfertaCompleta(ofertaId) {
             ${galeriaHTML}
 
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="color: var(--dark); margin-bottom: 0.75rem;">📝 Descripción</h3>
+                <h3 style="color: var(--dark); margin-bottom: 0.75rem;">Descripción</h3>
                 <p style="color: var(--gray); line-height: 1.6;">${escapeHtml(oferta.descripcion)}</p>
             </div>
 

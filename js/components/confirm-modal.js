@@ -6,9 +6,9 @@
 // ============================================
 
 const ICONOS = {
-    warning: '⚠️',
-    danger: '🗑️',
-    info: 'ℹ️'
+    warning: '!',
+    danger: '✕',
+    info: 'i'
 };
 
 /**

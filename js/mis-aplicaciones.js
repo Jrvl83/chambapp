@@ -116,7 +116,7 @@ async function cargarAplicaciones() {
     } catch (error) {
         console.error('Error al cargar aplicaciones:', error);
         document.getElementById('loading').innerHTML = `
-            <div class="icon" style="font-size: 3rem;">❌</div>
+            <div class="icon" style="font-size: 3rem;">!</div>
             <p style="color: #ef4444;">Error al cargar las aplicaciones</p>
         `;
     }
@@ -301,10 +301,10 @@ function crearGrupoOferta(ofertaId, grupo) {
         <div class="oferta-grupo">
             <div class="oferta-grupo-header">
                 <div class="oferta-grupo-info">
-                    <h3 class="oferta-grupo-titulo">📋 ${escapeHtml(grupo.titulo)}</h3>
+                    <h3 class="oferta-grupo-titulo">${escapeHtml(grupo.titulo)}</h3>
                     <div class="oferta-grupo-meta">
                         <span class="oferta-categoria-badge">${categoriaLabel}</span>
-                        <span class="oferta-aplicantes-count">👥 ${cantidadAplicantes} postulante${cantidadAplicantes !== 1 ? 's' : ''}</span>
+                        <span class="oferta-aplicantes-count">${cantidadAplicantes} postulante${cantidadAplicantes !== 1 ? 's' : ''}</span>
                         ${vacantesHTML}
                     </div>
                 </div>
@@ -352,17 +352,17 @@ function crearAplicacionCard(aplicacion, ofertaId) {
                     <span class="texto-rechazado">Vacantes cubiertas</span>
                 </div>
                 <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
-                    ❌ Rechazar
+                    Rechazar
                 </button>
             `;
         } else {
             // Botones para estado pendiente: Aceptar y Rechazar
             botonesAccion = `
                 <button class="btn btn-success btn-sm" onclick="aceptarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
-                    ✅ Aceptar
+                    Aceptar
                 </button>
                 <button class="btn btn-danger btn-sm" onclick="rechazarAplicacion('${aplicacion.id}', '${nombreEscapado}')">
-                    ❌ Rechazar
+                    Rechazar
                 </button>
             `;
         }
@@ -377,7 +377,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
         botonesAccion = `
             <div class="contacto-aceptado">
                 <div class="contacto-info">
-                    <span class="contacto-label">📱 Contacto:</span>
+                    <span class="contacto-label">Contacto:</span>
                     <span class="contacto-telefono">${escapeHtml(telefono || 'No disponible')}</span>
                 </div>
                 <div class="contacto-botones">
@@ -385,12 +385,12 @@ function crearAplicacionCard(aplicacion, ofertaId) {
                         <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
                            target="_blank"
                            class="btn btn-whatsapp btn-sm">
-                            <span class="whatsapp-icon">📱</span> WhatsApp
+                            WhatsApp
                         </a>
-                        <a href="tel:${telefono}" class="btn btn-primary btn-sm">📞 Llamar</a>
+                        <a href="tel:${telefono}" class="btn btn-primary btn-sm">Llamar</a>
                     ` : ''}
                     <button class="btn btn-completado btn-sm" onclick="marcarCompletado('${aplicacion.id}', '${nombreEscapado}', '${tituloEscapado}')">
-                        🏁 Marcar Completado
+                        Marcar Completado
                     </button>
                 </div>
             </div>
@@ -406,7 +406,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
         if (aplicacion.calificado) {
             botonesAccion = `
                 <div class="estado-final completado">
-                    <span class="texto-completado">✅ Trabajo completado</span>
+                    <span class="texto-completado">Trabajo completado</span>
                     <div class="estado-calificado">
                         <span class="calificacion-mostrada">
                             <span class="estrella-filled">★</span>
@@ -418,9 +418,9 @@ function crearAplicacionCard(aplicacion, ofertaId) {
         } else {
             botonesAccion = `
                 <div class="estado-final completado">
-                    <span class="texto-completado">✅ Trabajo completado</span>
+                    <span class="texto-completado">Trabajo completado</span>
                     <button class="btn btn-primary btn-sm" onclick="calificarTrabajador('${aplicacion.id}', '${emailEscapado}', '${nombreEscapado}')">
-                        ⭐ Calificar
+                        Calificar
                     </button>
                 </div>
             `;
@@ -444,7 +444,7 @@ function crearAplicacionCard(aplicacion, ofertaId) {
         <div class="aplicacion-card estado-${estado} touchable hover-lift">
             <div class="aplicacion-header">
                 <div class="aplicacion-trabajador">
-                    <div class="aplicacion-avatar">👤</div>
+                    <div class="aplicacion-avatar">●</div>
                     <div>
                         <div class="aplicacion-nombre">${escapeHtml(nombre)}</div>
                         <div class="aplicacion-email">${escapeHtml(email)}</div>
@@ -457,18 +457,18 @@ function crearAplicacionCard(aplicacion, ofertaId) {
             <div class="aplicacion-info">
                 ${telefono && estado !== 'aceptado' ? `
                 <div class="info-item">
-                    <span class="info-label">📱 Teléfono</span>
+                    <span class="info-label">Teléfono</span>
                     <span class="info-value">${escapeHtml(telefono)}</span>
                 </div>
                 ` : ''}
                 <div class="info-item">
-                    <span class="info-label">📅 Fecha postulación</span>
+                    <span class="info-label">Fecha postulación</span>
                     <span class="info-value">${fecha}</span>
                 </div>
             </div>
 
             <div class="aplicacion-mensaje">
-                <strong>💬 Mensaje del postulante:</strong><br>
+                <strong>Mensaje del postulante:</strong><br>
                 ${escapeHtml(mensaje)}
             </div>
 
@@ -1064,7 +1064,7 @@ async function verDetalleCalificaciones(emailTrabajador, nombreTrabajador) {
                     <div class="detalle-resena-card">
                         <div class="detalle-resena-header">
                             <div class="detalle-resena-info">
-                                <span class="detalle-resena-empleador">👤 ${cal.empleadorNombre || 'Empleador'}</span>
+                                <span class="detalle-resena-empleador">${cal.empleadorNombre || 'Empleador'}</span>
                                 <span class="detalle-resena-trabajo">${cal.ofertaTitulo || 'Trabajo'}</span>
                             </div>
                             <div class="detalle-resena-rating">
@@ -1090,7 +1090,7 @@ async function verDetalleCalificaciones(emailTrabajador, nombreTrabajador) {
         } else {
             html += `
                 <div class="detalle-sin-resenas">
-                    <p>📋 Este trabajador aún no tiene reseñas detalladas</p>
+                    <p>Este trabajador aún no tiene reseñas detalladas</p>
                 </div>
             `;
         }
@@ -1103,7 +1103,7 @@ async function verDetalleCalificaciones(emailTrabajador, nombreTrabajador) {
         if (contenido) {
             contenido.innerHTML = `
                 <div class="error-calificaciones">
-                    <p>❌ Error al cargar las calificaciones</p>
+                    <p>! Error al cargar las calificaciones</p>
                 </div>
             `;
         }

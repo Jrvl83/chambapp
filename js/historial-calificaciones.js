@@ -99,7 +99,7 @@ async function cargarHistorial() {
     } catch (error) {
         console.error('Error al cargar historial:', error);
         document.getElementById('loading').innerHTML = `
-            <div class="empty-icon">⚠️</div>
+            <div class="empty-icon">!</div>
             <h2>Configurando historial...</h2>
             <p>Por favor, intenta de nuevo en unos minutos</p>
         `;
@@ -187,7 +187,8 @@ function crearCardCalificacion(cal) {
     const esRecibida = tipoActual === 'recibidas';
     // Recibidas: quien dio la reseña (empleador) | Dadas: quien recibió la reseña (empleador)
     const nombre = cal.empleadorNombre;
-    const avatar = esRecibida ? '👤' : '🏢';
+    const iniciales = (nombre || 'U').charAt(0).toUpperCase();
+    const avatar = iniciales;
     const fecha = formatearFecha(cal.fechaCalificacion);
     const estrellas = generarEstrellasHTML(cal.puntuacion);
 

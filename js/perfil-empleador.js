@@ -246,7 +246,7 @@ async function guardarPerfil() {
         // Deshabilitar botón
         const btnGuardar = document.getElementById('btn-guardar');
         btnGuardar.disabled = true;
-        btnGuardar.textContent = '💾 Guardando...';
+        btnGuardar.textContent = 'Guardando...';
 
         const bio = (document.getElementById('bio')?.value || '').trim();
 
@@ -286,7 +286,7 @@ async function guardarPerfil() {
 
         // Restaurar botón
         btnGuardar.disabled = false;
-        btnGuardar.textContent = '💾 Guardar Cambios';
+        btnGuardar.textContent = 'Guardar Cambios';
         
     } catch (error) {
         console.error('Error al guardar perfil:', error);
@@ -297,7 +297,7 @@ async function guardarPerfil() {
         // Restaurar botón
         const btnGuardar = document.getElementById('btn-guardar');
         btnGuardar.disabled = false;
-        btnGuardar.textContent = '💾 Guardar Cambios';
+        btnGuardar.textContent = 'Guardar Cambios';
     }
 }
 
@@ -351,7 +351,7 @@ function cargarSeccionCalificaciones() {
 function renderSinCalificaciones() {
     return `
         <div class="sin-calificaciones-msg">
-            <div class="icono">📋</div>
+            <div class="icono">—</div>
             <p>Aún no tienes calificaciones de trabajadores</p>
             <p style="font-size: 0.8125rem; margin-top: 0.5rem;">
                 Cuando completes trabajos, los trabajadores podrán calificarte

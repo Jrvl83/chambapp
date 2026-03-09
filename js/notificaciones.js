@@ -170,7 +170,7 @@ function renderizarNotificaciones(notifs) {
                         </button>
                     ` : ''}
                     <button class="notif-action-btn notif-action-delete" onclick="event.stopPropagation(); confirmarEliminar('${notif.id}')" title="Eliminar">
-                        🗑️
+                        ✕
                     </button>
                 </div>
                 ${!notif.leida ? '<div class="notif-unread-dot"></div>' : ''}
@@ -181,11 +181,11 @@ function renderizarNotificaciones(notifs) {
 
 function obtenerIcono(tipo) {
     const iconos = {
-        'nueva_postulacion': '👤',
-        'postulacion_aceptada': '🎉',
-        'mensaje_nuevo': '💬',
-        'calificacion_nueva': '⭐',
-        'default': '🔔'
+        'nueva_postulacion': '●',
+        'postulacion_aceptada': '●',
+        'mensaje_nuevo': '●',
+        'calificacion_nueva': '●',
+        'default': '●'
     };
     return iconos[tipo] || iconos['default'];
 }

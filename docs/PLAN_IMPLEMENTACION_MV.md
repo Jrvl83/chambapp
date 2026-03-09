@@ -18,7 +18,8 @@
 7. MV-4  ✅ Emojis → SVG                                 (7ba6ef5)
 8. MV-8  ✅ Logo two-tone                                (2e25e40)
 9. MV-16 ✅ Reportar modal al design system              (9f4f3ff)
-10. MV-9 ✅ Empty states SVG                             (pendiente commit)
+10. MV-9 ✅ Empty states SVG                             (9a33639)
+11. MV-4b ✅ Emoji cleanup completa (sidebar nav, filtros, modals, cards, labels) (pendiente commit)
 ── Pre-stores ──
 11. MV-10 → Splash screen nativo                        (diseño, no código)
 12. MV-11 → Iconos de app para stores                   (diseño)

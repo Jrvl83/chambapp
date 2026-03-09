@@ -98,7 +98,7 @@
                     <!-- PASO 1: Información Básica -->
                     <div class="form-step active" data-step="1">
                         <div class="step-header">
-                            <h2>📝 Información Básica</h2>
+                            <h2>Información Básica</h2>
                             <p>Cuéntanos qué trabajo necesitas</p>
                         </div>
 
@@ -121,15 +121,15 @@
                             <label for="categoria" class="required">Categoría</label>
                             <select id="categoria" name="categoria" required aria-required="true">
                                 <option value="">Selecciona una categoría</option>
-                                <option value="construccion">🏗️ Construcción</option>
-                                <option value="electricidad">⚡ Electricidad</option>
-                                <option value="gasfiteria">🔧 Gasfitería</option>
-                                <option value="pintura">🎨 Pintura</option>
-                                <option value="carpinteria">🪵 Carpintería</option>
-                                <option value="limpieza">🧹 Limpieza</option>
-                                <option value="jardineria">🌿 Jardinería</option>
-                                <option value="mecanica">🔩 Mecánica</option>
-                                <option value="otros">📦 Otros</option>
+                                <option value="construccion">Construcción</option>
+                                <option value="electricidad">Electricidad</option>
+                                <option value="gasfiteria">Gasfitería</option>
+                                <option value="pintura">Pintura</option>
+                                <option value="carpinteria">Carpintería</option>
+                                <option value="limpieza">Limpieza</option>
+                                <option value="jardineria">Jardinería</option>
+                                <option value="mecanica">Mecánica</option>
+                                <option value="otros">Otros</option>
                             </select>
                             <span class="error-message" id="categoria-error"></span>
                         </div>
@@ -148,7 +148,7 @@
                             <span class="char-count"><span id="descripcion-count">0</span>/500</span>
                             <span class="error-message" id="descripcion-error"></span>
                             <div class="helper-text">
-                                💡 <strong>Tip:</strong> Sé específico sobre las tareas, materiales necesarios y resultados esperados
+                                <strong>Tip:</strong> Sé específico sobre las tareas, materiales necesarios y resultados esperados
                             </div>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                     <!-- PASO 2: Detalles del Trabajo -->
                     <div class="form-step" data-step="2">
                         <div class="step-header">
-                            <h2>📍 Detalles del Trabajo</h2>
+                            <h2>Detalles del Trabajo</h2>
                             <p>Ubicación, pago y tiempo</p>
                         </div>
 
@@ -164,7 +164,7 @@
                         <div class="form-group">
                             <label class="required">Ubicación del Trabajo</label>
                             <div class="helper-text" style="margin-bottom: 1rem;">
-                                📍 Selecciona la ubicación exacta donde se realizará el trabajo
+                                Selecciona la ubicación exacta donde se realizará el trabajo
                             </div>
                         </div>
 
@@ -218,7 +218,7 @@
                                 <div id="direccion-autocomplete-container" class="autocomplete-container">
                                     <!-- PlaceAutocompleteElement se insertará aquí via JS -->
                                 </div>
-                                <span class="direccion-icon">📍</span>
+                                <span class="direccion-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
                             </div>
                             <div class="helper-text">
                                 Escribe la dirección para ubicación precisa con autocompletado
@@ -231,12 +231,12 @@
                             <div id="mapa-preview-container" class="mapa-preview-container">
                                 <div id="mapa-preview" class="mapa-preview">
                                     <div class="mapa-placeholder">
-                                        <span class="mapa-placeholder-icon">🗺️</span>
+                                        <span class="mapa-placeholder-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
                                         <p>Selecciona un distrito para ver el mapa</p>
                                     </div>
                                 </div>
                                 <div id="mapa-ubicacion-info" class="mapa-ubicacion-info" style="display: none;">
-                                    <span class="ubicacion-badge">📍</span>
+                                    <span class="ubicacion-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
                                     <span id="mapa-ubicacion-texto">-</span>
                                 </div>
                             </div>
@@ -312,12 +312,12 @@
                         </div>
 
                         <div class="helper-text">
-                            💰 <strong>Sugerencia:</strong> Ofertas con salario claro reciben 3x más aplicantes
+                            <strong>Sugerencia:</strong> Ofertas con salario claro reciben 3x más aplicantes
                         </div>
 
                         <!-- Fotos de la Oferta (G6) -->
                         <div class="form-group" style="margin-top: 1.5rem;">
-                            <label>📸 Fotos del Trabajo (Opcional - máx 5)</label>
+                            <label>Fotos del Trabajo (Opcional - máx 5)</label>
                             <input
                                 type="file"
                                 id="fotos-input"
@@ -326,7 +326,7 @@
                                 style="display: none;"
                             >
                             <div class="fotos-upload-area" id="fotos-upload-area">
-                                <span class="fotos-upload-icon">📷</span>
+                                <span class="fotos-upload-icon">+</span>
                                 <span class="fotos-upload-text">Click para agregar fotos</span>
                                 <span class="fotos-upload-hint">JPG, PNG, WebP - Máx 10MB cada una</span>
                             </div>
@@ -336,7 +336,7 @@
                                 <button type="button" id="btn-agregar-mas-fotos" class="btn-link" style="display: none;">+ Agregar más</button>
                             </div>
                             <div class="helper-text">
-                                📷 Las ofertas con fotos reciben hasta 2x más postulaciones
+                                Las ofertas con fotos reciben hasta 2x más postulaciones
                             </div>
                         </div>
                     </div>
@@ -344,7 +344,7 @@
                     <!-- PASO 3: Requisitos -->
                     <div class="form-step" data-step="3">
                         <div class="step-header">
-                            <h2>✅ Requisitos</h2>
+                            <h2>Requisitos</h2>
                             <p>¿Qué debe tener el trabajador ideal?</p>
                         </div>
 
@@ -404,12 +404,12 @@
                     <!-- PASO 4: Revisión y Confirmación -->
                     <div class="form-step" data-step="4">
                         <div class="step-header">
-                            <h2>🔍 Revisar y Publicar</h2>
+                            <h2>Revisar y Publicar</h2>
                             <p>Verifica que todo esté correcto antes de publicar</p>
                         </div>
 
                         <div class="review-card">
-                            <h3>📋 Resumen de tu Oferta</h3>
+                            <h3>Resumen de tu Oferta</h3>
                             
                             <div class="review-section">
                                 <h4>Información Básica</h4>
@@ -478,8 +478,8 @@
                             </div>
 
                             <div class="info-box">
-                                <p>✨ Tu oferta será visible para todos los trabajadores registrados</p>
-                                <p>📧 Recibirás notificaciones cuando alguien aplique</p>
+                                <p>Tu oferta será visible para todos los trabajadores registrados</p>
+                                <p>Recibirás notificaciones cuando alguien aplique</p>
                             </div>
                         </div>
                     </div>
@@ -493,7 +493,7 @@
                             Siguiente →
                         </button>
                         <button type="submit" class="btn btn-primary" id="btnSubmit" style="display: none;">
-                            🚀 Publicar Oferta
+                            Publicar Oferta
                         </button>
                     </div>
 

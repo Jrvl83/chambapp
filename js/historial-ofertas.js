@@ -197,10 +197,10 @@ function renderizarOfertas(ofertas) {
 
 function getEstadoBadge(estado) {
     const badges = {
-        'activa': '✅ Activa',
-        'en_curso': '🔄 En curso',
-        'completada': '🏁 Completada',
-        'caducada': '⏳ Caducada'
+        'activa': 'Activa',
+        'en_curso': 'En curso',
+        'completada': 'Completada',
+        'caducada': 'Caducada'
     };
     return badges[estado] || estado;
 }
@@ -212,21 +212,21 @@ function getAccionesHTML(id, estado, titulo, vacantes) {
     switch (estado) {
         case 'activa':
             return `
-                <button class="btn-accion" onclick="editarOferta('${id}')">✏️ Editar</button>
-                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">🗑️</button>
+                <button class="btn-accion" onclick="editarOferta('${id}')">Editar</button>
+                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">Eliminar</button>
             `;
         case 'en_curso':
             return `
-                <a href="mis-aplicaciones.html" class="btn-accion">👥 Ver candidato${vacantes > 1 ? 's' : ''}</a>
+                <a href="mis-aplicaciones.html" class="btn-accion">Ver candidato${vacantes > 1 ? 's' : ''}</a>
             `;
         case 'completada':
             return `
-                <button class="btn-accion" onclick="reutilizarOferta('${id}')">🔄 Reutilizar</button>
+                <button class="btn-accion" onclick="reutilizarOferta('${id}')">Reutilizar</button>
             `;
         case 'caducada':
             return `
-                <button class="btn-accion btn-accion-primary" onclick="renovarOferta('${id}')">🔄 Renovar</button>
-                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">🗑️</button>
+                <button class="btn-accion btn-accion-primary" onclick="renovarOferta('${id}')">Renovar</button>
+                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">Eliminar</button>
             `;
         default:
             return '';
@@ -245,7 +245,7 @@ window.eliminarOferta = function(id, titulo) {
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h3 style="margin-bottom: 0.5rem;">¿Eliminar oferta?</h3>
             <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
                 "${titulo}"<br>

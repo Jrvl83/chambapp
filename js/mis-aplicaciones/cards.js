@@ -78,7 +78,7 @@ function crearBotonesPendiente(aplicacionId, nombreEscapado, vacantesLlenas) {
                     <span class="texto-rechazado">Vacantes cubiertas</span>
                 </div>
                 <button class="btn btn-danger btn-accion" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                    ❌ Rechazar
+                    Rechazar
                 </button>
             </div>
         `;
@@ -86,10 +86,10 @@ function crearBotonesPendiente(aplicacionId, nombreEscapado, vacantesLlenas) {
     return `
         <div class="aplicacion-actions-pendiente">
             <button class="btn btn-success btn-accion" onclick="aceptarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                ✅ Aceptar
+                Aceptar
             </button>
             <button class="btn btn-danger btn-accion" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                ❌ Rechazar
+                Rechazar
             </button>
         </div>
     `;
@@ -104,21 +104,21 @@ function crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, titu
 
     const contactoHTML = telefono ? `
         <div class="contacto-info">
-            <span class="contacto-label">📱</span>
+            <span class="contacto-label"></span>
             <span class="contacto-telefono">${telefono}</span>
         </div>
         <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
            target="_blank" class="btn btn-whatsapp btn-whatsapp-cta">
-            📱 Contactar por WhatsApp
+            Contactar por WhatsApp
         </a>
-        <a href="tel:${telefono}" class="btn-llamar-link">📞 Llamar también</a>
+        <a href="tel:${telefono}" class="btn-llamar-link">Llamar también</a>
     ` : `<p class="sin-telefono">Sin número de contacto registrado</p>`;
 
     return `
         <div class="contacto-aceptado">${contactoHTML}</div>
         <button class="btn-marcar-completado"
                 onclick="marcarCompletado('${aplicacion.id}', '${nombreEscapado}', '${tituloEscapado}')">
-            🏁 Marcar trabajo como completado
+            Marcar trabajo como completado
         </button>
     `;
 }
@@ -127,7 +127,7 @@ function crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado) {
     if (aplicacion.calificado) {
         return `
             <div class="estado-final completado">
-                <span class="texto-completado">✅ Trabajo completado</span>
+                <span class="texto-completado">Trabajo completado</span>
                 <div class="estado-calificado">
                     <span class="calificacion-mostrada">
                         <span class="estrella-filled">★</span> Calificado
@@ -138,9 +138,9 @@ function crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado) {
     }
     return `
         <div class="estado-final completado">
-            <span class="texto-completado">✅ Trabajo completado</span>
+            <span class="texto-completado">Trabajo completado</span>
             <button class="btn btn-primary btn-sm" onclick="calificarTrabajador('${aplicacion.id}', '${emailEscapado}', '${nombreEscapado}')">
-                ⭐ Calificar
+                Calificar
             </button>
         </div>
     `;

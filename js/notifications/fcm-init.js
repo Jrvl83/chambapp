@@ -314,7 +314,7 @@ function mostrarNotificacionForeground(payload) {
     const toast = document.createElement('div');
     toast.className = 'notif-toast';
     toast.innerHTML = `
-        <span class="notif-toast-icon">🔔</span>
+        <span class="notif-toast-icon">●</span>
         <div class="notif-toast-content">
             <div class="notif-toast-title">${escapeHtml(titulo)}</div>
             <div class="notif-toast-body">${escapeHtml(cuerpo)}</div>

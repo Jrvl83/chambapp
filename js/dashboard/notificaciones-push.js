@@ -137,7 +137,7 @@ function crearBannerNotificaciones() {
     banner.className = 'notif-prompt-banner';
     banner.innerHTML = `
         <div class="notif-prompt-content">
-            <span class="notif-icon">🔔</span>
+            <span class="notif-icon">●</span>
             <div class="notif-text">
                 <strong>Activa las notificaciones</strong>
                 <p>Recibe alertas cuando te contacten o acepten tu postulación</p>
@@ -217,13 +217,13 @@ function mostrarModalInstruccionesiOS() {
 
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h2 style="color: var(--primary); margin-bottom: 1rem;">Instala ChambaYa</h2>
             <p style="color: var(--gray); margin-bottom: 1.5rem;">
                 Para recibir notificaciones en iPhone, necesitas agregar ChambaYa a tu pantalla de inicio:
             </p>
             <ol style="text-align: left; color: var(--dark); line-height: 2;">
-                <li>Toca el botón <strong>Compartir</strong> (📤) en Safari</li>
+                <li>Toca el botón <strong>Compartir</strong> (↑) en Safari</li>
                 <li>Desplázate y selecciona <strong>"Agregar a inicio"</strong></li>
                 <li>Toca <strong>"Agregar"</strong></li>
                 <li>Abre ChambaYa desde tu pantalla de inicio</li>

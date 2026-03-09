@@ -315,7 +315,7 @@ function mostrarBadgeUbicacion(ubicacion) {
             title='Actualizar ubicacion'
             aria-label='Actualizar ubicacion'
         >
-            🔄
+            ↻
         </button>
     `;
 }
@@ -453,7 +453,7 @@ function personalizarPorTipo(tipo) {
         if (navMapa) navMapa.style.display = 'none';
         if (navTrabajadores) {
             navTrabajadores.href = 'mis-aplicaciones.html';
-            navTrabajadores.querySelector('.icon').textContent = '👥';
+            navTrabajadores.querySelector('.icon').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
         }
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Ver Candidatos';
         if (navPerfil) navPerfil.href = 'perfil-empleador.html';
@@ -755,13 +755,13 @@ function renderizarActividadReciente(aplicacionesSnap) {
         let icono = ICON_USER_SM;
         let accion = 'aplicó a';
         if (app.estado === 'aceptado') {
-            icono = '✅';
+            icono = '●';
             accion = 'fue aceptado en';
         } else if (app.estado === 'rechazado') {
-            icono = '❌';
+            icono = '●';
             accion = 'no fue seleccionado para';
         } else if (app.estado === 'completado') {
-            icono = '🏁';
+            icono = '●';
             accion = 'completó';
         }
 
@@ -1161,13 +1161,13 @@ window.verDetalle = async function(id) {
             if (yaAplico) {
                 botonAccion = `
                     <button class="btn btn-success btn-disabled" disabled style="flex: 1; cursor: not-allowed; opacity: 0.7;">
-                        ✅ Ya postulaste
+                        Ya postulaste
                     </button>
                 `;
             } else {
                 botonAccion = `
                     <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacion('${id}')" style="flex: 1;">
-                        📝 Postular a esta oferta
+                        Postular a esta oferta
                     </button>
                 `;
             }
@@ -1201,7 +1201,7 @@ window.verDetalle = async function(id) {
             ${galeriaHTML}
 
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="margin-bottom: 0.5rem;">📝 Descripción</h3>
+                <h3 style="margin-bottom: 0.5rem;">Descripción</h3>
                 <p style="color: var(--gray); line-height: 1.6;">${escapeHtml(oferta.descripcion)}</p>
             </div>
 
@@ -1209,7 +1209,7 @@ window.verDetalle = async function(id) {
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div><strong>${ICON_MONEY} Salario:</strong><br>${escapeHtml(oferta.salario)}</div>
                     <div><strong>${ICON_PIN} Ubicación:</strong><br>${escapeHtml(ubicacionTexto)}</div>
-                    <div><strong>⏱️ Duración:</strong><br>${escapeHtml(oferta.duracion || 'No especificada')}</div>
+                    <div><strong>Duración:</strong><br>${escapeHtml(oferta.duracion || 'No especificada')}</div>
                     <div><strong>${ICON_CLOCK} Horario:</strong><br>${escapeHtml(oferta.horario || 'No especificado')}</div>
                 </div>
             </div>
@@ -1282,7 +1282,7 @@ window.mostrarFormularioPostulacion = async function(ofertaId) {
 
             <div style="margin-bottom: 1.5rem;">
                 <label for="mensaje-postulacion" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
-                    💬 Mensaje para el empleador:
+                    Mensaje para el empleador:
                 </label>
                 <textarea
                     id="mensaje-postulacion"
@@ -1296,7 +1296,7 @@ window.mostrarFormularioPostulacion = async function(ofertaId) {
 
             <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #f59e0b;">
                 <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
-                    <strong>📧 Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
+                    <strong>Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
                 </p>
             </div>
 
@@ -1490,7 +1490,7 @@ function mostrarPromptNotificaciones() {
     banner.className = 'notif-prompt-banner';
     banner.innerHTML = `
         <div class="notif-prompt-content">
-            <span class="notif-icon">🔔</span>
+            <span class="notif-icon">●</span>
             <div class="notif-text">
                 <strong>Activa las notificaciones</strong>
                 <p>Recibe alertas cuando te contacten o acepten tu postulacion</p>
@@ -1581,13 +1581,13 @@ function mostrarModalInstruccionesiOS() {
 
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h2 style="color: var(--primary); margin-bottom: 1rem;">Instala ChambaYa</h2>
             <p style="color: var(--gray); margin-bottom: 1.5rem;">
                 Para recibir notificaciones en iPhone, necesitas agregar ChambaYa a tu pantalla de inicio:
             </p>
             <ol style="text-align: left; color: var(--dark); line-height: 2;">
-                <li>Toca el boton <strong>Compartir</strong> (📤) en Safari</li>
+                <li>Toca el boton <strong>Compartir</strong> (↑) en Safari</li>
                 <li>Desplazate y selecciona <strong>"Agregar a inicio"</strong></li>
                 <li>Toca <strong>"Agregar"</strong></li>
                 <li>Abre ChambaYa desde tu pantalla de inicio</li>
@@ -1669,7 +1669,7 @@ window.eliminarOferta = function(ofertaId, titulo) {
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h3 style="margin-bottom: 0.5rem; color: var(--dark);">¿Eliminar oferta?</h3>
             <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
                 "${escapeHtml(titulo)}"<br>
@@ -1680,7 +1680,7 @@ window.eliminarOferta = function(ofertaId, titulo) {
                     Cancelar
                 </button>
                 <button class="btn btn-danger" onclick="confirmarEliminarOferta('${ofertaId}')" style="flex: 1;">
-                    🗑️ Eliminar
+                    Eliminar
                 </button>
             </div>
         </div>

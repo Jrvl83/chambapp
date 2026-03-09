@@ -161,7 +161,7 @@ function renderUbicacion(data) {
         ? (ubic.texto_completo || ubic.distrito || '') : (ubic || '');
 
     if (texto) {
-        el.textContent = `📍 ${texto}`;
+        el.textContent = texto;
     } else {
         el.style.display = 'none';
     }
@@ -210,7 +210,7 @@ function renderSkillsSection(data) {
 
     if (anos) {
         const el = document.getElementById('pp-anos-exp');
-        el.textContent = `💼 ${getAnosExpLabel(anos)}`;
+        el.textContent = getAnosExpLabel(anos);
         el.style.display = 'inline-flex';
     }
 

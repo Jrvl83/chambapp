@@ -76,7 +76,7 @@ function renderGaleriaHTML(imagenesURLs) {
 function renderDescripcionHTML(oferta) {
     return `
         <div class="detalle-seccion">
-            <h4>📝 Descripción</h4>
+            <h4>Descripción</h4>
             <p>${escapeHtml(oferta.descripcion || 'Sin descripción')}</p>
         </div>
     `;
@@ -113,13 +113,13 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
     const pagoTotal = calcularPagoTotal(oferta.salario, oferta.duracion);
     const pagoTotalHTML = pagoTotal
         ? `<div class="detalle-item detalle-item--full">
-               <strong>💵 Pago estimado total</strong>
+               <strong>Pago estimado total</strong>
                <span class="detalle-pago-total">S/. ${pagoTotal.toLocaleString('es-PE')}</span>
            </div>`
         : '';
     const spotsHTML = (oferta.vacantes || 0) > 0
         ? `<div class="detalle-item detalle-item--full">
-               <strong>👥 Vacantes</strong>
+               <strong>Vacantes</strong>
                ${renderSpotsHTML(oferta.vacantes)}
            </div>`
         : '';
@@ -135,7 +135,7 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
                 <span>${escapeHtml(ubicacionTexto)}</span>
             </div>
             <div class="detalle-item">
-                <strong>⏱️ Duración</strong>
+                <strong>Duración</strong>
                 <span>${escapeHtml(oferta.duracion || 'No especificada')}</span>
             </div>
             <div class="detalle-item">
@@ -171,7 +171,7 @@ function renderRatingInlineHTML(ratingData) {
 function renderEmpleadorHTML(oferta, ratingData, mostrarEmail) {
     const nombre = escapeHtml(oferta.empleadorNombre || 'Empleador');
     const emailHTML = mostrarEmail && oferta.empleadorEmail
-        ? `<span class="detalle-empleador-email">📧 ${escapeHtml(oferta.empleadorEmail)}</span>`
+        ? `<span class="detalle-empleador-email">${escapeHtml(oferta.empleadorEmail)}</span>`
         : '';
 
     return `
@@ -194,9 +194,9 @@ function renderAccionesHTML(ofertaId, ofertaTitulo, opciones) {
     if (opciones.mostrarPostulacion) {
         const postularFn = opciones.onPostularFn || 'mostrarFormularioPostulacion';
         if (opciones.yaAplico) {
-            botonPostular = `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">✅ Ya postulaste</button>`;
+            botonPostular = `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">Ya postulaste</button>`;
         } else {
-            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">📝 Postular</button>`;
+            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">Postular</button>`;
             trustMsg = `<p class="detalle-trust-msg">Sin costos ocultos · Puedes cancelar tu postulación</p>`;
         }
     }

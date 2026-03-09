@@ -26,25 +26,25 @@ const ESTADO_CONFIG = {
     'pendiente': {
         texto: 'Pendiente',
         clase: 'pendiente',
-        icono: '🟡',
+        icono: '●',
         descripcion: 'Esperando respuesta del empleador'
     },
     'aceptado': {
         texto: '¡Aceptado!',
         clase: 'aceptado',
-        icono: '✅',
+        icono: '●',
         descripcion: '¡Felicidades! El empleador aceptó tu postulación'
     },
     'rechazado': {
         texto: 'No seleccionado',
         clase: 'rechazado',
-        icono: '❌',
+        icono: '●',
         descripcion: 'El empleador eligió otro candidato'
     },
     'completado': {
         texto: 'Completado',
         clase: 'completado',
-        icono: '🏁',
+        icono: '●',
         descripcion: 'Trabajo completado exitosamente'
     }
 };
@@ -146,7 +146,7 @@ function crearAplicacionCard(aplicacion) {
 function renderSubtituloEstado(estado, aplicacion) {
     if (estado === 'aceptado') {
         return `<p class="aplicacion-subtitulo aplicacion-subtitulo--accion">
-            📲 Coordina los detalles con el empleador por WhatsApp
+            Coordina los detalles con el empleador por WhatsApp
         </p>`;
     }
     if (estado === 'completado' && !aplicacion.calificadoPorTrabajador) {
@@ -187,7 +187,7 @@ function renderWhatsAppLink(aplicacion, telefono) {
         `Hola ${nombre}, soy ${state.usuario.nombre || 'el trabajador'} ` +
         `de ChambaYa. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada.`
     );
-    return `<a href="https://wa.me/${telefonoWA}?text=${msg}" target="_blank" class="btn btn-whatsapp btn-small">📱 WhatsApp</a>`;
+    return `<a href="https://wa.me/${telefonoWA}?text=${msg}" target="_blank" class="btn btn-whatsapp btn-small">WhatsApp</a>`;
 }
 
 function renderBotonCancelar(aplicacion, estado) {
@@ -195,7 +195,7 @@ function renderBotonCancelar(aplicacion, estado) {
     const titulo = escapeHtml(aplicacion.ofertaTitulo).replace(/'/g, "\\'");
     return `
         <button class="btn btn-danger btn-small" onclick="cancelarAplicacion('${aplicacion.id}', '${titulo}')">
-            ❌ Cancelar Aplicación
+            Cancelar Aplicación
         </button>
     `;
 }

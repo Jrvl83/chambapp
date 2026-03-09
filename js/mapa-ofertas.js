@@ -590,13 +590,13 @@ window.verDetalleOferta = async function(ofertaId) {
         if (yaAplico) {
             botonAccion = `
                 <button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">
-                    ✅ Ya postulaste
+                    Ya postulaste
                 </button>
             `;
         } else {
             botonAccion = `
                 <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacionMapa('${ofertaId}')">
-                    📝 Postular a esta oferta
+                    Postular a esta oferta
                 </button>
             `;
         }
@@ -628,8 +628,8 @@ window.verDetalleOferta = async function(ofertaId) {
             ${galeriaHTML}
 
             <div class="detalle-seccion">
-                <h4>📝 Descripcion</h4>
-                <p>${ofertaData.descripcion || 'Sin descripcion'}</p>
+                <h4>Descripción</h4>
+                <p>${ofertaData.descripcion || 'Sin descripción'}</p>
             </div>
 
             <div class="detalle-grid">
@@ -642,7 +642,7 @@ window.verDetalleOferta = async function(ofertaId) {
                     <span>${ubicacionTexto}</span>
                 </div>
                 <div class="detalle-item">
-                    <strong>⏱️ Duracion</strong>
+                    <strong>${ICON_CLOCK} Duración</strong>
                     <span>${ofertaData.duracion || 'No especificada'}</span>
                 </div>
                 <div class="detalle-item">
@@ -651,7 +651,7 @@ window.verDetalleOferta = async function(ofertaId) {
                 </div>
                 ${(ofertaData.vacantes || 1) > 1 ? `
                 <div class="detalle-item">
-                    <strong>👥 Vacantes</strong>
+                    <strong>Vacantes</strong>
                     <span>${ofertaData.vacantes} personas</span>
                 </div>
                 ` : ''}
@@ -730,7 +730,7 @@ window.mostrarFormularioPostulacionMapa = async function(ofertaId) {
 
             <div class="detalle-seccion">
                 <label for="mensaje-postulacion-mapa" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
-                    💬 Mensaje para el empleador:
+                    Mensaje para el empleador:
                 </label>
                 <textarea
                     id="mensaje-postulacion-mapa"
@@ -744,7 +744,7 @@ window.mostrarFormularioPostulacionMapa = async function(ofertaId) {
 
             <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #f59e0b;">
                 <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
-                    <strong>📧 Nota:</strong> El empleador vera tu perfil y podra contactarte directamente.
+                    <strong>Nota:</strong> El empleador vera tu perfil y podra contactarte directamente.
                 </p>
             </div>
 
