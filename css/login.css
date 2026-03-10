@@ -3,16 +3,16 @@
    Requiere: design-system.css
    ============================================ */
 
-/* Page layout: centrado vertical y horizontal */
+/* Page layout */
 body {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    background: var(--white);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 0;
 }
 
-/* Main wrapper - ancho fijo */
+/* Main wrapper */
 main {
     width: 100%;
     max-width: 450px;
@@ -20,11 +20,8 @@ main {
 
 /* Container principal */
 .login-container {
-    background: var(--white);
-    border-radius: var(--radius-xl);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     width: 100%;
-    padding: 3rem 2rem;
+    padding: 2rem 1.5rem 2.5rem;
 }
 
 /* Logo */
@@ -397,10 +394,6 @@ main {
 /* Responsive */
 @media (max-width: 768px) {
     .login-container {
-        padding: 2rem 1.5rem;
-    }
-
-    .login-logo img {
-        height: 64px;
+        padding: 1.5rem 1.25rem 2rem;
     }
 }
