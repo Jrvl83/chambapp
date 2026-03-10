@@ -107,8 +107,23 @@
         const bottomNavHome = bottomNav.querySelector('[data-page="home"]');
 
         if (userRole === 'trabajador') {
-            // Inicio y Explorar ya tienen los valores correctos en el HTML
-            // Solo actualizar el botón central: Mis Apps (flat, sin FAB)
+            // Resetear home y explore explícitamente (pueden haber sido modificados
+            // si el branch empleador corrió primero por el default de role detection)
+            if (bottomNavHome) {
+                bottomNavHome.href = 'dashboard.html';
+                const iconHome = bottomNavHome.querySelector('.bottom-nav-icon');
+                const labelHome = bottomNavHome.querySelector('.bottom-nav-label');
+                if (iconHome) iconHome.innerHTML = NAV_ICON_HOME;
+                if (labelHome) labelHome.textContent = 'Inicio';
+            }
+            if (bottomNavExplore) {
+                bottomNavExplore.href = 'mapa-ofertas.html';
+                const iconExplore = bottomNavExplore.querySelector('.bottom-nav-icon');
+                const labelExplore = bottomNavExplore.querySelector('.bottom-nav-label');
+                if (iconExplore) iconExplore.innerHTML = NAV_ICON_EXPLORE;
+                if (labelExplore) labelExplore.textContent = 'Explorar';
+            }
+            // Botón central: Mis Apps (flat, sin FAB)
             if (bottomNavAdd) {
                 bottomNavAdd.href = 'mis-aplicaciones-trabajador.html';
                 bottomNavAdd.classList.remove('nav-add');
