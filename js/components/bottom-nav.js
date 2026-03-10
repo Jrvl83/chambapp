@@ -63,11 +63,9 @@
             window.addEventListener('scroll', debounce(handleScroll, 10), { passive: true });
         }
 
-        // Mark current page as active
-        setActivePage();
-
-        // Update navigation based on role
+        // Update navigation based on role first, then mark active page
         updateNavigationForRole();
+        setActivePage();
 
         // Add ripple effect listeners
         setupRippleEffects();
@@ -108,64 +106,54 @@
         const bottomNavExplore = bottomNav.querySelector('[data-page="explore"]');
         const bottomNavHome = bottomNav.querySelector('[data-page="home"]');
 
-        // Actualizar botón Home según rol (reemplaza redundancia)
-        if (bottomNavHome) {
-            const iconHome = bottomNavHome.querySelector('.bottom-nav-icon');
-            const labelHome = bottomNavHome.querySelector('.bottom-nav-label');
-
-            if (userRole === 'trabajador') {
-                bottomNavHome.href = 'mis-aplicaciones-trabajador.html';
-                if (iconHome) iconHome.innerHTML = NAV_ICON_APPS;
-                if (labelHome) labelHome.textContent = 'Mis Apps';
-            } else {
-                // Empleador: historial de ofertas
+        if (userRole === 'trabajador') {
+            // Inicio y Explorar ya tienen los valores correctos en el HTML
+            // Solo actualizar el botón central: Mis Apps (flat, sin FAB)
+            if (bottomNavAdd) {
+                bottomNavAdd.href = 'mis-aplicaciones-trabajador.html';
+                bottomNavAdd.classList.remove('nav-add');
+                const iconAdd = bottomNavAdd.querySelector('.bottom-nav-icon');
+                const labelAdd = bottomNavAdd.querySelector('.bottom-nav-label');
+                if (iconAdd) iconAdd.innerHTML = NAV_ICON_APPS;
+                if (labelAdd) {
+                    labelAdd.textContent = 'Mis Apps';
+                    labelAdd.style.display = '';
+                }
+            }
+        } else {
+            // Empleador
+            if (bottomNavHome) {
+                const iconHome = bottomNavHome.querySelector('.bottom-nav-icon');
+                const labelHome = bottomNavHome.querySelector('.bottom-nav-label');
                 bottomNavHome.href = 'historial-ofertas.html';
                 if (iconHome) iconHome.innerHTML = NAV_ICON_APPS;
                 if (labelHome) labelHome.textContent = 'Historial';
             }
-        }
 
-        // Actualizar botón central (Add)
-        if (bottomNavAdd) {
-            const iconAdd = bottomNavAdd.querySelector('.bottom-nav-icon');
-            const labelAdd = bottomNavAdd.querySelector('.bottom-nav-label');
-
-            if (userRole === 'trabajador') {
-                bottomNavAdd.href = 'mapa-ofertas.html';
-                if (iconAdd) iconAdd.innerHTML = NAV_ICON_EXPLORE;
-                if (labelAdd) labelAdd.textContent = 'Explorar';
-            } else {
-                bottomNavAdd.href = 'publicar-oferta.html';
-                if (iconAdd) iconAdd.innerHTML = NAV_ICON_PLUS;
-                if (labelAdd) labelAdd.textContent = 'Publicar';
-            }
-        }
-
-        // Actualizar botón Explorar según rol
-        if (bottomNavExplore) {
-            const iconExplore = bottomNavExplore.querySelector('.bottom-nav-icon');
-            const labelExplore = bottomNavExplore.querySelector('.bottom-nav-label');
-
-            if (userRole === 'trabajador') {
-                bottomNavExplore.href = 'dashboard.html';
-                if (iconExplore) iconExplore.innerHTML = NAV_ICON_HOME;
-                if (labelExplore) labelExplore.textContent = 'Inicio';
-            } else {
-                // Empleador: ver candidatos
+            if (bottomNavExplore) {
+                const iconExplore = bottomNavExplore.querySelector('.bottom-nav-icon');
+                const labelExplore = bottomNavExplore.querySelector('.bottom-nav-label');
                 bottomNavExplore.href = 'mis-aplicaciones.html';
                 if (iconExplore) iconExplore.innerHTML = NAV_ICON_PEOPLE;
                 if (labelExplore) labelExplore.textContent = 'Talento';
+            }
+
+            if (bottomNavAdd) {
+                const iconAdd = bottomNavAdd.querySelector('.bottom-nav-icon');
+                const labelAdd = bottomNavAdd.querySelector('.bottom-nav-label');
+                bottomNavAdd.href = 'publicar-oferta.html';
+                if (iconAdd) iconAdd.innerHTML = NAV_ICON_PLUS;
+                if (labelAdd) labelAdd.textContent = 'Publicar';
+                // Mantener nav-add (FAB) para empleador
             }
         }
 
         // Actualizar botón Perfil según rol
         const bottomNavProfile = bottomNav.querySelector('[data-page="profile"]');
         if (bottomNavProfile) {
-            if (userRole === 'trabajador') {
-                bottomNavProfile.href = 'perfil-trabajador.html';
-            } else {
-                bottomNavProfile.href = 'perfil-empleador.html';
-            }
+            bottomNavProfile.href = userRole === 'trabajador'
+                ? 'perfil-trabajador.html'
+                : 'perfil-empleador.html';
         }
     }
 
