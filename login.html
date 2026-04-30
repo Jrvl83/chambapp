@@ -25,44 +25,54 @@
     <title>Iniciar Sesión - ChambaYa</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/design-system.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/design-system.css?v=1">
+    <link rel="stylesheet" href="css/login.css?v=3">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/toast.css">
-    <link rel="stylesheet" href="css/modal.css?v=6">
+    <link rel="stylesheet" href="css/modal.css?v=7">
     <link rel="stylesheet" href="css/animations.css" media="print" onload="this.media='all'">
 </head>
 <body>
+<script src="js/utils/page-loader.js"></script>
     <main>
     <div class="login-container">
         <div class="login-logo">
-            <img src="/assets/logo/logo-completo.png" alt="ChambaYa">
+            <div class="login-logo-text">Chamba<span class="logo-ya">Ya</span></div>
             <p>Inicia sesión en tu cuenta</p>
         </div>
 
         <!-- Security Badge -->
         <div class="security-badge">
-            <p>🔒 Tus datos están seguros y encriptados</p>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <p>Tus datos están seguros y encriptados</p>
         </div>
 
         <form id="loginForm">
             <div class="form-group">
                 <label for="email" class="required">Correo Electrónico</label>
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="tu@email.com"
-                    required
-                    autocomplete="email"
-                    aria-required="true"
-                    aria-describedby="email-error"
-                >
+                <div class="input-wrap">
+                    <span class="input-icon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </span>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="tu@email.com"
+                        required
+                        autocomplete="email"
+                        aria-required="true"
+                        aria-describedby="email-error"
+                    >
+                </div>
                 <div id="email-error" role="alert" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
                 <label for="password" class="required">Contraseña</label>
-                <div class="password-wrapper">
+                <div class="input-wrap">
+                    <span class="input-icon" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    </span>
                     <input
                         type="password"
                         id="password"
@@ -79,7 +89,7 @@
                         aria-label="Mostrar contraseña"
                         id="password-toggle"
                     >
-                        👁️
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </div>
                 <div id="password-error" role="alert" aria-live="polite"></div>
@@ -89,7 +99,8 @@
             </div>
 
             <button type="submit" class="btn-login" id="btn-login">
-                Iniciar Sesión
+                <span class="btn-text">Iniciar Sesión</span>
+                <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
         </form>
 
@@ -118,23 +129,29 @@
     <div class="modal-overlay" id="modal-rol-google" style="display:none">
         <div class="modal-content modal-content--sm">
             <div class="modal-rol-body">
-                <div style="font-size:2.5rem;margin-bottom:0.5rem;">👋</div>
+                <div style="font-size:2.5rem;margin-bottom:0.5rem;"></div>
                 <h3>Bienvenido a ChambaYa</h3>
                 <p>Para completar tu registro, dinos qu&eacute; buscas:</p>
                 <div class="google-role-cards">
                     <button type="button" class="role-card" data-type="trabajador">
-                        <div class="role-card-icon">👷</div>
+                        <div class="role-card-icon role-icon-trabajador">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
                         <div>
                             <div class="role-card-title">Busco Trabajo</div>
                             <div class="role-card-desc">Encuentra chambas cerca de ti</div>
                         </div>
+                        <svg class="role-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
                     <button type="button" class="role-card" data-type="empleador">
-                        <div class="role-card-icon">💼</div>
+                        <div class="role-card-icon role-icon-empleador">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                        </div>
                         <div>
                             <div class="role-card-title">Busco Trabajadores</div>
-                            <div class="role-card-desc">Encuentra profesionales</div>
+                            <div class="role-card-desc">Encuentra profesionales de confianza</div>
                         </div>
+                        <svg class="role-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
                     </button>
                 </div>
             </div>

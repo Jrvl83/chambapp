@@ -21,6 +21,9 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { formatearFecha } from './utils/formatting.js';
 import { manejarBloqueado } from './utils/auth-guard.js';
+import { ICON_PIN, ICON_MONEY } from './utils/icons.js';
+
+const ICON_PEOPLE_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
 
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
@@ -179,9 +182,9 @@ function renderizarOfertas(ofertas) {
                     </div>
                     <h3 class="oferta-titulo">${oferta.titulo}</h3>
                     <div class="oferta-meta">
-                        <span>📍 ${ubicacion}</span>
-                        <span>💰 ${oferta.salario || 'No especificado'}</span>
-                        ${(oferta.vacantes || 1) > 1 ? `<span>👥 ${oferta.aceptadosCount || 0}/${oferta.vacantes} aceptados</span>` : ''}
+                        <span>${ICON_PIN} ${ubicacion}</span>
+                        <span>${ICON_MONEY} ${oferta.salario || 'No especificado'}</span>
+                        ${(oferta.vacantes || 1) > 1 ? `<span>${ICON_PEOPLE_SM} ${oferta.aceptadosCount || 0}/${oferta.vacantes} aceptados</span>` : ''}
                     </div>
                     <div class="oferta-acciones">
                         ${acciones}
@@ -194,10 +197,10 @@ function renderizarOfertas(ofertas) {
 
 function getEstadoBadge(estado) {
     const badges = {
-        'activa': '✅ Activa',
-        'en_curso': '🔄 En curso',
-        'completada': '🏁 Completada',
-        'caducada': '⏳ Caducada'
+        'activa': 'Activa',
+        'en_curso': 'En curso',
+        'completada': 'Completada',
+        'caducada': 'Caducada'
     };
     return badges[estado] || estado;
 }
@@ -209,21 +212,21 @@ function getAccionesHTML(id, estado, titulo, vacantes) {
     switch (estado) {
         case 'activa':
             return `
-                <button class="btn-accion" onclick="editarOferta('${id}')">✏️ Editar</button>
-                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">🗑️</button>
+                <button class="btn-accion" onclick="editarOferta('${id}')">Editar</button>
+                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">Eliminar</button>
             `;
         case 'en_curso':
             return `
-                <a href="mis-aplicaciones.html" class="btn-accion">👥 Ver candidato${vacantes > 1 ? 's' : ''}</a>
+                <a href="mis-aplicaciones.html" class="btn-accion">Ver candidato${vacantes > 1 ? 's' : ''}</a>
             `;
         case 'completada':
             return `
-                <button class="btn-accion" onclick="reutilizarOferta('${id}')">🔄 Reutilizar</button>
+                <button class="btn-accion" onclick="reutilizarOferta('${id}')">Reutilizar</button>
             `;
         case 'caducada':
             return `
-                <button class="btn-accion btn-accion-primary" onclick="renovarOferta('${id}')">🔄 Renovar</button>
-                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">🗑️</button>
+                <button class="btn-accion btn-accion-primary" onclick="renovarOferta('${id}')">Renovar</button>
+                <button class="btn-accion btn-accion-danger" onclick="eliminarOferta('${id}', '${tituloEscapado}')">Eliminar</button>
             `;
         default:
             return '';
@@ -242,7 +245,7 @@ window.eliminarOferta = function(id, titulo) {
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h3 style="margin-bottom: 0.5rem;">¿Eliminar oferta?</h3>
             <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
                 "${titulo}"<br>

@@ -92,7 +92,7 @@ async function cargarAplicaciones() {
 
 function mostrarErrorCarga() {
     document.getElementById('loading-screen').innerHTML = `
-        <div class="empty-icon">❌</div>
+        <div class="empty-icon">!</div>
         <h2>Error al cargar</h2>
         <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
     `;

@@ -7,6 +7,8 @@
 import { escapeHtml } from '../utils/dom-helpers.js';
 import { generarEstrellasHTML, formatearFecha } from '../utils/formatting.js';
 
+const ICON_USER_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+
 // ============================================
 // PORTFOLIO
 // ============================================
@@ -118,7 +120,7 @@ function renderReviewHeader(resena, estrellas, fecha) {
     return `
         <div class="pp-review-header">
             <div class="pp-review-empleador">
-                <div class="pp-review-avatar">👤</div>
+                <div class="pp-review-avatar">${ICON_USER_SM}</div>
                 <div class="pp-review-info">
                     <span class="pp-review-nombre">${escapeHtml(resena.empleadorNombre || 'Empleador')}</span>
                     <span class="pp-review-trabajo">${escapeHtml(resena.ofertaTitulo || 'Trabajo')}</span>

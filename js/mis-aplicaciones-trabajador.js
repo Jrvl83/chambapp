@@ -11,6 +11,15 @@ import { formatearFecha } from './utils/formatting.js';
 import { escapeHtml } from './utils/dom-helpers.js';
 import { RatingInput, inicializarContadorComentario, configurarCierreModal, TEXTOS_ESTRELLAS } from './components/rating-input.js';
 
+// SVG icon constants (14×14 content size)
+const ICON_PIN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+const ICON_MONEY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+const ICON_CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+const ICON_USER_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+const ICON_STAR = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+const ICON_CALENDAR = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+const ICON_EMAIL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>';
+
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
@@ -99,7 +108,7 @@ async function cargarAplicaciones() {
     } catch (error) {
         console.error('❌ Error al cargar aplicaciones:', error);
         document.getElementById('loading-screen').innerHTML = `
-            <div class="empty-icon">❌</div>
+            <div class="empty-icon">!</div>
             <h2>Error al cargar</h2>
             <p>Ocurrió un error al cargar tus postulaciones. Intenta nuevamente.</p>
         `;
@@ -155,25 +164,25 @@ function crearAplicacionCard(aplicacion) {
         'pendiente': {
             texto: 'Pendiente',
             clase: 'pendiente',
-            icono: '🟡',
+            icono: '●',
             descripcion: 'Esperando respuesta del empleador'
         },
         'aceptado': {
             texto: '¡Aceptado!',
             clase: 'aceptado',
-            icono: '✅',
+            icono: '●',
             descripcion: '¡Felicidades! El empleador aceptó tu postulación'
         },
         'rechazado': {
             texto: 'No seleccionado',
             clase: 'rechazado',
-            icono: '❌',
+            icono: '●',
             descripcion: 'El empleador eligió otro candidato'
         },
         'completado': {
             texto: 'Completado',
             clase: 'completado',
-            icono: '🏁',
+            icono: '●',
             descripcion: 'Trabajo completado exitosamente'
         }
     };
@@ -200,7 +209,7 @@ function crearAplicacionCard(aplicacion) {
         seccionContacto = `
             <div class="contacto-empleador ${estado}">
                 <div class="contacto-header">
-                    <span class="contacto-titulo">📞 Contacta al empleador</span>
+                    <span class="contacto-titulo">Contacta al empleador</span>
                 </div>
                 <div class="contacto-datos">
                     <div class="dato-item">
@@ -223,14 +232,14 @@ function crearAplicacionCard(aplicacion) {
                         <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
                            target="_blank"
                            class="btn btn-whatsapp">
-                            📱 WhatsApp
+                            WhatsApp
                         </a>
                         <a href="tel:${empleadorTelefono}" class="btn btn-primary">
-                            📞 Llamar
+                            Llamar
                         </a>
                     ` : ''}
                     <a href="mailto:${empleadorEmail}" class="btn btn-secondary">
-                        📧 Email
+                        ${ICON_EMAIL} Email
                     </a>
                 </div>
             </div>
@@ -241,7 +250,7 @@ function crearAplicacionCard(aplicacion) {
     const tituloEscapado = escaparParaHTML(aplicacion.ofertaTitulo);
     const botonCancelar = estado === 'pendiente' ? `
         <button class="btn btn-danger btn-small" onclick="cancelarAplicacion('${aplicacion.id}', '${tituloEscapado}')">
-            ❌ Cancelar Aplicación
+            Cancelar Aplicación
         </button>
     ` : '';
 
@@ -260,7 +269,7 @@ function crearAplicacionCard(aplicacion) {
             const nombreEmpleadorEscapado = escaparParaHTML(aplicacion.empleadorNombre || 'Empleador');
             botonCalificarEmpleador = `
                 <button class="btn btn-warning btn-small" onclick="calificarEmpleador('${aplicacion.id}', '${aplicacion.empleadorEmail}', '${nombreEmpleadorEscapado}')">
-                    ⭐ Calificar Empleador
+                    ${ICON_STAR} Calificar Empleador
                 </button>
             `;
         }
@@ -272,13 +281,13 @@ function crearAplicacionCard(aplicacion) {
                 <div class="aplicacion-info">
                     <div class="aplicacion-titulo">${escapeHtml(aplicacion.ofertaTitulo)}</div>
                     <span class="aplicacion-categoria">${escapeHtml(getCategoriaLabel(aplicacion.ofertaCategoria))}</span>
-                    <div class="aplicacion-empleador">👤 ${escapeHtml(aplicacion.empleadorNombre)}</div>
+                    <div class="aplicacion-empleador">${ICON_USER_SM} ${escapeHtml(aplicacion.empleadorNombre)}</div>
                 </div>
                 <div class="aplicacion-estado">
                     <span class="estado-badge ${config.clase}">
                         ${config.icono} ${config.texto}
                     </span>
-                    <span class="aplicacion-fecha">📅 ${fecha}</span>
+                    <span class="aplicacion-fecha">${ICON_CALENDAR} ${fecha}</span>
                 </div>
             </div>
 
@@ -289,7 +298,7 @@ function crearAplicacionCard(aplicacion) {
             ${seccionContacto}
 
             <div class="aplicacion-mensaje">
-                <strong>💬 Tu mensaje:</strong>
+                <strong>Tu mensaje:</strong>
                 <p>${escapeHtml(aplicacion.mensaje)}</p>
             </div>
 
@@ -309,15 +318,15 @@ function crearAplicacionCard(aplicacion) {
 // ============================================
 function getCategoriaLabel(categoria) {
     const labels = {
-        'construccion': '🏗️ Construcción',
-        'electricidad': '⚡ Electricidad',
-        'gasfiteria': '🔧 Gasfitería',
-        'pintura': '🎨 Pintura',
-        'carpinteria': '🪵 Carpintería',
-        'limpieza': '🧹 Limpieza',
-        'jardineria': '🌿 Jardinería',
-        'mecanica': '🔩 Mecánica',
-        'otros': '📦 Otros'
+        'construccion': 'Construcción',
+        'electricidad': 'Electricidad',
+        'gasfiteria': 'Gasfitería',
+        'pintura': 'Pintura',
+        'carpinteria': 'Carpintería',
+        'limpieza': 'Limpieza',
+        'jardineria': 'Jardinería',
+        'mecanica': 'Mecánica',
+        'otros': 'Otros'
     };
 
     return labels[categoria] || categoria;
@@ -369,19 +378,19 @@ async function verOfertaCompleta(ofertaId) {
             ${galeriaHTML}
 
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="color: var(--dark); margin-bottom: 0.75rem;">📝 Descripción</h3>
+                <h3 style="color: var(--dark); margin-bottom: 0.75rem;">Descripción</h3>
                 <p style="color: var(--gray); line-height: 1.6;">${escapeHtml(oferta.descripcion)}</p>
             </div>
 
             <div style="background: var(--light); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                <h3 style="color: var(--dark); margin-bottom: 1rem;">📍 Detalles</h3>
+                <h3 style="color: var(--dark); margin-bottom: 1rem;">${ICON_PIN} Detalles</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div>
-                        <strong>📍 Ubicación:</strong><br>
+                        <strong>${ICON_PIN} Ubicación:</strong><br>
                         ${escapeHtml(oferta.ubicacion?.texto_completo || oferta.ubicacion || 'No especificada')}
                     </div>
                     <div>
-                        <strong>💰 Salario:</strong><br>
+                        <strong>${ICON_MONEY} Salario:</strong><br>
                         ${escapeHtml(oferta.salario)}
                     </div>
                     <div>
@@ -389,16 +398,16 @@ async function verOfertaCompleta(ofertaId) {
                         ${escapeHtml(oferta.duracion || 'No especificada')}
                     </div>
                     <div>
-                        <strong>🕐 Horario:</strong><br>
+                        <strong>${ICON_CLOCK} Horario:</strong><br>
                         ${escapeHtml(oferta.horario || 'No especificado')}
                     </div>
                 </div>
             </div>
 
             <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--primary);">
-                <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
+                <strong style="color: var(--primary);">${ICON_USER_SM} Publicado por:</strong><br>
                 <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre)}</span><br>
-                <span style="color: var(--gray); font-size: 0.875rem;">📧 ${escapeHtml(oferta.empleadorEmail)}</span>
+                <span style="color: var(--gray); font-size: 0.875rem;">${ICON_EMAIL} ${escapeHtml(oferta.empleadorEmail)}</span>
             </div>
 
             <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
@@ -701,7 +710,7 @@ async function enviarCalificacionEmpleador() {
         }
     } finally {
         btnEnviar.disabled = false;
-        btnEnviar.innerHTML = '⭐ Enviar Calificación';
+        btnEnviar.innerHTML = ICON_STAR + ' Enviar Calificación';
     }
 }
 

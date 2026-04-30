@@ -261,7 +261,7 @@ export function mostrarBadgeUbicacion(ubicacion) {
 
     const elTexto = document.getElementById('dropdown-ubicacion-texto');
     if (elTexto) {
-        elTexto.textContent = `📍 ${textoUbicacion}`;
+        elTexto.textContent = textoUbicacion;
         elTexto.title = tituloCompleto;
     }
 }

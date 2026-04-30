@@ -7,6 +7,7 @@
 
 import { escapeHtml } from '../utils/dom-helpers.js';
 import { generarEstrellasHTML } from '../utils/formatting.js';
+import { ICON_PIN, ICON_MONEY, ICON_CLOCK, ICON_CLIPBOARD, ICON_USER } from '../utils/icons.js';
 
 /**
  * Genera el HTML completo del detalle de una oferta
@@ -75,7 +76,7 @@ function renderGaleriaHTML(imagenesURLs) {
 function renderDescripcionHTML(oferta) {
     return `
         <div class="detalle-seccion">
-            <h4>📝 Descripción</h4>
+            <h4>Descripción</h4>
             <p>${escapeHtml(oferta.descripcion || 'Sin descripción')}</p>
         </div>
     `;
@@ -112,13 +113,13 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
     const pagoTotal = calcularPagoTotal(oferta.salario, oferta.duracion);
     const pagoTotalHTML = pagoTotal
         ? `<div class="detalle-item detalle-item--full">
-               <strong>💵 Pago estimado total</strong>
+               <strong>Pago estimado total</strong>
                <span class="detalle-pago-total">S/. ${pagoTotal.toLocaleString('es-PE')}</span>
            </div>`
         : '';
     const spotsHTML = (oferta.vacantes || 0) > 0
         ? `<div class="detalle-item detalle-item--full">
-               <strong>👥 Vacantes</strong>
+               <strong>Vacantes</strong>
                ${renderSpotsHTML(oferta.vacantes)}
            </div>`
         : '';
@@ -126,19 +127,19 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
     return `
         <div class="detalle-grid">
             <div class="detalle-item">
-                <strong>💰 Salario</strong>
+                <strong>${ICON_MONEY} Salario</strong>
                 <span class="oferta-salario-pill">${escapeHtml(oferta.salario || 'A convenir')}</span>
             </div>
             <div class="detalle-item">
-                <strong>📍 Ubicación</strong>
+                <strong>${ICON_PIN} Ubicación</strong>
                 <span>${escapeHtml(ubicacionTexto)}</span>
             </div>
             <div class="detalle-item">
-                <strong>⏱️ Duración</strong>
+                <strong>Duración</strong>
                 <span>${escapeHtml(oferta.duracion || 'No especificada')}</span>
             </div>
             <div class="detalle-item">
-                <strong>🕐 Horario</strong>
+                <strong>${ICON_CLOCK} Horario</strong>
                 <span>${escapeHtml(oferta.horario || 'No especificado')}</span>
             </div>
             ${pagoTotalHTML}
@@ -150,7 +151,7 @@ function renderGridInfoHTML(oferta, ubicacionTexto) {
 function renderRequisitosHTML(oferta) {
     return `
         <div class="detalle-seccion">
-            <h4>📋 Requisitos</h4>
+            <h4>${ICON_CLIPBOARD} Requisitos</h4>
             <p><strong>Experiencia:</strong> ${escapeHtml(oferta.experiencia || 'No especificada')}</p>
             <p><strong>Habilidades:</strong> ${escapeHtml(oferta.habilidades || 'No especificadas')}</p>
         </div>
@@ -170,12 +171,12 @@ function renderRatingInlineHTML(ratingData) {
 function renderEmpleadorHTML(oferta, ratingData, mostrarEmail) {
     const nombre = escapeHtml(oferta.empleadorNombre || 'Empleador');
     const emailHTML = mostrarEmail && oferta.empleadorEmail
-        ? `<span class="detalle-empleador-email">📧 ${escapeHtml(oferta.empleadorEmail)}</span>`
+        ? `<span class="detalle-empleador-email">${escapeHtml(oferta.empleadorEmail)}</span>`
         : '';
 
     return `
         <div class="detalle-empleador">
-            <strong>👤 Publicado por:</strong>
+            <strong>${ICON_USER} Publicado por:</strong>
             <div class="detalle-empleador-info">
                 <span>${nombre}</span>
                 ${renderRatingInlineHTML(ratingData)}
@@ -193,9 +194,9 @@ function renderAccionesHTML(ofertaId, ofertaTitulo, opciones) {
     if (opciones.mostrarPostulacion) {
         const postularFn = opciones.onPostularFn || 'mostrarFormularioPostulacion';
         if (opciones.yaAplico) {
-            botonPostular = `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">✅ Ya postulaste</button>`;
+            botonPostular = `<button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">Ya postulaste</button>`;
         } else {
-            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">📝 Postular</button>`;
+            botonPostular = `<button class="btn btn-primary touchable" onclick="${postularFn}('${ofertaId}')">Postular</button>`;
             trustMsg = `<p class="detalle-trust-msg">Sin costos ocultos · Puedes cancelar tu postulación</p>`;
         }
     }

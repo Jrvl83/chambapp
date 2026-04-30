@@ -40,10 +40,10 @@
 .historial-tabs {
     display: flex;
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 0.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .historial-tabs .tab-btn {
@@ -74,10 +74,10 @@
    ============================================ */
 .historial-filtros {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.25rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -156,8 +156,8 @@
     text-align: center;
     padding: 4rem 2rem;
     background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
 }
 
 .spinner-small {
@@ -186,8 +186,8 @@
     text-align: center;
     padding: 4rem 2rem;
     background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
 }
 
 .empty-icon {
@@ -219,9 +219,9 @@
 
 .calificacion-card {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     transition: all 0.3s;
     border-left: 4px solid var(--warning);
 }

@@ -156,7 +156,7 @@ export async function enviarCalificacion() {
         }
     } finally {
         btnEnviar.disabled = false;
-        btnEnviar.innerHTML = '⭐ Enviar Calificación';
+        btnEnviar.innerHTML = 'Enviar Calificación';
     }
 }
 

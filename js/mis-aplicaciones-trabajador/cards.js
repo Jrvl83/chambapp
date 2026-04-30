@@ -5,6 +5,10 @@
 
 import { formatearFecha } from '../utils/formatting.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
+import { ICON_MONEY, ICON_STAR, ICON_EMAIL } from '../utils/icons.js';
+
+// Local 14×14 icon (ICON_USER from icons.js is 20×20 nav size)
+const ICON_USER_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
 
 let state = null;
 
@@ -22,39 +26,39 @@ const ESTADO_CONFIG = {
     'pendiente': {
         texto: 'Pendiente',
         clase: 'pendiente',
-        icono: '🟡',
+        icono: '●',
         descripcion: 'Esperando respuesta del empleador'
     },
     'aceptado': {
         texto: '¡Aceptado!',
         clase: 'aceptado',
-        icono: '✅',
+        icono: '●',
         descripcion: '¡Felicidades! El empleador aceptó tu postulación'
     },
     'rechazado': {
         texto: 'No seleccionado',
         clase: 'rechazado',
-        icono: '❌',
+        icono: '●',
         descripcion: 'El empleador eligió otro candidato'
     },
     'completado': {
         texto: 'Completado',
         clase: 'completado',
-        icono: '🏁',
+        icono: '●',
         descripcion: 'Trabajo completado exitosamente'
     }
 };
 
 const CATEGORIA_LABELS = {
-    'construccion': '🏗️ Construcción',
-    'electricidad': '⚡ Electricidad',
-    'gasfiteria': '🔧 Gasfitería',
-    'pintura': '🎨 Pintura',
-    'carpinteria': '🪵 Carpintería',
-    'limpieza': '🧹 Limpieza',
-    'jardineria': '🌿 Jardinería',
-    'mecanica': '🔩 Mecánica',
-    'otros': '📦 Otros'
+    'construccion': 'Construcción',
+    'electricidad': 'Electricidad',
+    'gasfiteria': 'Gasfitería',
+    'pintura': 'Pintura',
+    'carpinteria': 'Carpintería',
+    'limpieza': 'Limpieza',
+    'jardineria': 'Jardinería',
+    'mecanica': 'Mecánica',
+    'otros': 'Otros'
 };
 
 export function getCategoriaLabel(categoria) {
@@ -142,12 +146,12 @@ function crearAplicacionCard(aplicacion) {
 function renderSubtituloEstado(estado, aplicacion) {
     if (estado === 'aceptado') {
         return `<p class="aplicacion-subtitulo aplicacion-subtitulo--accion">
-            📲 Coordina los detalles con el empleador por WhatsApp
+            Coordina los detalles con el empleador por WhatsApp
         </p>`;
     }
     if (estado === 'completado' && !aplicacion.calificadoPorTrabajador) {
         return `<p class="aplicacion-subtitulo aplicacion-subtitulo--accion">
-            ⭐ Cuéntanos cómo te fue — califica al empleador
+            ${ICON_STAR} Cuéntanos cómo te fue — califica al empleador
         </p>`;
     }
     if (estado === 'rechazado') {
@@ -170,7 +174,7 @@ function renderBotonContacto(aplicacion) {
     if (telefono) return renderWhatsAppLink(aplicacion, telefono);
     const email = aplicacion.empleadorEmail || '';
     if (email) {
-        return `<a href="mailto:${escapeHtml(email)}" class="btn btn-primary btn-small">📧 Contactar</a>`;
+        return `<a href="mailto:${escapeHtml(email)}" class="btn btn-primary btn-small">${ICON_EMAIL} Contactar</a>`;
     }
     return '';
 }
@@ -183,7 +187,7 @@ function renderWhatsAppLink(aplicacion, telefono) {
         `Hola ${nombre}, soy ${state.usuario.nombre || 'el trabajador'} ` +
         `de ChambaYa. Mi postulación para "${aplicacion.ofertaTitulo}" fue aceptada.`
     );
-    return `<a href="https://wa.me/${telefonoWA}?text=${msg}" target="_blank" class="btn btn-whatsapp btn-small">📱 WhatsApp</a>`;
+    return `<a href="https://wa.me/${telefonoWA}?text=${msg}" target="_blank" class="btn btn-whatsapp btn-small">WhatsApp</a>`;
 }
 
 function renderBotonCancelar(aplicacion, estado) {
@@ -191,7 +195,7 @@ function renderBotonCancelar(aplicacion, estado) {
     const titulo = escapeHtml(aplicacion.ofertaTitulo).replace(/'/g, "\\'");
     return `
         <button class="btn btn-danger btn-small" onclick="cancelarAplicacion('${aplicacion.id}', '${titulo}')">
-            ❌ Cancelar Aplicación
+            Cancelar Aplicación
         </button>
     `;
 }
@@ -206,7 +210,7 @@ function renderBotonCalificar(aplicacion, estado) {
     const nombre = escapeHtml(aplicacion.empleadorNombre || 'Empleador').replace(/'/g, "\\'");
     return `
         <button class="btn btn-warning btn-small" onclick="calificarEmpleador('${aplicacion.id}', '${escapeHtml(aplicacion.empleadorEmail)}', '${nombre}')">
-            ⭐ Calificar Empleador
+            ${ICON_STAR} Calificar Empleador
         </button>
     `;
 }
@@ -226,7 +230,7 @@ function renderCardHTML(app, config, fecha, ctaPrincipal, subtitulo) {
     const catKey = app.ofertaCategoria || 'otros';
     const rating = crearEmpleadorRatingHTML(app.empleadorId);
     const salario = app.ofertaSalario
-        ? `<span class="aplicacion-sep">·</span><span class="aplicacion-salario-inline">💰 ${escapeHtml(app.ofertaSalario)}</span>`
+        ? `<span class="aplicacion-sep">·</span><span class="aplicacion-salario-inline">${ICON_MONEY} ${escapeHtml(app.ofertaSalario)}</span>`
         : '';
 
     return `
@@ -241,7 +245,7 @@ function renderCardHTML(app, config, fecha, ctaPrincipal, subtitulo) {
                 <span class="aplicacion-fecha">${fecha}</span>
             </div>
             <div class="aplicacion-meta">
-                <span>👤 ${escapeHtml(app.empleadorNombre)} ${rating}</span>
+                <span>${ICON_USER_SM} ${escapeHtml(app.empleadorNombre)} ${rating}</span>
                 ${salario}
             </div>
             ${subtitulo}

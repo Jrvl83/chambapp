@@ -10,6 +10,13 @@ import { GOOGLE_MAPS_API_KEY } from './config/api-keys.js';
 import { calcularDistancia, formatearDistancia } from './utils/distance.js';
 import { crearOfertaPreviewMapa } from './components/oferta-card.js';
 
+// SVG icon constants (14×14 content icons)
+const ICON_PIN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+const ICON_MONEY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+const ICON_CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+const ICON_CLIPBOARD = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>';
+const ICON_USER_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
@@ -491,8 +498,8 @@ function mostrarListaOfertasCluster(clusterMarkers) {
                 <div class="oferta-cluster-info">
                     <h4>${oferta.data.titulo}</h4>
                     <div class="oferta-cluster-detalles">
-                        <span>&#128176; ${oferta.data.salario || 'A convenir'}</span>
-                        <span>&#128205; ${ubicacionTexto}</span>
+                        <span>${ICON_MONEY} ${oferta.data.salario || 'A convenir'}</span>
+                        <span>${ICON_PIN} ${ubicacionTexto}</span>
                         ${distanciaTexto}
                     </div>
                 </div>
@@ -583,13 +590,13 @@ window.verDetalleOferta = async function(ofertaId) {
         if (yaAplico) {
             botonAccion = `
                 <button class="btn btn-success" disabled style="cursor: not-allowed; opacity: 0.7;">
-                    ✅ Ya postulaste
+                    Ya postulaste
                 </button>
             `;
         } else {
             botonAccion = `
                 <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacionMapa('${ofertaId}')">
-                    📝 Postular a esta oferta
+                    Postular a esta oferta
                 </button>
             `;
         }
@@ -621,43 +628,43 @@ window.verDetalleOferta = async function(ofertaId) {
             ${galeriaHTML}
 
             <div class="detalle-seccion">
-                <h4>📝 Descripcion</h4>
-                <p>${ofertaData.descripcion || 'Sin descripcion'}</p>
+                <h4>Descripción</h4>
+                <p>${ofertaData.descripcion || 'Sin descripción'}</p>
             </div>
 
             <div class="detalle-grid">
                 <div class="detalle-item">
-                    <strong>💰 Salario</strong>
+                    <strong>${ICON_MONEY} Salario</strong>
                     <span>${ofertaData.salario || 'A convenir'}</span>
                 </div>
                 <div class="detalle-item">
-                    <strong>📍 Ubicacion</strong>
+                    <strong>${ICON_PIN} Ubicacion</strong>
                     <span>${ubicacionTexto}</span>
                 </div>
                 <div class="detalle-item">
-                    <strong>⏱️ Duracion</strong>
+                    <strong>${ICON_CLOCK} Duración</strong>
                     <span>${ofertaData.duracion || 'No especificada'}</span>
                 </div>
                 <div class="detalle-item">
-                    <strong>🕐 Horario</strong>
+                    <strong>${ICON_CLOCK} Horario</strong>
                     <span>${ofertaData.horario || 'No especificado'}</span>
                 </div>
                 ${(ofertaData.vacantes || 1) > 1 ? `
                 <div class="detalle-item">
-                    <strong>👥 Vacantes</strong>
+                    <strong>Vacantes</strong>
                     <span>${ofertaData.vacantes} personas</span>
                 </div>
                 ` : ''}
             </div>
 
             <div class="detalle-seccion">
-                <h4>📋 Requisitos</h4>
+                <h4>${ICON_CLIPBOARD} Requisitos</h4>
                 <p><strong>Experiencia:</strong> ${ofertaData.experiencia || 'No especificada'}</p>
                 <p><strong>Habilidades:</strong> ${ofertaData.habilidades || 'No especificadas'}</p>
             </div>
 
             <div class="detalle-empleador">
-                <strong>👤 Publicado por:</strong><br>
+                <strong>${ICON_USER_SM} Publicado por:</strong><br>
                 <span>${ofertaData.empleadorNombre || 'Empleador'}</span>
             </div>
 
@@ -723,7 +730,7 @@ window.mostrarFormularioPostulacionMapa = async function(ofertaId) {
 
             <div class="detalle-seccion">
                 <label for="mensaje-postulacion-mapa" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
-                    💬 Mensaje para el empleador:
+                    Mensaje para el empleador:
                 </label>
                 <textarea
                     id="mensaje-postulacion-mapa"
@@ -737,7 +744,7 @@ window.mostrarFormularioPostulacionMapa = async function(ofertaId) {
 
             <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #f59e0b;">
                 <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
-                    <strong>📧 Nota:</strong> El empleador vera tu perfil y podra contactarte directamente.
+                    <strong>Nota:</strong> El empleador vera tu perfil y podra contactarte directamente.
                 </p>
             </div>
 
@@ -877,8 +884,8 @@ function actualizarListaSidebar() {
             <div class="oferta-mini-card" data-oferta-id="${oferta.id}" onclick="seleccionarOfertaLista('${oferta.id}')">
                 <div class="oferta-mini-titulo">${oferta.data.titulo}</div>
                 <div class="oferta-mini-detalles">
-                    <span>&#128176; ${oferta.data.salario || 'A convenir'}</span>
-                    <span>&#128205; ${ubicacionTexto}</span>
+                    <span>${ICON_MONEY} ${oferta.data.salario || 'A convenir'}</span>
+                    <span>${ICON_PIN} ${ubicacionTexto}</span>
                     ${distanciaTexto}
                 </div>
                 <span class="oferta-mini-categoria ${oferta.data.categoria}">${oferta.data.categoria || 'otros'}</span>

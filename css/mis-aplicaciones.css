@@ -20,10 +20,10 @@
 
 .page-header {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.25rem 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .page-header h1 {
@@ -48,18 +48,19 @@
 .stat-card {
     background: var(--white);
     padding: 1.25rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
     text-align: center;
     border-left: 4px solid var(--primary);
 }
 
 .stat-card.stat-pendiente {
-    border-left-color: var(--warning);
+    border-left-color: var(--state-pending);
 }
 
 .stat-card.stat-pendiente .number {
-    color: var(--warning);
+    color: var(--state-pending);
+    font-weight: 800;
 }
 
 .stat-card.stat-aceptado {
@@ -87,10 +88,10 @@
    ======================================== */
 .filtros-estado {
     background: var(--white);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1rem 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
 }
 
 .filtros-label {
@@ -164,8 +165,8 @@
    ======================================== */
 .oferta-grupo {
     background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
 }
 
@@ -220,7 +221,7 @@
    ======================================== */
 .aplicacion-card {
     background: var(--light);
-    border-radius: 10px;
+    border-radius: var(--radius-card);
     padding: 1.25rem;
     transition: all 0.2s;
     border: 2px solid var(--border);
@@ -265,16 +266,7 @@
     gap: 0.75rem;
 }
 
-.aplicacion-avatar {
-    width: 45px;
-    height: 45px;
-    background: var(--primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-}
+/* .aplicacion-avatar movido a FASE A (línea ~1100) */
 
 .aplicacion-nombre {
     font-size: 1.1rem;
@@ -381,7 +373,7 @@
 .detalle-resumen {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     text-align: center;
     margin-bottom: 1.5rem;
 }
@@ -753,8 +745,8 @@
     text-align: center;
     padding: 4rem 2rem;
     background: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
 }
 
 .empty-state .icon {
@@ -898,7 +890,7 @@
 /* Info del trabajador en modal */
 .calificacion-info {
     background: var(--light);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.25rem;
     margin-bottom: 1.5rem;
 }
@@ -1096,7 +1088,7 @@
    FASE A — Mis Aplicaciones empleador
    ============================================ */
 
-/* --- Avatar con iniciales (color inyectado via CSS custom property) --- */
+/* --- Avatar con iniciales (fondo suave + texto de color) --- */
 .aplicacion-avatar {
     width: 44px;
     height: 44px;
@@ -1106,10 +1098,10 @@
     justify-content: center;
     font-size: 0.875rem;
     font-weight: 700;
-    color: white;
+    color: var(--avatar-text, var(--primary));
     flex-shrink: 0;
     letter-spacing: 0.5px;
-    background: var(--avatar-color, var(--primary));
+    background: var(--avatar-bg, var(--primary-light));
 }
 
 /* Badge: siempre top-right, no se estira ni sale del card */
@@ -1275,7 +1267,7 @@
     background: #fffbeb;
     border: 1px solid rgba(245, 158, 11, 0.3);
     border-left: 4px solid var(--warning);
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 0.875rem 1.25rem;
     margin-bottom: 1rem;
 }

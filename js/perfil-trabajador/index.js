@@ -209,7 +209,7 @@ function calcularCompletitud() {
     document.getElementById('progress-fill').style.width = `${completitud}%`;
 
     if (completitud === 100) {
-        document.getElementById('completeness-tip').textContent = '¡Felicidades! Tu perfil está completo 🎉';
+        document.getElementById('completeness-tip').textContent = '¡Felicidades! Tu perfil está completo';
         document.getElementById('badge-completado').style.display = 'inline-block';
     } else if (completitud >= 70) {
         document.getElementById('completeness-tip').textContent = '¡Casi listo! Completa algunos campos más';

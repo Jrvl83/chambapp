@@ -284,7 +284,7 @@ function mostrarSugerencias(suggestions) {
 
         return `
             <div class="sugerencia-item" data-index="${index}">
-                <span class="sugerencia-icon">📍</span>
+                <span class="sugerencia-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
                 <div class="sugerencia-texto">
                     <span class="sugerencia-principal">${mainText}</span>
                     <span class="sugerencia-secundario">${secondaryText}</span>
@@ -1521,13 +1521,13 @@ async function cargarOfertaParaEditar(id) {
         
         // Cambiar textos del formulario segun modo
         if (modoReutilizar) {
-            document.querySelector('.step-header h2').textContent = '🔄 Reutilizar Oferta';
+            document.querySelector('.step-header h2').textContent = 'Reutilizar Oferta';
             document.querySelector('.step-header p').textContent = 'Publica nueva oferta basada en una anterior';
-            btnSubmit.innerHTML = '🚀 Publicar Oferta';
+            btnSubmit.innerHTML = 'Publicar Oferta';
         } else {
-            document.querySelector('.step-header h2').textContent = '✏️ Editar Oferta';
+            document.querySelector('.step-header h2').textContent = 'Editar Oferta';
             document.querySelector('.step-header p').textContent = 'Actualiza la información de tu oferta';
-            btnSubmit.innerHTML = '💾 Guardar Cambios';
+            btnSubmit.innerHTML = 'Guardar Cambios';
         }
 
         if (loadingToast) loadingToast.remove();

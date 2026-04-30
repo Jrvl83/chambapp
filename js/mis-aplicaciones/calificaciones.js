@@ -283,7 +283,7 @@ function renderResenaCard(cal) {
         <div class="detalle-resena-card">
             <div class="detalle-resena-header">
                 <div class="detalle-resena-info">
-                    <span class="detalle-resena-empleador">👤 ${cal.empleadorNombre || 'Empleador'}</span>
+                    <span class="detalle-resena-empleador">${cal.empleadorNombre || 'Empleador'}</span>
                     <span class="detalle-resena-trabajo">${cal.ofertaTitulo || 'Trabajo'}</span>
                 </div>
                 <div class="detalle-resena-rating">
@@ -310,7 +310,7 @@ function renderListaResenas(calificaciones) {
     if (calificaciones.length === 0) {
         return `
             <div class="detalle-sin-resenas">
-                <p>📋 Este trabajador aún no tiene reseñas detalladas</p>
+                <p>Este trabajador aún no tiene reseñas detalladas</p>
             </div>
         `;
     }
@@ -354,7 +354,7 @@ async function verDetalleCalificaciones(emailTrabajador, nombreTrabajador) {
         if (contenido) {
             contenido.innerHTML = `
                 <div class="error-calificaciones">
-                    <p>❌ Error al cargar las calificaciones</p>
+                    <p>Error al cargar las calificaciones</p>
                 </div>
             `;
         }

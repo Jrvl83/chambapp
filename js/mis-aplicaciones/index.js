@@ -135,7 +135,7 @@ async function cargarAplicaciones() {
     } catch (error) {
         console.error('Error al cargar aplicaciones:', error);
         document.getElementById('loading').innerHTML = `
-            <div class="icon" style="font-size: 3rem;">❌</div>
+            <div class="icon" style="font-size: 3rem;">!</div>
             <p style="color: #ef4444;">Error al cargar las aplicaciones</p>
         `;
     }

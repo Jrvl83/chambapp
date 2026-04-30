@@ -31,7 +31,7 @@ function manejarErrorResenas(error, loadingState, emptyState) {
 
     if (error.code === 'failed-precondition') {
         emptyState.innerHTML = `
-            <p>📋 Configurando sistema de reseñas...</p>
+            <p>Configurando sistema de reseñas...</p>
             <span class="helper-text">Por favor, intenta de nuevo en unos minutos</span>
         `;
         emptyState.style.display = 'block';
@@ -141,7 +141,7 @@ function renderResenaHeader(resena, estrellas, fecha) {
     return `
         <div class="resena-header">
             <div class="resena-empleador">
-                <div class="resena-avatar">👤</div>
+                <div class="resena-avatar">●</div>
                 <div class="resena-info">
                     <span class="resena-nombre">${resena.empleadorNombre || 'Empleador'}</span>
                     <span class="resena-trabajo">${resena.ofertaTitulo || 'Trabajo'}</span>
@@ -164,7 +164,7 @@ function renderResenaCard(resena) {
 
     const respuestaHTML = resena.respuesta
         ? `<div class="resena-respuesta"><span class="respuesta-label">Tu respuesta:</span><p>"${resena.respuesta}"</p></div>`
-        : `<button class="btn btn-secondary btn-small btn-responder" onclick="abrirModalResponder('${resena.id}')">💬 Responder</button>`;
+        : `<button class="btn btn-secondary btn-small btn-responder" onclick="abrirModalResponder('${resena.id}')">Responder</button>`;
 
     return `
         <div class="resena-card" data-id="${resena.id}">
@@ -272,6 +272,6 @@ export async function enviarRespuesta() {
         if (typeof toastError === 'function') { toastError('Error al enviar la respuesta'); }
     } finally {
         btnEnviar.disabled = false;
-        btnEnviar.innerHTML = '💬 Enviar Respuesta';
+        btnEnviar.innerHTML = 'Enviar Respuesta';
     }
 }

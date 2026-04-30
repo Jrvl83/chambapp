@@ -16,7 +16,7 @@
 .profile-header {
     background: linear-gradient(135deg, var(--primary) 0%, #0052CC 100%);
     color: white;
-    border-radius: 16px;
+    border-radius: var(--radius-card-lg);
     padding: 2rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 102, 255, 0.3);
@@ -149,9 +149,9 @@
    ============================================ */
 .completeness-card {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1.25rem 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     margin-bottom: 1.5rem;
 }
 
@@ -210,9 +210,9 @@
 .perfil-stat-card {
     flex: 1;
     background: white;
-    border-radius: 12px;
+    border-radius: var(--radius-card);
     padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -238,9 +238,9 @@
    ============================================ */
 .section-card {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--radius-card-lg);
     padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     margin-bottom: 1.5rem;
 }
 

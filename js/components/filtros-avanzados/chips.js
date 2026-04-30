@@ -50,29 +50,29 @@ export function renderFiltrosHTML(state, userLocation) {
                 </div>
 
                 <div class="filtro-grupo">
-                    <label class="filtro-label">🏷️ Categorías</label>
+                    <label class="filtro-label">Categorías</label>
                     <div class="dropdown-custom" id="dropdown-categorias-mobile"></div>
                 </div>
 
                 <div class="filtro-grupo">
-                    <label class="filtro-label">🔄 Ordenar por</label>
+                    <label class="filtro-label">Ordenar por</label>
                     <div class="dropdown-custom" id="dropdown-ordenar-mobile"></div>
                 </div>
 
                 <div class="filtros-sheet-grid">
                     <div class="filtro-grupo">
-                        <label class="filtro-label">📍 Ubicación</label>
+                        <label class="filtro-label">Ubicación</label>
                         <input type="text" id="filtro-ubicacion-mobile" class="filtro-input"
                                placeholder="Distrito, zona..." autocomplete="off" value="${ubicacionVal}">
                     </div>
                     <div class="filtro-grupo" id="filtro-distancia-grupo-mobile" ${userLocation ? '' : 'hidden'}>
-                        <label class="filtro-label">📏 Distancia</label>
+                        <label class="filtro-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Distancia</label>
                         <div class="dropdown-custom" id="dropdown-distancia-mobile"></div>
                     </div>
                 </div>
 
                 <div class="filtro-grupo">
-                    <label class="filtro-label">💰 Rango Salarial</label>
+                    <label class="filtro-label">Rango Salarial</label>
                     <div class="salario-inputs">
                         <input type="number" id="salario-min" placeholder="Min S/" min="0" max="5000" step="50"
                                value="${state.salarioMin || ''}">
@@ -83,7 +83,7 @@ export function renderFiltrosHTML(state, userLocation) {
                 </div>
 
                 <div class="filtro-grupo">
-                    <label class="filtro-label">📅 Publicación</label>
+                    <label class="filtro-label">Publicación</label>
                     <div class="fecha-chips">
                         <button type="button" class="fecha-chip ${state.fechaPublicacion === 'hoy' ? 'active' : ''}" data-value="hoy">Hoy</button>
                         <button type="button" class="fecha-chip ${state.fechaPublicacion === 'ultimos3' ? 'active' : ''}" data-value="ultimos3">3 días</button>
@@ -130,7 +130,7 @@ export function getActiveChips(state) {
     const chips = [];
 
     if (state.busqueda) {
-        chips.push({ type: 'busqueda', icon: '🔎', label: state.busqueda });
+        chips.push({ type: 'busqueda', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', label: state.busqueda });
     }
 
     state.categorias.forEach(cat => {
@@ -141,14 +141,14 @@ export function getActiveChips(state) {
     });
 
     if (state.ubicacion) {
-        chips.push({ type: 'ubicacion', icon: '📍', label: state.ubicacion });
+        chips.push({ type: 'ubicacion', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>', label: state.ubicacion });
     }
 
     if (state.distanciaMax) {
         const item = DISTANCIAS.find(d => d.value === state.distanciaMax);
         chips.push({
             type: 'distancia',
-            icon: '📏',
+            icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
             label: item ? item.label : `${state.distanciaMax} km`
         });
     }
@@ -163,7 +163,7 @@ function addSalarioChip(chips, state) {
     if (state.salarioMin > 0 || state.salarioMax < 5000) {
         const minText = formatearSalario(state.salarioMin);
         const maxText = state.salarioMax >= 5000 ? 'S/ 5,000+' : formatearSalario(state.salarioMax);
-        chips.push({ type: 'salario', icon: '💰', label: `${minText} - ${maxText}` });
+        chips.push({ type: 'salario', icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>', label: `${minText} - ${maxText}` });
     }
 }
 
@@ -172,7 +172,7 @@ function addFechaChip(chips, state) {
         const item = FECHAS.find(f => f.value === state.fechaPublicacion);
         chips.push({
             type: 'fecha',
-            icon: '📅',
+            icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
             label: item ? item.label : state.fechaPublicacion
         });
     }

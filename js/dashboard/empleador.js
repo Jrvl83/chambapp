@@ -257,11 +257,11 @@ function crearItemActividad(app) {
 
 function obtenerEstadoActividad(estado) {
     const estados = {
-        'aceptado': { icono: '✅', accion: 'fue aceptado en' },
-        'rechazado': { icono: '❌', accion: 'no fue seleccionado para' },
-        'completado': { icono: '🏁', accion: 'completó' }
+        'aceptado': { icono: '●', accion: 'fue aceptado en' },
+        'rechazado': { icono: '●', accion: 'no fue seleccionado para' },
+        'completado': { icono: '●', accion: 'completó' }
     };
-    return estados[estado] || { icono: '👤', accion: 'aplicó a' };
+    return estados[estado] || { icono: '●', accion: 'aplicó a' };
 }
 
 function calcularTiempoRelativo(fecha) {

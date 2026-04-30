@@ -30,11 +30,11 @@ function renderExperienciaCard(exp, index) {
             <div class="experiencia-header">
                 <div>
                     <div class="experiencia-puesto">${exp.puesto}</div>
-                    ${exp.empresa ? `<div class="experiencia-empresa">📍 ${exp.empresa}</div>` : ''}
-                    <div class="experiencia-periodo">📅 ${exp.periodo}</div>
+                    ${exp.empresa ? `<div class="experiencia-empresa">${exp.empresa}</div>` : ''}
+                    <div class="experiencia-periodo">${exp.periodo}</div>
                 </div>
                 <button class="btn-eliminar-exp" onclick="eliminarExperiencia(${index})">
-                    🗑️ Eliminar
+                    Eliminar
                 </button>
             </div>
             ${exp.descripcion ? `<div class="experiencia-descripcion">${exp.descripcion}</div>` : ''}

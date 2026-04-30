@@ -117,7 +117,7 @@ function mostrarFormulario(oferta, ofertaId) {
 
         <div style="margin-bottom: 1.5rem;">
             <label for="mensaje-postulacion" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
-                💬 Mensaje para el empleador:
+                Mensaje para el empleador:
             </label>
             <textarea
                 id="mensaje-postulacion"
@@ -131,7 +131,7 @@ function mostrarFormulario(oferta, ofertaId) {
 
         <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #f59e0b;">
             <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
-                <strong>📧 Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
+                <strong>Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
             </p>
         </div>
 

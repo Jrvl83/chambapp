@@ -10,15 +10,15 @@ import { escapeHtml } from '../utils/dom-helpers.js';
 // CONSTANTES
 // ============================================
 const CATEGORIAS = [
-    { value: 'construccion', label: 'Construccion', icon: '🏗️' },
-    { value: 'electricidad', label: 'Electricidad', icon: '⚡' },
-    { value: 'gasfiteria', label: 'Gasfiteria', icon: '🔧' },
-    { value: 'pintura', label: 'Pintura', icon: '🎨' },
-    { value: 'carpinteria', label: 'Carpinteria', icon: '🪚' },
-    { value: 'limpieza', label: 'Limpieza', icon: '🧹' },
-    { value: 'jardineria', label: 'Jardineria', icon: '🌱' },
-    { value: 'mecanica', label: 'Mecanica', icon: '🔩' },
-    { value: 'otros', label: 'Otros', icon: '📦' }
+    { value: 'construccion', label: 'Construcción', icon: '' },
+    { value: 'electricidad', label: 'Electricidad', icon: '' },
+    { value: 'gasfiteria', label: 'Gasfitería', icon: '' },
+    { value: 'pintura', label: 'Pintura', icon: '' },
+    { value: 'carpinteria', label: 'Carpintería', icon: '' },
+    { value: 'limpieza', label: 'Limpieza', icon: '' },
+    { value: 'jardineria', label: 'Jardinería', icon: '' },
+    { value: 'mecanica', label: 'Mecánica', icon: '' },
+    { value: 'otros', label: 'Otros', icon: '' }
 ];
 
 const DISTANCIAS = [
@@ -713,7 +713,7 @@ class FiltrosAvanzados {
                         <button class="input-icon-clear" id="clear-busqueda-mobile" ${this.state.busqueda ? '' : 'hidden'} aria-label="Limpiar busqueda" type="button">✕</button>
                     </div>
                     <button class="btn-filtros-avanzados" id="btn-toggle-avanzados" type="button" aria-label="Filtros avanzados">
-                        <span class="btn-filtros-icon">⚙️</span>
+                        <span class="btn-filtros-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
                         <span class="filtros-badge-count" id="filtros-count-mobile" hidden>0</span>
                     </button>
                 </div>
@@ -721,7 +721,7 @@ class FiltrosAvanzados {
                     <div class="dropdown-custom" id="dropdown-categorias-mobile"></div>
                     <div class="dropdown-custom" id="dropdown-ordenar-mobile"></div>
                     <button class="btn-limpiar-todo" id="btn-limpiar-mobile" title="Limpiar filtros" type="button">
-                        <span>🔄</span>
+                        <span>✕</span>
                     </button>
                 </div>
             </div>
@@ -729,13 +729,13 @@ class FiltrosAvanzados {
             <!-- DESKTOP: Header toggle (oculto en movil via CSS) -->
             <div class="filtros-header">
                 <button class="filtros-toggle" aria-expanded="true" aria-controls="filtros-body">
-                    <span class="filtros-icon">🔎</span>
+                    <span class="filtros-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
                     <span class="filtros-title">Buscar y Filtrar</span>
                     <span class="filtros-badge-count" id="filtros-count" hidden>0</span>
                     <span class="filtros-chevron" aria-hidden="true"></span>
                 </button>
                 <button class="btn-limpiar-todo" id="btn-limpiar-filtros" title="Limpiar todos los filtros">
-                    <span>🔄</span>
+                    <span>✕</span>
                     <span class="btn-text">Limpiar</span>
                 </button>
             </div>
@@ -748,7 +748,7 @@ class FiltrosAvanzados {
                 <!-- DESKTOP: filas originales (ocultas en movil via CSS) -->
                 <div class="filtros-row filtros-desktop-only">
                     <div class="filtro-grupo filtro-busqueda">
-                        <label for="filtro-texto">🔎 Buscar</label>
+                        <label for="filtro-texto">Buscar</label>
                         <div class="input-wrapper">
                             <input
                                 type="text"
@@ -761,7 +761,7 @@ class FiltrosAvanzados {
                         </div>
                     </div>
                     <div class="filtro-grupo filtro-ubicacion">
-                        <label for="filtro-ubicacion">📍 Ubicacion</label>
+                        <label for="filtro-ubicacion">Ubicación</label>
                         <div class="autocomplete-wrapper">
                             <input
                                 type="text"
@@ -777,26 +777,26 @@ class FiltrosAvanzados {
 
                 <div class="filtros-row filtros-desktop-only">
                     <div class="filtro-grupo filtro-categorias">
-                        <label>🏷️ Categorias</label>
+                        <label>Categorías</label>
                         <div class="dropdown-custom" id="dropdown-categorias"></div>
                     </div>
                     <div class="filtro-grupo filtro-distancia" id="filtro-distancia-grupo" ${this.userLocation ? '' : 'hidden'}>
-                        <label>📏 Distancia</label>
+                        <label><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Distancia</label>
                         <div class="dropdown-custom" id="dropdown-distancia"></div>
                     </div>
                     <div class="filtro-grupo filtro-salario">
-                        <label>💰 Rango Salarial</label>
+                        <label>Rango Salarial</label>
                         <div class="range-slider-container" id="salario-slider"></div>
                     </div>
                 </div>
 
                 <div class="filtros-row filtros-desktop-only">
                     <div class="filtro-grupo filtro-fecha">
-                        <label>📅 Publicacion</label>
+                        <label>Publicación</label>
                         <div class="dropdown-custom" id="dropdown-fecha"></div>
                     </div>
                     <div class="filtro-grupo filtro-ordenar">
-                        <label>🔄 Ordenar por</label>
+                        <label>Ordenar por</label>
                         <div class="dropdown-custom" id="dropdown-ordenar"></div>
                     </div>
                 </div>
@@ -806,7 +806,7 @@ class FiltrosAvanzados {
                 <div class="filtros-mobile-only">
                     <div class="filtros-sheet-grid">
                         <div class="filtro-grupo filtro-ubicacion">
-                            <label for="filtro-ubicacion-mobile">📍 Ubicacion</label>
+                            <label for="filtro-ubicacion-mobile">Ubicación</label>
                             <div class="input-wrapper">
                                 <input
                                     type="text"
@@ -818,13 +818,13 @@ class FiltrosAvanzados {
                             </div>
                         </div>
                         <div class="filtro-grupo filtro-distancia" id="filtro-distancia-grupo-mobile" ${this.userLocation ? '' : 'hidden'}>
-                            <label>📏 Distancia</label>
+                            <label><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Distancia</label>
                             <div class="dropdown-custom" id="dropdown-distancia-mobile"></div>
                         </div>
                     </div>
 
                     <div class="filtro-grupo filtro-salario">
-                        <label>💰 Rango Salarial</label>
+                        <label>Rango Salarial</label>
                         <div class="salario-inputs">
                             <input type="number" id="salario-min" placeholder="Min S/" min="0" max="5000" step="50" value="${this.state.salarioMin || ''}">
                             <span class="salario-separator">—</span>
@@ -833,7 +833,7 @@ class FiltrosAvanzados {
                     </div>
 
                     <div class="filtro-grupo filtro-fecha">
-                        <label>📅 Publicacion</label>
+                        <label>Publicación</label>
                         <div class="fecha-chips">
                             <button type="button" class="fecha-chip ${this.state.fechaPublicacion === 'hoy' ? 'active' : ''}" data-value="hoy">Hoy</button>
                             <button type="button" class="fecha-chip ${this.state.fechaPublicacion === 'ultimos3' ? 'active' : ''}" data-value="ultimos3">3 dias</button>
@@ -1031,7 +1031,7 @@ class FiltrosAvanzados {
 
         // === MOBILE EVENTS ===
 
-        // Toggle bottom sheet (mobile ⚙️ button)
+        // Toggle bottom sheet (mobile gear button)
         this.elements.btnToggleAvanzados.addEventListener('click', () => this.toggleCollapse());
 
         // Limpiar todo (mobile)
@@ -1191,7 +1191,7 @@ class FiltrosAvanzados {
         if (this.state.busqueda) {
             chips.push({
                 type: 'busqueda',
-                icon: '🔎',
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
                 label: this.state.busqueda,
                 onRemove: () => {
                     this.state.busqueda = '';
@@ -1222,7 +1222,7 @@ class FiltrosAvanzados {
         if (this.state.ubicacion) {
             chips.push({
                 type: 'ubicacion',
-                icon: '📍',
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
                 label: this.state.ubicacion,
                 onRemove: () => {
                     this.state.ubicacion = '';
@@ -1237,7 +1237,7 @@ class FiltrosAvanzados {
             const item = DISTANCIAS.find(d => d.value === this.state.distanciaMax);
             chips.push({
                 type: 'distancia',
-                icon: '📏',
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
                 label: item ? item.label : `${this.state.distanciaMax} km`,
                 onRemove: () => {
                     this.state.distanciaMax = '';
@@ -1253,7 +1253,7 @@ class FiltrosAvanzados {
             const maxText = this.state.salarioMax >= 5000 ? 'S/ 5,000+' : formatearSalario(this.state.salarioMax);
             chips.push({
                 type: 'salario',
-                icon: '💰',
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
                 label: `${minText} - ${maxText}`,
                 onRemove: () => {
                     this.state.salarioMin = 0;
@@ -1269,7 +1269,7 @@ class FiltrosAvanzados {
             const item = FECHAS.find(f => f.value === this.state.fechaPublicacion);
             chips.push({
                 type: 'fecha',
-                icon: '📅',
+                icon: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
                 label: item ? item.label : this.state.fechaPublicacion,
                 onRemove: () => {
                     this.state.fechaPublicacion = '';

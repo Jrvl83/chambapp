@@ -105,8 +105,10 @@ export async function inicializarMapa() {
 
         const loading = document.getElementById('mapa-loading');
         if (loading) loading.classList.add('oculto');
+        if (window.cyHideLoader) window.cyHideLoader();
     } catch (error) {
         console.error('Error al inicializar mapa:', error);
+        if (window.cyHideLoader) window.cyHideLoader();
         mostrarErrorMapa();
     }
 }

@@ -52,7 +52,19 @@
     --completado: #8b5cf6;
     --completado-light: #ede9fe;
     --completado-dark: #6d28d9;
-    
+
+    /* ============================================
+       ESTADOS DE APLICACIÓN
+       ============================================ */
+    --state-pending:       #FF6B00;
+    --state-pending-bg:    #FFF3ED;
+    --state-accepted:      #00C48C;
+    --state-accepted-bg:   #EDFAF3;
+    --state-rejected:      #718096;
+    --state-rejected-bg:   #F7FAFC;
+    --state-completed:     #9B59B6;
+    --state-completed-bg:  #F3EEFF;
+
     /* ============================================
        ESCALA DE GRISES
        ============================================ */
@@ -177,6 +189,12 @@
     --radius-xl: 16px;
     --radius-2xl: 20px;
     --radius-full: 9999px;
+
+    /* Aliases semánticos de radius */
+    --radius-card:    14px;   /* cards compactas (stats, aplicaciones) */
+    --radius-card-lg: 16px;   /* cards principales (ofertas, secciones) */
+    --radius-pill:    20px;   /* pills, badges, filtros */
+    --radius-btn:     12px;   /* botones */
     
     /* ============================================
        SOMBRAS
@@ -189,11 +207,12 @@
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     
     /* Sombras específicas */
-    --shadow-card: var(--shadow-md);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-card-hover: var(--shadow-lg);
     --shadow-button: var(--shadow-sm);
     --shadow-button-hover: var(--shadow-md);
-    --shadow-modal: var(--shadow-2xl);
+    --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-btn: 0 4px 14px rgba(0, 102, 255, 0.25);
     
     /* ============================================
        TRANSICIONES

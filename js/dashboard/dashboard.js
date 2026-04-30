@@ -11,6 +11,7 @@ import { formatearFecha } from '../utils/formatting.js';
 import { initializeFCM, requestNotificationPermission, verificarEstadoNotificaciones } from '../notifications/fcm-init.js';
 import { crearOfertaCardTrabajador, crearOfertaCardEmpleador } from '../components/oferta-card.js';
 import { escapeHtml } from '../utils/dom-helpers.js';
+import { ICON_PIN, ICON_MONEY, ICON_CLOCK, ICON_CLIPBOARD, ICON_USER_SM, ICON_APPS } from '../utils/icons.js';
 
 // Usar window.firebaseConfig (arquitectura original)
 const app = initializeApp(window.firebaseConfig);
@@ -306,7 +307,7 @@ function mostrarBadgeUbicacion(ubicacion) {
 
     badge.innerHTML = `
         <span class="ubicacion-texto" title="${escapeHtml(ubicacion.direccionCompleta || ubicacion.distrito)}">
-            📍 ${escapeHtml(ubicacion.distrito)}
+            ${ICON_PIN} ${escapeHtml(ubicacion.distrito)}
         </span>
         <button
             class='ubicacion-actualizar'
@@ -314,7 +315,7 @@ function mostrarBadgeUbicacion(ubicacion) {
             title='Actualizar ubicacion'
             aria-label='Actualizar ubicacion'
         >
-            🔄
+            ↻
         </button>
     `;
 }
@@ -435,7 +436,7 @@ function personalizarPorTipo(tipo) {
         if (navMapa) navMapa.style.display = 'flex';
         if (navTrabajadores) {
             navTrabajadores.href = 'mis-aplicaciones-trabajador.html';
-            navTrabajadores.querySelector('.icon').textContent = '📋';
+            navTrabajadores.querySelector('.icon').innerHTML = ICON_APPS;
         }
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Mis Aplicaciones';
         if (navPerfil) navPerfil.href = 'perfil-trabajador.html';
@@ -452,7 +453,7 @@ function personalizarPorTipo(tipo) {
         if (navMapa) navMapa.style.display = 'none';
         if (navTrabajadores) {
             navTrabajadores.href = 'mis-aplicaciones.html';
-            navTrabajadores.querySelector('.icon').textContent = '👥';
+            navTrabajadores.querySelector('.icon').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
         }
         if (navTrabajadoresText) navTrabajadoresText.textContent = 'Ver Candidatos';
         if (navPerfil) navPerfil.href = 'perfil-empleador.html';
@@ -605,11 +606,17 @@ function mostrarEmptyStateTrabajador() {
 
     grid.innerHTML = `
         <div class='empty-state scale-in'>
-            <div class='empty-state-icon'>🔍</div>
+            <div class='empty-state-illustration' aria-hidden='true'>
+                <svg width='80' height='80' viewBox='0 0 80 80' fill='none'>
+                    <circle cx='40' cy='40' r='38' fill='var(--primary-light)'/>
+                    <circle cx='34' cy='34' r='14' stroke='var(--primary)' stroke-width='3' fill='none'/>
+                    <line x1='44' y1='44' x2='58' y2='58' stroke='var(--primary)' stroke-width='3' stroke-linecap='round'/>
+                </svg>
+            </div>
             <h3>Sin ofertas disponibles</h3>
             <p>No hay ofertas de trabajo en este momento. Prueba explorando el mapa o vuelve más tarde.</p>
             <a href='mapa-ofertas.html' class='btn btn-primary touchable' style='margin-top: 1rem;'>
-                🗺️ Explorar Mapa
+                Explorar Mapa
             </a>
         </div>
     `;
@@ -745,16 +752,16 @@ function renderizarActividadReciente(aplicacionesSnap) {
         const nombreTrabajador = app.trabajadorNombre || 'Un trabajador';
         const tituloOferta = app.ofertaTitulo || 'una oferta';
 
-        let icono = '👤';
+        let icono = ICON_USER_SM;
         let accion = 'aplicó a';
         if (app.estado === 'aceptado') {
-            icono = '✅';
+            icono = '●';
             accion = 'fue aceptado en';
         } else if (app.estado === 'rechazado') {
-            icono = '❌';
+            icono = '●';
             accion = 'no fue seleccionado para';
         } else if (app.estado === 'completado') {
-            icono = '🏁';
+            icono = '●';
             accion = 'completó';
         }
 
@@ -1069,7 +1076,13 @@ function renderizarOfertasFiltradas(ofertas) {
     if (ofertas.length === 0) {
         ofertasGrid.innerHTML = `
             <div class='empty-state scale-in'>
-                <div class='empty-state-icon'>🔍</div>
+                <div class='empty-state-illustration' aria-hidden='true'>
+                    <svg width='80' height='80' viewBox='0 0 80 80' fill='none'>
+                        <circle cx='40' cy='40' r='38' fill='var(--primary-light)'/>
+                        <circle cx='34' cy='34' r='14' stroke='var(--primary)' stroke-width='3' fill='none'/>
+                        <line x1='44' y1='44' x2='58' y2='58' stroke='var(--primary)' stroke-width='3' stroke-linecap='round'/>
+                    </svg>
+                </div>
                 <h3>Sin resultados</h3>
                 <p>No se encontraron ofertas con los filtros seleccionados. Prueba con otros criterios.</p>
             </div>
@@ -1148,13 +1161,13 @@ window.verDetalle = async function(id) {
             if (yaAplico) {
                 botonAccion = `
                     <button class="btn btn-success btn-disabled" disabled style="flex: 1; cursor: not-allowed; opacity: 0.7;">
-                        ✅ Ya postulaste
+                        Ya postulaste
                     </button>
                 `;
             } else {
                 botonAccion = `
                     <button class="btn btn-primary touchable" onclick="mostrarFormularioPostulacion('${id}')" style="flex: 1;">
-                        📝 Postular a esta oferta
+                        Postular a esta oferta
                     </button>
                 `;
             }
@@ -1188,27 +1201,27 @@ window.verDetalle = async function(id) {
             ${galeriaHTML}
 
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="margin-bottom: 0.5rem;">📝 Descripción</h3>
+                <h3 style="margin-bottom: 0.5rem;">Descripción</h3>
                 <p style="color: var(--gray); line-height: 1.6;">${escapeHtml(oferta.descripcion)}</p>
             </div>
 
             <div style="background: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div><strong>💰 Salario:</strong><br>${escapeHtml(oferta.salario)}</div>
-                    <div><strong>📍 Ubicación:</strong><br>${escapeHtml(ubicacionTexto)}</div>
-                    <div><strong>⏱️ Duración:</strong><br>${escapeHtml(oferta.duracion || 'No especificada')}</div>
-                    <div><strong>🕐 Horario:</strong><br>${escapeHtml(oferta.horario || 'No especificado')}</div>
+                    <div><strong>${ICON_MONEY} Salario:</strong><br>${escapeHtml(oferta.salario)}</div>
+                    <div><strong>${ICON_PIN} Ubicación:</strong><br>${escapeHtml(ubicacionTexto)}</div>
+                    <div><strong>Duración:</strong><br>${escapeHtml(oferta.duracion || 'No especificada')}</div>
+                    <div><strong>${ICON_CLOCK} Horario:</strong><br>${escapeHtml(oferta.horario || 'No especificado')}</div>
                 </div>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="margin-bottom: 0.5rem;">📋 Requisitos</h3>
+                <h3 style="margin-bottom: 0.5rem;">${ICON_CLIPBOARD} Requisitos</h3>
                 <p><strong>Experiencia:</strong> ${escapeHtml(oferta.experiencia || 'No especificada')}</p>
                 <p><strong>Habilidades:</strong> ${escapeHtml(oferta.habilidades || 'No especificadas')}</p>
             </div>
 
             <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
-                <strong style="color: var(--primary);">👤 Publicado por:</strong><br>
+                <strong style="color: var(--primary);">${ICON_USER_SM} Publicado por:</strong><br>
                 <span style="color: var(--dark);">${escapeHtml(oferta.empleadorNombre || 'Empleador')}</span>
             </div>
 
@@ -1269,7 +1282,7 @@ window.mostrarFormularioPostulacion = async function(ofertaId) {
 
             <div style="margin-bottom: 1.5rem;">
                 <label for="mensaje-postulacion" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark);">
-                    💬 Mensaje para el empleador:
+                    Mensaje para el empleador:
                 </label>
                 <textarea
                     id="mensaje-postulacion"
@@ -1283,7 +1296,7 @@ window.mostrarFormularioPostulacion = async function(ofertaId) {
 
             <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid #f59e0b;">
                 <p style="margin: 0; font-size: 0.9rem; color: #92400e;">
-                    <strong>📧 Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
+                    <strong>Nota:</strong> El empleador verá tu perfil y podrá contactarte directamente.
                 </p>
             </div>
 
@@ -1477,7 +1490,7 @@ function mostrarPromptNotificaciones() {
     banner.className = 'notif-prompt-banner';
     banner.innerHTML = `
         <div class="notif-prompt-content">
-            <span class="notif-icon">🔔</span>
+            <span class="notif-icon">●</span>
             <div class="notif-text">
                 <strong>Activa las notificaciones</strong>
                 <p>Recibe alertas cuando te contacten o acepten tu postulacion</p>
@@ -1568,13 +1581,13 @@ function mostrarModalInstruccionesiOS() {
 
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h2 style="color: var(--primary); margin-bottom: 1rem;">Instala ChambaYa</h2>
             <p style="color: var(--gray); margin-bottom: 1.5rem;">
                 Para recibir notificaciones en iPhone, necesitas agregar ChambaYa a tu pantalla de inicio:
             </p>
             <ol style="text-align: left; color: var(--dark); line-height: 2;">
-                <li>Toca el boton <strong>Compartir</strong> (📤) en Safari</li>
+                <li>Toca el boton <strong>Compartir</strong> (↑) en Safari</li>
                 <li>Desplazate y selecciona <strong>"Agregar a inicio"</strong></li>
                 <li>Toca <strong>"Agregar"</strong></li>
                 <li>Abre ChambaYa desde tu pantalla de inicio</li>
@@ -1656,7 +1669,7 @@ window.eliminarOferta = function(ofertaId, titulo) {
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">!</div>
             <h3 style="margin-bottom: 0.5rem; color: var(--dark);">¿Eliminar oferta?</h3>
             <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
                 "${escapeHtml(titulo)}"<br>
@@ -1667,7 +1680,7 @@ window.eliminarOferta = function(ofertaId, titulo) {
                     Cancelar
                 </button>
                 <button class="btn btn-danger" onclick="confirmarEliminarOferta('${ofertaId}')" style="flex: 1;">
-                    🗑️ Eliminar
+                    Eliminar
                 </button>
             </div>
         </div>

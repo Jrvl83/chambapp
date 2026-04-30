@@ -22,17 +22,17 @@ function escaparParaHTML(str) {
 
 function getCategoriaLabel(categoria) {
     const labels = {
-        'construccion': '🏗️ Construcción',
-        'electricidad': '⚡ Electricidad',
-        'gasfiteria': '🔧 Gasfitería',
-        'pintura': '🎨 Pintura',
-        'carpinteria': '🪵 Carpintería',
-        'limpieza': '🧹 Limpieza',
-        'jardineria': '🌿 Jardinería',
-        'mecanica': '🔩 Mecánica',
-        'otros': '📦 Otros'
+        'construccion': 'Construcción',
+        'electricidad': 'Electricidad',
+        'gasfiteria': 'Gasfitería',
+        'pintura': 'Pintura',
+        'carpinteria': 'Carpintería',
+        'limpieza': 'Limpieza',
+        'jardineria': 'Jardinería',
+        'mecanica': 'Mecánica',
+        'otros': 'Otros'
     };
-    return labels[categoria] || categoria || '📦 Sin categoría';
+    return labels[categoria] || categoria || 'Sin categoría';
 }
 
 function crearBadgeEstado(estado) {
@@ -46,15 +46,24 @@ function crearBadgeEstado(estado) {
     return `<span class="badge ${config.clase}">${config.texto}</span>`;
 }
 
-// Avatar con iniciales del nombre (color determinista)
+// Avatar con iniciales del nombre (fondo suave + texto de color, determinista)
+const AVATAR_PALETTES = [
+    { bg: '#EBF2FF', text: '#2563EB' },
+    { bg: '#ECFDF5', text: '#059669' },
+    { bg: '#FFFBEB', text: '#D97706' },
+    { bg: '#F3EEFF', text: '#7C3AED' },
+    { bg: '#E0F7FA', text: '#0891B2' },
+    { bg: '#FDE7F3', text: '#DB2777' },
+];
+
 function crearAvatarHTML(nombre) {
     const palabras = (nombre || 'T').trim().split(/\s+/);
     const iniciales = palabras.length >= 2
         ? palabras[0][0] + palabras[1][0]
         : palabras[0].substring(0, 2);
-    const colores = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#0891b2', '#db2777'];
-    const color = colores[(nombre || '').charCodeAt(0) % colores.length];
-    return `<div class="aplicacion-avatar" style="--avatar-color:${color}">${iniciales.toUpperCase()}</div>`;
+    const idx = (nombre || '').charCodeAt(0) % AVATAR_PALETTES.length;
+    const { bg, text } = AVATAR_PALETTES[idx];
+    return `<div class="aplicacion-avatar" style="--avatar-bg:${bg};--avatar-text:${text}">${iniciales.toUpperCase()}</div>`;
 }
 
 // ============================================
@@ -69,7 +78,7 @@ function crearBotonesPendiente(aplicacionId, nombreEscapado, vacantesLlenas) {
                     <span class="texto-rechazado">Vacantes cubiertas</span>
                 </div>
                 <button class="btn btn-danger btn-accion" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                    ❌ Rechazar
+                    Rechazar
                 </button>
             </div>
         `;
@@ -77,10 +86,10 @@ function crearBotonesPendiente(aplicacionId, nombreEscapado, vacantesLlenas) {
     return `
         <div class="aplicacion-actions-pendiente">
             <button class="btn btn-success btn-accion" onclick="aceptarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                ✅ Aceptar
+                Aceptar
             </button>
             <button class="btn btn-danger btn-accion" onclick="rechazarAplicacion('${aplicacionId}', '${nombreEscapado}')">
-                ❌ Rechazar
+                Rechazar
             </button>
         </div>
     `;
@@ -95,21 +104,21 @@ function crearBotonesAceptado(aplicacion, nombre, telefono, nombreEscapado, titu
 
     const contactoHTML = telefono ? `
         <div class="contacto-info">
-            <span class="contacto-label">📱</span>
+            <span class="contacto-label"></span>
             <span class="contacto-telefono">${telefono}</span>
         </div>
         <a href="https://wa.me/${telefonoWhatsApp}?text=${mensajeWhatsApp}"
            target="_blank" class="btn btn-whatsapp btn-whatsapp-cta">
-            📱 Contactar por WhatsApp
+            Contactar por WhatsApp
         </a>
-        <a href="tel:${telefono}" class="btn-llamar-link">📞 Llamar también</a>
+        <a href="tel:${telefono}" class="btn-llamar-link">Llamar también</a>
     ` : `<p class="sin-telefono">Sin número de contacto registrado</p>`;
 
     return `
         <div class="contacto-aceptado">${contactoHTML}</div>
         <button class="btn-marcar-completado"
                 onclick="marcarCompletado('${aplicacion.id}', '${nombreEscapado}', '${tituloEscapado}')">
-            🏁 Marcar trabajo como completado
+            Marcar trabajo como completado
         </button>
     `;
 }
@@ -118,7 +127,7 @@ function crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado) {
     if (aplicacion.calificado) {
         return `
             <div class="estado-final completado">
-                <span class="texto-completado">✅ Trabajo completado</span>
+                <span class="texto-completado">Trabajo completado</span>
                 <div class="estado-calificado">
                     <span class="calificacion-mostrada">
                         <span class="estrella-filled">★</span> Calificado
@@ -129,9 +138,9 @@ function crearBotonesCompletado(aplicacion, emailEscapado, nombreEscapado) {
     }
     return `
         <div class="estado-final completado">
-            <span class="texto-completado">✅ Trabajo completado</span>
+            <span class="texto-completado">Trabajo completado</span>
             <button class="btn btn-primary btn-sm" onclick="calificarTrabajador('${aplicacion.id}', '${emailEscapado}', '${nombreEscapado}')">
-                ⭐ Calificar
+                Calificar
             </button>
         </div>
     `;
