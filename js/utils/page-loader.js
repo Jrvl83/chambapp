@@ -46,19 +46,36 @@
         }, wait);
     }
 
-    // Fallback automático: window.load (páginas sin carga async pesada)
-    // Si la página declara window.cyLoaderManual = true, espera cyHideLoader()
-    if (!window.cyLoaderManual) {
-        if (document.readyState === 'complete') {
-            hide();
-        } else {
-            window.addEventListener('load', hide);
-        }
+    // IDs y clases de loading states internos usados en las páginas de la app
+    var LOADING_SEL = '#loading-screen,#loading-state,#loading,#mapa-loading,.pp-loading';
+
+    function isHidden(node) {
+        return node.style.display === 'none' || node.classList.contains('oculto');
     }
 
-    // Fallback máximo: 8s por si algo falla
+    function waitForPageContent() {
+        // Buscar el primer loading state visible en el DOM
+        var nodes = document.querySelectorAll(LOADING_SEL);
+        var target = null;
+        for (var i = 0; i < nodes.length; i++) {
+            if (!isHidden(nodes[i])) { target = nodes[i]; break; }
+        }
+
+        // Sin loading state interno → ocultar inmediatamente (login, register, etc.)
+        if (!target) { hide(); return; }
+
+        // Con loading state → esperar a que el JS de la página lo oculte
+        var obs = new MutationObserver(function () {
+            if (isHidden(target)) { obs.disconnect(); hide(); }
+        });
+        obs.observe(target, { attributes: true, attributeFilter: ['style', 'class'] });
+    }
+
+    window.addEventListener('load', waitForPageContent);
+
+    // Fallback máximo: 8s por si algo falla (ej: Firebase offline, Maps error)
     setTimeout(hide, MAX_MS);
 
-    // API para páginas con carga async pesada (ej: mapa, Firebase)
+    // API manual para casos específicos (llamada desde JS de la página si se necesita)
     window.cyHideLoader = hide;
 }());
