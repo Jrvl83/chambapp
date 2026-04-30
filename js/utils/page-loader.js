@@ -1,6 +1,8 @@
 (function () {
     var MIN_MS = 500;
+    var MAX_MS = 8000;
     var start = Date.now();
+    var hidden = false;
 
     var style = document.createElement('style');
     style.textContent =
@@ -34,6 +36,8 @@
     document.body.appendChild(el);
 
     function hide() {
+        if (hidden) return;
+        hidden = true;
         var elapsed = Date.now() - start;
         var wait = Math.max(0, MIN_MS - elapsed);
         setTimeout(function () {
@@ -42,9 +46,19 @@
         }, wait);
     }
 
-    if (document.readyState === 'complete') {
-        hide();
-    } else {
-        window.addEventListener('load', hide);
+    // Fallback automático: window.load (páginas sin carga async pesada)
+    // Si la página declara window.cyLoaderManual = true, espera cyHideLoader()
+    if (!window.cyLoaderManual) {
+        if (document.readyState === 'complete') {
+            hide();
+        } else {
+            window.addEventListener('load', hide);
+        }
     }
+
+    // Fallback máximo: 8s por si algo falla
+    setTimeout(hide, MAX_MS);
+
+    // API para páginas con carga async pesada (ej: mapa, Firebase)
+    window.cyHideLoader = hide;
 }());
