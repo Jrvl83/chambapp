@@ -19,7 +19,10 @@
 8. MV-8  ✅ Logo two-tone                                (2e25e40)
 9. MV-16 ✅ Reportar modal al design system              (9f4f3ff)
 10. MV-9 ✅ Empty states SVG                             (9a33639)
-11. MV-4b ✅ Emoji cleanup completa (sidebar nav, filtros, modals, cards, labels) (pendiente commit)
+11. MV-4b ✅ Emoji cleanup completa (sidebar nav, filtros, modals, cards, labels) (900c107)
+── Validación ──
+Preview: https://chambapp-7785b--mejoras-visuales-jep2yd4w.web.app (expira 07/04/26)
+Pendiente: validar en dispositivos reales → merge a main
 ── Pre-stores ──
 11. MV-10 → Splash screen nativo                        (diseño, no código)
 12. MV-11 → Iconos de app para stores                   (diseño)
