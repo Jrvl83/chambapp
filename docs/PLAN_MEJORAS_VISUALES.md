@@ -1,7 +1,7 @@
 # PLAN: Mejoras Visuales — ChambaYa
 
 **Creado:** 27 Febrero 2026
-**Última actualización:** 02 Marzo 2026 (sesión 29)
+**Última actualización:** 30 Abril 2026 (sesión 36)
 
 ## REFERENCIAS DE DISEÑO
 
@@ -121,32 +121,34 @@ Antes de implementar las mejoras en el código real, se auditaron todos los mock
 ## ESTADO
 
 ```
-MEJORAS VISUALES: ░░░░░░░░░░░░░░░░░░░░  0% (0/14 tareas)
+MEJORAS VISUALES (código): ████████████████████  100% (14/14 tareas)
+Pre-stores (diseño):        ░░░░░░░░░░░░░░░░░░░░   0%  (0/5 tareas)
 ```
 
----
+### Tareas completadas ✅
+- MV-7  Variables de estado en design-system.css
+- MV-1  Fix ícono distancia emoji → SVG pin
+- MV-2  Avatares fondo suave
+- MV-3  Stat Pendientes naranja
+- MV-6  Unificar sombras → var(--shadow-card)
+- MV-5  Unificar border-radius → --radius-card
+- MV-4  Emojis → SVG icons (icons.js + 13+ templates + 9 HTML navs)
+- MV-8  Logo two-tone "Chamba**Ya**" en 12 páginas
+- MV-16 Reportar modal al design system
+- MV-9  Empty states SVG (lupa / clipboard / lista)
+- MV-4b Emoji cleanup completa (sidebar, filtros, modals, cards, labels)
+- MV-17 Rediseño login al mockup
+- MV-18 Dashboard trabajador al mockup (bottom nav flat, offer cards)
+- MV-19 Page loading overlay con logo + spinner (13 páginas)
 
-## PRÓXIMA SESIÓN — MV-0: Plan de implementación detallado
+**Mergeado a main y deployado a producción el 30/04/26.**
 
-> **Hacer antes de tocar cualquier archivo de código.**
-
-Crear un documento `docs/PLAN_IMPLEMENTACION_MV.md` que detalle cómo ejecutar cada tarea MV-1 a MV-14 con criterios de ingeniería claros.
-
-**El plan debe incluir por cada tarea:**
-- Archivos afectados (HTML, CSS, JS) con rutas exactas
-- Fragmento de código "antes / después" para casos representativos
-- Variables CSS nuevas en `design-system.css` (si aplica)
-- Orden de edición recomendado para evitar regresiones
-- Cómo verificar que quedó bien (qué revisar en el navegador / DevTools)
-- Riesgos conocidos (SW cache, iOS safe-area, flex overflow, etc.)
-
-**Buenas prácticas que el plan debe respetar:**
-- No romper el SW de caché: bumpar `?v=N` en cada CSS/JS tocado
-- No duplicar variables CSS — agregar en `design-system.css`, no inline
-- Cambios atómicos: un commit por tarea MV, mensaje descriptivo
-- Revisar en Chrome DevTools mobile + Firefox + Safari iOS antes de cerrar tarea
-- No mezclar tareas: si MV-1 toca `dashboard.css`, ese commit solo toca MV-1
-- Probar en la rama `feature/mejoras-visuales` antes de merge a `main`
+### Pendiente (diseño en Figma/Canva, no código)
+- MV-10 Splash screen nativo (Capacitor)
+- MV-11 Iconos de app para stores
+- MV-12 Screenshots Android
+- MV-13 Screenshots iOS
+- MV-14 Feature graphic Play Store
 
 ---
 

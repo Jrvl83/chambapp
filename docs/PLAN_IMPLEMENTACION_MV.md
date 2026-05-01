@@ -1,7 +1,8 @@
 # Plan de Implementación — Mejoras Visuales ChambaYa
 
 **Creado:** 03 Marzo 2026 (sesión 30)
-**Branch:** `feature/mejoras-visuales`
+**Última actualización:** 30 Abril 2026 (sesión 36)
+**Branch:** `feature/mejoras-visuales` → **mergeado a `main` el 30/04/26**
 **Referencia de diseño:** `docs/PLAN_MEJORAS_VISUALES.md` + mockups en `docs/archivo/`
 
 ---
@@ -9,26 +10,30 @@
 ## ORDEN DE EJECUCIÓN
 
 ```
-1. MV-7  ✅ Variables de estado en design-system.css     (537b0fc)
-2. MV-1  ✅ Fix ícono distancia                          (a58857d)
-3. MV-2  ✅ Avatares suaves                              (3dc8e5e)
-4. MV-3  ✅ Stat Pendientes destacada                    (b5b2078)
-5. MV-6  ✅ Unificar sombras                             (9d1382e)
-6. MV-5  ✅ Unificar border-radius                       (c2589ae)
-7. MV-4  ✅ Emojis → SVG                                 (7ba6ef5)
-8. MV-8  ✅ Logo two-tone                                (2e25e40)
-9. MV-16 ✅ Reportar modal al design system              (9f4f3ff)
-10. MV-9 ✅ Empty states SVG                             (9a33639)
+1.  MV-7  ✅ Variables de estado en design-system.css                  (537b0fc)
+2.  MV-1  ✅ Fix ícono distancia                                        (a58857d)
+3.  MV-2  ✅ Avatares suaves                                            (3dc8e5e)
+4.  MV-3  ✅ Stat Pendientes destacada                                  (b5b2078)
+5.  MV-6  ✅ Unificar sombras                                           (9d1382e)
+6.  MV-5  ✅ Unificar border-radius                                     (c2589ae)
+7.  MV-4  ✅ Emojis → SVG                                              (7ba6ef5)
+8.  MV-8  ✅ Logo two-tone                                              (2e25e40)
+9.  MV-16 ✅ Reportar modal al design system                            (9f4f3ff)
+10. MV-9  ✅ Empty states SVG                                           (9a33639)
 11. MV-4b ✅ Emoji cleanup completa (sidebar nav, filtros, modals, cards, labels) (900c107)
+12. MV-17 ✅ Rediseño login al mockup                                   (45c9d67 + 0c21e91)
+13. MV-18 ✅ Dashboard trabajador al mockup                             (35bb397 + d014693)
+14. MV-19 ✅ Page loading overlay (ChambaYa logo + spinner, 13 páginas) (554ad15 + 5b7179b)
 ── Validación ──
-Preview: https://chambapp-7785b--mejoras-visuales-jep2yd4w.web.app (expira 07/04/26)
-Pendiente: validar en dispositivos reales → merge a main
-── Pre-stores ──
-11. MV-10 → Splash screen nativo                        (diseño, no código)
-12. MV-11 → Iconos de app para stores                   (diseño)
-13. MV-12 → Screenshots Android                         (diseño)
-14. MV-13 → Screenshots iOS                             (diseño)
-15. MV-14 → Feature graphic Play Store                  (diseño)
+✅ Validado en dispositivos reales (Android + iOS) — 30/04/26
+✅ Mergeado a main — 30/04/26 (commit 58794c7)
+✅ Deploy producción — https://chambapp-7785b.web.app
+── Pre-stores (diseño, no código) ──
+15. MV-10 → Splash screen nativo                        (pendiente)
+16. MV-11 → Iconos de app para stores                   (pendiente)
+17. MV-12 → Screenshots Android                         (pendiente)
+18. MV-13 → Screenshots iOS                             (pendiente)
+19. MV-14 → Feature graphic Play Store                  (pendiente)
 ```
 
 Un commit por tarea MV. Mensaje: `style(MV-N): descripción corta`
