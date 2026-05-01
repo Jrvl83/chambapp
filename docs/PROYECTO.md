@@ -1,7 +1,7 @@
 # PROYECTO CHAMBAYA (ex-ChambApp)
 
 **Marketplace de Trabajos Temporales - Perú**
-**Última actualización:** 27 Febrero 2026 (sesión 26)
+**Última actualización:** 01 Mayo 2026 (sesión 37)
 
 ---
 
@@ -66,6 +66,10 @@ TOTAL:  32% del proyecto (62/194 tareas)
 - Panel de administración (stats, métricas, reportes, ofertas, usuarios, bloqueo)
 - Sistema de reportes bidireccional (ofertas y perfiles de trabajador)
 - Bloqueo de cuentas con página dedicada `cuenta-suspendida.html`
+- **Fase 2 Mejoras Visuales (MV-1→MV-19):** variables de estado CSS, SVG icons (icons.js), logo two-tone ChambaYa, reportar modal al design system, empty states SVG, emoji cleanup completa, login rediseñado al mockup, dashboard trabajador rediseñado (bottom nav flat 5 tabs, offer cards), page loading overlay con MutationObserver (13 páginas)
+- **Safe areas modulares:** `--safe-top`/`--safe-bottom` en `design-system.css`; migrados 6 archivos CSS; fix modal scroll-through iOS (`touch-action:none` + `overscroll-behavior:contain`)
+- **Header compartido modular:** `shared-header.css` + `shared-header.js` inyecta avatar+nombre+plan en 10 páginas vía `#app-header`
+- **Expiración de sesión 90 días (BT1):** `loginTimestamp` en localStorage al login; `verificarExpiracionSesion()` en `auth-guard.js`
 
 ---
 
@@ -110,7 +114,7 @@ TOTAL:  32% del proyecto (62/194 tareas)
 | # | Tarea | Descripción | Prioridad |
 |---|-------|-------------|-----------|
 | BT3 | **Distribución nativa Android + iOS (Capacitor + Codemagic)** | **Cambio de foco estratégico: salir en Google Play Store y App Store en lugar de solo PWA.** Usar Capacitor (Ionic) para envolver la app web existente en una shell nativa sin reescribir JS/HTML/CSS. **Stack de build:** Codemagic como CI/CD en Mac virtual (no se necesita Mac físico). **Cuentas requeridas (ninguna creada aún):** Apple Developer Program $99/año (apple.com) + Google Play Developer $25 única vez. **Plugins a migrar:** FCM web → `@capacitor-firebase/messaging`, Geolocation API → `@capacitor/geolocation`, `<input type="file">` → `@capacitor/camera`. **Pasos técnicos:** (1) `npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios`. (2) `npx cap init` + `npx cap add android` + `npx cap add ios`. (3) Migrar plugins nativos. (4) Ajustar splash screen, iconos y deep links. (5) Conectar repo a Codemagic + configurar `codemagic.yaml`. (6) Subir certificados Apple a Codemagic (lo más complejo — portal de Apple es confuso). (7) Build Android → AAB → Google Play internal track. (8) Build iOS → IPA → App Store review (1-3 días). **Costos estimados:** Codemagic free tier 500 min/mes (suficiente en esta etapa), pago ~$45/mes solo si se supera. **Dificultad real:** la parte técnica es moderada; lo más confuso es el portal de certificados de Apple (primera vez). | 🔴 CRÍTICA |
-| BT1 | Expiración de sesión (30 días) | Guardar `loginTimestamp` en localStorage al login. En `auth-guard.js`, verificar en cada página protegida: si pasaron >30 días → signOut + redirect login. Sin backend, sin Firestore extra. | Media |
+| BT1 | ~~Expiración de sesión~~ | ✅ **COMPLETADO 01/05/26 (sesión 37)** — `loginTimestamp` guardado al login (email + Google). `verificarExpiracionSesion()` en `auth-guard.js`: si pasaron >90 días → limpia localStorage + redirect login. Llamado en `mis-aplicaciones`, `mis-aplicaciones-trabajador` y `publicar-oferta`. | ✅ Hecho |
 | BT2 | Optimización de costos Firebase a escala | (1) Reemplazar `onSnapshot` por `getDoc` donde no se necesite tiempo real. (2) Revisar índices compuestos y agregar paginación (`limit` + cursor). (3) Verificar que `optimizarImagen()` se aplica en todos los flujos de subida. (4) Cachear resultado de `verificarBloqueo` en `sessionStorage` con TTL 5-10 min. (5) Desnormalizar datos críticos en documentos de aplicación para eliminar queries en cascada. | Baja (pre-escala) |
 
 ### Tareas Diferidas (7)
@@ -241,7 +245,7 @@ css/introjs-custom.css          → Estilos personalizados (existente, mejorado)
 
 | # | Tarea | Descripción | Estado |
 |---|-------|-------------|--------|
-| F2-B1 | Expiración de sesión | `loginTimestamp` en localStorage al login. Check en `auth-guard.js`: si >30 días → signOut + redirect login. (era BT1) | Pendiente |
+| F2-B1 | Expiración de sesión | `loginTimestamp` en localStorage al login. Check en `auth-guard.js`: si >90 días → signOut + redirect login. | ✅ COMPLETADO (01/05/26) |
 | F2-B2 | Sistema favoritos — trabajador | Ícono bookmark en cards de oferta. Colección `favoritos` en Firestore por usuario. Nueva sección "Guardadas" en mis-aplicaciones-trabajador. | Pendiente |
 | F2-B3 | Sistema favoritos — empleador | Ícono bookmark en perfil público de trabajador. Sección "Talentos guardados" en dashboard empleador. | Pendiente |
 | F2-B4 | Dashboard estadísticas trabajador | Página o sección con: total postulaciones, tasa de aceptación, calificación promedio, categorías más aplicadas, historial visual. | Pendiente |
@@ -349,7 +353,8 @@ chambapp/
 │   ├── bottom-nav.css                  # Navegación inferior móvil
 │   ├── toast.css                       # Notificaciones toast
 │   ├── notifications.css               # Badge de notificaciones
-│   ├── header-simple.css               # Header simplificado
+│   ├── header-simple.css               # Header legacy (páginas que aún no migraron)
+│   ├── shared-header.css               # Header compartido modular (todas las páginas)
 │   ├── accessibility.css               # Estilos de accesibilidad
 │   ├── introjs-custom.css              # Estilos guided tours
 │   ├── filtros-avanzados.css           # Filtros avanzados
@@ -393,7 +398,10 @@ chambapp/
 │   │   ├── distance.js                # Cálculo de distancias
 │   │   ├── ubigeo-api.js              # API ubigeo Perú
 │   │   ├── sanitize.js                # Sanitización de datos
-│   │   ├── auth-guard.js              # verificarBloqueo + manejarBloqueado (sesión 25)
+│   │   ├── auth-guard.js              # verificarBloqueo + manejarBloqueado + verificarExpiracionSesion
+│   │   ├── shared-header.js           # Header modular inyectado vía #app-header (sesión 37)
+│   │   ├── page-loader.js             # Overlay de carga con logo+spinner, MutationObserver (sesión 36)
+│   │   ├── icons.js                   # Constantes SVG reutilizables (sesión 32)
 │   │   ├── logger.js                  # Logger
 │   │   └── migrar-ofertas.js          # Migración de datos
 │   │
@@ -591,6 +599,14 @@ git add [files] && git commit -m "tipo: mensaje" && git push
 - ✅ **UX Dashboard Trabajador:** Actividad reciente (banner postulaciones aceptadas), smart sort (match categoría + distancia), filtros overhaul (solo tuerca visible, modal completo con Limpiar/Filtrar, badge "+").
 
 ### Sesiones
+- **Sesión 37 (01/05/26):** Safe areas modulares (--safe-top/--safe-bottom en design-system.css, 6 CSS migrados). Fix modal iOS: scroll-through (touch-action:none + overscroll-behavior:contain), título bajo notch (max-height con safe areas). Header compartido modular: shared-header.css + shared-header.js, reemplaza header-simple en 10 páginas con div#app-header inyectado; avatar, nombre, plan, dropdown. BT1 completado: expiración sesión 90 días (loginTimestamp + verificarExpiracionSesion). Commit + push GitHub.
+- **Sesión 36 (30/04/26):** MV-19 — page loading overlay (logo ChambaYa + spinner CSS, IIFE page-loader.js como primer script en body, MutationObserver en #loading-screen/#loading-state/#mapa-loading, fallback 8s, 13 páginas). Fix bug mapa-ofertas: MutationObserver detecta cuando el mapa termina de inicializar. Validado en Android + iOS. Merge feature/mejoras-visuales → main. Deploy producción.
+- **Sesión 35 (28/04/26):** MV-17 — Rediseño login al mockup (fondo blanco, role cards, inputs con íconos SVG). MV-18 — Dashboard trabajador al mockup (bottom nav flat 5 tabs sin FAB, offer cards con barra lateral de color por categoría, `.oferta-card--trabajador`).
+- **Sesión 34 (27/04/26):** MV-9 — Empty states SVG (lupa/clipboard/lista, 6 archivos). MV-4b — Emoji cleanup completa (sidebar nav SVG, filtros, modals, cards, labels).
+- **Sesión 33 (25/04/26):** MV-8 — Logo two-tone "Chamba"+"Ya" azul (12 HTML + 2 CSS). MV-16 — Reportar modal al design system (SVG flag, variante danger, tokens CSS).
+- **Sesión 32 (24/04/26):** MV-4 — Emojis→SVG completo: icons.js (ES module exports), 9 HTML navs, 8 JS templates, 6 category labels.
+- **Sesión 31 (21/04/26):** MV-7 Variables de estado design-system.css. MV-1 ícono distancia SVG pin. MV-2 avatares fondo suave. MV-3 stat Pendientes naranja. MV-6 sombras var(--shadow-card). MV-5 border-radius var(--radius-card).
+- **Sesiones 27-30 (Mar 2026):** Planificación Fase 2 Mejoras Visuales. Auditoría y estandarización de mockups (bottom nav, íconos, botón volver). Branch feature/mejoras-visuales creado.
 - **Sesión 26 (27/02/26):** Planificación estratégica Fase 2. Fase 1 declarada completa (100%). Cambio de foco a distribución nativa (Capacitor + Codemagic, BT3). Monetización definida: 5 chambas concluidas vitalicio (no mensual), pago via web con Culqi (estilo Spotify, evita 30% stores), sin ads. Dominio chambaya.com pendiente registrar (F2-A1). Fase 2 estructurada en 24 tareas (4 bloques). Admin: categorías dinámicas F2-C3 (Firestore `categorias/{slug}`, caché sessionStorage TTL 1h) + config global F2-C4 (single doc `admin/config` con 6 parámetros de negocio). Cuentas Apple Developer + Google Play NO creadas aún.
 - **Sesión 25 (26/02/26):** Sistema de reportes + bloqueo consistente. `js/components/reportar-modal.js`: modal reutilizable con motivos (fraude/spam/inapropiado/otro), guarda en colección Firestore `reportes`. Botón "🚩 Reportar oferta" en modal detalle (dashboard, mapa, mis-aplicaciones-trabajador). Botón "🚩 Reportar perfil" en perfil público (solo para usuarios auth ≠ dueño del perfil). Admin reportes: Ver Oferta y Ver Perfil muestran detalle completo con fotos vía `adminModal`. XSS prevention con `data-*` attributes en onclick. `js/utils/auth-guard.js`: `manejarBloqueado()` y `verificarBloqueo()`. `cuenta-suspendida.html`: página dedicada para usuarios bloqueados. Check bloqueado en 10 páginas protegidas (inline para pages con Firestore read propio, `verificarBloqueo` para el resto; páginas solo-localStorage migradas a `onAuthStateChanged`). Fix bug `historial-ofertas.js`: `cargarOfertas()` se llamaba cuando `!userDoc.exists()`. Backlog BT1 (sesión expiración 30 días) y BT2 (optimización costos Firebase) documentados en PROYECTO.md.
 - **Sesión 24 (26/02/26):** Panel de administración (tasks 45-48). `admin.html` + `js/admin/` (index, stats, metricas, reportes, ofertas, usuarios) + `css/admin.css`. Auth guard por UID hardcodeado. Gestión completa: estadísticas globales, métricas de crecimiento, reportes con acciones (resolver/ignorar), listado y bloqueo de ofertas y usuarios.
@@ -655,6 +671,11 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 4. **F2-B7 + F2-B8** — Sistema Freemium + página /premium con Culqi (prioritario para lanzar con modelo completo)
 5. **F2-C3 + F2-C4** — Admin: categorías dinámicas + config global (hacerlos juntos, mismo patrón Firestore)
 
+**Completados recientemente:**
+- ✅ BT1 / F2-B1: Expiración sesión 90 días (01/05/26)
+- ✅ Fase 2 Mejoras Visuales MV-1→MV-19 (30/04/26)
+- ✅ Safe areas modulares + header compartido (01/05/26)
+
 ### Notas técnicas
 - Estados de oferta: `activa` | `en_curso` | `completada` | `caducada`
 - Ofertas visibles: `estado === 'activa' AND fechaExpiracion > ahora`
@@ -670,7 +691,9 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - **Sanitización:** `sanitizeText()` de sanitize.js aplicado en guardado de perfiles y ofertas (previene XSS)
 - **PWA Service Worker:** `firebase-messaging-sw.js` maneja FCM + cacheo (Cache First para estáticos, Network First para HTML, SWR para Firebase Storage). Nunca cachear auth/firestore/maps endpoints.
 - **PWA iOS:** Requiere `apple-mobile-web-app-capable`, `<link rel="manifest">`, y `scope: "/"` en manifest.json en CADA HTML. Sin esto, iOS abre Safari al navegar entre páginas.
-- **Notch iOS:** `header-simple.css` usa `calc(1rem + env(safe-area-inset-top, 0))` para padding-top. Dashboard usa `env(safe-area-inset-top)` en `dashboard-main.css`.
+- **Safe areas:** Variables `--safe-top: env(safe-area-inset-top, 0px)` y `--safe-bottom: env(safe-area-inset-bottom, 0px)` en `design-system.css`. Usar `max(var(--safe-top), Xrem)` — nunca `calc()`. Migrados: login.css, register.css, modal.css, bottom-nav.css, header-simple.css, shared-header.css.
+- **Modal scroll-through iOS:** `touch-action:none` en `.modal-overlay` + `overscroll-behavior:contain` en `.modal-content`. `max-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 5rem)`.
+- **Header compartido:** `initSharedHeader(auth, db)` en `js/utils/shared-header.js`. Recibe instancias Firebase como params (evita conflicto singleton con firebase-init.js). Inyecta HTML en `<div id="app-header">`. Carga usuario de Firestore, muestra avatar+nombre+plan, dropdown con "Mi Perfil" (adapta URL por rol) y "Cerrar Sesión".
 - **CSS cache bust:** Cambiar `?v=N` al modificar CSS cacheados (header-simple.css?v=3)
 - **Firestore offline:** `initializeFirestore()` con `persistentLocalCache` + `persistentMultipleTabManager` en firebase-init.js
 - **XSS prevention:** `escapeHtml()` de dom-helpers.js en todo innerHTML con datos de usuario. `textContent` para texto plano.
@@ -678,7 +701,7 @@ BOTTOM SHEET (~55vh, al tocar ⚙️):
 - **Storage rules:** ofertas/ solo imágenes <5MB
 - **SW reload:** `controllerchange` solo recarga si `hadController` (evita recarga en primera instalación)
 - **Seguridad:** checklist de acciones manuales en `docs/SEGURIDAD.md`
-- **auth-guard.js:** `manejarBloqueado(auth)` limpia localStorage + signOut + redirect `cuenta-suspendida.html`. `verificarBloqueo(db, auth, uid)` fetch Firestore + llama manejarBloqueado si bloqueado. Usado en 10 páginas protegidas.
+- **auth-guard.js:** `manejarBloqueado(auth)` limpia localStorage + signOut + redirect `cuenta-suspendida.html`. `verificarBloqueo(db, auth, uid)` fetch Firestore + llama manejarBloqueado si bloqueado. `verificarExpiracionSesion()` verifica `loginTimestamp` en localStorage: si >90 días limpia y redirige. Usado en páginas protegidas.
 - **Reportar modal:** `initReportarModal()` inyecta el modal al body una vez por página. `window.abrirReportarModal(tipo, objetoId, objetoTitulo)` lo abre. Guarda en colección Firestore `reportes` con campos: tipo, objetoId, objetoTitulo, reportadoPor, reportadoPorUid, motivo, descripcion, estado='pendiente', timestamp.
 - **Admin panel:** UID hardcodeado `XkBmgSWZKZeUyLKAyOn8GHmzOAb2` en index.js y login.js. Modales via `window.adminModal.abrirModal(titulo, html)`. Queries sin orderBy para evitar índices compuestos.
 

@@ -38,7 +38,8 @@ css/
   ├── modal.css            # Modal unificado (12 modales, 7 páginas)
   ├── oferta-detalle.css   # Detalle de oferta compartido
   ├── calificacion-modal.css # Modal de calificación
-  ├── header-simple.css    # Header de páginas secundarias (FUENTE ÚNICA)
+  ├── shared-header.css    # Header compartido modular — TODAS las páginas (FUENTE ÚNICA)
+  ├── header-simple.css    # Header legacy (no usar en páginas nuevas)
   ├── bottom-nav.css       # Bottom navigation móvil
   ├── animations.css       # Animaciones y transiciones
   └── [pagina].css         # Estilos específicos de página (SIN duplicar base)
@@ -50,7 +51,11 @@ js/
   │   ├── formatting.js        # Fechas, estrellas, moneda
   │   ├── image-utils.js       # Optimización/validación imágenes
   │   ├── dom-helpers.js       # escapeHtml, crearElemento, etc.
-  │   └── calificacion-utils.js # Promedio compartido
+  │   ├── calificacion-utils.js # Promedio compartido
+  │   ├── shared-header.js     # Header modular inyectado (initSharedHeader(auth, db))
+  │   ├── auth-guard.js        # verificarBloqueo + verificarExpiracionSesion
+  │   ├── icons.js             # Constantes SVG reutilizables
+  │   └── page-loader.js       # Overlay de carga (IIFE, primer script en body)
   ├── components/          # Componentes JS reutilizables
   │   ├── oferta-card.js       # Card de oferta (3 variantes)
   │   ├── oferta-detalle.js    # Detalle compartido (3 páginas)
@@ -136,9 +141,10 @@ js/
    - Override de `body` solo para propiedades específicas (ej: `publicar-oferta.css` define `body { background: linear-gradient(...) }`)
    - Estilos de componentes propios de la página
 
-4. **Header: usar `header-simple.css` en todas las páginas secundarias:**
-   - NUNCA definir `.header`, `.header-content`, `.logo`, `.logo-img`, `.btn-volver` en CSS de página
-   - Si se necesita un override (ej: `max-width` diferente), solo definir esa propiedad
+4. **Header: usar `shared-header.css` + `initSharedHeader(auth, db)` en todas las páginas:**
+   - El HTML del header es inyectado por `shared-header.js` en `<div id="app-header">`
+   - NUNCA definir estilos de header en CSS de página
+   - `header-simple.css` es legacy — no usar en páginas nuevas
 
 ```css
 /* ✅ BIEN - CSS de página */
@@ -703,5 +709,5 @@ btn.disabled = false;
 
 ---
 
-**Última actualización:** 19 Febrero 2026
-**Próxima revisión:** Al iniciar Fase 2 (Diferenciación)
+**Última actualización:** 01 Mayo 2026 (sesión 37)
+**Próxima revisión:** Al iniciar F2-B7 (Freemium)
