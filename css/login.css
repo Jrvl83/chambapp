@@ -21,7 +21,7 @@ main {
 /* Container principal */
 .login-container {
     width: 100%;
-    padding: 2rem 1.5rem 2.5rem;
+    padding: max(var(--safe-top), 2rem) 1.5rem 2.5rem;
 }
 
 /* Logo */
@@ -394,6 +394,6 @@ main {
 /* Responsive */
 @media (max-width: 768px) {
     .login-container {
-        padding: 1.5rem 1.25rem 2rem;
+        padding: max(var(--safe-top), 1.5rem) 1.25rem 2rem;
     }
 }

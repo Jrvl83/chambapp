@@ -9,7 +9,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: max(var(--safe-top), 2rem) 1rem 2rem;
 }
 
 /* Main wrapper - ancho fijo para evitar variación entre pasos */

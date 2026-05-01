@@ -17,7 +17,7 @@
     z-index: var(--z-fixed);
 
     /* Safe area para notch/home indicator */
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-bottom: var(--safe-bottom);
 
     /* Oculto por defecto en desktop */
     display: none;

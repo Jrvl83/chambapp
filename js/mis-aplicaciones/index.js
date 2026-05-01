@@ -26,7 +26,8 @@ import {
     registrarFuncionesGlobalesCalificaciones
 } from './calificaciones.js';
 import { initFiltros, mostrarAplicaciones, registrarFuncionesGlobalesFiltros } from './filtros.js';
-import { verificarBloqueo } from '../utils/auth-guard.js';
+import { verificarBloqueo, verificarExpiracionSesion } from '../utils/auth-guard.js';
+import { initSharedHeader } from '../utils/shared-header.js';
 
 // ============================================
 // INICIALIZACIÓN FIREBASE
@@ -35,9 +36,12 @@ const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+initSharedHeader(auth, db);
+
 // ============================================
 // VERIFICACIÓN DE USUARIO
 // ============================================
+verificarExpiracionSesion();
 const usuarioStr = localStorage.getItem('usuarioChambApp');
 if (!usuarioStr) {
     if (typeof toastError === 'function') {

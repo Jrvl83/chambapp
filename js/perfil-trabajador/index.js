@@ -12,6 +12,9 @@ import { validarNombre, validarTelefono, validarEdadMinima, validarHorarios } fr
 import { validateField, hideFieldError, showFieldError } from '../utils/form-errors.js';
 import { mensajeErrorAmigable, toastErrorConRetry } from '../utils/error-handler.js';
 import { manejarBloqueado } from '../utils/auth-guard.js';
+import { initSharedHeader } from '../utils/shared-header.js';
+
+initSharedHeader(auth, db);
 
 // Modulos
 import { initPortfolio, cargarPortfolio, previsualizarPortfolio, subirFotosPortfolio,

@@ -118,7 +118,7 @@ function actualizarBotonGoogle(loading) {
  * Guardar usuario en localStorage y redirigir
  */
 function loginExitoso(userData) {
-    localStorage.setItem('usuarioChambApp', JSON.stringify(userData));
+    localStorage.setItem('usuarioChambApp', JSON.stringify({ ...userData, loginTimestamp: Date.now() }));
     const nombre = escapeHtml(userData.nombre || 'usuario');
     toastSuccess(`¡Bienvenido de vuelta, ${nombre}!`);
     setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
@@ -228,7 +228,7 @@ async function handleGoogleLogin() {
 
         actualizarBotonGoogle(true);
         const nuevoUsuario = await crearPerfilGoogle(db, user, tipo);
-        localStorage.setItem('usuarioChambApp', JSON.stringify(nuevoUsuario));
+        localStorage.setItem('usuarioChambApp', JSON.stringify({ ...nuevoUsuario, loginTimestamp: Date.now() }));
         toastSuccess('¡Cuenta creada exitosamente!');
         setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
     } catch (error) {

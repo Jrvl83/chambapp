@@ -15,6 +15,9 @@ import { showFieldError, hideFieldError } from './utils/form-errors.js';
 import { sanitizeText } from './utils/sanitize.js';
 import { mensajeErrorAmigable, toastErrorConRetry } from './utils/error-handler.js';
 import { manejarBloqueado } from './utils/auth-guard.js';
+import { initSharedHeader } from './utils/shared-header.js';
+
+initSharedHeader(auth, db);
 
 // Variables globales
 let perfilData = {};

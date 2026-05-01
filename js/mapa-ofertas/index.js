@@ -26,6 +26,7 @@ import { initDetalle, registrarFuncionesGlobalesDetalle } from './detalle.js';
 import { initPostulacion, registrarFuncionesGlobalesPostulacion } from './postulacion.js';
 import { initReportarModal } from '../components/reportar-modal.js';
 import { manejarBloqueado } from '../utils/auth-guard.js';
+import { initSharedHeader } from '../utils/shared-header.js';
 
 // ============================================
 // INICIALIZACIÓN FIREBASE
@@ -33,6 +34,8 @@ import { manejarBloqueado } from '../utils/auth-guard.js';
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+initSharedHeader(auth, db);
 
 // ============================================
 // ESTADO COMPARTIDO

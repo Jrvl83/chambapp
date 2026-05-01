@@ -18,14 +18,18 @@ import {
 } from './calificaciones.js';
 import { fetchEmpleadoresRatings } from '../utils/employer-rating.js';
 import { initReportarModal } from '../components/reportar-modal.js';
-import { verificarBloqueo } from '../utils/auth-guard.js';
+import { verificarBloqueo, verificarExpiracionSesion } from '../utils/auth-guard.js';
+import { initSharedHeader } from '../utils/shared-header.js';
 
 // --- Firebase ---
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+initSharedHeader(auth, db);
+
 // --- Auth check ---
+verificarExpiracionSesion();
 const usuarioStr = localStorage.getItem('usuarioChambApp');
 if (!usuarioStr) {
     if (typeof toastError === 'function') {

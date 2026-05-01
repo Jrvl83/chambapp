@@ -9,11 +9,14 @@ import { getFirestore, collection, query, where, getDocs, orderBy } from 'https:
 import { formatearFecha, generarEstrellasHTML } from './utils/formatting.js';
 import { verificarBloqueo } from './utils/auth-guard.js';
 import { escapeHtml } from './utils/dom-helpers.js';
+import { initSharedHeader } from './utils/shared-header.js';
 
 // Inicializar Firebase
 const app = initializeApp(window.firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+initSharedHeader(auth, db);
 
 // Variables globales
 let usuario = null;

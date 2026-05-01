@@ -10,7 +10,10 @@
 // ============================================
 import { auth, db, storage } from '../config/firebase-init.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { verificarBloqueo } from '../utils/auth-guard.js';
+import { verificarBloqueo, verificarExpiracionSesion } from '../utils/auth-guard.js';
+import { initSharedHeader } from '../utils/shared-header.js';
+
+initSharedHeader(auth, db);
 
 // Módulos del formulario
 import { initFormNavigation, showStep, validateStep } from './form-navigation.js';
@@ -38,6 +41,7 @@ import { initSubmit, cargarOfertaParaEditar } from './submit.js';
 // ============================================
 // VERIFICAR AUTENTICACIÓN
 // ============================================
+verificarExpiracionSesion();
 const usuarioStr = localStorage.getItem('usuarioChambApp');
 if (!usuarioStr) {
     if (typeof toastError === 'function') {

@@ -6,6 +6,30 @@
 import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
+const SESION_DURACION_MS = 90 * 24 * 60 * 60 * 1000; // 90 días
+
+/**
+ * Verifica si la sesión en localStorage ha expirado (90 días).
+ * Si expiró, limpia localStorage y redirige a login.
+ * @returns {boolean} true si expiró (ya redirigió), false si sigue válida
+ */
+export function verificarExpiracionSesion() {
+    const usuarioStr = localStorage.getItem('usuarioChambApp');
+    if (!usuarioStr) return false;
+    try {
+        const usuario = JSON.parse(usuarioStr);
+        if (!usuario.loginTimestamp) return false;
+        if (Date.now() - usuario.loginTimestamp > SESION_DURACION_MS) {
+            localStorage.removeItem('usuarioChambApp');
+            window.location.href = 'login.html';
+            return true;
+        }
+        return false;
+    } catch {
+        return false;
+    }
+}
+
 /**
  * Maneja el flujo de bloqueo: limpia sesión y redirige.
  * Usar cuando ya se sabe que el usuario está bloqueado.

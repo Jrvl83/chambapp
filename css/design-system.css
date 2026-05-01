@@ -242,6 +242,14 @@
     --bp-lg: 1024px;
     --bp-xl: 1280px;
     --bp-2xl: 1536px;
+
+    /* ============================================
+       SAFE AREA — iOS/Android notch & home indicator
+       Usar var(--safe-top) y var(--safe-bottom) en lugar
+       de env() directamente para mantener un único punto de control.
+       ============================================ */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* ============================================

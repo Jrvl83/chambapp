@@ -11,6 +11,9 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { initReportarModal } from '../components/reportar-modal.js';
+import { initSharedHeader } from '../utils/shared-header.js';
+
+initSharedHeader(auth, db);
 import { escapeHtml } from '../utils/dom-helpers.js';
 import { generarEstrellasHTML, capitalizarPalabras } from '../utils/formatting.js';
 import {
